@@ -14,39 +14,55 @@ import {SafeAreaView} from 'react-native-safe-area-context';
 
 import React, {useState} from 'react';
 import COLORS from '../../constants/COLORS';
-import { LoginImage } from '../../../assets/images/LoginImage';
+import axios from 'axios';
+
 const mobileH = Math.round(Dimensions.get('window').height);
 const mobileW = Math.round(Dimensions.get('screen').width);
 
 export default function Login({navigation}) {
+  const [email,setEmail] = useState('')
+  const [password,setPassword] = useState('')
+  // const loginFunction = () => {
+  //   axios.post(`${API}/`)
+  // }
   return (
     <SafeAreaView style={{backgroundColor: COLORS.CREAM, flex: 1}}>
-      <ScrollView>
-      {/* <Image
-        style={styles.img_width}
-        source={require('../../assets/images/login-image.png')}
-      /> */}
-      <View  style={styles.login_img} >
-      <LoginImage />
-      </View>
-      <View style={styles.login_css}>
-        <Text style={styles.login}>Login</Text>
-        <Text style={styles.email}>Email</Text>
-        <TextInput
-          style={styles.email_placeholder}
-          placeholder="Enter your email here"
-        />
-        <Text style={styles.email}>Password</Text>
-        <TextInput
-          style={styles.email_placeholder}
-          placeholder="Enter your password here"
-        />
-        <View style={styles.main_div_lock_img}>
+      <ScrollView
+        showsVerticalScrollIndicator={false}
+        keyboardShouldPersistTaps="handled">
+        <View style={styles.login_img}>
           <Image
-            style={styles.lock_img}
-            source={require('../../../assets/images/lock.png')}
+            source={require('../../../assets/images/bigstock.png')}
+            resizeMode="stretch"
+            style={{alignSelf: 'center', width: mobileW}}
           />
-          <Text style={styles.forgot_password}>Forgot my password</Text>
+        </View>
+        <View style={[styles.login_css,styles.shadowProp]}>
+          <Text style={styles.login}>Login</Text>
+          <Text style={styles.email}>Email</Text>
+          <TextInput
+            style={styles.email_placeholder}
+            autoCorrect={false}
+            autoCapitalize="none"
+            placeholder="Enter your email here"
+            onChangeText={text => setEmail(text)}
+        value={email}
+          />
+          <Text style={styles.email}>Password</Text>
+          <TextInput
+            style={styles.email_placeholder}
+            secureTextEntry={true}
+            placeholder="Enter your password here"
+            onChangeText={text => setPassword(text)}
+        value={password}
+          />
+          <View style={styles.main_div_lock_img}>
+            <Image
+              
+              source={require('../../../assets/images/lock.png')}
+            />
+            <Text style={styles.forgot_password}>Forgot my password</Text>
+          </View>
         </View>
         <View>
           <View
@@ -56,18 +72,16 @@ export default function Login({navigation}) {
               width: '100%',
             }}>
             <TouchableOpacity
-              onPress={() => navigation.navigate('DrawerNavigation')}
+              //onPress={loginFunction}
               style={{
                 marginTop: 20,
                 backgroundColor: COLORS.GREEN,
                 alignItems: 'center',
                 padding: 13,
                 borderRadius: 30,
-                width: 300,
+                width: 150,
               }}>
-              <Text style={styles.log_In_btn}>
-                LOG IN
-              </Text>
+              <Text style={styles.log_In_btn}>LOG IN</Text>
             </TouchableOpacity>
           </View>
           <View style={styles.mainDiv_donot_account}>
@@ -75,7 +89,7 @@ export default function Login({navigation}) {
             <Text style={styles.sign_up}>Sign Up</Text>
           </View>
         </View>
-      </View></ScrollView>
+      </ScrollView>
     </SafeAreaView>
   );
 }
@@ -87,18 +101,33 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
-  login_img:{
+  login_img: {
     width: mobileW,
-    height: mobileH * 0.45,
-    alignItems: 'center',
-    justifyContent: 'center'
   },
   img_width: {
     width: mobileW,
     height: mobileH * 0.45,
   },
   login_css: {
-    padding: 20,
+    // padding: 20,
+    paddingHorizontal: 20,
+    paddingBottom: 15,
+    marginHorizontal: 20,
+    marginTop: 20,
+    backgroundColor: COLORS.GRAY,
+    borderRadius: 10,
+    
+  },
+  shadowProp: {
+    backgroundColor: 'white',
+    shadowColor: Platform.OS === 'android' ?'black' :"rgba(0,0,0,.555)", // Shadow color
+    shadowOffset: {
+      width: 6, // Horizontal offset
+      height: 4, // Vertical offset
+    },
+    shadowOpacity: 1, // Shadow opacity (0 to 1)
+    shadowRadius: 4, // Shadow radius
+    elevation: Platform.OS === 'android' ? 8 : 0,
   },
 
   login: {
@@ -118,7 +147,7 @@ const styles = StyleSheet.create({
     backgroundColor: `rgba(86, 84, 84, 0.1)`,
     borderRadius: 10,
     paddingHorizontal: 15,
-    height:Platform.OS === 'ios'?50:50
+    height: Platform.OS === 'ios' ? 50 : 50,
   },
   main_div_lock_img: {
     display: 'flex',
@@ -126,14 +155,13 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     paddingTop: 10,
   },
-  lock_img: {
-    width: 20,
-    height: 20,
-  },
+  
   forgot_password: {
     letterSpacing: 1,
     paddingLeft: 10,
-    fontSize: 17,
+    fontSize: 10,
+    fontWeight:"300",
+    color:COLORS.BLACK
   },
   mainDiv_donot_account: {
     display: 'flex',
@@ -141,17 +169,20 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     paddingTop: 10,
+    paddingBottom:20
   },
   dont_have_text: {
     fontSize: 17,
     fontWeight: '500',
   },
   sign_up: {
-    fontSize: 20,
-    fontWeight: '800',
+    fontSize: 14,
+    fontWeight: '500',
     color: 'black',
   },
-  log_In_btn:{
-    color: COLORS.BLACK, fontSize: 17, fontWeight: Platform.OS ==='ios'? 800:900
-  }
+  log_In_btn: {
+    color: COLORS.WHITE,
+    fontSize: 14,
+    fontWeight: Platform.OS === 'ios' ? 700 : 700,
+  },
 });

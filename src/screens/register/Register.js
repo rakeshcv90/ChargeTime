@@ -22,9 +22,10 @@ export default function Register({navigation}) {
       <ScrollView showsVerticalScrollIndicator={false} keyboardShouldPersistTaps='handled' >
       <View style={styles.mainDiv_signup}>
         
-        <SignUp />
+      <Image source={require("../../../assets/images/signupp.png")} resizeMode='stretch' style={{alignSelf: 'center', width: mobileW,}} />
+
       </View>
-      <View style={styles.second_mainDiv_signup}>
+      <View style={[styles.second_mainDiv_signup,styles.shadowProp]}>
         <Text style={styles.signUp_text}>Sign Up</Text>
         <Text style={styles.fullName_text}>Full Name</Text>
         <TextInput
@@ -46,7 +47,9 @@ export default function Register({navigation}) {
           style={styles.fullName_placeholder}
           placeholder="Create a strong password"
         />
-        <View
+        
+      </View>
+      <View
           style={{
             flexDirection: 'row',
             justifyContent: 'center',
@@ -55,14 +58,14 @@ export default function Register({navigation}) {
           <TouchableOpacity
             onPress={() => navigation.navigate('VerifyEmail')}
             style={{
-              marginTop: 20,
+              marginTop: 15,
               backgroundColor: '#B1D34F',
               alignItems: 'center',
               padding: 13,
               borderRadius: 30,
-              width: 200,
+              width: 150,
             }}>
-            <Text style={{color: COLORS.WHITE, fontSize: 15, fontWeight: '800'}}>
+            <Text style={{color: COLORS.WHITE, fontSize: 14, fontWeight: '700'}}>
               SIGN UP
             </Text>
           </TouchableOpacity>
@@ -71,7 +74,6 @@ export default function Register({navigation}) {
           <Text style={styles.dont_have_text}>Already have an account? </Text>
           <Text style={styles.sign_up}>Log In</Text>
         </View>
-      </View>
       </ScrollView>
     </SafeAreaView>
   );
@@ -80,7 +82,7 @@ export default function Register({navigation}) {
 const styles = StyleSheet.create({
   mainDiv_signup: {
     paddingTop: 50,
-    backgroundColor: COLORS.WHITE,
+    
   },
   signup_img: {
     width: mobileW,
@@ -88,7 +90,23 @@ const styles = StyleSheet.create({
   },
   second_mainDiv_signup: {
     paddingHorizontal: 20,
-    backgroundColor: COLORS.WHITE,
+    backgroundColor: COLORS.GRAY,
+    borderRadius:10,
+    paddingBottom:20,
+    marginHorizontal:20,
+    marginVertical:20
+
+  },
+  shadowProp: {
+    backgroundColor: 'white',
+    shadowColor: Platform.OS === 'android' ?'black' :"rgba(0,0,0,.555)", // Shadow color
+    shadowOffset: {
+      width: 6, // Horizontal offset
+      height: 4, // Vertical offset
+    },
+    shadowOpacity: 1, // Shadow opacity (0 to 1)
+    shadowRadius: 4, // Shadow radius
+    elevation: Platform.OS === 'android' ? 8 : 0,
   },
 
   signUp_text: {
@@ -97,14 +115,15 @@ const styles = StyleSheet.create({
     color: COLORS.BLACK,
     paddingTop: 12,
     letterSpacing: 1,
-    paddingTop: 60,
+    paddingTop: 30,
   },
 
   fullName_text: {
     paddingTop: 12,
     paddingBottom: 6,
-    fontSize: 18,
-    fontWeight: '600',
+    fontSize: 14,
+    fontWeight: '500',
+    color:COLORS.BLACK
   },
   fullName_placeholder: {
     backgroundColor: `rgba(86, 84, 84, 0.1)`,
@@ -118,14 +137,15 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     paddingTop: 10,
+    paddingBottom:15
   },
   dont_have_text: {
-    fontSize: 17,
-    fontWeight: '500',
+    fontSize: 14,
+    fontWeight: '400',
   },
   sign_up: {
-    fontSize: 20,
-    fontWeight: '800',
+    fontSize: 15,
+    fontWeight: '500',
     color: 'black',
   },
 });

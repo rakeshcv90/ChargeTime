@@ -148,9 +148,9 @@ export default function VerifyEmail() {
               alignItems: 'center',
               padding: 13,
               borderRadius: 30,
-              width: 200,
+              width: 180,
             }}>
-            <Text style={{color: COLORS.WHITE, fontSize: 15, fontWeight: '800'}}>
+            <Text style={{color: COLORS.WHITE, fontSize: 14, fontWeight: '700'}}>
               VERIFY EMAIL
             </Text>
           </TouchableOpacity>
@@ -174,26 +174,42 @@ const styles = StyleSheet.create({
   },
   mainDiv_verify_email: {
     paddingHorizontal: 20,
-    backgroundColor: COLORS.GRAY,
+    //backgroundColor: COLORS.GRAY,
     paddingTop: 20,
     paddingBottom: 25,
+    borderRadius:15
   },
   shadowProp: {
-    shadowColor: COLORS.BLACK,
-    shadowOffset: {width: -4, height: 4},
-    shadowOpacity: 0.7,
-    shadowRadius: 3,
-    elevation: 5,
+    backgroundColor: 'white',
+    shadowColor: Platform.OS === 'android' ?'black' :"rgba(0,0,0,.555)", // Shadow color
+    shadowOffset: {
+      width: 6, // Horizontal offset
+      height: 4, // Vertical offset
+    },
+    shadowOpacity: 1, // Shadow opacity (0 to 1)
+    shadowRadius: 4, // Shadow radius
+    elevation: Platform.OS === 'android' ? 8 : 0,
+    // shadowColor: 'black',
+    // shadowOffset: { width: 0, height: 10},
+    // shadowRadius: 6,
+    // shadowOpacity: 5,
+    // elevation: 8,
+    // backgroundColor: 'white',
+    // padding: 20,
+    // borderRadius: 10,
+    // marginHorizontal: 3,
+    // marginVertical:3,
+    // borderColor: '#D0D7DE'
   },
   VerifyEmail_text: {
-    fontWeight: 800,
+    fontWeight: "800",
     fontSize: 24,
     color: COLORS.BLACK,
     paddingBottom: 20,
   },
   confirm_text: {
-    fontWeight: 800,
-    fontSize: 15,
+    fontWeight: "600",
+    fontSize: 14,
     color: COLORS.BLACK,
   },
 
@@ -217,8 +233,8 @@ const styles = StyleSheet.create({
     marginTop: 20,
   },
   havenot_received_email: {
-    fontSize: 17,
-    fontWeight: 700,
+    fontSize: 14,
+    fontWeight: "600",
     color: COLORS.BLACK,
   },
   resend_OTP_btn: {
@@ -261,12 +277,12 @@ const styles = StyleSheet.create({
     paddingBottom: 20,
   },
   wrong_email_text: {
-    fontSize: 17,
-    fontWeight: '500',
+    fontSize: 14,
+    fontWeight: '400',
   },
   make_changes: {
-    fontSize: 15,
-    fontWeight: '800',
+    fontSize: 14,
+    fontWeight: '500',
     color: 'black',
   },
 });

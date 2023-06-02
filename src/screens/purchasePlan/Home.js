@@ -5,15 +5,17 @@ import {
   StyleSheet,
   TouchableOpacity,
   Animated,
+  Image,
+  Dimensions
 } from 'react-native';
 import {SafeAreaView} from 'react-native-safe-area-context';
-import {Charging} from '../../../assets/images/Charging';
-import {useState} from 'react';
+
 import {createMaterialTopTabNavigator} from '@react-navigation/material-top-tabs';
 import TabOne from './TabOne';
 import TabTwo from './TabTwo';
 import TabThree from './TabThree';
 import COLORS from '../../constants/COLORS';
+const mobileW = Math.round(Dimensions.get('screen').width);
 
 function MyTabBar({state, descriptors, navigation, position}) {
   return (
@@ -83,20 +85,11 @@ export default function Home() {
   return (
     <SafeAreaView style={{backgroundColor: COLORS.CREAM, flex: 1}}>
       <View style={styles.charging_imag_style}>
-        <Charging />
+      <Image source={require("../../../assets/images/car_one.png")} resizeMode='stretch' style={{alignSelf: 'center', width: mobileW,}} />
+
       </View>
 
-      {/* <View style={styles.allPackage_style}>
-    <TouchableOpacity style={packageOne ==  true? styles.for_package_one:styles.for_notmanage} onChange={handleChangeOne}>
-        <Text style={[styles.pack_one_text_condition,styles.pack_one_text]}>PACKAGE-1</Text>
-    </TouchableOpacity>
-    <TouchableOpacity style={packageTwo == true?styles.for_package_one:styles.for_notmanage} onChange={handleChangeTwo}>
-        <Text style={[styles.pack_two_text_condition,styles.pack_one_text]}>PACKAGE-2</Text>
-    </TouchableOpacity>
-    <TouchableOpacity style={packageThree?styles.for_package_one :styles.for_notmanage} onChange={handleChangeThree}>
-        <Text style={[styles.pack_three_text_condition,styles.pack_three_text]}>PACKAGE-3</Text>
-    </TouchableOpacity>
-</View> */}
+     
       <Tab.Navigator
         screenOptions={{
           activeTintColor: 'blue',

@@ -7,7 +7,7 @@ import {
   StyleSheet,
   Dimensions,
   TextInput,
-  TouchableOpacity
+  TouchableOpacity,
 } from 'react-native';
 import COLORS from '../../constants/COLORS';
 import {SignUp} from '../../../assets/images/SignUp';
@@ -19,21 +19,32 @@ export default function CompleteProfile({navigation}) {
     <SafeAreaView style={{backgroundColor: COLORS.CREAM, flex: 1}}>
       <ScrollView>
         <View style={styles.mainDiv_signup}>
-          <SignUp />
-          {/* <Image
-          style={styles.signup_img}
-          source={require('../../assets/images/signUp.png')}
-        /> */}
+          <Image
+            source={require('../../../assets/images/signupp.png')}
+            resizeMode="stretch"
+            style={{alignSelf: 'center', width: mobileW}}
+          />
         </View>
         <View style={styles.mainDiv_container}>
           <View style={[styles.mainDiv_complete_profile, styles.shadowProp]}>
             <Text style={styles.complete_profile}>Complete your profile</Text>
-            <Text style={[styles.label_name,styles.forPaddingTOP]}>Installation Location</Text>
-            <TextInput style={styles.complete_placeholder} placeholder='Vandenberg Space Force Base' />
+            <Text style={[styles.label_name, styles.forPaddingTOP]}>
+              Installation Location
+            </Text>
+            <TextInput
+              style={styles.complete_placeholder}
+              placeholder="Vandenberg Space Force Base"
+            />
             <Text style={styles.label_name}>Address Line 1</Text>
-            <TextInput style={styles.complete_placeholder} placeholder='Eg. Connauticut House' />
+            <TextInput
+              style={styles.complete_placeholder}
+              placeholder="Eg. Connauticut House"
+            />
             <Text style={styles.label_name}>Address Line 2</Text>
-            <TextInput style={styles.complete_placeholder} placeholder='Appart Street Number-3,Block' />
+            <TextInput
+              style={styles.complete_placeholder}
+              placeholder="Appart Street Number-3,Block"
+            />
             <View style={styles.mainDiv_state_ZIP}>
               <View style={styles.zip_state_view}>
                 <Text style={styles.label_name}>ZIP Code</Text>
@@ -42,7 +53,7 @@ export default function CompleteProfile({navigation}) {
                     styles.complete_placeholder,
                     styles.state_placeholder,
                   ]}
-                  placeholder='1100000'
+                  placeholder="1100000"
                 />
               </View>
               <View style={styles.zip_state_view}>
@@ -54,28 +65,27 @@ export default function CompleteProfile({navigation}) {
                     ,
                     styles.state_placeholder,
                   ]}
-                  placeholder='CA'
+                  placeholder="CA"
                 />
               </View>
             </View>
-           
           </View>
           <View
-          style={{
-            flexDirection: 'row',
-            justifyContent: 'center',
-            width: '100%',
-            paddingVertical:20
-          }}>
-          <TouchableOpacity
-            //onPress={() => navigation.navigate('VerifyEmail')}
-            style={styles.create_profile_Touchable}
-            >
-            <Text style={{color: COLORS.WHITE, fontSize: 15, fontWeight: '800'}}>
-              CREATE PROFILE
-            </Text>
-          </TouchableOpacity>
-        </View>
+            style={{
+              flexDirection: 'row',
+              justifyContent: 'center',
+              width: '100%',
+              paddingVertical: 20,
+            }}>
+            <TouchableOpacity
+              //onPress={() => navigation.navigate('VerifyEmail')}
+              style={styles.create_profile_Touchable}>
+              <Text
+                style={{color: COLORS.WHITE, fontSize: 14, fontWeight: '700'}}>
+                CREATE PROFILE
+              </Text>
+            </TouchableOpacity>
+          </View>
         </View>
       </ScrollView>
     </SafeAreaView>
@@ -92,29 +102,31 @@ const styles = StyleSheet.create({
   mainDiv_container: {
     paddingHorizontal: 20,
     paddingTop: 30,
+    
   },
-  mainDiv_complete_profile: {
-    paddingTop: 50,
-    backgroundColor: COLORS.WHITE,
-    width: mobileW,
-  },
+  
   mainDiv_complete_profile: {
     paddingHorizontal: 20,
     backgroundColor: COLORS.GRAY,
     paddingTop: 20,
     paddingBottom: 25,
+    borderRadius: 15,
   },
   shadowProp: {
-    shadowColor: COLORS.BLACK,
-    shadowOffset: {width: -4, height: 4},
-    shadowOpacity: 0.7,
-    shadowRadius: 3,
-    elevation: 5,
+    backgroundColor: 'white',
+    shadowColor: Platform.OS === 'android' ?'black' :"rgba(0,0,0,.555)", // Shadow color
+    shadowOffset: {
+      width: 6, // Horizontal offset
+      height: 4, // Vertical offset
+    },
+    shadowOpacity: 1, // Shadow opacity (0 to 1)
+    shadowRadius: 4, // Shadow radius
+    elevation: Platform.OS === 'android' ? 8 : 0,
   },
   complete_profile: {
     textAlign: 'center',
     fontSize: 24,
-    fontWeight: 800,
+    fontWeight: '800',
     color: COLORS.BLACK,
   },
   complete_placeholder: {
@@ -124,33 +136,36 @@ const styles = StyleSheet.create({
     height: Platform.OS === 'ios' ? 50 : 50,
   },
   mainDiv_state_ZIP: {
-    display: 'flex',
+    // display: 'flex',
+    flex:1,
     flexDirection: 'row',
     justifyContent: 'space-between',
+    gap:5
   },
   zip_state_view: {
     display: 'flex',
     //flexDirection:'row',
     justifyContent: 'space-between',
+    
   },
   state_placeholder: {
     width: 150,
   },
-  forPaddingTOP:{
-paddingTop:20
+  forPaddingTOP: {
+    paddingTop: 20,
   },
-  label_name:{
-    paddingVertical:10,
-    fontWeight: 500,
-fontSize: 14,
-color:COLORS.BLACK
+  label_name: {
+    paddingVertical: 10,
+    fontWeight: '500',
+    fontSize: 14,
+    color: COLORS.BLACK,
   },
-  create_profile_Touchable:{
+  create_profile_Touchable: {
     marginTop: 20,
     backgroundColor: '#B1D34F',
     alignItems: 'center',
     padding: 13,
     borderRadius: 30,
     width: 200,
-  }
+  },
 });

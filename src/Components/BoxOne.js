@@ -1,6 +1,6 @@
-import {View, Text, StyleSheet, TouchableOpacity, Image} from 'react-native';
+import {View, Text, StyleSheet, TouchableOpacity, Image,Dimensions} from 'react-native';
 import React from 'react';
-
+const mobileW = Math.round(Dimensions.get('screen').width);
 const BoxOne = () => {
   return (
     <View style={styles.mainDiv_installation}>
@@ -18,6 +18,11 @@ const BoxOne = () => {
         />
         <Text style={styles.force_base}>Vanderberg Space Force Base</Text>
       </View>
+      <Image
+          // style={styles.img_width}
+          source={require('../../assets/images/dotted.png')}
+          resizeMode='stretch' style={{alignSelf: 'center', width: mobileW,}}
+        />
       <View style={styles.mainDiv_state_zip}>
         <View style={styles.state_div}>
           <Image
@@ -69,9 +74,9 @@ const styles = StyleSheet.create({
     backgroundColor: COLORS.GRAY,
     alignItems: 'center',
     paddingVertical: 10,
-    borderBottomWidth: 1,
-    borderBottomColor: COLORS.GREEN,
-    borderStyle: 'dotted',
+    // borderBottomWidth: 1,
+    // borderBottomColor: COLORS.GREEN,
+    
   },
   force_base: {
     fontWeight: 400,

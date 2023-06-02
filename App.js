@@ -19,6 +19,7 @@ import { Logo } from './assets/images/Logo';
 import { Text } from 'react-native-svg';
 import ForgetPassword from './src/screens/register/ForgetPassword';
 import Account from './src/screens/accounts/Account';
+import ResetPassword from './src/screens/register/ResetPassword';
 
 export default function App() {
   const Drawer = createDrawerNavigator();
@@ -34,11 +35,7 @@ export default function App() {
       <DrawerContentScrollView {...props}>
         <View style={styles.logoContainer}>
           <Image source={home_icon} style={styles.logo} />
-          {/* <Logo style={styles.logo} />
-          <View style={{display:"flex",flexDirection:"row"}}>
-            <Text style={{color:'red'}}>Charge</Text>
-            <Text>Time</Text>
-          </View> */}
+          
         </View>
         <DrawerItemList {...props} />
         <TouchableOpacity style={styles.closeButton} onPress={handleDrawerClose}>
@@ -54,6 +51,7 @@ export default function App() {
         initialRouteName="VerifyEmail"
         screenOptions={{ headerShown:false }}
         drawerContent={CustomDrawerContent}
+       
       >
         <Drawer.Screen
           options={{
@@ -153,6 +151,20 @@ export default function App() {
           name="ForgetPassword"
           component={ForgetPassword}
         />
+        <Drawer.Screen
+        options={{
+          drawerActiveBackgroundColor: 'rgba(177, 211, 79, 0.5)',
+          drawerActiveTintColor: 'black',
+          drawerIcon: ({ focused, color, size }) => (
+            <Image
+              source={require('./assets/images/account.png')}
+              style={{ width: size, height: size }}
+            />
+          ),
+        }}
+        name="ResetPassword"
+        component={ResetPassword}
+      />
       </Drawer.Navigator>
     </NavigationContainer>
   );
