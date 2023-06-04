@@ -1,6 +1,8 @@
 import 'react-native-gesture-handler';
-import React from 'react';
+import React, { useEffect } from 'react';
+import { useRef } from 'react';
 import { NavigationContainer } from '@react-navigation/native';
+import {createNavigationContainerRef} from '@react-navigation/native';
 import {
   createDrawerNavigator,
   DrawerContentScrollView,
@@ -20,9 +22,24 @@ import { Text } from 'react-native-svg';
 import ForgetPassword from './src/screens/register/ForgetPassword';
 import Account from './src/screens/accounts/Account';
 import ResetPassword from './src/screens/register/ResetPassword';
+import Payment from './src/screens/accounts/Payment';
+import PersonalDetails from './src/screens/accounts/PersonalDetails';
+import Security from './src/screens/accounts/Security';
+import Installation from './src/screens/accounts/Installation';
+import Theme from './src/screens/accounts/Theme';
+import Subscription from './src/screens/accounts/Subscription';
+import SplashScreen from 'react-native-splash-screen';
 
-export default function App() {
+
+
+ function App() {
   const Drawer = createDrawerNavigator();
+ const navigationRef = useRef();
+ 
+ useEffect(() => {
+  SplashScreen.hide(); 
+}, []);
+
 
   const CustomDrawerContent = (props) => {
     const { navigation } = props;
@@ -46,7 +63,7 @@ export default function App() {
   };
 
   return (
-    <NavigationContainer>
+    <NavigationContainer ref={navigationRef}>
       <Drawer.Navigator
         initialRouteName="VerifyEmail"
         screenOptions={{ headerShown:false }}
@@ -165,6 +182,12 @@ export default function App() {
         name="ResetPassword"
         component={ResetPassword}
       />
+       <Drawer.Screen name="PersonalDetails" component={PersonalDetails} />
+        <Drawer.Screen name="Security" component={Security} />
+        <Drawer.Screen name="Installation" component={Installation} />
+        <Drawer.Screen name="Payment" component={Payment} />
+        <Drawer.Screen name="Subscription" component={Subscription} />
+        <Drawer.Screen name="Theme" component={Theme} />
       </Drawer.Navigator>
     </NavigationContainer>
   );
@@ -191,3 +214,8 @@ const styles = StyleSheet.create({
     height: 34,
   },
 });
+// export default {
+//   navigationRef,
+//   App
+// };
+export default App;
