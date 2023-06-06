@@ -5,17 +5,20 @@ import {
   StyleSheet,
   TextInput,
   Platform,
-  Dimensions,Image
+  Dimensions,Image,
+  TouchableOpacity
 } from 'react-native';
 import React from 'react';
 import {SafeAreaView} from 'react-native-safe-area-context';
 
 
 import COLORS from '../../constants/COLORS';
-import {TouchableOpacity} from 'react-native-gesture-handler';
+import Input from '../../Components/Input';
+import { Message } from '../../../assets/images/Message';
+
 const mobileW = Math.round(Dimensions.get('screen').width);
 
-const ForgetPassword = () => {
+const ForgetPassword = ({navigation}) => {
   return (
     <SafeAreaView style={{backgroundColor: COLORS.CREAM, flex: 1}}>
       <ScrollView
@@ -26,39 +29,58 @@ const ForgetPassword = () => {
 
         </View>
         <View style={styles.super_div}>
-          <View style={[styles.mainDiv_forget_ur_pass,styles.shadowProp]}>
+          <View style={styles.mainDiv_forget_ur_pass}>
             <Text style={styles.forget_password}>Forgot Your Password?</Text>
-            <View>
-              <Text style={styles.text_of_email}>Email</Text>
-              <TextInput
-                style={styles.email_placeholder}
-                placeholder="Enter your email here...."
-              />
+            <View style={{marginTop:20}}>
+            <Input
+            IconLeft={null}
+            
+            errors={undefined}
+            touched={false}
+            // value={email}
+            // onChangeText={text => setEmail(text)}
+            text="Email"
+            IconRight={() => (
+             
+              <Message />
+            )}
+            mV={10}
+            placeholder="Enter your Email"
+            
+            bW={1}
+            textWidth={'22%'}
+            placeholderTextColor={COLORS.BLACK}
+            autoCapitalize='none'
+            
+          />
             </View>
           </View>
           <View
             style={{
               flexDirection: 'row',
               justifyContent: 'center',
-              width: '100%',
+              
             }}>
             <TouchableOpacity
+            onPress={() => navigation.navigate('ResetPassword')}
               style={{
-                marginTop: 20,
+                marginTop: 5,
                 backgroundColor: COLORS.GREEN,
                 alignItems: 'center',
                 padding: 13,
                 borderRadius: 30,
-                width: 270,
+                width: '100%',
               }}>
-              <Text style={{fontWeight: '700', fontSize: 14, color: '#fff'}}>
+              <Text style={{fontWeight: '700', fontSize: 14, color: COLORS.BLACK}}>
                 RESET PASSWORD
               </Text>
             </TouchableOpacity>
           </View>
           <View style={styles.mainDiv_donot_account}>
             <Text style={styles.dont_have_text}>Remember your password? </Text>
+            <TouchableOpacity onPress={() => navigation.navigate("Login")}>
             <Text style={styles.sign_up}>Sign In</Text>
+            </TouchableOpacity>
           </View>
         </View>
       </ScrollView>
@@ -73,10 +95,10 @@ const styles = StyleSheet.create({
     marginHorizontal: 20,
   },
   mainDiv_forget_ur_pass: {
-    marginTop: 45,
+    marginTop: 65,
     marginBottom: 10,
-    backgroundColor: COLORS.GRAY,
-    paddingHorizontal: 20,
+    
+    
     paddingVertical: 20,
     borderRadius: 15,
   },
@@ -103,7 +125,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
-    paddingTop: 10,
+    paddingTop: 30,
   },
   dont_have_text: {
     fontSize: 14,

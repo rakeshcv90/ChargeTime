@@ -5,6 +5,10 @@ import { View, Text,
     Image, } from 'react-native'
 import React from 'react'
 import COLORS from '../constants/COLORS'
+import { Unit } from '../../assets/images/Unit'
+import { Mieq } from '../../assets/images/Mieq'
+import { Mile } from '../../assets/images/Mile'
+import { MileOne } from '../../assets/images/MileOne'
 const BoxTwo = () => {
   return (
     <View style={styles.mainDiv_installation}>
@@ -17,19 +21,22 @@ const BoxTwo = () => {
             </TouchableOpacity>
             <View style={styles.mainDiv_plan_details}>
               <View style={styles.second_main_div_kwh}>
-                <Image source={require('../../assets/images/kwh.png')} />
+                {/* <Image source={require('../../assets/images/kwh.png')} /> */}
+                <Unit />
                 <Text style={styles.kwh_mieq_text}>600 kWh</Text>
                 <Text style={styles.unit_allowed}>Units Alloted</Text>
               </View>
               <View style={styles.second_main_div_kwh}>
-                <Image
+                {/* <Image
                   source={require('../../assets/images/kwh_icon_one.png')}
-                />
+                /> */}
+                <Mieq />
                 <Text style={styles.kwh_mieq_text}>~ 1500</Text>
                 <Text style={styles.unit_allowed}>Mi Eq</Text>
               </View>
               <View style={styles.second_main_div_kwh}>
-                <Image source={require('../../assets/images/mile.png')} />
+                <Image source={require('../../assets/images/kwh_dollar.png')} style={{width:35,height:25}} />
+                {/* <MileOne /> */}
                 <Text style={styles.kwh_mieq_text}>0.11</Text>
                 <Text style={styles.unit_allowed}>$ / Mile</Text>
               </View>
@@ -95,7 +102,7 @@ const styles = StyleSheet.create({
       flexDirection: 'row',
       justifyContent: 'space-between',
       // alignItems:'center',
-      paddingVertical: 10,
+      paddingVertical: 20,
     },
     kwh_mieq_text: {
       fontWeight: 800,

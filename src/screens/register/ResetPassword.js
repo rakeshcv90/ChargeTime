@@ -5,16 +5,18 @@ import {
     StyleSheet,
     TextInput,
     Platform,
-    Image,Dimensions
+    Image,Dimensions,TouchableOpacity
   } from 'react-native';
   import React from 'react';
   import {SafeAreaView} from 'react-native-safe-area-context';
   
-  import {LoginImage} from '../../../assets/images/LoginImage';
+
   import COLORS from '../../constants/COLORS';
-  import {TouchableOpacity} from 'react-native-gesture-handler';
+import Input from '../../Components/Input';
+import { StrongPass } from '../../../assets/images/StrongPass';
+  
   const mobileW = Math.round(Dimensions.get('screen').width);
-  const ResetPassword = () => {
+  const ResetPassword = ({navigation}) => {
     return (
       <SafeAreaView style={{backgroundColor: COLORS.CREAM, flex: 1}}>
         <ScrollView
@@ -24,21 +26,51 @@ import {
             <Image  source={require("../../../assets/images/bigstock.png")} resizeMode='stretch' style={{alignSelf: 'center', width: mobileW,}} />
           </View>
           <View style={styles.super_div}>
-            <View style={[styles.mainDiv_forget_ur_pass,styles.shadowProp]}>
+            <View style={styles.mainDiv_forget_ur_pass}>
               <Text style={styles.forget_password}>Reset Password?</Text>
-              <View>
-                <Text style={styles.text_of_email}>New Password</Text>
-                <TextInput
-                  style={styles.email_placeholder}
-                  placeholder="Enter your new password here...."
-                />
-                              
-
-                <Text style={styles.text_of_email}>Repeat Password</Text>
-                <TextInput
-                  style={styles.email_placeholder}
-                  placeholder="Re-enter your new password here...."
-                />
+              <View style={{marginTop:20}}>
+              <Input
+            IconLeft={null}
+            
+            errors={undefined}
+            touched={false}
+            // value={email}
+            // onChangeText={text => setEmail(text)}
+            text="Email"
+            IconRight={() => (
+             
+              <StrongPass />
+            )}
+            mV={10}
+            placeholder="Enter your Email"
+            
+            bW={1}
+            textWidth={'22%'}
+            placeholderTextColor={COLORS.BLACK}
+            autoCapitalize='none'
+            
+          />
+          <Input
+            IconLeft={null}
+            
+            errors={undefined}
+            touched={false}
+            // value={email}
+            // onChangeText={text => setEmail(text)}
+            text="Email"
+            IconRight={() => (
+             
+              <StrongPass />
+            )}
+            mV={10}
+            placeholder="Enter your Email"
+            
+            bW={1}
+            textWidth={'22%'}
+            placeholderTextColor={COLORS.BLACK}
+            autoCapitalize='none'
+            
+          />
            
             </View>
             
@@ -47,19 +79,21 @@ import {
               style={{
                 flexDirection: 'row',
                 justifyContent: 'center',
-                width: '100%',
+                
                 marginBottom:20
               }}>
               <TouchableOpacity
+              onPress={() => navigation.navigate("Login")}
                 style={{
                   marginTop: 15,
                   backgroundColor: COLORS.GREEN,
                   alignItems: 'center',
                   padding: 13,
                   borderRadius: 30,
-                  width: 270,
+                 
+                  width: '100%',
                 }}>
-                <Text style={{fontWeight: '700', fontSize: 14, color: '#fff'}}>
+                <Text style={{fontWeight: '700', fontSize: 14, color: COLORS.BLACK}}>
                   CHANGE PASSWORD
                 </Text>
               </TouchableOpacity>
@@ -79,8 +113,8 @@ import {
     mainDiv_forget_ur_pass: {
       marginTop: 35,
       marginBottom: 10,
-      backgroundColor: COLORS.GRAY,
-      paddingHorizontal: 20,
+      
+      
       paddingVertical: 20,
       borderRadius: 15,
     },

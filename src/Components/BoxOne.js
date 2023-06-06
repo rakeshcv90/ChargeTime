@@ -1,21 +1,20 @@
-import {View, Text, StyleSheet, TouchableOpacity, Image,Dimensions} from 'react-native';
+import {View, Text, StyleSheet, TouchableOpacity, Image,Dimensions, Platform} from 'react-native';
 import React from 'react';
+import { Address } from '../../assets/images/Address';
+import { Vanderberg } from '../../assets/images/Vanderberg';
+import { Connecticut } from '../../assets/images/Connecticut';
 const mobileW = Math.round(Dimensions.get('screen').width);
 const BoxOne = () => {
   return (
     <View style={styles.mainDiv_installation}>
       <TouchableOpacity style={styles.install_touchable}>
-        <Image
-          style={styles.img_width}
-          source={require('../../assets/images/installation.png')}
-        />
+        
+        <Address style={styles.img_width} />
         <Text style={styles.installation_text}>Installation Base</Text>
       </TouchableOpacity>
       <View style={styles.location_div}>
-        <Image
-          style={styles.img_width}
-          source={require('../../assets/images/location.png')}
-        />
+        
+         <Vanderberg style={styles.img_width} />
         <Text style={styles.force_base}>Vanderberg Space Force Base</Text>
       </View>
       <Image
@@ -25,16 +24,18 @@ const BoxOne = () => {
         />
       <View style={styles.mainDiv_state_zip}>
         <View style={styles.state_div}>
-          <Image
+          {/* <Image
             style={styles.img_width}
             source={require('../../assets/images/connecticut.png')}
-          />
+          /> */}
+          <Connecticut style={styles.img_width} />
           <Text style={styles.force_base}>Connecticut</Text>
         </View>
         <View style={styles.state_div}>
           <Image
-            style={styles.img_width}
-            source={require('../../assets/images/pincode.png')}
+            //style={styles.img_width}
+            source={require('../../assets/images/zip_code.png')}
+            style={{width:20,height:20}}
           />
           <Text style={styles.force_base}>123456</Text>
         </View>
@@ -53,7 +54,7 @@ const styles = StyleSheet.create({
   mainDiv_installation: {
     overflow:'hidden',
     borderRadius: 10,
-    marginTop: 20,
+    marginTop: Platform.OS === "ios"?10: 20,
   },
   install_touchable: {
     flexDirection: 'row',
@@ -73,7 +74,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     backgroundColor: COLORS.GRAY,
     alignItems: 'center',
-    paddingVertical: 10,
+    paddingVertical: 20,
     // borderBottomWidth: 1,
     // borderBottomColor: COLORS.GREEN,
     
@@ -94,6 +95,7 @@ const styles = StyleSheet.create({
   state_div: {
     flexDirection: 'row',
     alignItems: 'center',
+    paddingVertical:10
   },
   mainDiv_plan_details: {
     flexDirection: 'row',

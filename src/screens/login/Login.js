@@ -9,22 +9,65 @@ import {
   TextInput,
   ScrollView,
   Platform,
+  ToastAndroid,
 } from 'react-native';
 import {SafeAreaView} from 'react-native-safe-area-context';
 
 import React, {useState} from 'react';
 import COLORS from '../../constants/COLORS';
-import axios from 'axios';
+import Toast from 'react-native-toast-message';
+import {API} from '../../api/API';
+import Input from '../../Components/Input';
+import { PLATFORM_IOS } from '../../constants/DIMENSIONS';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { Message } from '../../../assets/images/Message';
+import { Eye } from '../../../assets/images/Eye';
 
 const mobileH = Math.round(Dimensions.get('window').height);
-const mobileW = Math.round(Dimensions.get('screen').width);
+const mobileW = Math.round(Dimensions.get('window').width);
 
 export default function Login({navigation}) {
-  const [email,setEmail] = useState('')
-  const [password,setPassword] = useState('')
-  // const loginFunction = () => {
-  //   axios.post(`${API}/`)
-  // }
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const loginFunction = async () => {
+    await fetch(`${API}/logins`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        email: email,
+        password: password,
+      }),
+    })
+      .then(res => res.json())
+      .then(data => {
+        AsyncStorage.setItem('loginData', JSON.stringify(data.user_id));
+        if (data.status == 'success') {
+          PLATFORM_IOS?
+          Toast.show({
+            type: 'success',
+            text1: 'Login Successful',
+            
+          }):ToastAndroid.show('Login Successful', ToastAndroid.SHORT);
+
+          navigation.navigate('DrawerStack');
+        } else {
+          PLATFORM_IOS?
+          Toast.show({
+            type: 'error',
+            text1: 'Login Failed',
+            
+          }):ToastAndroid.show('Login Failed', ToastAndroid.SHORT);
+
+        }
+       
+        
+      })
+      .catch(error => {
+        console.error(error);
+      });
+  };
   return (
     <SafeAreaView style={{backgroundColor: COLORS.CREAM, flex: 1}}>
       <ScrollView
@@ -32,36 +75,59 @@ export default function Login({navigation}) {
         keyboardShouldPersistTaps="handled">
         <View style={styles.login_img}>
           <Image
-            source={require('../../../assets/images/bigstock.png')}
-            resizeMode="stretch"
-            style={{alignSelf: 'center', width: mobileW}}
+            source={require('../../../assets/images/manishhome.png')}
+            resizeMode="contain"
+            style={{width: mobileW, height: mobileH / 3}}
           />
         </View>
-        <View style={[styles.login_css,styles.shadowProp]}>
+        <View style={styles.login_css}>
           <Text style={styles.login}>Login</Text>
-          <Text style={styles.email}>Email</Text>
-          <TextInput
-            style={styles.email_placeholder}
-            autoCorrect={false}
-            autoCapitalize="none"
-            placeholder="Enter your email here"
+          
+          <Input
+            IconLeft={null}
+            
+            errors={undefined}
+            touched={false}
+            value={email}
             onChangeText={text => setEmail(text)}
-        value={email}
+            text="Email"
+            IconRight={() => (
+             
+              <Message />
+            )}
+            mV={20}
+            placeholder="Enter your Email"
+            
+            bW={1}
+            textWidth={'22%'}
+            placeholderTextColor={COLORS.BLACK}
+            autoCapitalize='none'
+            
           />
-          <Text style={styles.email}>Password</Text>
-          <TextInput
-            style={styles.email_placeholder}
+          
+          <Input
+            IconLeft={null}
+            
+            errors={undefined}
+            touched={false}
             secureTextEntry={true}
-            placeholder="Enter your password here"
+            placeholderTextColor={COLORS.BLACK}
+            text="Password"
             onChangeText={text => setPassword(text)}
-        value={password}
+            value={password}
+            IconRight={() => (
+              <Eye />
+            )}
+            mV={5}
+            placeholder="Enter your password"
+            bW={1}
+            textWidth={'30%'}
           />
           <View style={styles.main_div_lock_img}>
-            <Image
-              
-              source={require('../../../assets/images/lock.png')}
-            />
-            <Text style={styles.forgot_password}>Forgot my password</Text>
+            <Image source={require('../../../assets/images/lock_two.png')} resizeMode='contain' style={{width:20,height:20}} />
+            <TouchableOpacity onPress={() => navigation.navigate('ForgetPassword')}>
+            <Text style={styles.forgot_password}>Forgot my password?</Text>
+            </TouchableOpacity>
           </View>
         </View>
         <View>
@@ -69,24 +135,27 @@ export default function Login({navigation}) {
             style={{
               flexDirection: 'row',
               justifyContent: 'center',
-              width: '100%',
+
+              marginHorizontal: 20,
             }}>
             <TouchableOpacity
-              //onPress={loginFunction}
+              onPress={loginFunction}
               style={{
                 marginTop: 20,
                 backgroundColor: COLORS.GREEN,
                 alignItems: 'center',
                 padding: 13,
-                borderRadius: 30,
-                width: 150,
+                borderRadius: 10,
+                width: '100%',
               }}>
               <Text style={styles.log_In_btn}>LOG IN</Text>
             </TouchableOpacity>
           </View>
           <View style={styles.mainDiv_donot_account}>
             <Text style={styles.dont_have_text}>Don't have an account? </Text>
-            <Text style={styles.sign_up}>Sign Up</Text>
+            <TouchableOpacity onPress={() => navigation.navigate('Register')}>
+              <Text style={styles.sign_up}>Sign Up</Text>
+            </TouchableOpacity>
           </View>
         </View>
       </ScrollView>
@@ -103,38 +172,26 @@ const styles = StyleSheet.create({
   },
   login_img: {
     width: mobileW,
+    height: mobileH / 3,
   },
   img_width: {
     width: mobileW,
     height: mobileH * 0.45,
   },
   login_css: {
-    // padding: 20,
-    paddingHorizontal: 20,
+   
     paddingBottom: 15,
     marginHorizontal: 20,
     marginTop: 20,
-    backgroundColor: COLORS.GRAY,
-    borderRadius: 10,
-    
-  },
-  shadowProp: {
-    backgroundColor: 'white',
-    shadowColor: Platform.OS === 'android' ?'black' :"rgba(0,0,0,.555)", // Shadow color
-    shadowOffset: {
-      width: 6, // Horizontal offset
-      height: 4, // Vertical offset
-    },
-    shadowOpacity: 1, // Shadow opacity (0 to 1)
-    shadowRadius: 4, // Shadow radius
-    elevation: Platform.OS === 'android' ? 8 : 0,
-  },
 
+    borderRadius: 10,
+  },
+  
   login: {
     fontSize: 24,
     fontWeight: '800',
     color: 'black',
-    paddingTop: 20,
+    paddingVertical: 20,
     letterSpacing: 1,
   },
   email: {
@@ -155,33 +212,33 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     paddingTop: 10,
   },
-  
+
   forgot_password: {
-    letterSpacing: 1,
+    // letterSpacing: 1,
     paddingLeft: 10,
-    fontSize: 10,
-    fontWeight:"300",
-    color:COLORS.BLACK
+    fontSize: 14,
+    fontWeight: '400',
+    color: COLORS.BLACK,
   },
   mainDiv_donot_account: {
     display: 'flex',
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
-    paddingTop: 10,
-    paddingBottom:20
+    paddingTop: 20,
+    paddingBottom: 20,
   },
   dont_have_text: {
-    fontSize: 17,
+    fontSize: Platform.OS === 'ios' ? 14 : 15,
     fontWeight: '500',
   },
   sign_up: {
-    fontSize: 14,
-    fontWeight: '500',
+    fontSize: Platform.OS === 'ios' ? 16 : 15,
+    fontWeight: '600',
     color: 'black',
   },
   log_In_btn: {
-    color: COLORS.WHITE,
+    color: COLORS.BLACK,
     fontSize: 14,
     fontWeight: Platform.OS === 'ios' ? 700 : 700,
   },

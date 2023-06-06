@@ -15,6 +15,7 @@ import TabOne from './TabOne';
 import TabTwo from './TabTwo';
 import TabThree from './TabThree';
 import COLORS from '../../constants/COLORS';
+import DrawerOpen from '../../Components/DrawerOpen';
 const mobileW = Math.round(Dimensions.get('screen').width);
 
 function MyTabBar({state, descriptors, navigation, position}) {
@@ -84,7 +85,9 @@ export default function Home() {
 
   return (
     <SafeAreaView style={{backgroundColor: COLORS.CREAM, flex: 1}}>
+      <DrawerOpen />
       <View style={styles.charging_imag_style}>
+
       <Image source={require("../../../assets/images/car_one.png")} resizeMode='stretch' style={{alignSelf: 'center', width: mobileW,}} />
 
       </View>
@@ -129,7 +132,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 14,
     paddingVertical: 8,
     borderRadius: 20,
-    fontWeight: 600,
+    fontWeight: "600",
     fontSize: 12,
   },
   for_notmanage: {
