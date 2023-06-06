@@ -105,6 +105,20 @@ const Account = ({ navigation }) => {
               <Text style={styles.optionText}>{option}</Text>
             </TouchableOpacity> */}
               </View>
+              <View style={styles.addContainer}>
+      <TouchableOpacity style={styles.listItem}>
+        <Text style={styles.bullet}>•</Text>
+        <Text style={styles.text}>Privacy Policy</Text>
+      </TouchableOpacity>
+      <TouchableOpacity style={styles.listItem} >
+        <Text style={styles.bullet}>•</Text>
+        <Text style={styles.text}>Rate Us</Text>
+      </TouchableOpacity>
+      <TouchableOpacity style={styles.listItem}>
+        <Text style={styles.bullet}>•</Text>
+        <Text style={styles.text}>Contact Us</Text>
+      </TouchableOpacity>
+    </View>
             </View>
        </SafeAreaView>
   );
@@ -126,8 +140,24 @@ const styles = StyleSheet.create({
   },
   title: {
     font: 'Roboto',
-    fontSize: 20,
+    fontSize: 18,
     marginLeft: 10,
+    color: COLORS.BLACK,
+  },
+  listItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingVertical: 5,
+  },
+  text: {
+    font: 'Roboto',
+    fontSize: 12,
+    marginLeft: 10,
+    color: COLORS.BLACK,
+  },
+  bullet: {
+    marginRight: 5,
+    fontSize: 15,
     color: COLORS.BLACK,
   },
   link: {
@@ -175,6 +205,11 @@ const styles = StyleSheet.create({
     flex: 1,
     marginLeft: 8,
   },
+  addContainer:{
+    marginRight: 20,
+    marginLeft:30,
+    marginTop:80,
+  }
 });
 
 export default Account;

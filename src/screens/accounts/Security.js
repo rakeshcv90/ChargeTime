@@ -4,6 +4,8 @@ import COLORS from '../../constants/COLORS'
 import HorizontalLine from '../../Components/HorizontalLine'
 import Header from '../../Components/Header'
 import Input from '../../Components/Input'
+import { Key } from '../../../assets/images/Key'
+import {Eye} from '../../../assets/images/Eye'
 
 const Security = () => {
   return (
@@ -16,17 +18,14 @@ const Security = () => {
                     autoFocus
                     bgColor={COLORS.WHITE}
                     IconRight={() => (
-                      <Image
-                        source={require('../../../assets/images/personal2.png')}
-                        style={styles.icon}
-                      />
+                     <Key/>
                     )}
                     bR={5}
                     bW={0.3}
                     bColor={COLORS.BLACK}
                     text="Current Password"
                     mV={7}
-                    textWidth={'40%'}
+                    textWidth={'50%'}
                     placeholder="*************"
                     placeholderTextColor={COLORS.GREY}
                     style={{
@@ -40,10 +39,7 @@ const Security = () => {
                     autoFocus
                     bgColor={COLORS.WHITE}
                     IconRight={() => (
-                      <Image
-                        source={require('../../../assets/images/phone.png')}
-                        style={styles.icon}
-                      />
+                     <Eye/>
                     )}
                     bR={5}
                     bW={0.5}
@@ -63,10 +59,7 @@ const Security = () => {
                     autoFocus
                     bgColor={COLORS.WHITE}
                     IconRight={() => (
-                      <Image
-                        source={require('../../../assets/images/mail.png')}
-                        style={styles.icon}
-                      />
+                     <Eye/>
                     )}
                     bR={5}
                     bW={0.5}
@@ -81,15 +74,7 @@ const Security = () => {
                       fontWeight: '200',
                     }}
                   />
-                
-     {/* <View style={[styles.mainDiv_container,styles.shadowProp,]}>
-    <Text style={[styles.textdata,styles.forPaddingTOP]}>Name</Text>
-            <TextInput style={styles.textinput} placeholder='Eg John Doe' />
-            <Text style={[styles.textdata,styles.forPaddingTOP]}>Phone No.</Text>
-            <TextInput style={styles.textinput} placeholder='Eg. +123 (456) 789' />
-            <Text style={[styles.textdata,styles.forPaddingTOP]}>Email</Text>
-            <TextInput style={styles.textinput} placeholder='Eg. johndoe@xyz.com' />
-            </View> */}
+              
             </SafeAreaView>
   )
 }

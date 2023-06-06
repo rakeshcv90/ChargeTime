@@ -2,6 +2,9 @@ import { View, Text,SafeAreaView, TextInput,StyleSheet } from 'react-native'
 import React from 'react'
 import Header from '../../Components/Header'
 import HorizontalLine from '../../Components/HorizontalLine'
+import Input from '../../Components/Input'
+import { Install } from '../../../assets/images/Install'
+import { Location } from '../../../assets/images/Location'
 
 const Installation = () => {
   return (
@@ -9,18 +12,83 @@ const Installation = () => {
      <Header headerName="Installation"/>
     <HorizontalLine style={styles.line}/>
      <View style={styles.mainDiv_container}>
-          <View style={[styles.mainDiv_complete_profile, styles.shadowProp]}>
-            <Text style={[styles.label_name, styles.forPaddingTOP]}>
+          {/* <View style={[styles.mainDiv_complete_profile, styles.shadowProp]}> */}
+            {/* <Text style={[styles.label_name, styles.forPaddingTOP]}>
               Location Base
             </Text>
             <TextInput
               style={styles.complete_placeholder}
               placeholder="Vandenberg Family Homes"
-            />
-            <Text style={styles.label_name}>Address Line - 1</Text>
+            /> */}
+            <Input
+          IconLeft={null}
+          autoFocus
+          bgColor={COLORS.CREAM}
+          IconRight={() => (
+            <Install/>
+          )}
+          bR={6}
+          bW={1}
+          bColor={COLORS.LIGHT_GREY}
+          text="Installation Location"
+          mV={5}
+          textWidth={'55%'}
+          placeholder="Vandenberg Space Force Base"
+          placeholderTextColor={COLORS.BLACK}
+          style={{
+            color: COLORS.BLACK,
+            fontFamily: 'Roboto',
+            fontWeight: '200',
+          }}
+        />
+
+            <Input
+          IconLeft={null}
+          autoFocus
+          bgColor={COLORS.CREAM}
+          IconRight={() => (
+           <Location/>
+          )}
+          bR={6}
+          bW={1}
+          bColor={COLORS.LIGHT_GREY}
+          text="Address Line"
+          mV={5}
+          textWidth={'35%'}
+          placeholder="Eg. 123/B, Street A2"
+          placeholderTextColor={COLORS.BLACK}
+          style={{
+            color: COLORS.BLACK,
+            fontFamily: 'Roboto',
+            fontWeight: '200',
+          }}
+        />
+         <Input
+          IconLeft={null}
+          autoFocus
+          bgColor={COLORS.CREAM}
+          IconRight={() => (
+           <Location/>
+          )}
+          bR={6}
+          bW={1}
+          bColor={COLORS.LIGHT_GREY}
+          text="Address Line 2"
+          mV={5}
+          textWidth={'45%'}
+          placeholder="Eg. Block D, CA"
+          placeholderTextColor={COLORS.BLACK}
+          style={{
+            color: COLORS.BLACK,
+            fontFamily: 'Roboto',
+            fontWeight: '200',
+          }}
+        />
+        
+            {/* <Text style={styles.label_name}>Address Line - 1</Text>
             <TextInput
               style={styles.complete_placeholder}
-            />
+            /> */}
             <Text style={styles.label_name}>Address Line-2</Text>
             <TextInput
               style={styles.complete_placeholder}
@@ -51,7 +119,7 @@ const Installation = () => {
               </View>
             </View>
           </View>
-          </View>
+          {/* </View> */}
 
     </SafeAreaView>
   )

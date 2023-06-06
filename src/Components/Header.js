@@ -14,6 +14,7 @@ import  DIMENSIONS  from '../constants/DIMENSIONS';
 import { navigationRef } from '../../App';
 import { Image } from 'react-native-svg';
 import { BackButton } from '../../assets/svgs/BackButton';
+import { Edit } from '../../assets/images/Edit';
 
 const Header = ({ headerName, showRightButton, onPress }) => {
   return (
@@ -41,6 +42,7 @@ const Header = ({ headerName, showRightButton, onPress }) => {
             lineHeight: 26,
             letterspacing:0.5,
             height: 30,
+            
           }}
         >
           {headerName}
@@ -51,7 +53,7 @@ const Header = ({ headerName, showRightButton, onPress }) => {
             width: 40,
           }}
         >
-          {showRightButton && <Text>HeaderQ</Text>}
+          {showRightButton && <Edit/>}
         </TouchableOpacity>
       </View>
     </SafeAreaView>
@@ -67,7 +69,7 @@ const styles = StyleSheet.create({
   innerContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    paddingHorizontal: 20,
+    paddingHorizontal: 30,
     paddingVertical: 10,
     alignItems: 'center',
   },

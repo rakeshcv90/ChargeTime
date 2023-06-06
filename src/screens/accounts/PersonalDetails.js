@@ -7,6 +7,10 @@ import { Image } from 'react-native-svg';
 import Input from '../../Components/Input';
 import COLORS from '../../constants/COLORS';
 import { DIMENSIONS } from '../../constants/DIMENSIONS';
+import { Call } from '../../../assets/images/Call';
+import { Message } from '../../../assets/images/Message';
+import {Name} from '../../../assets/images/Name';
+import { Edit } from '../../../assets/images/Edit';
 
 
 const PersonalDetails = () => {
@@ -14,7 +18,7 @@ const PersonalDetails = () => {
   const isDark = theme === 'dark';
   return (
     <SafeAreaView style={{ backgroundColor: COLORS.CREAM, flex: 1 }}>
-      <Header headerName="Personal Details" />
+      <Header headerName="Personal Details" showRightButton={true} />
       <HorizontalLine style={styles.line} />
       <View style={[styles.mainDiv_container]}>
 
@@ -23,9 +27,7 @@ const PersonalDetails = () => {
           autoFocus
           bgColor={COLORS.CREAM}
           IconRight={() => (
-            <Image
-              source={require('../../../assets/images/personal2.png')}
-            />
+           <Name/>
           )}
           bR={6}
           bW={1}
@@ -46,10 +48,7 @@ const PersonalDetails = () => {
           autoFocus
           bgColor={COLORS.CREAM}
           IconRight={() => (
-            <Image
-              source={require('../../../assets/images/phone.png')}
-              style={styles.icon}
-            />
+           <Call/>
           )}
           bR={6}
           bW={1}
@@ -70,16 +69,13 @@ const PersonalDetails = () => {
           autoFocus
           bgColor={COLORS.CREAM}
           IconRight={() => (
-            <Image
-              source={require('../../../assets/images/mail.png')}
-              style={styles.icon}
-            />
+           <Message/>
           )}
           bR={6}
           bW={1}
           bColor={COLORS.LIGHT_GREY}
           text="Email"
-          mV={5}
+          mV={4}
           textWidth={'20%'}
           placeholder="Eg. johndoe@xyz.com"
           placeholderTextColor={COLORS.BLACK}
@@ -113,11 +109,11 @@ const PersonalDetails = () => {
         <Text>Want to delete account?{' '}</Text>
         <TouchableOpacity>
           <Text 
-          // style={{
-          //   fontWeight: 800,
-          //   font: 14,
-          //   height: 25,
-          // }}
+          style={{
+            fontWeight: 800,
+            font: 14,
+            height: 25,
+          }}
           >Request here.</Text>
         </TouchableOpacity>
       </View>
@@ -126,13 +122,12 @@ const PersonalDetails = () => {
 }
 const styles = StyleSheet.create({
   bottom: {
-    marginTop: 5,
+    marginTop: 500,
     marginLeft: 70,
     font: 14,
-    fontWeight: 600,
     fontfamily: 'Roboto',
     height: 25,
-    color: 'black',
+    color: COLORS.BLACK,
     flexDirection: 'row',
   },
 
@@ -142,13 +137,14 @@ const styles = StyleSheet.create({
     marginLeft: 30,
     marginRight: 30,
     marginTop: 20,
-  fontfamily: "Roboto",
-  color: "#000000",
-  fontSize: 24,
-  fontWeight: 700,
-  width: 300,
-  lineHeight: 26,
-  letterspacing: 0.5,
+    marginBottom:40,
+  // fontfamily: "Roboto",
+  // color: "#000000",
+  // fontSize: 24,
+  // fontWeight: 700,
+  // width: 300,
+  // lineHeight: 26,
+  // letterspacing: 0.5,
   height: 30,
   },
   textdata: {
