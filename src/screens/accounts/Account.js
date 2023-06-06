@@ -1,7 +1,8 @@
-import { Image, View, Text, StyleSheet, TouchableOpacity } from 'react-native';
+import { Image, View, Text, StyleSheet, TouchableOpacity,SafeAreaView } from 'react-native';
 import React, { useState } from 'react';
 import { createDrawerNavigator } from '@react-navigation/drawer';
 import { NavigationContainer } from '@react-navigation/native';
+import Picker from '@react-native-picker/picker'
 import logo from '../../../assets/images/logo.png';
 import COLORS from '../../constants/COLORS';
 import HorizontalLine from '../../Components/HorizontalLine';
@@ -15,35 +16,39 @@ import Subscription from './Subscription';
 
 
 const Account = ({ navigation }) => {
-  const [reset, setReset] = useState('')
-
-  setReset('Theme')
-
+  const [selectedValue, setSelectedValue] = useState('');
   const Screen = [
     {
       title: 'Personal Details',
       image: require('../../../assets/images/Personal.png'),
-      link: 'PersonalDetails'
+      link: 'PersonalDetails',
+      side_image: require('../../../assets/images/side.png'),
+      // style={styles.side_icon}
+
     },
     {
       title: 'Security',
       image: require('../../../assets/images/Security.png'),
-      link: 'Security'
+      link: 'Security', 
+      side_image: require('../../../assets/images/side.png'),
     },
     {
       title: 'Installation',
       image: require('../../../assets/images/Install.png'),
-      link: 'Installation'
+      link: 'Installation', 
+      side_image: require('../../../assets/images/side.png'),
     },
     {
       title: 'Payment Methods',
       image: require('../../../assets/images/Payment.png'),
-      link: 'Payment'
+      link: 'Payment', 
+      side_image: require('../../../assets/images/side.png'),
     },
     {
       title: 'Subscription',
       image: require('../../../assets/images/Subscrip.png'),
-      link: 'Subscription'
+      link: 'Subscription', 
+      side_image: require('../../../assets/images/side.png'),
     },
     // {
     //   // title: 'Theme',
@@ -59,7 +64,8 @@ const Account = ({ navigation }) => {
   };
 
   return (
-            <View>
+    <SafeAreaView style={{backgroundColor: COLORS.CREAM, flex: 1}}>
+            <View >
               <View style={styles.row}>
                 <Text style={styles.heading}>Account</Text>
                 <Image source={logo} style={styles.logo} />
@@ -73,20 +79,34 @@ const Account = ({ navigation }) => {
                   <View style={styles.row}>
                     <Image source={item.image} style={styles.icon} />
                     <Text style={styles.title}>{item.title} </Text>
-                    <Image source={ require('../../../assets/images/side.png')} style={styles.side_icon}/>
+                    <View style={styles.sideImageContainer}>
+                     <Image source={item.side_image} style={styles.side_icon} />
+                      </View>
                   </View>
                   <HorizontalLine />
                   
-                 {item.link === 'Theme' && (
-                    <View style={styles.addContainer}>
-                  <Image source={require('../../../assets/images/Theme.png')} style={styles.addImage} />
-        
-                   <Text style={styles.addText}>Theme</Text>
-                </View>
-              )}
                 </TouchableOpacity>
               ))}
+              <View style={styles.row}>
+              <Image source={require('../../../assets/images/Theme.png')} style={styles.icon} />
+              <Text style={styles.title}>Theme</Text>
+              <TouchableOpacity style={styles.button} >
+        <Text style={styles.buttonText}>Follow System</Text>
+                 </TouchableOpacity>
+               {/* {isOpen && (
+                 <Text style={styles.buttonText}>{selectedOption || 'Follow System'}</Text>
+                 <View style={styles.dropdown}>
+                      {options.map((option, index) => (
+                     <TouchableOpacity
+                       key={index}
+                       style={styles.option}
+                    onPress={() => handleOptionSelect(option)}
+                    >
+              <Text style={styles.optionText}>{option}</Text>
+            </TouchableOpacity> */}
+              </View>
             </View>
+       </SafeAreaView>
   );
 };
 
@@ -95,14 +115,14 @@ const styles = StyleSheet.create({
   heading: {
     color: COLORS.BLACK,
     font: 'Montserrat',
-    fontSize: 28,
-    fontWeight: '800%',
+    fontSize: 26,
+    fontWeight: 'bold',
     marginBottom: 40,
     marginLeft: 24,
     marginTop: 30,
   },
   itemContainer: {
-    marginBottom: 5,
+    marginBottom: 3,
   },
   title: {
     font: 'Roboto',
@@ -113,40 +133,47 @@ const styles = StyleSheet.create({
   link: {
     color: 'blue',
   },
+  button: {
+    padding: 8,
+    borderWidth: 1,
+    borderColor: '#ccc',
+    marginLeft : 90,
+    borderRadius: 5,
+   
+  
+  },
+  buttonText: {
+    fontSize: 15,
+    color:COLORS.BLACK,
+    marginRight:20,
+  },
   logo: {
     width: 40,
     height: 40,
     resizeMode: 'contain',
-    marginLeft: 190,
-    marginTop: 20,
+    marginLeft: 170,
+    flex:1,
+    // alignItems: 'flex-end',
   },
   icon: {
-    width: 15,
-    height: 15,
+    width: 25,
+    height: 25,
     marginLeft: 20,
+  },
+  sideImageContainer: {
+    flex: 1,
+    alignItems: 'flex-end',
+    marginRight: 20,
   },
   side_icon: {
     width: 8,
     height: 8,
-    marginLeft: 100,
+    marginLeft: 120,
     
   },
-  addContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginLeft: 20,
-    marginTop: 10,
-  },
-  addImage: {
-    width: 15,
-    height: 15,
-    marginLeft: 20,
-  },
-  addText: {
-    font: 'Roboto',
-    fontSize: 20,
-    marginLeft: 10,
-    color: COLORS.BLACK,
+  dropdown: {
+    flex: 1,
+    marginLeft: 8,
   },
 });
 

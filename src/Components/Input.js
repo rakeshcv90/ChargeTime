@@ -73,6 +73,9 @@ const Input = ({ mV, mH, IconLeft, IconRight, text, errors, touched, pasButton, 
             }}
           />
         </View>
+          <View style={{width: '20%' , alignItems:'center',paddingLeft: 30}}>
+            {props.IconRight && <Props.IconRight />}
+          </View>
        
       </View>
     </View>
