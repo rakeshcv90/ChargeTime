@@ -29,6 +29,7 @@ import Installation from './src/screens/accounts/Installation';
 import Theme from './src/screens/accounts/Theme';
 import Subscription from './src/screens/accounts/Subscription';
 import SplashScreen from 'react-native-splash-screen';
+import deleteAccount from './src/screens/accounts/deleteAccount';
 
 
 
@@ -65,7 +66,7 @@ import SplashScreen from 'react-native-splash-screen';
   return (
     <NavigationContainer ref={navigationRef}>
       <Drawer.Navigator
-        initialRouteName="VerifyEmail"
+        initialRouteName="Login"
         screenOptions={{ headerShown:false }}
         drawerContent={CustomDrawerContent}
        
@@ -188,6 +189,7 @@ import SplashScreen from 'react-native-splash-screen';
         <Drawer.Screen name="Payment" component={Payment} />
         <Drawer.Screen name="Subscription" component={Subscription} />
         <Drawer.Screen name="Theme" component={Theme} />
+        <Drawer.Screen name="deleteAccount" component={deleteAccount} />
       </Drawer.Navigator>
     </NavigationContainer>
   );

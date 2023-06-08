@@ -3,23 +3,16 @@ import React from 'react'
 import Header from '../../Components/Header'
 import HorizontalLine from '../../Components/HorizontalLine'
 import Input from '../../Components/Input'
-import { Install } from '../../../assets/images/Install'
-import { Location } from '../../../assets/images/Location'
+import { Install } from '../../../assets/svgs/Install'
+import { Location } from '../../../assets/svgs/Location'
 
 const Installation = () => {
   return (
     <SafeAreaView style={{backgroundColor: COLORS.CREAM, flex: 1}}>
-     <Header headerName="Installation"/>
+     <Header headerName="Installation" showRightButton={true}/>
     <HorizontalLine style={styles.line}/>
      <View style={styles.mainDiv_container}>
-          {/* <View style={[styles.mainDiv_complete_profile, styles.shadowProp]}> */}
-            {/* <Text style={[styles.label_name, styles.forPaddingTOP]}>
-              Location Base
-            </Text>
-            <TextInput
-              style={styles.complete_placeholder}
-              placeholder="Vandenberg Family Homes"
-            /> */}
+          
             <Input
           IconLeft={null}
           autoFocus
@@ -27,11 +20,11 @@ const Installation = () => {
           IconRight={() => (
             <Install/>
           )}
-          bR={6}
-          bW={1}
+          bR={3}
+          bW={0.3}
           bColor={COLORS.LIGHT_GREY}
           text="Installation Location"
-          mV={5}
+          mV={7}
           textWidth={'55%'}
           placeholder="Vandenberg Space Force Base"
           placeholderTextColor={COLORS.BLACK}
@@ -39,6 +32,7 @@ const Installation = () => {
             color: COLORS.BLACK,
             fontFamily: 'Roboto',
             fontWeight: '200',
+            
           }}
         />
 
@@ -49,11 +43,11 @@ const Installation = () => {
           IconRight={() => (
            <Location/>
           )}
-          bR={6}
-          bW={1}
+          bR={3}
+          bW={0.3}
           bColor={COLORS.LIGHT_GREY}
           text="Address Line"
-          mV={5}
+          mV={10}
           textWidth={'35%'}
           placeholder="Eg. 123/B, Street A2"
           placeholderTextColor={COLORS.BLACK}
@@ -71,11 +65,11 @@ const Installation = () => {
            <Location/>
           )}
           bR={6}
-          bW={1}
+          bW={0.3}
           bColor={COLORS.LIGHT_GREY}
           text="Address Line 2"
-          mV={5}
-          textWidth={'45%'}
+          mV={10}
+          textWidth={'40%'}
           placeholder="Eg. Block D, CA"
           placeholderTextColor={COLORS.BLACK}
           style={{
@@ -84,40 +78,47 @@ const Installation = () => {
             fontWeight: '200',
           }}
         />
-        
-            {/* <Text style={styles.label_name}>Address Line - 1</Text>
-            <TextInput
-              style={styles.complete_placeholder}
-            /> */}
-            <Text style={styles.label_name}>Address Line-2</Text>
-            <TextInput
-              style={styles.complete_placeholder}
-              placeholder="Appart Street Number-3,Block"
-            />
-            <View style={styles.mainDiv_state_ZIP}>
+         <View style={styles.mainDiv_state_ZIP}>
               <View style={styles.zip_state_view}>
-                <Text style={styles.label_name}>ZIP Code</Text>
-                <TextInput
-                  style={[
-                    styles.complete_placeholder,
-                    styles.state_placeholder,
-                  ]}
-                  placeholder="112211"
-                />
-              </View>
-              <View style={styles.zip_state_view}>
-                <Text style={styles.label_name}>State</Text>
+                
+                <Input
+                  IconLeft={null}
+                  errors={undefined}
+                  touched={false}
+                  //     value={values.name}
+                  //     onChangeText={handleChange('name')}
+                  // onBlur={handleBlur('name')}
 
-                <TextInput
-                  style={[
-                    styles.complete_placeholder,
-                    ,
-                    styles.state_placeholder,
-                  ]}
-                  placeholder="Vanderberg"
+                  text="ZIP Code"
+                  IconRight={null}
+                  mV={15}
+                  placeholder="1100000"
+                  bW={0.3}
+                  textWidth={'60%'}
+                  placeholderTextColor={COLORS.BLACK}
+                  w="half"
                 />
               </View>
-            </View>
+              <View style={styles.zip_state_view}>
+                <Input
+                  IconLeft={null}
+                  errors={undefined}
+                  touched={false}
+                  //     value={values.name}
+                  //     onChangeText={handleChange('name')}
+                  // onBlur={handleBlur('name')}
+
+                  text="State"
+                  IconRight={null}
+                  mV={15}
+                  placeholder="CA"
+                  bW={0.3}
+                  textWidth={'40%'}
+                  placeholderTextColor={COLORS.BLACK}
+                  w="half"
+                />
+              </View>
+            </View>            
           </View>
           {/* </View> */}
 
@@ -133,7 +134,7 @@ const styles = StyleSheet.create({
   //   // height: mobileH * 0.45,
   // },
   mainDiv_container: {
-  paddingHorizontal: 20,
+  paddingHorizontal: 10,
   marginLeft:10,
   marginRight:10,
   paddingTop: 10,
@@ -175,19 +176,15 @@ const styles = StyleSheet.create({
   },
   mainDiv_state_ZIP: {
     // display: 'flex',
-    flex:1,
+    flex: 1,
     flexDirection: 'row',
     justifyContent: 'space-between',
-    gap:5,
-    paddingTop:10,
-    paddingBottom:90,
+    gap: 28,
   },
   zip_state_view: {
     display: 'flex',
-    paddingTop:20,
     //flexDirection:'row',
     justifyContent: 'space-between',
-    
   },
   state_placeholder: {
     width: 150,

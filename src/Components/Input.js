@@ -61,7 +61,7 @@ const Input: FC<Props> = ({...Props}) => {
             borderWidth: Props.bW ? Props.bW : 0,
             paddingBottom: PLATFORM_IOS ? 5 : 10,
             borderRadius:5
-          },
+                 },
         ]}>
         {Props.IconLeft && <Props.IconLeft />}
         <View

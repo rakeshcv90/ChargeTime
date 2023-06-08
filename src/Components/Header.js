@@ -14,7 +14,7 @@ import  DIMENSIONS  from '../constants/DIMENSIONS';
 import { navigationRef } from '../../App';
 import { Image } from 'react-native-svg';
 import { BackButton } from '../../assets/svgs/BackButton';
-import { Edit } from '../../assets/images/Edit';
+import { Edit } from '../../assets/svgs/Edit';
 
 const Header = ({ headerName, showRightButton, onPress }) => {
   return (
@@ -36,9 +36,9 @@ const Header = ({ headerName, showRightButton, onPress }) => {
             marginTop:20,
             fontfamily: 'Roboto',
             color: COLORS.BLACK,
-            fontSize: 24,
+            fontSize: 20,
             fontWeight: '700',
-            width:200,
+            width:250,
             lineHeight: 26,
             letterspacing:0.5,
             height: 30,
@@ -69,7 +69,7 @@ const styles = StyleSheet.create({
   innerContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    paddingHorizontal: 30,
+    paddingHorizontal: 15,
     paddingVertical: 10,
     alignItems: 'center',
   },

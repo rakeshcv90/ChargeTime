@@ -1,17 +1,18 @@
-<!-- introduction.xml -->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:gravity="center"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:background="#FFFFFF">
 
     <ImageView
         android:id="@+id/intro_image"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:src="@drawable/splash_introduction" />
+        android:src="@drawable/splash_introduction"
+        />
 
-    <TextView
+
+     <TextView
         android:id="@+id/intro_heading"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -28,11 +29,18 @@
         android:textSize="16sp"
         android:layout_marginTop="8dp" />
 
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1" />
+
     <Button
         android:id="@+id/get_started_button"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Get Started"
-        android:layout_marginTop="16dp" />
+        android:background="#B1D34F"
+        android:layout_marginTop="16dp"
+        android:layout_marginBottom="16dp" />
 
 </LinearLayout>

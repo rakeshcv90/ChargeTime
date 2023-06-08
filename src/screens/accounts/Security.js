@@ -4,19 +4,19 @@ import COLORS from '../../constants/COLORS'
 import HorizontalLine from '../../Components/HorizontalLine'
 import Header from '../../Components/Header'
 import Input from '../../Components/Input'
-import { Key } from '../../../assets/images/Key'
-import {Eye} from '../../../assets/images/Eye'
+import { Key } from '../../../assets/svgs/Key'
+import {Eye} from '../../../assets/svgs/Eye'
 
 const Security = () => {
   return (
-    <SafeAreaView style={{backgroundColor: COLORS.WHITE, flex: 1}}>
+    <SafeAreaView style={{backgroundColor: COLORS.CREAM, flex: 1}}>
      <Header headerName="Security" />
      <HorizontalLine style={styles.line}/>
      
               <Input
                     IconLeft={null}
                     autoFocus
-                    bgColor={COLORS.WHITE}
+                    bgColor={COLORS.CREAM}
                     IconRight={() => (
                      <Key/>
                     )}
@@ -37,15 +37,15 @@ const Security = () => {
                     <Input
                     IconLeft={null}
                     autoFocus
-                    bgColor={COLORS.WHITE}
+                    bgColor={COLORS.CREAM}
                     IconRight={() => (
                      <Eye/>
                     )}
                     bR={5}
-                    bW={0.5}
+                    bW={0.3}
                     bColor={COLORS.BLACK}
                     text="New Password"
-                    mV={7}
+                    mV={15}
                     textWidth={'35%'}
                     placeholderTextColor={COLORS.GREY}
                     style={{
@@ -57,12 +57,12 @@ const Security = () => {
                   <Input
                     IconLeft={null}
                     autoFocus
-                    bgColor={COLORS.WHITE}
+                    bgColor={COLORS.CREAM}
                     IconRight={() => (
                      <Eye/>
                     )}
                     bR={5}
-                    bW={0.5}
+                    bW={0.3}
                     bColor={COLORS.BLACK}
                     text="Re-enter New Password"
                     mV={7}

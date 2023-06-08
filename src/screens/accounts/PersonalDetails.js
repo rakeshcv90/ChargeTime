@@ -7,13 +7,14 @@ import { Image } from 'react-native-svg';
 import Input from '../../Components/Input';
 import COLORS from '../../constants/COLORS';
 import { DIMENSIONS } from '../../constants/DIMENSIONS';
-import { Call } from '../../../assets/images/Call';
-import { Message } from '../../../assets/images/Message';
-import {Name} from '../../../assets/images/Name';
-import { Edit } from '../../../assets/images/Edit';
+import { Call } from '../../../assets/svgs/Call';
+import { Message } from '../../../assets/svgs/Message';
+import {Name} from '../../../assets/svgs/Name';
+import { Edit } from '../../../assets/svgs/Edit';
 
 
-const PersonalDetails = () => {
+
+const PersonalDetails = ({ navigation }) => {
   const theme = useColorScheme();
   const isDark = theme === 'dark';
   return (
@@ -29,8 +30,8 @@ const PersonalDetails = () => {
           IconRight={() => (
            <Name/>
           )}
-          bR={6}
-          bW={1}
+          bR={5}
+          bW={0.3}
           bColor={COLORS.LIGHT_GREY}
           text="Name"
           mV={5}
@@ -50,11 +51,11 @@ const PersonalDetails = () => {
           IconRight={() => (
            <Call/>
           )}
-          bR={6}
-          bW={1}
+          bR={5}
+          bW={0.3}
           bColor={COLORS.LIGHT_GREY}
           text="Phone No."
-          mV={5}
+          mV={15}
           textWidth={'27%'}
           placeholder="Eg. +123 (456) 789"
           placeholderTextColor={COLORS.BLACK}
@@ -71,11 +72,11 @@ const PersonalDetails = () => {
           IconRight={() => (
            <Message/>
           )}
-          bR={6}
-          bW={1}
+          bR={5}
+          bW={0.3}
           bColor={COLORS.LIGHT_GREY}
           text="Email"
-          mV={4}
+          mV={55}
           textWidth={'20%'}
           placeholder="Eg. johndoe@xyz.com"
           placeholderTextColor={COLORS.BLACK}
@@ -107,7 +108,7 @@ const PersonalDetails = () => {
       </View>
       <View style={styles.bottom}>
         <Text>Want to delete account?{' '}</Text>
-        <TouchableOpacity>
+        <TouchableOpacity onPress={()=>{navigation.navigate('deleteAccount')}}>
           <Text 
           style={{
             fontWeight: 800,
@@ -122,7 +123,7 @@ const PersonalDetails = () => {
 }
 const styles = StyleSheet.create({
   bottom: {
-    marginTop: 500,
+    marginTop: 400,
     marginLeft: 70,
     font: 14,
     fontfamily: 'Roboto',
