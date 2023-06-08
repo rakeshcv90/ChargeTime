@@ -30,6 +30,7 @@ export default function Login({navigation}) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const loginFunction = async () => {
+    try{
     await fetch(`${API}/logins`, {
       method: 'POST',
       headers: {
@@ -42,7 +43,9 @@ export default function Login({navigation}) {
     })
       .then(res => res.json())
       .then(data => {
-        AsyncStorage.setItem('loginData', JSON.stringify(data.user_id));
+       
+        AsyncStorage.setItem('loginDataOne', JSON.stringify(data.locationid ));
+       
         if (data.status == 'success') {
           PLATFORM_IOS?
           Toast.show({
@@ -67,6 +70,9 @@ export default function Login({navigation}) {
       .catch(error => {
         console.error(error);
       });
+    }catch(err){
+      console.log(err)
+    }
   };
   return (
     <SafeAreaView style={{backgroundColor: COLORS.CREAM, flex: 1}}>
@@ -75,9 +81,9 @@ export default function Login({navigation}) {
         keyboardShouldPersistTaps="handled">
         <View style={styles.login_img}>
           <Image
-            source={require('../../../assets/images/manishhome.png')}
+            source={require('../../../assets/images/log.png')}
             resizeMode="contain"
-            style={{width: mobileW, height: mobileH / 3}}
+            style={{width: mobileW, }}
           />
         </View>
         <View style={styles.login_css}>
@@ -153,7 +159,8 @@ export default function Login({navigation}) {
           </View>
           <View style={styles.mainDiv_donot_account}>
             <Text style={styles.dont_have_text}>Don't have an account? </Text>
-            <TouchableOpacity onPress={() => navigation.navigate('Register')}>
+            <TouchableOpacity onPress={() =>  navigation.navigate('Register', { email: 'email',user_id:'user_id' })
+      }>
               <Text style={styles.sign_up}>Sign Up</Text>
             </TouchableOpacity>
           </View>
@@ -172,7 +179,7 @@ const styles = StyleSheet.create({
   },
   login_img: {
     width: mobileW,
-    height: mobileH / 3,
+    
   },
   img_width: {
     width: mobileW,
@@ -182,16 +189,17 @@ const styles = StyleSheet.create({
    
     paddingBottom: 15,
     marginHorizontal: 20,
-    marginTop: 20,
+    // marginTop: 110,
 
     borderRadius: 10,
+    
   },
   
   login: {
     fontSize: 24,
     fontWeight: '800',
     color: 'black',
-    paddingVertical: 20,
+    paddingVertical: 10,
     letterSpacing: 1,
   },
   email: {

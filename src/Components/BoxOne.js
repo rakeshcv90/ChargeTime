@@ -4,7 +4,9 @@ import { Address } from '../../assets/images/Address';
 import { Vanderberg } from '../../assets/images/Vanderberg';
 import { Connecticut } from '../../assets/images/Connecticut';
 const mobileW = Math.round(Dimensions.get('screen').width);
-const BoxOne = () => {
+const BoxOne = ({data}) => {
+  // const {navigation, route} = props;
+  console.log(data,'trr')
   return (
     <View style={styles.mainDiv_installation}>
       <TouchableOpacity style={styles.install_touchable}>
@@ -15,7 +17,7 @@ const BoxOne = () => {
       <View style={styles.location_div}>
         
          <Vanderberg style={styles.img_width} />
-        <Text style={styles.force_base}>Vanderberg Space Force Base</Text>
+        <Text style={styles.force_base}>{data.location}</Text>
       </View>
       <Image
           // style={styles.img_width}
@@ -29,7 +31,7 @@ const BoxOne = () => {
             source={require('../../assets/images/connecticut.png')}
           /> */}
           <Connecticut style={styles.img_width} />
-          <Text style={styles.force_base}>Connecticut</Text>
+          <Text style={styles.force_base}>{data.state}</Text>
         </View>
         <View style={styles.state_div}>
           <Image
@@ -37,7 +39,7 @@ const BoxOne = () => {
             source={require('../../assets/images/zip_code.png')}
             style={{width:20,height:20}}
           />
-          <Text style={styles.force_base}>123456</Text>
+          <Text style={styles.force_base}>{data.ZIP_code}</Text>
         </View>
       </View>
     </View>

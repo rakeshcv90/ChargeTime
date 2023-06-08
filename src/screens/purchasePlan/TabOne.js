@@ -15,14 +15,15 @@ import BoxTwo from '../../Components/BoxTwo';
 import BoxThree from '../../Components/BoxThree';
 import { PLATFORM_IOS } from '../../constants/DIMENSIONS';
 
-export default function TabOne() {
+export default function TabOne(props) {
+  
   return (
     // <SafeAreaView style={{backgroundColor: COLORS.CREAM, flex: 1}}>
     //   <ScrollView showsVerticalScrollIndicator={false} >
         <View style={styles.managing_width}>
-          <BoxOne />
-          <BoxTwo />
-          <BoxThree />
+          <BoxOne data={props.route.params.item} />
+          <BoxTwo data={props.route.params.item} />
+          <BoxThree data={props.route.params.item} />
         </View>
     //   </ScrollView>
     // </SafeAreaView>

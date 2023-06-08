@@ -6,7 +6,7 @@ import {
   TouchableOpacity,
   Animated,
   Image,
-  Dimensions
+  Dimensions,
 } from 'react-native';
 import {SafeAreaView} from 'react-native-safe-area-context';
 
@@ -16,6 +16,12 @@ import TabTwo from './TabTwo';
 import TabThree from './TabThree';
 import COLORS from '../../constants/COLORS';
 import DrawerOpen from '../../Components/DrawerOpen';
+import {useState, useEffect} from 'react';
+import {API} from '../../api/API';
+import axios from 'axios';
+import ActivityLoader from '../../Components/ActivityLoader';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import TabFour from './TabFour';
 const mobileW = Math.round(Dimensions.get('screen').width);
 
 function MyTabBar({state, descriptors, navigation, position}) {
@@ -55,12 +61,11 @@ function MyTabBar({state, descriptors, navigation, position}) {
         return (
           <TouchableOpacity
             key={index}
-            
             onPress={onPress}
             style={{
               flex: 1,
               backgroundColor: isFocused ? COLORS.GREEN : '#EEEEEE',
-              paddingHorizontal: 20,
+              paddingHorizontal: 12,
               paddingVertical: 10,
               borderRadius: isFocused ? 20 : 0,
             }}>
@@ -80,34 +85,87 @@ function MyTabBar({state, descriptors, navigation, position}) {
   );
 }
 
-export default function Home() {
+export default function Home(route) {
+  const [isLoading, setIsLoading] = useState(true);
+
   const Tab = createMaterialTopTabNavigator();
+
+  
+
+  const [apiData, setApiData] = useState([]);
+  
+  
+  
+  useEffect(() => {
+    fetchData();
+  }, []);
+ 
+
+  const fetchData = async () => {
+    let loginData = await AsyncStorage.getItem('loginDataOne');
+    console.log(loginData,"object")
+    try {
+      const response = await axios.get(`${API}/packagePlan/${loginData}`);
+      
+      setApiData(response?.data?.locations);
+     if(response?.data?.locations !==''){
+        setIsLoading(false);
+     }
+      
+     
+    } catch (error) {
+      console.error('Error fetching data:', error);
+      setIsLoading(false);
+    }
+  };
 
   return (
     <SafeAreaView style={{backgroundColor: COLORS.CREAM, flex: 1}}>
       <DrawerOpen />
       <View style={styles.charging_imag_style}>
-
-      <Image source={require("../../../assets/images/car_one.png")} resizeMode='stretch' style={{alignSelf: 'center', width: mobileW,}} />
-
+        <Image
+          source={require('../../../assets/images/car_one.png')}
+          resizeMode="stretch"
+          style={{alignSelf: 'center', width: mobileW}}
+        />
       </View>
 
-     
-      <Tab.Navigator
-        screenOptions={{
-          activeTintColor: 'blue',
-          inactiveTintColor: 'gray',
+      {isLoading || apiData !==null? (
+        <ActivityLoader visible={isLoading} />||
+        <Tab.Navigator >
+          <Tab.Screen name='Base Package 1' component={TabFour} />
+        </Tab.Navigator>
+      ) : (
+        <Tab.Navigator
+          screenOptions={{
+            activeTintColor: 'blue',
+            inactiveTintColor: 'gray',
 
-          labelStyle: {
-            fontSize: 16,
-            fontWeight: 'bold',
-          },
-        }}
-        tabBar={props => <MyTabBar {...props} />}>
-        <Tab.Screen name="PACKAGE-1" component={TabOne} />
-        <Tab.Screen name="PACKAGE-2" component={TabTwo} />
-        <Tab.Screen name="PACKAGE-3" component={TabThree} />
-      </Tab.Navigator>
+            labelStyle: {
+              fontSize: 16,
+              fontWeight: 'bold',
+            },
+          }}
+          tabBar={props => <MyTabBar {...props} />}>
+          {
+            apiData?.length >= 1 &&
+              apiData&&apiData.map((item, ind) => {
+                
+                return (
+                  <Tab.Screen
+                    key={ind}
+                    name={item?.package_name}
+                    component={item?.package_name}
+                    initialParams={{item}}
+                  />
+                );
+              })
+
+            
+          }
+        </Tab.Navigator> 
+        
+      )}
     </SafeAreaView>
   );
 }
@@ -132,7 +190,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 14,
     paddingVertical: 8,
     borderRadius: 20,
-    fontWeight: "600",
+    fontWeight: '600',
     fontSize: 12,
   },
   for_notmanage: {

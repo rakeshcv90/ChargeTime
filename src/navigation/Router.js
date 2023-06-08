@@ -60,21 +60,27 @@ const LoginStack = () => {
 };
 
 export default function Router() {
+  //const {navigation, route} = props;
+  //  const {locationid} = route?.params;
+  
   const [isAuthorized, setIsAuthorized] = useState(false);
   let loginDataString;
+  // let locationId;
 
-  React.useEffect(() => {
+  useEffect(() => {
     retrieveLoginData();
-    console.log('Retrieved login data: ', isAuthorized);
+    
   }, []);
   const retrieveLoginData = async () => {
     try {
-      loginDataString = await AsyncStorage.getItem('loginData');
+      loginDataString = await AsyncStorage.getItem('loginDataOne');
+      
+      
       if (loginDataString !== null) {
         const loginData = JSON.parse(loginDataString);
         setIsAuthorized(true);
         console.log('Retrieved login data: ', loginDataString);
-        // Use the login data as needed
+        
       }
     } catch (error) {
       console.log('Error retrieving login data: ', error);

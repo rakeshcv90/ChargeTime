@@ -2,13 +2,13 @@ import {View, Text, StyleSheet, TouchableOpacity, Image} from 'react-native';
 import React from 'react';
 import { Dolllar } from '../../assets/images/Dollar';
 
-const BoxThree = () => {
+const BoxThree = ({data}) => {
   return (
     <View style={styles.mainDiv_purchage_dollar}>
       <View style={styles.dollar_div}>
         {/* <Image source={require('../../assets/images/price.png')} /> */}
         <Dolllar />
-        <Text style={styles.per_month}>$74.67 /month</Text>
+        <Text style={styles.per_month}>${data.total_price} /month</Text>
       </View>
       <View>
         <TouchableOpacity style={styles.btn_purchage}>
