@@ -67,7 +67,7 @@ export default function Login({navigation}) {
        
         
       })
-      .catch(error => {
+      .catch((error) => {
         console.error(error);
       });
     }catch(err){

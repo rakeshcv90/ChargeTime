@@ -14,7 +14,7 @@ const BoxTwo = ({data}) => {
         />
         <Text style={styles.installation_text}>Plan Details</Text>
       </TouchableOpacity>
-      <View style={styles.mainDiv_plan_details}>
+      <View style={[styles.mainDiv_plan_details,styles.shadowProp]}>
         <View style={styles.second_main_div_kwh}>
           {/* <Image source={require('../../assets/images/kwh.png')} /> */}
           <Unit />
@@ -50,10 +50,21 @@ const styles = StyleSheet.create({
     // paddingVertical:15
   },
   mainDiv_installation: {
-    backgroundColor: COLORS.GRAY,
+    //backgroundColor: COLORS.GRAY,
     borderRadius: 10,
     marginTop: 20,
     overflow: 'hidden',
+  },
+  shadowProp: {
+    //backgroundColor: 'white',
+    shadowColor: 'rgba(0, 0, 0, 1)', 
+    shadowOffset: {
+      width: 6, 
+      height: 4, 
+    },
+    shadowOpacity: 1, 
+    shadowRadius:  4, 
+    elevation: Platform.OS === 'android' ? 8 : 0,
   },
   install_touchable: {
     flexDirection: 'row',
@@ -69,15 +80,7 @@ const styles = StyleSheet.create({
     fontSize: 12,
     paddingLeft: 10,
   },
-  location_div: {
-    flexDirection: 'row',
-    backgroundColor: COLORS.GRAY,
-    alignItems: 'center',
-    paddingVertical: 10,
-    borderBottomWidth: 1,
-    borderBottomColor: COLORS.GREEN,
-    borderStyle: 'dotted',
-  },
+  
   force_base: {
     fontWeight: 400,
     fontSize: 14,
@@ -89,7 +92,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     paddingRight: 10,
     paddingVertical: 10,
-    backgroundColor: COLORS.GRAY,
+    // backgroundColor: COLORS.GRAY,
   },
   state_div: {
     flexDirection: 'row',
@@ -100,6 +103,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     // alignItems:'center',
     paddingVertical: 20,
+    backgroundColor:COLORS.GRAY
   },
   kwh_mieq_text: {
     fontWeight: 800,
@@ -112,28 +116,9 @@ const styles = StyleSheet.create({
     // alignSelf: 'center',
     alignContent: 'center',
     paddingHorizontal: 10,
+    
   },
-  mainDiv_purchage_dollar: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    borderWidth: 1,
-    borderColor: COLORS.GREEN,
-    borderRadius: 5,
-    backgroundColor: COLORS.WHITE,
-    marginTop: 20,
-    paddingHorizontal: 10,
-    paddingVertical: 10,
-    borderRadius: 30,
-    elevation: 4,
-    shadowColor: 'rgba(1, 0, 0, 0.25)',
-    shadowOffset: {
-      width: 4,
-      height: 4,
-    },
-    shadowOpacity: 0,
-    shadowRadius: 4,
-  },
+  
   dollar_div: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -151,11 +136,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     borderRadius: 20,
   },
-  purchage_text: {
-    fontWeight: 700,
-    fontSize: 14,
-    color: COLORS.WHITE,
-  },
+  
   unit_allowed: {
     fontWeight: 400,
     fontSize: 10,

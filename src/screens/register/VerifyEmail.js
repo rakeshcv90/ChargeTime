@@ -28,6 +28,7 @@ export default function VerifyEmail(props) {
   
   const {navigation, route} = props;
   const {email,user_id} = route?.params;
+  const [emailCheck,setEmailCheck] = useState(false)
   
   // console.log(email,'kk')
   // const emailVErifyWithOTP = email
@@ -146,8 +147,9 @@ export default function VerifyEmail(props) {
         body: JSON.stringify({pwa_email: email}),
       }).then((res) => res.json())
       .then((data) => {
-        console.log(data,'ggg')
+       
         if (data.message !== "Invalid Email") {
+          setEmailCheck(true)
           PLATFORM_IOS?
         Toast.show({
           type: 'success',
@@ -164,6 +166,32 @@ export default function VerifyEmail(props) {
           // position: 'bottom',
         }):ToastAndroid.show("Invalid Email", ToastAndroid.SHORT);
       }
+      })
+    } catch (error) {
+      console.error(error);
+      // Handle network errors or other exceptions
+    }
+  }
+  useEffect(() => {
+    
+    sendToAnotherPage()
+    
+  },[])
+  const sendToAnotherPage = async () => {
+    try {
+      await fetch(`${API}/emailverify/${user_id}`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        
+      }).then((res) => res.json())
+      .then((data) => {
+        console.log(data.status.email_verified,'vvv')
+        if(data.status == true){
+          
+        navigation.navigate('CompleteProfile', { email: email,user_id:user_id });
+        }
       })
     } catch (error) {
       console.error(error);

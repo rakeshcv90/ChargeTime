@@ -15,6 +15,8 @@ import Toast from 'react-native-toast-message';
 import CustomDrawerContent from './CustomDrawer';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import PlanSummary from '../screens/purchasePlan/PlanSummary';
+import Testing from '../screens/testing/Testing';
 
 const Drawer = createDrawerNavigator();
 const Stack = createNativeStackNavigator();
@@ -32,14 +34,33 @@ const DrawerNavigation = () => {
           drawerActiveBackgroundColor: 'rgba(177, 211, 79, 0.5)',
           drawerActiveTintColor: 'black',
           drawerIcon: ({focused, color, size}) => (
-            <Image
-              source={require('../../assets/images/account.png')}
-              style={{width: size, height: size}}
+             <Image
+              source={!focused?require('../../assets/images/account.png'):require('../../assets/images/testing.png')}
+              style={{width: size, height: size }}
             />
+         
           ),
+          
+          title: 'Home'
         }}
-        name="Home"
-        component={Home}
+        name="HomeStack"
+        component={HomeStack}
+      />
+      <Drawer.Screen
+        options={{
+          drawerActiveBackgroundColor: 'rgba(177, 211, 79, 0.5)',
+          drawerActiveTintColor: 'black',
+          drawerIcon: ({focused, color, size}) => (
+            <Image
+              source={!focused?require('../../assets/images/account.png'):require('../../assets/images/testing.png')}
+              style={{width: 30, height: 30 }}
+            />
+         
+          ),
+          title: 'Testing'
+        }}
+        name="Testing"
+        component={Testing}
       />
       
     </Drawer.Navigator>
@@ -55,6 +76,14 @@ const LoginStack = () => {
       <Stack.Screen name="ForgetPassword" component={ForgetPassword} />
       <Stack.Screen name="ResetPassword" component={ResetPassword} />
       <Stack.Screen name="DrawerStack" component={DrawerNavigation} />
+    </Stack.Navigator>
+  );
+};
+const HomeStack = () => {
+  return (
+    <Stack.Navigator screenOptions={screenOptions}>
+      <Stack.Screen name="Home" component={Home} />
+      <Stack.Screen name="PlanSummary" component={PlanSummary} />
     </Stack.Navigator>
   );
 };
@@ -91,7 +120,7 @@ export default function Router() {
 
   return (
     <Stack.Navigator screenOptions={screenOptions}>
-      {isAuthorized ? (
+      {!isAuthorized ? (
         <>
           <Stack.Screen name="LoginStack" component={LoginStack} />
         </>

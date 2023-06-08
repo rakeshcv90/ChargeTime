@@ -8,6 +8,7 @@ import {
   Image,
   Dimensions,
 } from 'react-native';
+import { useNavigationState } from '@react-navigation/native';
 import {SafeAreaView} from 'react-native-safe-area-context';
 
 import {createMaterialTopTabNavigator} from '@react-navigation/material-top-tabs';
@@ -23,17 +24,19 @@ import ActivityLoader from '../../Components/ActivityLoader';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import TabFour from './TabFour';
 const mobileW = Math.round(Dimensions.get('screen').width);
-
-function MyTabBar({state, descriptors, navigation, position}) {
-  return (
-    <View
-      style={{
-        flexDirection: 'row',
-        marginHorizontal: 20,
-        backgroundColor: '#EEEEEE',
-        borderRadius: 20,
-        overflow: 'hidden',
-      }}>
+const mobileH = Math.round(Dimensions.get('window').height);
+let loginData;
+function MyTabBar({state, descriptors, navigation, position,focusTab}) {
+  
+  const [focusTab,setFocusTab] = useState('')
+  useEffect(() => {
+    const activeRoute = state.routes[state.index];
+    setFocusTab(activeRoute.name);
+  }, [state.index]);
+  
+  
+  return ( 
+    <View style={[styles.tabbar_part, styles.shadowProp]}>
       {state.routes.map((route, index) => {
         const {options} = descriptors[route.key];
         const label =
@@ -44,6 +47,9 @@ function MyTabBar({state, descriptors, navigation, position}) {
             : route.name;
 
         const isFocused = state.index === index;
+        
+         
+       
 
         const onPress = () => {
           const event = navigation.emit({
@@ -53,9 +59,11 @@ function MyTabBar({state, descriptors, navigation, position}) {
           });
 
           if (!isFocused && !event.defaultPrevented) {
+            
             // The `merge: true` option makes sure that the params inside the tab screen are preserved
             navigation.navigate({name: route.name, merge: true});
           }
+
         };
 
         return (
@@ -64,14 +72,22 @@ function MyTabBar({state, descriptors, navigation, position}) {
             onPress={onPress}
             style={{
               flex: 1,
-              backgroundColor: isFocused ? COLORS.GREEN : '#EEEEEE',
+              backgroundColor: isFocused ? '#B1D34F' : '#EEEEEE',
               paddingHorizontal: 12,
               paddingVertical: 10,
-              borderRadius: isFocused ? 20 : 0,
+              borderRadius: isFocused ? 2 : 0,
+              shadowColor: 'rgba(0, 0, 0, 1)',
+              shadowOffset: {
+                width: isFocused ? 6 : 0,
+                height: isFocused ? 4 : 0,
+              },
+              shadowOpacity: isFocused ? 1 : 0,
+              shadowRadius: isFocused ? 4 : 0,
+              elevation: Platform.OS === 'android' && isFocused ? 8 : 0,
             }}>
             <Text
               style={{
-                color: isFocused ? '#fff' : 'black',
+                color: isFocused ? 'black' : 'black',
                 fontWeight: isFocused ? '600' : '400',
                 fontSize: 12,
                 textAlign: 'center',
@@ -87,84 +103,98 @@ function MyTabBar({state, descriptors, navigation, position}) {
 
 export default function Home(route) {
   const [isLoading, setIsLoading] = useState(true);
-
+  const [showPackage, setShowPackage] = useState(false);
+  
+ 
   const Tab = createMaterialTopTabNavigator();
 
-  
-
   const [apiData, setApiData] = useState([]);
-  
-  
-  
+
   useEffect(() => {
     fetchData();
   }, []);
- 
 
   const fetchData = async () => {
-    let loginData = await AsyncStorage.getItem('loginDataOne');
-    console.log(loginData,"object")
+     loginData = await AsyncStorage.getItem('loginDataOne');
+
     try {
       const response = await axios.get(`${API}/packagePlan/${loginData}`);
-      
-      setApiData(response?.data?.locations);
-     if(response?.data?.locations !==''){
+
+      if (response?.data?.locations.length == 0) {
+        setIsLoading(true);
+        setShowPackage(true);
+      } else {
+        setApiData(response?.data?.locations);
         setIsLoading(false);
-     }
-      
-     
+      }
     } catch (error) {
       console.error('Error fetching data:', error);
       setIsLoading(false);
     }
   };
+  
 
   return (
     <SafeAreaView style={{backgroundColor: COLORS.CREAM, flex: 1}}>
       <DrawerOpen />
       <View style={styles.charging_imag_style}>
         <Image
-          source={require('../../../assets/images/car_one.png')}
-          resizeMode="stretch"
-          style={{alignSelf: 'center', width: mobileW}}
+          source={require('../../../assets/images/car_package.png')}
+          resizeMode="cover"
+          style={{width: mobileW,height:mobileH/5}}
         />
       </View>
 
-      {isLoading || apiData !==null? (
-        <ActivityLoader visible={isLoading} />||
-        <Tab.Navigator >
-          <Tab.Screen name='Base Package 1' component={TabFour} />
-        </Tab.Navigator>
+      {isLoading || showPackage ? (
+        <View>
+          {!showPackage ? (
+            <ActivityLoader visible={!showPackage} />
+          ) : (
+            <Text>No Package</Text>
+          )}
+        </View>
       ) : (
-        <Tab.Navigator
-          screenOptions={{
-            activeTintColor: 'blue',
-            inactiveTintColor: 'gray',
+        (
+          <Tab.Navigator
+            screenOptions={{
+              activeTintColor: 'blue',
+              inactiveTintColor: 'gray',
+              labelStyle: {
+                fontSize: 16,
+                fontWeight: 'bold',
 
-            labelStyle: {
-              fontSize: 16,
-              fontWeight: 'bold',
-            },
-          }}
-          tabBar={props => <MyTabBar {...props} />}>
-          {
-            apiData?.length >= 1 &&
-              apiData&&apiData.map((item, ind) => {
-                
+              },
+              
+            }}
+            tabBar={props => <MyTabBar {...props}  />}>
+            {apiData?.length >= 1 &&
+              apiData &&
+              apiData.map((item, ind) => {
                 return (
                   <Tab.Screen
                     key={ind}
                     name={item?.package_name}
-                    component={item?.package_name}
+                    component={TabOne}
                     initialParams={{item}}
                   />
                 );
-              })
+              })}
+          </Tab.Navigator>
+        ) || (
+          <Tab.Navigator
+            screenOptions={{
+              activeTintColor: 'blue',
+              inactiveTintColor: 'gray',
 
-            
-          }
-        </Tab.Navigator> 
-        
+              labelStyle: {
+                fontSize: 16,
+                fontWeight: 'bold',
+              },
+            }}
+            tabBar={props => <MyTabBar {...props} />}>
+            <Tab.Screen name="Base Package 1" component={TabFour} />
+          </Tab.Navigator>
+        )
       )}
     </SafeAreaView>
   );
@@ -174,6 +204,7 @@ const styles = StyleSheet.create({
   charging_imag_style: {
     justifyContent: 'center',
     alignItems: 'center',
+    marginBottom:20
   },
   managing_width: {
     paddingHorizontal: 20,
@@ -195,5 +226,23 @@ const styles = StyleSheet.create({
   },
   for_notmanage: {
     color: '#fff',
+  },
+  tabbar_part: {
+    flexDirection: 'row',
+    marginHorizontal: 20,
+    backgroundColor: '#EEEEEE',
+    borderRadius: 8,
+    overflow: 'hidden',
+  },
+  shadowProp: {
+    //backgroundColor: 'white',
+    shadowColor: 'rgba(0, 0, 0, 1)',
+    shadowOffset: {
+      width: 6,
+      height: 4,
+    },
+    shadowOpacity: 1,
+    shadowRadius: 4,
+    elevation: Platform.OS === 'android' ? 8 : 0,
   },
 });
