@@ -6,9 +6,8 @@ export default COLORS = {
   GRAY:'#F5F5F5',
   BROWN:'rgba(86, 84, 84, 0.1)',
 
-  HALFBLACK:"#808080"
-
+  HALFBLACK:"#808080",
   LIGHT_GREY: '#000000',
   RED:' #F84E4E',
->>>>>>> jyoti
-};
+
+}

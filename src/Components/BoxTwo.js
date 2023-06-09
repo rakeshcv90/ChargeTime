@@ -56,6 +56,14 @@ const styles = StyleSheet.create({
       borderRadius: 10,
       marginTop: 20,
       overflow:'hidden',
+      shadowColor: '#000000',
+      shadowOffset: {
+        width: 0,
+        height: 6,
+      },
+      shadowOpacity: 0.2,
+      shadowRadius: 5.62,
+      elevation: 8,
 
     },
     install_touchable: {

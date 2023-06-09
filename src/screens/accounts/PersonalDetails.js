@@ -1,8 +1,9 @@
 import { View, Text, StyleSheet, SafeAreaView, TextInput, useColorScheme } from 'react-native'
-import React from 'react'
+import React, {useState, useEffect} from 'react'
+import { useSelector } from 'react-redux';
 import HorizontalLine from '../../Components/HorizontalLine';
 import Header from '../../Components/Header';
-import { TouchableOpacity } from 'react-native-gesture-handler';
+import { State, TouchableOpacity } from 'react-native-gesture-handler';
 import { Image } from 'react-native-svg';
 import Input from '../../Components/Input';
 import COLORS from '../../constants/COLORS';
@@ -11,21 +12,47 @@ import { Call } from '../../../assets/svgs/Call';
 import { Message } from '../../../assets/svgs/Message';
 import {Name} from '../../../assets/svgs/Name';
 import { Edit } from '../../../assets/svgs/Edit';
+// import { userRegisterData } from '../../redux/action';
 
 
 
-const PersonalDetails = ({ navigation }) => {
+const PersonalDetails = ( props) => {
+  const userRegisterData = useSelector((state)=> state.userRegisterData)
+  const [isEditable, setIsEditable] = useState(false);
+   const [name, setName]= useState('');
+   const [mail, setMail] =useState('');
+   const [number, setNumber]=useState('');
+
+  useEffect(() => {
+   console.log('data for this User:---------', userRegisterData); 
+   if (userRegisterData) {
+    setName(userRegisterData.name);
+    setNumber(userRegisterData.mobile || '');
+    setMail(userRegisterData.email || '');
+  }
+}, [userRegisterData]);
+
+ 
   const theme = useColorScheme();
   const isDark = theme === 'dark';
+
+  const handleNameChange = (value) => {
+    setName(text);
+  };
+
+  const handleEditIconClick = () => {
+    setIsEditable(true);
+  };
+
   return (
     <SafeAreaView style={{ backgroundColor: COLORS.CREAM, flex: 1 }}>
-      <Header headerName="Personal Details" showRightButton={true} />
+      <Header headerName="Personal Details" showRightButton={true}  onRightButtonClick={handleEditIconClick}/>
       <HorizontalLine style={styles.line} />
       <View style={[styles.mainDiv_container]}>
-
+    
         <Input
           IconLeft={null}
-          autoFocus
+          editable={isEditable}
           bgColor={COLORS.CREAM}
           IconRight={() => (
            <Name/>
@@ -36,18 +63,20 @@ const PersonalDetails = ({ navigation }) => {
           text="Name"
           mV={5}
           textWidth={'17%'}
-          placeholder="Eg John Doe"
+          placeholder=''
           placeholderTextColor={COLORS.BLACK}
           style={{
             color: COLORS.BLACK,
             fontFamily: 'Roboto',
             fontWeight: '200',
           }}
+          onChangeText={setName}
+         value={name}
         />
         <Input
           IconLeft={null}
-          autoFocus
           bgColor={COLORS.CREAM}
+          editable={false}
           IconRight={() => (
            <Call/>
           )}
@@ -67,7 +96,7 @@ const PersonalDetails = ({ navigation }) => {
         />
         <Input
           IconLeft={null}
-          autoFocus
+          editable={false}
           bgColor={COLORS.CREAM}
           IconRight={() => (
            <Message/>
@@ -78,7 +107,7 @@ const PersonalDetails = ({ navigation }) => {
           text="Email"
           mV={55}
           textWidth={'20%'}
-          placeholder="Eg. johndoe@xyz.com"
+          placeholder="johndoe@xyz.com"
           placeholderTextColor={COLORS.BLACK}
           style={{
             color: COLORS.BLACK,

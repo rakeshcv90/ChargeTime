@@ -1,6 +1,6 @@
 /* eslint-disable prettier/prettier */
 /* eslint-disable react-native/no-inline-styles */
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   Text,
   View,
@@ -19,41 +19,14 @@ import { Edit } from '../../assets/svgs/Edit';
 const Header = ({ headerName, showRightButton, onPress }) => {
   return (
     <SafeAreaView style={styles.container}>
-      <StatusBar
-        // backgroundColor={COLORS.LIGHT_BLUE}
-        barStyle={'dark-content'}
-      />
       <View style={styles.innerContainer}>
-        <TouchableOpacity
-          style={{ width:0.56,marginTop:20}}
-        //   onPress={() => navigationRef.current?.goBack()}
-        >
+        <TouchableOpacity style={styles.backButton} onPress={() => navigationRef.current?.goBack()}>
           {/* Replace with your BackButton component */}
-          <BackButton/>
+          <BackButton />
         </TouchableOpacity>
-        <Text
-          style={{
-            marginTop:20,
-            fontfamily: 'Roboto',
-            color: COLORS.BLACK,
-            fontSize: 20,
-            fontWeight: '700',
-            width:250,
-            lineHeight: 26,
-            letterspacing:0.5,
-            height: 30,
-            
-          }}
-        >
-          {headerName}
-        </Text>
-        <TouchableOpacity
-          onPress={onPress}
-          style={{
-            width: 40,
-          }}
-        >
-          {showRightButton && <Edit/>}
+        <Text style={styles.headerText}>{headerName}</Text>
+        <TouchableOpacity style={styles.rightButton} onPress={onPress}>
+          {showRightButton && <Edit />}
         </TouchableOpacity>
       </View>
     </SafeAreaView>
@@ -63,7 +36,6 @@ const Header = ({ headerName, showRightButton, onPress }) => {
 const styles = StyleSheet.create({
   container: {
     backgroundColor: COLORS.LIGHT_BLUE,
-    // height: DIMENSIONS.SCREEN_HEIGHT <= 640 ? 60 : DIMENSIONS.SCREEN_HEIGHT * 0.06,
     elevation: 3,
   },
   innerContainer: {
@@ -72,6 +44,22 @@ const styles = StyleSheet.create({
     paddingHorizontal: 15,
     paddingVertical: 10,
     alignItems: 'center',
+  },
+  backButton: {
+    width: 40,
+  },
+  headerText: {
+    fontFamily: 'Roboto',
+    color: COLORS.BLACK,
+    fontSize: 20,
+    fontWeight: '700',
+    width: 250,
+    lineHeight: 26,
+    letterSpacing: 0.5,
+    height: 30,
+  },
+  rightButton: {
+    width: 40,
   },
 });
 

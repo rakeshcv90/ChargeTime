@@ -27,6 +27,7 @@ const mobileH = Math.round(Dimensions.get('window').height);
 const mobileW = Math.round(Dimensions.get('window').width);
 
 export default function Login({navigation}) {
+
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const loginFunction = async () => {
@@ -52,6 +53,7 @@ export default function Login({navigation}) {
           }):ToastAndroid.show('Login Successful', ToastAndroid.SHORT);
 
           navigation.navigate('DrawerStack');
+          // navigation.navigate('Home');
         } else {
           PLATFORM_IOS?
           Toast.show({

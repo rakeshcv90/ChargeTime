@@ -24,6 +24,8 @@ import { Admin } from '../../../assets/images/Admin';
 import { Message } from '../../../assets/images/Message';
 import { Call } from '../../../assets/images/Call';
 import { StrongPass } from '../../../assets/images/StrongPass';
+import { useDispatch } from 'react-redux';
+import { userRegisterData } from '../../redux/action';
 const mobileH = Math.round(Dimensions.get('window').height);
 const mobileW = Math.round(Dimensions.get('screen').width);
 const PasswordRegex =
@@ -38,11 +40,12 @@ const validationSchema = Yup.object().shape({
   ).required('Password is required'),
 });
 export default function Register({navigation}) {
+  const dispatch =useDispatch();
+ 
   const handleFormSubmit = async values => {
     console.log(values);
     try {
       const response = await axios.post(`${API}/createuser`, values);
-      
       
       
       if (response.data.message != "Your Email is already exist") {
@@ -53,6 +56,9 @@ export default function Register({navigation}) {
           
         }):ToastAndroid.show('User registered successfully.', ToastAndroid.SHORT);
         navigation.navigate('VerifyEmail', { email: values?.email });
+         const data=[{ email: values?.email },{ name: values?.name },{ mobile: values?.mobile }]
+         console.log('------------------',data);
+        dispatch(userRegisterData(data)); 
         
       } else {
         PLATFORM_IOS?

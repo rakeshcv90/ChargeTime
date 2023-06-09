@@ -15,6 +15,14 @@ import Toast from 'react-native-toast-message';
 import CustomDrawerContent from './CustomDrawer';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import Payment from '../screens/accounts/Payment';
+import PersonalDetails from '../screens/accounts/PersonalDetails';
+import Security from '../screens/accounts/Security';
+import Installation from '../screens/accounts/Installation';
+import Theme from '../screens/accounts/Theme';
+import Subscription from '../screens/accounts/Subscription';
+import deleteAccount from '../screens/accounts/deleteAccount';
+import Plan from '../screens/planSummary/Plan';
 
 const Drawer = createDrawerNavigator();
 const Stack = createNativeStackNavigator();
@@ -41,6 +49,41 @@ const DrawerNavigation = () => {
         name="Home"
         component={Home}
       />
+        <Drawer.Screen
+          options={{
+            drawerActiveBackgroundColor: 'rgba(177, 211, 79, 0.5)',
+            drawerActiveTintColor: 'black',
+            drawerIcon: ({ focused, color, size }) => (
+              <Image
+                source={require('../../assets/images/account.png')}
+                style={{ width: size, height: size }}
+              />
+            ),
+          }}
+          name="Account"
+          component={Account}
+        />
+        <Drawer.Screen
+          options={{
+            drawerActiveBackgroundColor: 'rgba(177, 211, 79, 0.5)',
+            drawerActiveTintColor: 'black',
+            drawerIcon: ({ focused, color, size }) => (
+              <Image
+                source={require('../../assets/images/account.png')}
+                style={{ width: size, height: size }}
+              />
+            ),
+          }}
+          name="Register"
+          component={Register}
+        />
+         <Drawer.Screen name="PersonalDetails" component={PersonalDetails} />
+        <Drawer.Screen name="Security" component={Security} />
+        <Drawer.Screen name="Installation" component={Installation} />
+        <Drawer.Screen name="Payment" component={Payment} />
+        <Drawer.Screen name="Subscription" component={Subscription} />
+        <Drawer.Screen name="Theme" component={Theme} />
+        <Drawer.Screen name="deleteAccount" component={deleteAccount} />
       
     </Drawer.Navigator>
   );
@@ -55,9 +98,17 @@ const LoginStack = () => {
       <Stack.Screen name="ForgetPassword" component={ForgetPassword} />
       <Stack.Screen name="ResetPassword" component={ResetPassword} />
       <Stack.Screen name="DrawerStack" component={DrawerNavigation} />
+       <Stack.Screen name="PersonalDetails" component={PersonalDetails} />
+        <Stack.Screen name="Security" component={Security} />
+        <Stack.Screen name="Installation" component={Installation} />
+        <Stack.Screen name="Payment" component={Payment} />
+        <Stack.Screen name="Subscription" component={Subscription} />
+        <Stack.Screen name="Theme" component={Theme} />
+        <Stack.Screen name="deleteAccount" component={deleteAccount} />
     </Stack.Navigator>
   );
 };
+
 
 export default function Router() {
   const [isAuthorized, setIsAuthorized] = useState(false);
@@ -85,7 +136,7 @@ export default function Router() {
 
   return (
     <Stack.Navigator screenOptions={screenOptions}>
-      {isAuthorized ? (
+      {!isAuthorized ? (
         <>
           <Stack.Screen name="LoginStack" component={LoginStack} />
         </>
