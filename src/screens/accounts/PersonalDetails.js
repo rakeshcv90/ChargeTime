@@ -35,6 +35,7 @@ const PersonalDetails = ( props) => {
  
   const theme = useColorScheme();
   const isDark = theme === 'dark';
+  
 
   const handleNameChange = (value) => {
     setName(text);
