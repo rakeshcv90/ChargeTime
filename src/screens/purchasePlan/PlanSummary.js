@@ -5,6 +5,7 @@ import {
   TouchableOpacity,
   Dimensions,
   Image,
+  ScrollView
 } from 'react-native';
 import React from 'react';
 import COLORS from '../../constants/COLORS';
@@ -16,18 +17,31 @@ import {PlanPricing} from '../../../assets/images/PlanPricing';
 import {LeftIcon} from '../../../assets/images/LeftIcon';
 import { PLATFORM_IOS } from '../../constants/DIMENSIONS';
 import BoxOne from '../../Components/BoxOne';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import BoxFour from '../../Components/BoxFour';
 const mobileW = Math.round(Dimensions.get('screen').width);
 
 export default function PlanSummary({route}) {
   return (
-    <View style={{backgroundColor: COLORS.CREAM, flex: 1,paddingHorizontal: 20}}>
+    <SafeAreaView style={{backgroundColor: COLORS.CREAM, flex: 1}}>
+        <ScrollView
+        showsVerticalScrollIndicator={false}
+        keyboardShouldPersistTaps="handled">
+    <View>
       <View style={{paddingHorizontal: 20, marginTop: 30, marginBottom: 20}}>
         <Text style={{fontSize: 24, fontWeight: "800", color: COLORS.BLACK}}>
           Plan Summary
         </Text>
       </View>
-          <BoxOne data={route.params.data} />
-      {/* <View style={styles.mainDiv_installation_one}>
+      <View style={{marginHorizontal:20}}>
+          <View style={{marginBottom:10}}>
+          <BoxOne  data={route.params.data} />
+          </View>
+          <View style={{marginBottom:10}}>
+          <BoxFour />
+          </View>
+          </View>
+       {/* <View style={styles.mainDiv_installation_one}>
         
         <TouchableOpacity style={styles.install_touchable}>
           <Address style={styles.img_width} />
@@ -61,8 +75,8 @@ export default function PlanSummary({route}) {
         </View>
         
       </View> */}
-      
-      <View style={styles.mainDiv_installation_one}>
+       
+      {/* <View style={styles.mainDiv_installation_one}>
         <TouchableOpacity style={styles.install_touchable}>
           <Address style={styles.img_width} />
           <Text style={styles.installation_text}>Plan Details</Text>
@@ -79,16 +93,13 @@ export default function PlanSummary({route}) {
           />
           <View style={styles.mainDiv_state_zip}>
             <View style={styles.state_div}>
-              {/* <Image
-            style={styles.img_width}
-            source={require('../../assets/images/connecticut.png')}
-          /> */}
+              
               <Connecticut style={styles.img_width} />
               <Text style={styles.force_base}>fgchvjk</Text>
             </View>
             <View style={styles.state_div}>
               <Image
-                //style={styles.img_width}
+                
                 source={require('../../../assets/images/zip_code.png')}
                 style={{width: 20, height: 20}}
               />
@@ -96,7 +107,7 @@ export default function PlanSummary({route}) {
             </View>
           </View>
         </View>
-      </View>
+      </View> */}
       
       <View style={styles.mainDiv_installation_one}>
         <View>
@@ -158,6 +169,8 @@ export default function PlanSummary({route}) {
         </View>
       </View>
     </View>
+    </ScrollView>
+    </SafeAreaView>
   );
 }
 const styles = StyleSheet.create({

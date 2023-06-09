@@ -23,11 +23,12 @@ import axios from 'axios';
 import ActivityLoader from '../../Components/ActivityLoader';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import TabFour from './TabFour';
+import {useDispatch, useSelector} from 'react-redux';
 const mobileW = Math.round(Dimensions.get('screen').width);
 const mobileH = Math.round(Dimensions.get('window').height);
 let loginData;
-function MyTabBar({state, descriptors, navigation, position,focusTab}) {
-  
+function MyTabBar({state, descriptors, navigation, position}) {
+  const dispatch = useDispatch();
   const [focusTab,setFocusTab] = useState('')
   useEffect(() => {
     const activeRoute = state.routes[state.index];
