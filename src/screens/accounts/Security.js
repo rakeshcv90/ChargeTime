@@ -1,4 +1,4 @@
-import { View, Text, SafeAreaView,StyleSheet,TextInput} from 'react-native'
+import { View, Text, SafeAreaView,StyleSheet,TextInput, TouchableOpacity} from 'react-native'
 import React, { useEffect } from 'react'
 import * as Yup from 'yup';
 import COLORS from '../../constants/COLORS'
@@ -10,6 +10,9 @@ import {Eye} from '../../../assets/svgs/Eye'
 import { Formik } from 'formik';
 import { useState } from 'react';
 import { useSelector } from 'react-redux';
+import { Edit } from '../../../assets/svgs/Edit';
+import { Save } from '../../../assets/svgs/Save';
+import { BackButton } from '../../../assets/svgs/BackButton';
 
 
 
@@ -32,12 +35,25 @@ const ValidateSchema = Yup.object().shape({
 
 const Security = () => {
 const userRegisterData = useSelector((state)=> state.userRegisterData)
-const [code, getCode]= useState('');
+const [showRightButton, setShowRightButton] = useState(false);
+const [isClicked, setIsClicked]=useState<Boolean>(false)
+const [showSaveIcon, setShowSaveIcon] = useState(false);
 
 useEffect(() => {
   // console.log('data for this User:---------', userRegisterData); 
   console.log("+++++++++++++++",userRegisterData)
 }, []);
+
+const handleRightButtonClick = () => {
+  console.log ("-----------hhhhhhhhh------------")
+//   if (showRightButton) {
+//  console.log ("-----------------------")
+//     setShowRightButton(false);
+//   } else {
+//     setShowRightButton(true);
+//     console.log ("----------------------+++++++++-")
+//   }
+};
 
 const UpdatePassword= async (values) =>{
     console.log(values);
@@ -91,9 +107,25 @@ const UpdatePassword= async (values) =>{
 >
   {({ handleChange, handleBlur, handleSubmit, values }) => (
     <SafeAreaView style={{ backgroundColor: COLORS.CREAM, flex: 1 }}>
-      <Header headerName="Security" />
+    <View style={[styles.innerContainer, styles.header]}>
+        <TouchableOpacity
+          style={[styles.backButton, styles.headerButton]}
+          onPress={() => navigationRef.current?.goBack()}
+        >
+          <BackButton />
+        </TouchableOpacity>
+        <Text style={[styles.headerText, styles.headerButton]}>Security</Text>
+        <TouchableOpacity
+          style={[styles.rightButton, styles.headerButton]}
+          onPress={handleRightButtonClick}
+        >
+        {/* {showRightButton && showRightButton ? <Save /> : <Edit />} */}
+        {/* {showSaveIcon ? <Save /> : <Edit />} */}
+        <Edit/>
+        </TouchableOpacity>
+      </View>
       <HorizontalLine style={styles.line} />
-
+    
       <Input
         IconLeft={null}
         autoFocus
@@ -209,7 +241,36 @@ line:{
   marginTop:50,
   marginBottom:10,
   marginHorizontal:5,
-}
+},
+innerContainer: {
+  flexDirection: 'row',
+  justifyContent: 'space-between',
+  paddingHorizontal: 15,
+  paddingVertical: 10,
+  alignItems: 'center',
+},
+header: {
+  backgroundColor: COLORS.CREAM,
+},
+headerButton: {
+  paddingHorizontal: 10,
+},
+backButton: {
+  width: 40,
+},
+headerText: {
+  fontFamily: 'Roboto',
+  color: COLORS.BLACK,
+  fontSize: 20,
+  fontWeight: '700',
+  width: 250,
+  lineHeight: 26,
+  letterSpacing: 0.5,
+  height: 30,
+},
+rightButton: {
+  width: 40,
+},
 });
 
 export default Security
