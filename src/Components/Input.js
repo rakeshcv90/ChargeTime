@@ -14,6 +14,8 @@ import {
 import COLORS from '../constants/COLORS';
 import {PLATFORM_IOS, DIMENSIONS} from '../constants/DIMENSIONS';
 
+
+
 export type Props = TextInputProps & {
   mV?: number;
   mH?: number;
@@ -108,9 +110,9 @@ const Input: FC<Props> = ({...Props}) => {
           {Props.passwordInput && (
             <TouchableOpacity onPress={Props.pasButton}>
               {Props.passwordInputIcon ? (
-                <Image source={require('../../assets/images/lock.png')} />
+                <Image source={require('../../assets/images/phone.png')} />
               ) : (
-                <Image source={require('../../assets/images/lock.png')} />
+                <Image source={require('../../assets/images/passwod.png')} />
               )}
             </TouchableOpacity>
           )}

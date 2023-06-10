@@ -8,6 +8,9 @@ const initialState = {
     switch (action.type) {
       case types.GET_USER_DATA:
         return { ...state, userRegisterData: action.payload };
+        case types.GET_BASE_PACKAGE:
+        return { ...state, getBasePackage: action.payload };
+        
       default:
         return state;
     }

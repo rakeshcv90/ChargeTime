@@ -68,7 +68,7 @@ const UpdatePassword= async (values) =>{
           text1: 'User registered successfully.',
           
         }):ToastAndroid.show('User registered successfully.', ToastAndroid.SHORT);
-        navigation.navigate('VerifyEmail', { email: values?.email });
+        // navigation.navigate('VerifyEmail', { email: values?.email });
         //  const data=[{ email: values?.email },{ name: values?.name },{ mobile: values?.mobile }]
        
       } else {

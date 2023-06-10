@@ -9,11 +9,11 @@ import {
   TextInput,
   useColorScheme,
   Platform,
-  ToastAndroid
+  ToastAndroid,ScrollView
 } from 'react-native';
 import {SafeAreaView} from 'react-native-safe-area-context';
-import {Sign_up} from '../../assets/images/Sign_up';
-import {ScrollView} from 'react-native-gesture-handler';
+
+
 import COLORS from '../../constants/COLORS';
 import {API} from '../../api/API';
 import axios from 'axios';
@@ -25,11 +25,13 @@ const mobileW = Math.round(Dimensions.get('screen').width);
 
 export default function VerifyEmail(props) {
  
-  useEffect(() => {
-console.log(email,'hhh')
-  },[email])
+  
   const {navigation, route} = props;
-  const {email} = route?.params;
+  const {email,user_id} = route?.params;
+  
+  const [emailCheck,setEmailCheck] = useState(false)
+  const [stopTimer,setStopTimer] = useState(false)
+  
   // console.log(email,'kk')
   // const emailVErifyWithOTP = email
 
@@ -59,6 +61,7 @@ console.log(email,'hhh')
       sixDigit;
     
     try {
+      if(email !== '' && otp !== ''){
       await fetch(`${API}/verifyotp`, {
         method: 'POST',
         headers: {
@@ -74,8 +77,8 @@ console.log(email,'hhh')
           text1: 'OTP verification successfull.',
           
         }):ToastAndroid.show('OTP verification successfull.', ToastAndroid.SHORT);
-        navigation.navigate('CompleteProfile', { email: email });
-        
+        navigation.navigate('CompleteProfile', { email: email,user_id:user_id });
+      
       } else {
         PLATFORM_IOS?
         Toast.show({
@@ -87,7 +90,14 @@ console.log(email,'hhh')
          
         
         }
-      })
+      })}else{
+        PLATFORM_IOS?
+        Toast.show({
+          type: 'error',
+          text1: "Please fill required details",
+          // position: 'bottom',
+        }):ToastAndroid.show("Please fill required details", ToastAndroid.SHORT);
+      } 
       
       
     } catch (error) {
@@ -128,6 +138,127 @@ console.log(email,'hhh')
       // Handle network errors or other exceptions
     }
   };
+
+  const resendLink = async () => {
+    try {
+      await fetch(`${API}/resetemail`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({pwa_email: email}),
+      }).then((res) => res.json())
+      .then((data) => {
+       
+        if (data.message !== "Invalid Email") {
+          setEmailCheck(true)
+          PLATFORM_IOS?
+        Toast.show({
+          type: 'success',
+          text1: 'Email sent successfully',
+          
+        }):ToastAndroid.show('Email sent successfully', ToastAndroid.SHORT);
+        
+        
+      } else {
+        PLATFORM_IOS?
+        Toast.show({
+          type: 'error',
+          text1: "Invalid Email",
+          // position: 'bottom',
+        }):ToastAndroid.show("Invalid Email", ToastAndroid.SHORT);
+      }
+      })
+    } catch (error) {
+      console.error(error);
+      // Handle network errors or other exceptions
+    }
+  }
+  // useEffect(() => {
+  //   if(emailCheck){
+  //   setInterval(() => {
+  //     sendToAnotherPage()
+  //   },2000)
+  // }
+    
+  // },[])
+//   useEffect(() => {
+//     let stop = true
+
+//     if (emailCheck) {
+//      setInterval(() => {
+      
+//         // Check your condition here
+       
+
+       
+//         clearInterval(stopTimer);
+//         sendToAnotherPage();
+       
+    
+        
+//       }, 2000);
+// }
+
+//     return () => {
+//       clearInterval(stopTimer); // Clear the interval when the component unmounts
+//     };
+//   }, [emailCheck]);
+//   const sendToAnotherPage = async () => {
+//     try {
+//       await fetch(`${API}/emailverify/${user_id}`, {
+//         method: 'GET',
+//         headers: {
+//           'Content-Type': 'application/json',
+//         },
+        
+//       }).then((res) => res.json())
+//       .then((data) => {
+//         console.log(data,'vvv')
+//         if(data.status.email_verified == 1){
+//           setStopTimer(true)
+//         navigation.navigate('CompleteProfile', { email: email,user_id:user_id });
+//         }
+//       })
+//     } catch (error) {
+//       console.error(error);
+//       // Handle network errors or other exceptions
+//     }
+//   }
+useEffect(() => {
+  let stopTimer;
+
+  const sendToAnotherPage = async () => {
+    try {
+      const response = await fetch(`${API}/emailverify/${user_id}`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+      const data = await response.json();
+      console.log(data, 'vvv');
+      if (data.status.email_verified === 1) {
+        navigation.navigate('CompleteProfile', { email: email, user_id: user_id });
+        clearInterval(stopTimer);
+      }
+    } catch (error) {
+      console.error(error);
+      // Handle network errors or other exceptions
+    }
+  };
+
+  if (emailCheck) {
+    stopTimer = setInterval(() => {
+      sendToAnotherPage();
+    }, 2000);
+  }
+
+  return () => {
+    clearInterval(stopTimer); // Clear the interval when the component unmounts or when emailCheck changes
+  };
+}, [emailCheck]);
+
 
   return (
     <SafeAreaView style={{backgroundColor: COLORS.CREAM, flex: 1}}>
@@ -186,7 +317,7 @@ console.log(email,'hhh')
             <Text style={styles.verification_email}>
               Receive verification email instead.
             </Text>
-            <TouchableOpacity style={styles.resend_OTP_btn}>
+            <TouchableOpacity style={styles.resend_OTP_btn} onPress={resendLink}>
               <Text style={styles.resend_otp_text}>Send Link</Text>
             </TouchableOpacity>
           </View>
@@ -282,7 +413,7 @@ console.log(email,'hhh')
           </View>
           <View style={styles.mainDiv_VErify_account}>
             <Text style={styles.wrong_email_text}>Entered wrong email? </Text>
-            <TouchableOpacity onPress={() => navigation.goBack()}>
+            <TouchableOpacity onPress={() => navigation.navigate("Register")}>
             <Text style={styles.make_changes}>Go back to make changes.</Text>
             </TouchableOpacity>
           </View>

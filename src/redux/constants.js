@@ -1,3 +1,4 @@
 export default {
-    GET_USER_DATA: 'GET_USER_DATA'
+    GET_USER_DATA: 'GET_USER_DATA',
+    GET_BASE_PACKAGE:"GET_BASE_PACKAGE"
 };

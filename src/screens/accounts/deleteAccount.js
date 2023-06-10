@@ -31,7 +31,7 @@ const DeleteAccountScreen = () => {
           bColor={COLORS.BLACK}
           text="Reason"
           mV={19}
-          textWidth={'20%'}
+          textWidth={'30%'}
           multiline
           maxLength={5}
           placeholder="Please let us know the reason for the account closure request."
@@ -54,7 +54,7 @@ const DeleteAccountScreen = () => {
           bColor={COLORS.BLACK}
           text="Password"
           mV={19}
-          textWidth={'27%'}
+          textWidth={'35%'}
           placeholder="Enter password to verify..."
           placeholderTextColor={COLORS.BLACK}
           style={{

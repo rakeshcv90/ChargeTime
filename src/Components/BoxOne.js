@@ -6,7 +6,9 @@ import { Vanderberg } from '../../assets/images/Vanderberg';
 import { Connecticut } from '../../assets/images/Connecticut';
 import COLORS from '../constants/COLORS';
 const mobileW = Math.round(Dimensions.get('screen').width);
-const BoxOne = () => {
+const BoxOne = ({data}) => {
+  // const {navigation, route} = props;
+  
   return (
     <View style={[styles.mainDiv_installation]}>
       <TouchableOpacity style={styles.install_touchable}>
@@ -15,32 +17,34 @@ const BoxOne = () => {
         <InstallBase style={styles.img_width} />
         <Text style={styles.installation_text}>Installation Base</Text>
       </TouchableOpacity>
-      <View style={styles.location_div}>
-        
-         <Vanderberg style={styles.img_width} />
-        <Text style={styles.force_base}>Vanderberg Space Force Base</Text>
-      </View>
-      <Image
+      <View style={styles.shadowProp}>
+        <View style={styles.location_div}>
+          <Vanderberg style={styles.img_width} />
+          <Text style={styles.force_base}>{data?.location?data?.location:" Vandenberg Space Force Base"}</Text>
+        </View>
+        <Image
           // style={styles.img_width}
           source={require('../../assets/images/dotted.png')}
-          resizeMode='stretch' style={{alignSelf: 'center', width: mobileW,}}
+          resizeMode="stretch"
+          style={{alignSelf: 'center', width: mobileW}}
         />
-      <View style={styles.mainDiv_state_zip}>
-        <View style={styles.state_div}>
-          {/* <Image
+        <View style={styles.mainDiv_state_zip}>
+          <View style={styles.state_div}>
+            {/* <Image
             style={styles.img_width}
             source={require('../../assets/images/connecticut.png')}
           /> */}
-          <Connecticut style={styles.img_width} />
-          <Text style={styles.force_base}>Connecticut</Text>
-        </View>
-        <View style={styles.state_div}>
-          <Image
-            //style={styles.img_width}
-            source={require('../../assets/images/zip_code.png')}
-            style={{width:20,height:20}}
-          />
-          <Text style={styles.force_base}>123456</Text>
+            <Connecticut style={styles.img_width} />
+            <Text style={styles.force_base}>{data?.state?data?.state:"Conneticut"}</Text>
+          </View>
+          <View style={styles.state_div}>
+            <Image
+              //style={styles.img_width}
+              source={require('../../assets/images/zip_code.png')}
+              style={{width: 20, height: 20}}
+            />
+            <Text style={styles.force_base}>{data?.ZIP_code?data?.ZIP_code:"123456"}</Text>
+          </View>
         </View>
       </View>
     </View>
@@ -56,12 +60,12 @@ const styles = StyleSheet.create({
     // paddingVertical:15
   },
   mainDiv_installation: {
-    overflow:'hidden',
+    overflow: 'hidden',
     borderRadius: 10,
     marginTop: Platform.OS === "ios"?10: 10,
     shadowColor: '#000000',
     shadowOffset: {
-      width: 0,
+      width: 4,
       height: 6,
     },
     shadowOpacity: 0.2,
@@ -89,7 +93,17 @@ const styles = StyleSheet.create({
     paddingVertical: 20,
     // borderBottomWidth: 1,
     // borderBottomColor: COLORS.GREEN,
-    
+  },
+  shadowProp: {
+    backgroundColor: 'white',
+    shadowColor: 'rgba(0, 0, 0, 0.7)',
+    shadowOffset: {
+      width: 6,
+      height: 4,
+    },
+    shadowOpacity: 1,
+    shadowRadius: 4,
+    elevation: Platform.OS === 'android' ? 8 : 0,
   },
   force_base: {
     fontWeight: 400,
@@ -108,7 +122,7 @@ const styles = StyleSheet.create({
   state_div: {
     flexDirection: 'row',
     alignItems: 'center',
-    paddingVertical:10
+    paddingVertical: 10,
   },
   mainDiv_plan_details: {
     flexDirection: 'row',

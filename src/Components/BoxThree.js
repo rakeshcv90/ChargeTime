@@ -1,17 +1,19 @@
 import {View, Text, StyleSheet, TouchableOpacity, Image} from 'react-native';
 import React from 'react';
 import { Dolllar } from '../../assets/images/Dollar';
+import { navigationRef } from '../../App';
 
-const BoxThree = () => {
+const BoxThree = ({data}) => {
+  
   return (
-    <View style={styles.mainDiv_purchage_dollar}>
+    <View style={[styles.mainDiv_purchage_dollar,styles.shadowProp]}>
       <View style={styles.dollar_div}>
         {/* <Image source={require('../../assets/images/price.png')} /> */}
         <Dolllar />
-        <Text style={styles.per_month}>$74.67 /month</Text>
+        <Text style={styles.per_month}>${data.total_price} /month</Text>
       </View>
       <View>
-        <TouchableOpacity style={styles.btn_purchage}>
+        <TouchableOpacity style={styles.btn_purchage} onPress={() => navigationRef.navigate("PlanSummary", {data: data})}>
           <Text style={styles.purchage_text}>PURCHAGE</Text>
         </TouchableOpacity>
       </View>
@@ -24,6 +26,17 @@ const styles = StyleSheet.create({
   managing_width: {
     paddingHorizontal: 20,
     // paddingVertical:15
+  },
+  shadowProp: {
+    backgroundColor: 'white',
+    shadowColor: 'rgba(0, 0, 0, 1)', 
+    shadowOffset: {
+      width: 6, 
+      height: 4, 
+    },
+    shadowOpacity: 1, 
+    shadowRadius: 4, 
+    elevation: Platform.OS === 'android' ? 8 : 0,
   },
   mainDiv_installation: {
     borderWidth: 1,

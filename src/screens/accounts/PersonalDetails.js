@@ -15,7 +15,10 @@ import { Message } from '../../../assets/svgs/Message';
 import {Name} from '../../../assets/svgs/Name';
 import { API } from '../../api/API';
 import { Edit } from '../../../assets/svgs/Edit';
+
 import {Save} from '../../../assets/svgs/Save'
+
+import { navigationRef } from '../../../App';
 // import { userRegisterData } from '../../redux/action';
 
 
@@ -190,6 +193,7 @@ const PersonalDetails = ({navigation}) => {
       </View>
       <View style={styles.bottom}>
         <Text>Want to delete account?{' '}</Text>
+        
         <TouchableOpacity onPress={()=>navigation.navigate('deleteAccount')}>
           <Text 
           style={{

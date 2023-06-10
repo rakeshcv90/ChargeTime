@@ -6,29 +6,97 @@ import {
   TextInput,
   Platform,
   Dimensions,Image,
-  TouchableOpacity
+  TouchableOpacity,ToastAndroid
 } from 'react-native';
-import React from 'react';
+import React, { useState } from 'react';
 import {SafeAreaView} from 'react-native-safe-area-context';
-
-
+import * as Yup from 'yup';
+import {Formik} from 'formik';
 import COLORS from '../../constants/COLORS';
 import Input from '../../Components/Input';
 import { Message } from '../../../assets/images/Message';
+import { PLATFORM_IOS } from '../../constants/DIMENSIONS';
+import { Toast } from 'react-native-toast-message/lib/src/Toast';
+import { API } from '../../api/API';
 
 const mobileW = Math.round(Dimensions.get('screen').width);
 
+const validationSchema = Yup.object().shape({
+  
+  email: Yup.string().email('Invalid Email').required('Email is required'),
+  
+});
+
 const ForgetPassword = ({navigation}) => {
+  
+  const handleRemberPassWord = async values => {
+    try{
+      
+        await fetch(`${API}/forgetPassword`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(values),
+        }).then((res) => res.json())
+        .then((data) => {
+          
+          if (data.success !== false) {
+            PLATFORM_IOS?
+          Toast.show({
+            type: 'success',
+            text1: 'Email added successfully.',
+            
+          }):ToastAndroid.show('Email added successfully.', ToastAndroid.SHORT);
+          navigation.navigate('ResetPassword', { email: values });
+        
+        } else {
+          PLATFORM_IOS?
+          Toast.show({
+            type: 'error',
+            text1: "Email already in use",
+            // position: 'bottom',
+          }):ToastAndroid.show("Email already in use", ToastAndroid.SHORT);
+        
+           
+          
+          }
+        })}
+    catch(err){
+console.log(err)
+    }
+  }
   return (
     <SafeAreaView style={{backgroundColor: COLORS.CREAM, flex: 1}}>
       <ScrollView
         showsVerticalScrollIndicator={false}
         keyboardShouldPersistTaps="handled">
-        <View>
-        <Image  source={require("../../../assets/images/bigstock.png")} resizeMode='stretch' style={{alignSelf: 'center', width: mobileW,}} />
-
+        <View style={styles.login_img}>
+          <Image
+            source={require('../../../assets/images/log.png')}
+            resizeMode="contain"
+            style={{width: mobileW, }}
+          />
         </View>
         <View style={styles.super_div}>
+          
+          <Formik
+            initialValues={{
+              
+              email: '',
+              
+            }}
+            onSubmit={values => handleRemberPassWord(values)}
+            validationSchema={validationSchema}>
+            {({
+              values,
+              handleChange,
+              handleSubmit,
+              handleBlur,
+              errors,
+              touched,
+            }) => (
+              <View>
           <View style={styles.mainDiv_forget_ur_pass}>
             <Text style={styles.forget_password}>Forgot Your Password?</Text>
             <View style={{marginTop:20}}>
@@ -37,8 +105,10 @@ const ForgetPassword = ({navigation}) => {
             
             errors={undefined}
             touched={false}
-            // value={email}
-            // onChangeText={text => setEmail(text)}
+            value={values.email}
+            onChangeText={handleChange('email')}
+                    onBlur={handleBlur('email')}
+            
             text="Email"
             IconRight={() => (
              
@@ -53,6 +123,9 @@ const ForgetPassword = ({navigation}) => {
             autoCapitalize='none'
             
           />
+          {errors.email && touched.email && (
+                    <Text style={{color: 'red'}}>{errors.email}</Text>
+                  )}
             </View>
           </View>
           <View
@@ -62,7 +135,7 @@ const ForgetPassword = ({navigation}) => {
               
             }}>
             <TouchableOpacity
-            onPress={() => navigation.navigate('ResetPassword')}
+            onPress={handleSubmit}
               style={{
                 marginTop: 5,
                 backgroundColor: COLORS.GREEN,
@@ -76,9 +149,14 @@ const ForgetPassword = ({navigation}) => {
               </Text>
             </TouchableOpacity>
           </View>
+          </View>
+)}
+          </Formik>
+          
+          
           <View style={styles.mainDiv_donot_account}>
             <Text style={styles.dont_have_text}>Remember your password? </Text>
-            <TouchableOpacity onPress={() => navigation.navigate("Login")}>
+            <TouchableOpacity onPress={()=> navigation.navigate("Login")}>
             <Text style={styles.sign_up}>Sign In</Text>
             </TouchableOpacity>
           </View>
@@ -93,6 +171,10 @@ export default ForgetPassword;
 const styles = StyleSheet.create({
   super_div: {
     marginHorizontal: 20,
+  },
+  login_img: {
+    width: mobileW,
+    
   },
   mainDiv_forget_ur_pass: {
     marginTop: 65,

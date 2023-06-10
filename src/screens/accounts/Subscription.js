@@ -1,6 +1,6 @@
 import {View, Text, StyleSheet, TouchableOpacity, SafeAreaView, ScrollView, Image,Dimensions, Platform} from 'react-native';
 import React from 'react';
-const mobileW = Math.round(Dimensions.get('screen').width);
+
 import HorizontalLine from  '../../Components/HorizontalLine'
 import Header from '../../Components/Header'
 import COLORS from '../../constants/COLORS';
@@ -10,7 +10,7 @@ import { PLATFORM_IOS } from '../../constants/DIMENSIONS';
 import WaveAnimation from '../../Components/WaveAnimation';
 import { DIMENSIONS } from '../../constants/DIMENSIONS';
 import PriceValidity from '../../Components/PriceValidity';
-
+const mobileW = Math.round(Dimensions.get('screen').width);
  const Subscription = () => {
   return (
     <ScrollView showsVerticalScrollIndicator={false} >
@@ -18,7 +18,7 @@ import PriceValidity from '../../Components/PriceValidity';
     <Header headerName="Subscription" />
     <HorizontalLine/>
     <View style={styles. managing_width}>
-          <BoxOne />
+          <BoxOne  />
           <BoxTwo />
         
         </View>
@@ -42,7 +42,7 @@ const styles = StyleSheet.create({
     marginLeft:10,
     marginRight:10,
     //  flex: 1,
-    paddingVertical: PLATFORM_IOS? 20:0,
+    paddingVertical: PLATFORM_IOS? 20:10,
   },
   mainDiv_installation: {
     marginLeft:20,
@@ -52,8 +52,8 @@ const styles = StyleSheet.create({
     marginVertical: 20,
     flexDirection: 'column-reverse',
     shadowColor: '#000000',
-    shadowOffset: {
-      width: 0,
+    shadowOffSet: {
+      width: 5,
       height: 6,
     },
     shadowOpacity: 0.2,
