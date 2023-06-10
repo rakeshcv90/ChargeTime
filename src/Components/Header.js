@@ -15,8 +15,23 @@ import { navigationRef } from '../../App';
 import { Image } from 'react-native-svg';
 import { BackButton } from '../../assets/svgs/BackButton';
 import { Edit } from '../../assets/svgs/Edit';
+import { Save } from '../../assets/svgs/Save';
 
 const Header = ({ headerName, showRightButton, onPress }) => {
+const [RightButton, setRightButton] =useState()
+const [pressed, setPressed]=useState(true)
+  const handleRightButtonClick = () => {
+    if (onPress != null) {
+      return showRightButton ? <Save /> : null;
+    }
+    return showRightButton ? <Edit /> : null;
+  };
+
+  const renderIcon = () => {
+    return showRightButton ? <Edit /> : null;
+   
+  };
+
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.innerContainer}>
@@ -25,8 +40,9 @@ const Header = ({ headerName, showRightButton, onPress }) => {
           <BackButton />
         </TouchableOpacity>
         <Text style={styles.headerText}>{headerName}</Text>
-        <TouchableOpacity style={styles.rightButton} onPress={onPress}>
-          {showRightButton && <Edit />}
+        <TouchableOpacity style={styles.rightButton} onPress={handleRightButtonClick}>
+          {/* {showRightButton && <Edit />} */}
+          {renderIcon()}
         </TouchableOpacity>
       </View>
     </SafeAreaView>

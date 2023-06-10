@@ -1,9 +1,11 @@
 import { View, Text, StyleSheet, SafeAreaView, TextInput, useColorScheme } from 'react-native'
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import React, {useState, useEffect} from 'react'
 import { useSelector } from 'react-redux';
 import HorizontalLine from '../../Components/HorizontalLine';
 import Header from '../../Components/Header';
 import { State, TouchableOpacity } from 'react-native-gesture-handler';
+import Toast from 'react-native-toast-message';
 import { Image } from 'react-native-svg';
 import Input from '../../Components/Input';
 import COLORS from '../../constants/COLORS';
@@ -11,49 +13,95 @@ import { DIMENSIONS } from '../../constants/DIMENSIONS';
 import { Call } from '../../../assets/svgs/Call';
 import { Message } from '../../../assets/svgs/Message';
 import {Name} from '../../../assets/svgs/Name';
+import { API } from '../../api/API';
 import { Edit } from '../../../assets/svgs/Edit';
+import {Save} from '../../../assets/svgs/Save'
 // import { userRegisterData } from '../../redux/action';
 
 
 
-const PersonalDetails = ( props) => {
+const PersonalDetails = ({navigation}) => {
   const userRegisterData = useSelector((state)=> state.userRegisterData)
   const [isEditable, setIsEditable] = useState(false);
    const [name, setName]= useState('');
    const [mail, setMail] =useState('');
-   const [number, setNumber]=useState('');
+   const [number, setNumber]=useState();
 
   useEffect(() => {
    console.log('data for this User:---------', userRegisterData); 
-   if (userRegisterData) {
-    setName(userRegisterData.name);
-    setNumber(userRegisterData.mobile || '');
-    setMail(userRegisterData.email || '');
-  }
+  //  if (userRegisterData) {
+  //   setName(userRegisterData.name);
+  //   setNumber(userRegisterData.mobile || '');
+  //   setMail(userRegisterData.email || '');
+  // }
 }, [userRegisterData]);
 
- 
   const theme = useColorScheme();
   const isDark = theme === 'dark';
-  
 
-  const handleNameChange = (value) => {
-    setName(text);
+  const handleRightButtonClick = () => {
+    console.log("ASSSSS--------")
+    if (onPress != null) {
+      return showRightButton ? <Save /> : null;
+    
+    }
+    return showRightButton ? <Edit /> : null;
   };
 
-  const handleEditIconClick = () => {
+
+  const updatePersonalDetails = async () =>{
+
+    console.log("data")
     setIsEditable(true);
+    await fetch(`${API}/personalInfo`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        name : name,
+        mobile : number,
+      }),
+    })
+      .then(res => res.json())
+      .then(data => {
+        if (data.msg == "Your Profile Update") {
+          PLATFORM_IOS?
+          Toast.show({
+            type: 'success',
+            text1: "Your Profile Update Successful",
+            
+          }):ToastAndroid.show("Your Profile Update Successful", ToastAndroid.SHORT);
+
+          navigation.navigate('Account');
+          // navigation.navigate('Home');
+        } else {
+          PLATFORM_IOS?
+          Toast.show({
+            type: 'error',
+            text1: "Your Profile Not Updated",
+            
+          }):ToastAndroid.show("Your Profile Not Updated", ToastAndroid.SHORT);
+
+        }
+
+      })
+      .catch(error => {
+        console.error(error);
+      });
   };
+
 
   return (
     <SafeAreaView style={{ backgroundColor: COLORS.CREAM, flex: 1 }}>
-      <Header headerName="Personal Details" showRightButton={true}  onRightButtonClick={handleEditIconClick}/>
+      <Header headerName="Personal Details" showRightButton={true}  onPress={handleRightButtonClick}/>
+      
       <HorizontalLine style={styles.line} />
       <View style={[styles.mainDiv_container]}>
     
         <Input
           IconLeft={null}
-          editable={isEditable}
+           editable={isEditable}
           bgColor={COLORS.CREAM}
           IconRight={() => (
            <Name/>
@@ -71,13 +119,13 @@ const PersonalDetails = ( props) => {
             fontFamily: 'Roboto',
             fontWeight: '200',
           }}
-          onChangeText={setName}
+          onChangeText={text => setName(text)}
          value={name}
         />
         <Input
           IconLeft={null}
           bgColor={COLORS.CREAM}
-          editable={false}
+          editable={isEditable}
           IconRight={() => (
            <Call/>
           )}
@@ -94,6 +142,8 @@ const PersonalDetails = ( props) => {
             fontFamily: 'Roboto',
             fontWeight: '200',
           }}
+          onChangeText={text => setNumber(text)}
+         value={number}
         />
         <Input
           IconLeft={null}
@@ -115,6 +165,8 @@ const PersonalDetails = ( props) => {
             fontFamily: 'Roboto',
             fontWeight: '200',
           }}
+          onChangeText={text => setMail(text)}
+         value={number}
         />
         {/* <Text style={[styles.textdata,styles.forPaddingTOP]}>Phone No.</Text>
             <TextInput
@@ -138,7 +190,7 @@ const PersonalDetails = ( props) => {
       </View>
       <View style={styles.bottom}>
         <Text>Want to delete account?{' '}</Text>
-        <TouchableOpacity onPress={()=>{navigation.navigate('deleteAccount')}}>
+        <TouchableOpacity onPress={()=>navigation.navigate('deleteAccount')}>
           <Text 
           style={{
             fontWeight: 800,

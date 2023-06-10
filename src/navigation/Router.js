@@ -22,7 +22,6 @@ import Installation from '../screens/accounts/Installation';
 import Theme from '../screens/accounts/Theme';
 import Subscription from '../screens/accounts/Subscription';
 import deleteAccount from '../screens/accounts/deleteAccount';
-import Plan from '../screens/planSummary/Plan';
 
 const Drawer = createDrawerNavigator();
 const Stack = createNativeStackNavigator();
@@ -98,13 +97,13 @@ const LoginStack = () => {
       <Stack.Screen name="ForgetPassword" component={ForgetPassword} />
       <Stack.Screen name="ResetPassword" component={ResetPassword} />
       <Stack.Screen name="DrawerStack" component={DrawerNavigation} />
-       <Stack.Screen name="PersonalDetails" component={PersonalDetails} />
+       {/* <Stack.Screen name="PersonalDetails" component={PersonalDetails} />
         <Stack.Screen name="Security" component={Security} />
         <Stack.Screen name="Installation" component={Installation} />
         <Stack.Screen name="Payment" component={Payment} />
         <Stack.Screen name="Subscription" component={Subscription} />
         <Stack.Screen name="Theme" component={Theme} />
-        <Stack.Screen name="deleteAccount" component={deleteAccount} />
+        <Stack.Screen name="deleteAccount" component={deleteAccount} /> */}
     </Stack.Navigator>
   );
 };

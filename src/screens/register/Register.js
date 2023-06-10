@@ -56,8 +56,9 @@ export default function Register({navigation}) {
           
         }):ToastAndroid.show('User registered successfully.', ToastAndroid.SHORT);
         navigation.navigate('VerifyEmail', { email: values?.email });
-         const data=[{ email: values?.email },{ name: values?.name },{ mobile: values?.mobile }]
-         console.log('------------------',data);
+         const data=[{ email: values?.email },{ name: values?.name },{ mobile: values?.mobile },{ password: values?.password }]
+        // const data = response.data
+        //  console.log('------------------',data);
         dispatch(userRegisterData(data)); 
         
       } else {

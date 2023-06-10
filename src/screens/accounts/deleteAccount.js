@@ -9,7 +9,7 @@ import { Eye} from '../../../assets/svgs/Eye';
 // import Button from '../../Components/Button';
 
 const DeleteAccountScreen = () => {
-
+ 
 
   return (
     <SafeAreaView style={{ backgroundColor: COLORS.CREAM, flex: 1 }}>
