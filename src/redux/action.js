@@ -1,5 +1,8 @@
-import constants from "./constants";
+import types from './constants';
 
-export const setIsAuthorized = (data) => {
-    return {type: LOCATION_ID, payload: data};
-  };
+export const userRegisterData = (data) => {
+  return {type: types.GET_USER_DATA, payload: data};
+};
+export const getBasePackage = (data) => {
+  return {type:types.GET_BASE_PACKAGE,payload:data}
+}

@@ -12,7 +12,8 @@ import {
   import {Vanderberg} from '../../assets/images/Vanderberg';
   import {Connecticut} from '../../assets/images/Connecticut';
   const mobileW = Math.round(Dimensions.get('screen').width);
-  const BoxFour = () => {
+  const BoxFour = ({data}) => {
+    console.log(data,'yyy')
     // const {navigation, route} = props;
     
     return (
@@ -24,7 +25,7 @@ import {
         <View style={styles.shadowProp}>
           <View style={styles.location_div}>
             <Vanderberg style={styles.img_width} />
-            <Text style={styles.force_base}>sdfghjk</Text>
+            <Text style={styles.force_base}>{data[0]?.package_name}</Text>
           </View>
           <Image
             // style={styles.img_width}
@@ -39,7 +40,7 @@ import {
               source={require('../../assets/images/connecticut.png')}
             /> */}
               <Connecticut style={styles.img_width} />
-              <Text style={styles.force_base}>30/05/2022 - 22/09/2023</Text>
+              <Text style={styles.force_base}>{data[0]?.date} - {data[0]?.thirty_days_ago}</Text>
             </View>
             
           </View>

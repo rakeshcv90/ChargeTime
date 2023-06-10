@@ -4,7 +4,7 @@ import { Dolllar } from '../../assets/images/Dollar';
 import { navigationRef } from '../../App';
 
 const BoxThree = ({data}) => {
-  console.log("BOX #",data)
+  
   return (
     <View style={[styles.mainDiv_purchage_dollar,styles.shadowProp]}>
       <View style={styles.dollar_div}>

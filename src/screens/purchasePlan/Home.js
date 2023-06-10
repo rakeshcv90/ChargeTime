@@ -23,17 +23,13 @@ import axios from 'axios';
 import ActivityLoader from '../../Components/ActivityLoader';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import TabFour from './TabFour';
-import {useDispatch, useSelector} from 'react-redux';
+
 const mobileW = Math.round(Dimensions.get('screen').width);
 const mobileH = Math.round(Dimensions.get('window').height);
 let loginData;
 function MyTabBar({state, descriptors, navigation, position}) {
-  const dispatch = useDispatch();
-  const [focusTab,setFocusTab] = useState('')
-  useEffect(() => {
-    const activeRoute = state.routes[state.index];
-    setFocusTab(activeRoute.name);
-  }, [state.index]);
+  
+  
   
   
   return ( 
@@ -75,8 +71,9 @@ function MyTabBar({state, descriptors, navigation, position}) {
               flex: 1,
               backgroundColor: isFocused ? '#B1D34F' : '#EEEEEE',
               paddingHorizontal: 12,
-              paddingVertical: 10,
-              borderRadius: isFocused ? 2 : 0,
+              paddingVertical: 13,
+              // borderRadius:10,
+              borderRadius: isFocused ? 10 : 0,
               shadowColor: 'rgba(0, 0, 0, 1)',
               shadowOffset: {
                 width: isFocused ? 6 : 0,

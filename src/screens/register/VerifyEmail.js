@@ -28,7 +28,9 @@ export default function VerifyEmail(props) {
   
   const {navigation, route} = props;
   const {email,user_id} = route?.params;
+  
   const [emailCheck,setEmailCheck] = useState(false)
+  const [stopTimer,setStopTimer] = useState(false)
   
   // console.log(email,'kk')
   // const emailVErifyWithOTP = email
@@ -172,32 +174,91 @@ export default function VerifyEmail(props) {
       // Handle network errors or other exceptions
     }
   }
-  useEffect(() => {
+  // useEffect(() => {
+  //   if(emailCheck){
+  //   setInterval(() => {
+  //     sendToAnotherPage()
+  //   },2000)
+  // }
     
-    sendToAnotherPage()
+  // },[])
+//   useEffect(() => {
+//     let stop = true
+
+//     if (emailCheck) {
+//      setInterval(() => {
+      
+//         // Check your condition here
+       
+
+       
+//         clearInterval(stopTimer);
+//         sendToAnotherPage();
+       
     
-  },[])
+        
+//       }, 2000);
+// }
+
+//     return () => {
+//       clearInterval(stopTimer); // Clear the interval when the component unmounts
+//     };
+//   }, [emailCheck]);
+//   const sendToAnotherPage = async () => {
+//     try {
+//       await fetch(`${API}/emailverify/${user_id}`, {
+//         method: 'GET',
+//         headers: {
+//           'Content-Type': 'application/json',
+//         },
+        
+//       }).then((res) => res.json())
+//       .then((data) => {
+//         console.log(data,'vvv')
+//         if(data.status.email_verified == 1){
+//           setStopTimer(true)
+//         navigation.navigate('CompleteProfile', { email: email,user_id:user_id });
+//         }
+//       })
+//     } catch (error) {
+//       console.error(error);
+//       // Handle network errors or other exceptions
+//     }
+//   }
+useEffect(() => {
+  let stopTimer;
+
   const sendToAnotherPage = async () => {
     try {
-      await fetch(`${API}/emailverify/${user_id}`, {
+      const response = await fetch(`${API}/emailverify/${user_id}`, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
         },
-        
-      }).then((res) => res.json())
-      .then((data) => {
-        console.log(data.status.email_verified,'vvv')
-        if(data.status == true){
-          
-        navigation.navigate('CompleteProfile', { email: email,user_id:user_id });
-        }
-      })
+      });
+      const data = await response.json();
+      console.log(data, 'vvv');
+      if (data.status.email_verified === 1) {
+        navigation.navigate('CompleteProfile', { email: email, user_id: user_id });
+        clearInterval(stopTimer);
+      }
     } catch (error) {
       console.error(error);
       // Handle network errors or other exceptions
     }
+  };
+
+  if (emailCheck) {
+    stopTimer = setInterval(() => {
+      sendToAnotherPage();
+    }, 2000);
   }
+
+  return () => {
+    clearInterval(stopTimer); // Clear the interval when the component unmounts or when emailCheck changes
+  };
+}, [emailCheck]);
+
 
   return (
     <SafeAreaView style={{backgroundColor: COLORS.CREAM, flex: 1}}>

@@ -5,9 +5,9 @@ import {
   TouchableOpacity,
   Dimensions,
   Image,
-  ScrollView
+  ScrollView,
 } from 'react-native';
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import COLORS from '../../constants/COLORS';
 import {Address} from '../../../assets/images/Address';
 import {Vanderberg} from '../../../assets/images/Vanderberg';
@@ -15,33 +15,59 @@ import {Connecticut} from '../../../assets/images/Connecticut';
 import {TabActions} from '@react-navigation/native';
 import {PlanPricing} from '../../../assets/images/PlanPricing';
 import {LeftIcon} from '../../../assets/images/LeftIcon';
-import { PLATFORM_IOS } from '../../constants/DIMENSIONS';
+import {PLATFORM_IOS} from '../../constants/DIMENSIONS';
 import BoxOne from '../../Components/BoxOne';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import {SafeAreaView} from 'react-native-safe-area-context';
 import BoxFour from '../../Components/BoxFour';
+import axios from 'axios';
+import {API} from '../../api/API';
+import {navigationRef} from '../../../App';
 const mobileW = Math.round(Dimensions.get('screen').width);
 
-export default function PlanSummary({route}) {
+export default function PlanSummary({route, navigation}) {
+  const [tax, setTax] = useState('');
+  const [data,setData] = useState('')
+
+  const {id, package_name, total_price, salestax} = route.params.data;
+
+  useEffect(() => {
+    getPlanSummary();
+  }, []);
+
+  const getPlanSummary = () => {
+    axios
+      .get(`${API}/planPurchase/${id}/${package_name}`)
+      .then(res => {
+        console.log(res.data,'ppp')
+        setData(res.data.locations)
+        setTax(res.data.locations[0].salestax);
+      })
+      .catch(err => {
+        console.log(err);
+      });
+  };
   return (
     <SafeAreaView style={{backgroundColor: COLORS.CREAM, flex: 1}}>
-        <ScrollView
+      <ScrollView
         showsVerticalScrollIndicator={false}
         keyboardShouldPersistTaps="handled">
-    <View>
-      <View style={{paddingHorizontal: 20, marginTop: 30, marginBottom: 20}}>
-        <Text style={{fontSize: 24, fontWeight: "800", color: COLORS.BLACK}}>
-          Plan Summary
-        </Text>
-      </View>
-      <View style={{marginHorizontal:20}}>
-          <View style={{marginBottom:10}}>
-          <BoxOne  data={route.params.data} />
+        <View>
+          <View
+            style={{paddingHorizontal: 20, marginTop: 30, marginBottom: 20}}>
+            <Text
+              style={{fontSize: 24, fontWeight: '800', color: COLORS.BLACK}}>
+              Plan Summary
+            </Text>
           </View>
-          <View style={{marginBottom:10}}>
-          <BoxFour />
+          <View style={{marginHorizontal: 20}}>
+            <View style={{marginBottom: 10}}>
+              <BoxOne data={route.params.data} />
+            </View>
+            <View style={{marginBottom: 10}}>
+              <BoxFour data={data} />
+            </View>
           </View>
-          </View>
-       {/* <View style={styles.mainDiv_installation_one}>
+          {/* <View style={styles.mainDiv_installation_one}>
         
         <TouchableOpacity style={styles.install_touchable}>
           <Address style={styles.img_width} />
@@ -75,8 +101,8 @@ export default function PlanSummary({route}) {
         </View>
         
       </View> */}
-       
-      {/* <View style={styles.mainDiv_installation_one}>
+
+          {/* <View style={styles.mainDiv_installation_one}>
         <TouchableOpacity style={styles.install_touchable}>
           <Address style={styles.img_width} />
           <Text style={styles.installation_text}>Plan Details</Text>
@@ -108,80 +134,123 @@ export default function PlanSummary({route}) {
           </View>
         </View>
       </View> */}
-      
-      <View style={styles.mainDiv_installation_one}>
-        <View>
-        <TouchableOpacity style={styles.install_touchable}>
-          <PlanPricing style={styles.img_width} />
-          <Text style={styles.installation_text}>Plan Pricing </Text>
-        </TouchableOpacity>
-        </View>
-        <View
-          style={{
-            display: 'flex',
-            flexDirection: 'row',
-            justifyContent: 'space-between',
-            backgroundColor: COLORS.GRAY,
-            paddingHorizontal: 10,
-            paddingVertical: 20,
-          }}>
-          <View>
-            <Text style={{fontSize: 12, fontWeight: '400', paddingVertical: 5}}>
-              Price (excl.taxes):
-            </Text>
-            <Text style={{fontSize: 12, fontWeight: '400', paddingBottom: 5}}>
-              Taxes:
-            </Text>
-            <Text
-              style={{fontSize: 14, fontWeight: '600', color: COLORS.BLACK}}>
-              Total:
-            </Text>
+          <View style={styles.plan_pricing_div}>
+            <View>
+              <View>
+                <TouchableOpacity style={styles.install_touchable}>
+                  <PlanPricing style={styles.img_width} />
+                  <Text style={styles.installation_text}>Plan Pricing </Text>
+                </TouchableOpacity>
+              </View>
+              <View
+                style={{
+                  display: 'flex',
+                  flexDirection: 'row',
+                  justifyContent: 'space-between',
+                  backgroundColor: COLORS.GRAY,
+                  paddingHorizontal: 10,
+                  paddingVertical: 20,
+                }}>
+                <View>
+                  <Text
+                    style={{
+                      fontSize: 12,
+                      fontWeight: '400',
+                      paddingVertical: 5,
+                    }}>
+                    Price (excl.taxes):
+                  </Text>
+                  <Text
+                    style={{fontSize: 12, fontWeight: '400', paddingBottom: 5}}>
+                    Taxes:
+                  </Text>
+                  <Text
+                    style={{
+                      fontSize: 14,
+                      fontWeight: '600',
+                      color: COLORS.BLACK,
+                    }}>
+                    Total:
+                  </Text>
+                </View>
+                <View>
+                  <Text
+                    style={{
+                      fontSize: 12,
+                      fontWeight: '400',
+                      paddingVertical: 5,
+                    }}>
+                    ${total_price}
+                  </Text>
+                  <Text
+                    style={{fontSize: 12, fontWeight: '400', paddingBottom: 5}}>
+                    ${tax}
+                  </Text>
+                  <Text
+                    style={{
+                      fontSize: 14,
+                      fontWeight: '600',
+                      color: COLORS.BLACK,
+                    }}>
+                    $135.00/-
+                  </Text>
+                </View>
+              </View>
+            </View>
+           
           </View>
-          <View>
-            <Text style={{fontSize: 12, fontWeight: '400', paddingVertical: 5}}>
-              $123.00
-            </Text>
-            <Text style={{fontSize: 12, fontWeight: '400', paddingBottom: 5}}>
-              $12.00
-            </Text>
-            <Text
-              style={{fontSize: 14, fontWeight: '600', color: COLORS.BLACK}}>
-              $135.00/-
-            </Text>
-          </View>
+          <View style={styles.bottom_tab}>
+             
+                <TouchableOpacity
+                  onPress={() => navigationRef.navigate('Home')}
+                  style={{padding: 20, backgroundColor: COLORS.GRAY,borderRadius:25}}>
+                  <LeftIcon />
+                </TouchableOpacity>
+              
+              <View
+                style={{
+                  backgroundColor: COLORS.GREEN,
+                  paddingHorizontal: 20,
+                  paddingVertical: 10,
+                  borderRadius: 12,
+                }}>
+                <Text
+                  style={{
+                    fontSize: 14,
+                    fontWeight: '700',
+                    color: COLORS.BLACK,
+                  }}>
+                  CHECKOUT
+                </Text>
+              </View>
+            </View>
         </View>
-      </View>
-      <View style={styles.bottom_tab}>
-        <View
-          style={{padding: 20, backgroundColor: COLORS.GRAY, borderRadius: 40}}>
-          <LeftIcon />
-        </View>
-        <View
-          style={{
-            backgroundColor: COLORS.GREEN,
-            paddingHorizontal: 20,
-            paddingVertical: 10,
-            borderRadius: 12,
-          }}>
-          <Text style={{fontSize: 14, fontWeight: '700', color: COLORS.BLACK}}>
-            CHECKOUT
-          </Text>
-        </View>
-      </View>
-    </View>
-    </ScrollView>
+      </ScrollView>
     </SafeAreaView>
   );
 }
 const styles = StyleSheet.create({
+  // mainDiv_installation_one: {
+  //   // overflow: 'hidden',
+  //   // borderWidth:0.5,
+  //   borderRadius: 20,
+  //   marginTop: Platform.OS === 'ios' ? 10 : 20,
+  //   marginHorizontal: 20,
+  // },
+  plan_pricing_div: {
+     marginHorizontal: 20,
+    overflow: 'hidden',
+    borderRadius: 10,
+    marginTop: Platform.OS === "ios"?10: 10,
+    shadowColor: '#000000',
+    shadowOffset: {
+      width: 4,
+      height: 6,
+    },
+    shadowOpacity: 0.2,
+    shadowRadius: 5.62,
+    elevation: 8,
   
-  
-  mainDiv_installation_one: {
-    // overflow: 'hidden',
-    // borderWidth:0.5,
-    borderRadius: 20,
-    marginTop: Platform.OS === 'ios' ? 10 : 20,
-    marginHorizontal: 20,
   },
   bottom_tab: {
     paddingHorizontal: 20,
@@ -190,13 +259,13 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
+    // borderRadius: 6,
   },
   install_touchable: {
     flexDirection: 'row',
     backgroundColor: COLORS.GREEN,
     alignItems: 'center',
     paddingVertical: 10,
-    
   },
   img_width: {
     marginHorizontal: 20,

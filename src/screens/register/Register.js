@@ -19,11 +19,13 @@ import * as Yup from 'yup';
 import {API} from '../../api/API';
 import Input from '../../Components/Input';
 import Toast from 'react-native-toast-message';
-import {PLATFORM_IOS} from '../../constants/DIMENSIONS';
-import {Admin} from '../../../assets/images/Admin';
-import {Message} from '../../../assets/images/Message';
-import {Call} from '../../../assets/images/Call';
-import {StrongPass} from '../../../assets/images/StrongPass';
+import { PLATFORM_IOS } from '../../constants/DIMENSIONS';
+import { Admin } from '../../../assets/images/Admin';
+import { Message } from '../../../assets/images/Message';
+import { Call } from '../../../assets/images/Call';
+import { StrongPass } from '../../../assets/images/StrongPass';
+import { useDispatch } from 'react-redux';
+import { userRegisterData } from '../../redux/action';
 const mobileH = Math.round(Dimensions.get('window').height);
 const mobileW = Math.round(Dimensions.get('screen').width);
 const PasswordRegex =
@@ -31,7 +33,7 @@ const PasswordRegex =
 const validationSchema = Yup.object().shape({
   name: Yup.string().required('Full Name is required'),
   email: Yup.string().email('Invalid Email').required('Email is required'),
-  mobile: Yup.string().min(10).required('Phone No. is required'),
+  mobile: Yup.string().min(10).max(10).required('Phone No. is required'),
   password: Yup.string()
     .matches(
       PasswordRegex,
@@ -40,23 +42,27 @@ const validationSchema = Yup.object().shape({
     .required('Password is required'),
 });
 export default function Register({navigation}) {
+  const dispatch =useDispatch();
+ 
   const handleFormSubmit = async values => {
    
     try {
       const response = await axios.post(`${API}/createuser`, values);
       
-
-      if (response.data.message != 'Your Email is already exist') {
-        PLATFORM_IOS
-          ? Toast.show({
-              type: 'success',
-              text1: 'User registered successfully.',
-            })
-          : ToastAndroid.show(
-              'User registered successfully.',
-              ToastAndroid.SHORT,
-            );
-        navigation.navigate('VerifyEmail', {email: values?.email,user_id:response.data.user_id});
+      
+      
+      if (response.data.message != "Your Email is already exist") {
+        PLATFORM_IOS?
+        Toast.show({
+          type: 'success',
+          text1: 'User registered successfully.',
+          
+        }):ToastAndroid.show('User registered successfully.', ToastAndroid.SHORT);
+        navigation.navigate('VerifyEmail', { email: values?.email,user_id:response.data?.user_id });
+         const data=[{ email: values?.email },{ name: values?.name },{ mobile: values?.mobile }]
+         
+        dispatch(userRegisterData(data)); 
+        
       } else {
         PLATFORM_IOS
           ? Toast.show({

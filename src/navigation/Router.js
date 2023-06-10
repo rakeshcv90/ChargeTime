@@ -17,6 +17,15 @@ import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import PlanSummary from '../screens/purchasePlan/PlanSummary';
 import Testing from '../screens/testing/Testing';
+import Payment from '../screens/accounts/Payment';
+import PersonalDetails from '../screens/accounts/PersonalDetails';
+import Security from '../screens/accounts/Security';
+import Installation from '../screens/accounts/Installation';
+import Theme from '../screens/accounts/Theme';
+import Subscription from '../screens/accounts/Subscription';
+import deleteAccount from '../screens/accounts/deleteAccount';
+// import Plan from '../screens/planSummary/Plan';
+
 
 const Drawer = createDrawerNavigator();
 const Stack = createNativeStackNavigator();
@@ -25,43 +34,79 @@ const screenOptions = {
 };
 
 const DrawerNavigation = () => {
+  const [focus,setFocus] = useState()
+  const [focusOne,setFocusOne] = useState()
   return (
     <Drawer.Navigator
       screenOptions={{headerShown: false}}
       drawerContent={CustomDrawerContent}>
       <Drawer.Screen
-        options={{
-          drawerActiveBackgroundColor: 'rgba(177, 211, 79, 0.5)',
-          drawerActiveTintColor: 'black',
-          drawerIcon: ({focused, color, size}) => (
-             <Image
-              source={!focused?require('../../assets/images/account.png'):require('../../assets/images/testing.png')}
-              style={{width: size, height: size }}
-            />
-         
-          ),
-          
-          title: 'Home'
-        }}
-        name="HomeStack"
-        component={HomeStack}
+  options={{
+    drawerActiveBackgroundColor: '#fff',
+    drawerIcon: ({ focused, color, size }) => {
+      setFocus(focused)
+      return(
+      <Image
+        source={!focused ? require('../../assets/images/testing.png') : require('../../assets/images/green_account.png')}
+        style={{ width: 50, height: 40 }}
       />
+      )
+    },
+    drawerLabelStyle: {
+      backgroundColor: focus? 'rgba(177, 211, 79, 0.8)' :"#fff",
+      paddingVertical: 10,
+      paddingLeft: 10,
+      // paddingRight: 40,
+      width:"200%"
+    },
+    drawerActiveTintColor: 'black',
+    title: 'Home',
+  }}
+  name="HomeStack"
+  component={HomeStack}
+/>
+
       <Drawer.Screen
         options={{
-          drawerActiveBackgroundColor: 'rgba(177, 211, 79, 0.5)',
-          drawerActiveTintColor: 'black',
-          drawerIcon: ({focused, color, size}) => (
-            <Image
-              source={!focused?require('../../assets/images/account.png'):require('../../assets/images/testing.png')}
-              style={{width: 30, height: 30 }}
-            />
-         
-          ),
-          title: 'Testing'
-        }}
-        name="Testing"
-        component={Testing}
+          drawerActiveBackgroundColor: '#fff',
+    drawerIcon: ({ focused, color, size }) => {
+      setFocusOne(focused)
+      return(
+      <Image
+        source={!focused ? require('../../assets/images/testing.png') : require('../../assets/images/green_account.png')}
+        style={{ width: 50, height: 40,padding:0,margin:-10 }}
       />
+      )
+    },
+    drawerLabelStyle: {
+      backgroundColor: focusOne? 'rgba(177, 211, 79, 0.8)' :"#fff",
+      paddingVertical: 10,
+      paddingLeft: 10,
+      width:"200%",
+marginLeft:-15
+    },
+    drawerActiveTintColor: 'black',
+          title: 'Account'
+        }}
+       
+        name="AccountStack"
+        component={AccountStack}
+      />
+        {/* <Drawer.Screen
+          options={{
+            drawerActiveBackgroundColor: 'rgba(177, 211, 79, 0.5)',
+            drawerActiveTintColor: 'black',
+            drawerIcon: ({ focused, color, size }) => (
+              <Image
+                source={require('../../assets/images/account.png')}
+                style={{ width: size, height: size }}
+              />
+            ),
+          }}
+          name="Account"
+          component={Account}
+        /> */}
+       
       
     </Drawer.Navigator>
   );
@@ -76,9 +121,11 @@ const LoginStack = () => {
       <Stack.Screen name="ForgetPassword" component={ForgetPassword} />
       <Stack.Screen name="ResetPassword" component={ResetPassword} />
       <Stack.Screen name="DrawerStack" component={DrawerNavigation} />
+     
     </Stack.Navigator>
   );
 };
+
 const HomeStack = () => {
   return (
     <Stack.Navigator screenOptions={screenOptions}>
@@ -87,6 +134,23 @@ const HomeStack = () => {
     </Stack.Navigator>
   );
 };
+const AccountStack = () => {
+  return (
+    <Stack.Navigator screenOptions={screenOptions}>
+      <Stack.Screen name="Account" component={Account} />
+      <Stack.Screen name="PersonalDetails" component={PersonalDetails} />
+        <Stack.Screen name="Security" component={Security} />
+        <Stack.Screen name="Installation" component={Installation} />
+        <Stack.Screen name="Payment" component={Payment} />
+        <Stack.Screen name="Subscription" component={Subscription} />
+        <Stack.Screen name="Theme" component={Theme} />
+        <Stack.Screen name="deleteAccount" component={deleteAccount} />
+    </Stack.Navigator>
+  );
+};
+
+
+
 
 export default function Router() {
   //const {navigation, route} = props;

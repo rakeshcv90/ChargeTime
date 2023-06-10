@@ -1,30 +1,26 @@
-import {
-  View,
-  Text,
-  StyleSheet,
-  TouchableOpacity,
-  Image,
-  Dimensions,
-  Platform,
-} from 'react-native';
+import {View, Text, StyleSheet, TouchableOpacity, Image,Dimensions, Platform, SafeAreaView} from 'react-native';
 import React from 'react';
-import {Address} from '../../assets/images/Address';
-import {Vanderberg} from '../../assets/images/Vanderberg';
-import {Connecticut} from '../../assets/images/Connecticut';
+// import { Address } from '../../assets/images/Address';
+import {InstallBase} from '../../assets/svgs/InstallBase';
+import { Vanderberg } from '../../assets/images/Vanderberg';
+import { Connecticut } from '../../assets/images/Connecticut';
+import COLORS from '../constants/COLORS';
 const mobileW = Math.round(Dimensions.get('screen').width);
 const BoxOne = ({data}) => {
   // const {navigation, route} = props;
-  console.log(data, 'trr');
+  
   return (
-    <View style={styles.mainDiv_installation}>
+    <View style={[styles.mainDiv_installation]}>
       <TouchableOpacity style={styles.install_touchable}>
-        <Address style={styles.img_width} />
+        
+        {/* <Address style={styles.img_width} /> */}
+        <InstallBase style={styles.img_width} />
         <Text style={styles.installation_text}>Installation Base</Text>
       </TouchableOpacity>
       <View style={styles.shadowProp}>
         <View style={styles.location_div}>
           <Vanderberg style={styles.img_width} />
-          <Text style={styles.force_base}>{data.location}</Text>
+          <Text style={styles.force_base}>{data?.location?data?.location:" Vandenberg Space Force Base"}</Text>
         </View>
         <Image
           // style={styles.img_width}
@@ -39,7 +35,7 @@ const BoxOne = ({data}) => {
             source={require('../../assets/images/connecticut.png')}
           /> */}
             <Connecticut style={styles.img_width} />
-            <Text style={styles.force_base}>{data.state}</Text>
+            <Text style={styles.force_base}>{data?.state?data?.state:"Conneticut"}</Text>
           </View>
           <View style={styles.state_div}>
             <Image
@@ -47,11 +43,12 @@ const BoxOne = ({data}) => {
               source={require('../../assets/images/zip_code.png')}
               style={{width: 20, height: 20}}
             />
-            <Text style={styles.force_base}>{data.ZIP_code}</Text>
+            <Text style={styles.force_base}>{data?.ZIP_code?data?.ZIP_code:"123456"}</Text>
           </View>
         </View>
       </View>
     </View>
+
   );
 };
 
@@ -65,19 +62,27 @@ const styles = StyleSheet.create({
   mainDiv_installation: {
     overflow: 'hidden',
     borderRadius: 10,
-    marginTop: Platform.OS === 'ios' ? 10 : 20,
+    marginTop: Platform.OS === "ios"?10: 10,
+    shadowColor: '#000000',
+    shadowOffset: {
+      width: 4,
+      height: 6,
+    },
+    shadowOpacity: 0.2,
+    shadowRadius: 5.62,
+    elevation: 8,
   },
   install_touchable: {
     flexDirection: 'row',
     backgroundColor: COLORS.GREEN,
     alignItems: 'center',
-    paddingVertical: 10,
+    paddingVertical: 15,
   },
   img_width: {
     marginLeft: 20,
   },
   installation_text: {
-    fontWeight: 700,
+    fontWeight: 900,
     fontSize: 12,
     paddingLeft: 10,
   },
@@ -104,6 +109,7 @@ const styles = StyleSheet.create({
     fontWeight: 400,
     fontSize: 14,
     paddingLeft: 10,
+    paddingRight:70,
   },
   mainDiv_state_zip: {
     flexDirection: 'row',
@@ -149,12 +155,12 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
     borderRadius: 30,
     elevation: 4,
-    shadowColor: 'rgba(1, 0, 0, 0.25)',
+    shadowColor: '#000000',
     shadowOffset: {
-      width: 4,
-      height: 4,
+      width: 8,
+      height: 6,
     },
-    shadowOpacity: 0,
+    shadowOpacity: 2,
     shadowRadius: 4,
   },
   dollar_div: {

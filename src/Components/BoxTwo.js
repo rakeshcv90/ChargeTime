@@ -18,7 +18,7 @@ const BoxTwo = ({data}) => {
         <View style={styles.second_main_div_kwh}>
           {/* <Image source={require('../../assets/images/kwh.png')} /> */}
           <Unit />
-          <Text style={styles.kwh_mieq_text}>{data.kwh} kWh</Text>
+          <Text style={styles.kwh_mieq_text}>{data?.kwh?data?.kwh:"600"} kWh</Text>
           <Text style={styles.unit_allowed}>Units Alloted</Text>
         </View>
         <View style={styles.second_main_div_kwh}>
@@ -26,7 +26,7 @@ const BoxTwo = ({data}) => {
                   source={require('../../assets/images/kwh_icon_one.png')}
                 /> */}
           <Mieq />
-          <Text style={styles.kwh_mieq_text}>~ {data.mi_eq}</Text>
+          <Text style={styles.kwh_mieq_text}>~ {data?.mi_eq?data?.mi_eq:"1500"}</Text>
           <Text style={styles.unit_allowed}>Mi Eq</Text>
         </View>
         <View style={styles.second_main_div_kwh}>
@@ -35,7 +35,7 @@ const BoxTwo = ({data}) => {
             style={{width: 20, height: 20}}
           />
           {/* <MileOne /> */}
-          <Text style={styles.kwh_mieq_text}>{data.dollar_mi}</Text>
+          <Text style={styles.kwh_mieq_text}>{data?.dollar_mi?data?.dollar_mi:'0.11'}</Text>
           <Text style={styles.unit_allowed}>$ / Mile</Text>
         </View>
       </View>
@@ -57,10 +57,10 @@ const styles = StyleSheet.create({
   },
   shadowProp: {
     //backgroundColor: 'white',
-    shadowColor: 'rgba(0, 0, 0, 1)', 
+    shadowColor: '#000000', 
     shadowOffset: {
-      width: 6, 
-      height: 4, 
+      width: 4, 
+      height: 6, 
     },
     shadowOpacity: 1, 
     shadowRadius:  4, 

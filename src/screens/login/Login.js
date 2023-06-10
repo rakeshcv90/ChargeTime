@@ -27,8 +27,13 @@ const mobileH = Math.round(Dimensions.get('window').height);
 const mobileW = Math.round(Dimensions.get('window').width);
 
 export default function Login({navigation}) {
+
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [isSecureTextEntry, setIsSecureTextEntry] = useState(true);
+  // const toggleSecureTextEntry = () => {
+  //   setIsSecureTextEntry(!isSecureTextEntry);
+  // };
   const loginFunction = async () => {
     try{
     await fetch(`${API}/logins`, {
@@ -55,6 +60,7 @@ export default function Login({navigation}) {
           }):ToastAndroid.show('Login Successful', ToastAndroid.SHORT);
 
           navigation.navigate('DrawerStack');
+          // navigation.navigate('Home');
         } else {
           PLATFORM_IOS?
           Toast.show({
@@ -119,6 +125,7 @@ export default function Login({navigation}) {
             secureTextEntry={true}
             placeholderTextColor={COLORS.BLACK}
             text="Password"
+            
             onChangeText={text => setPassword(text)}
             value={password}
             IconRight={() => (
@@ -128,6 +135,7 @@ export default function Login({navigation}) {
             placeholder="Enter your password"
             bW={1}
             textWidth={'30%'}
+            
           />
           <View style={styles.main_div_lock_img}>
             <Image source={require('../../../assets/images/lock_two.png')} resizeMode='contain' style={{width:20,height:20}} />
