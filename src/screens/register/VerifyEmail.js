@@ -19,6 +19,7 @@ import {API} from '../../api/API';
 import axios from 'axios';
 import { Toast } from 'react-native-toast-message/lib/src/Toast';
 import { PLATFORM_IOS } from '../../constants/DIMENSIONS';
+import ActivityLoader from '../../Components/ActivityLoader';
 
 //   const mobileH = Math.round(Dimensions.get('window').height);
 const mobileW = Math.round(Dimensions.get('screen').width);
@@ -32,9 +33,8 @@ export default function VerifyEmail(props) {
   const [emailCheck,setEmailCheck] = useState(false)
   const [stopTimer,setStopTimer] = useState(false)
   
-  // console.log(email,'kk')
-  // const emailVErifyWithOTP = email
-
+  
+  const [forLoading,setForLoading] = useState(false)
   const [firstDigit, setFirstDigit] = useState('');
   const [secondDigit, setsecondDigit] = useState('');
   const [thirdDigit, setthirdDigit] = useState('');
@@ -52,6 +52,7 @@ export default function VerifyEmail(props) {
   const isDark = theme === 'dark';
   const inputRefs = useRef([]);
   const verifyOTP = async () => {
+    setForLoading(true)
     const otp =
       firstDigit +
       secondDigit +
@@ -78,7 +79,7 @@ export default function VerifyEmail(props) {
           
         }):ToastAndroid.show('OTP verification successfull.', ToastAndroid.SHORT);
         navigation.navigate('CompleteProfile', { email: email,user_id:user_id });
-      
+        setForLoading(false)
       } else {
         PLATFORM_IOS?
         Toast.show({
@@ -87,7 +88,7 @@ export default function VerifyEmail(props) {
           // position: 'bottom',
         }):ToastAndroid.show("Invalid OTP or OTP expired", ToastAndroid.SHORT);
       
-         
+        setForLoading(false)
         
         }
       })}else{
@@ -98,11 +99,11 @@ export default function VerifyEmail(props) {
           // position: 'bottom',
         }):ToastAndroid.show("Please fill required details", ToastAndroid.SHORT);
       } 
-      
+      setForLoading(false)
       
     } catch (error) {
       console.error(error);
-      // Handle network errors or other exceptions
+      setForLoading(false)
     }
   };
   const resendOTp = async () => {
@@ -174,57 +175,8 @@ export default function VerifyEmail(props) {
       // Handle network errors or other exceptions
     }
   }
-  // useEffect(() => {
-  //   if(emailCheck){
-  //   setInterval(() => {
-  //     sendToAnotherPage()
-  //   },2000)
-  // }
-    
-  // },[])
-//   useEffect(() => {
-//     let stop = true
+  
 
-//     if (emailCheck) {
-//      setInterval(() => {
-      
-//         // Check your condition here
-       
-
-       
-//         clearInterval(stopTimer);
-//         sendToAnotherPage();
-       
-    
-        
-//       }, 2000);
-// }
-
-//     return () => {
-//       clearInterval(stopTimer); // Clear the interval when the component unmounts
-//     };
-//   }, [emailCheck]);
-//   const sendToAnotherPage = async () => {
-//     try {
-//       await fetch(`${API}/emailverify/${user_id}`, {
-//         method: 'GET',
-//         headers: {
-//           'Content-Type': 'application/json',
-//         },
-        
-//       }).then((res) => res.json())
-//       .then((data) => {
-//         console.log(data,'vvv')
-//         if(data.status.email_verified == 1){
-//           setStopTimer(true)
-//         navigation.navigate('CompleteProfile', { email: email,user_id:user_id });
-//         }
-//       })
-//     } catch (error) {
-//       console.error(error);
-//       // Handle network errors or other exceptions
-//     }
-//   }
 useEffect(() => {
   let stopTimer;
 
@@ -255,14 +207,16 @@ useEffect(() => {
   }
 
   return () => {
-    clearInterval(stopTimer); // Clear the interval when the component unmounts or when emailCheck changes
+    clearInterval(stopTimer); 
   };
 }, [emailCheck]);
 
 
   return (
     <SafeAreaView style={{backgroundColor: COLORS.CREAM, flex: 1}}>
-      <ScrollView>
+      <ScrollView showsVerticalScrollIndicator={false}
+        keyboardShouldPersistTaps="handled">
+      {forLoading?<ActivityLoader /> :""}
         <View style={styles.mainDiv_container}>
           <View style={styles.mainDiv_verify_email}>
             <Text style={styles.VerifyEmail_text}>Verify your email</Text>

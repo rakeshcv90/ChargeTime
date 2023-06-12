@@ -13,8 +13,7 @@ import {SafeAreaView} from 'react-native-safe-area-context';
 
 import {createMaterialTopTabNavigator} from '@react-navigation/material-top-tabs';
 import TabOne from './TabOne';
-import TabTwo from './TabTwo';
-import TabThree from './TabThree';
+
 import COLORS from '../../constants/COLORS';
 import DrawerOpen from '../../Components/DrawerOpen';
 import {useState, useEffect} from 'react';
@@ -23,14 +22,12 @@ import axios from 'axios';
 import ActivityLoader from '../../Components/ActivityLoader';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import TabFour from './TabFour';
+import { useSelector } from 'react-redux';
 
 const mobileW = Math.round(Dimensions.get('screen').width);
 const mobileH = Math.round(Dimensions.get('window').height);
 let loginData;
 function MyTabBar({state, descriptors, navigation, position}) {
-  
-  
-  
   
   return ( 
     <View style={[styles.tabbar_part, styles.shadowProp]}>
@@ -56,9 +53,7 @@ function MyTabBar({state, descriptors, navigation, position}) {
           });
 
           if (!isFocused && !event.defaultPrevented) {
-            
-            // The `merge: true` option makes sure that the params inside the tab screen are preserved
-            navigation.navigate({name: route.name, merge: true});
+              navigation.navigate({name: route.name, merge: true});
           }
 
         };
@@ -107,16 +102,18 @@ export default function Home(route) {
   const Tab = createMaterialTopTabNavigator();
 
   const [apiData, setApiData] = useState([]);
+  const getLocationID = useSelector((state) => state.getLocationID)
+
 
   useEffect(() => {
     fetchData();
   }, []);
 
   const fetchData = async () => {
-     loginData = await AsyncStorage.getItem('loginDataOne');
+    //  loginData = await AsyncStorage.getItem('loginDataOne');
 
     try {
-      const response = await axios.get(`${API}/packagePlan/${loginData}`);
+      const response = await axios.get(`${API}/packagePlan/${getLocationID}`);
 
       if (response?.data?.locations.length == 0) {
         setIsLoading(true);
@@ -202,7 +199,7 @@ const styles = StyleSheet.create({
   charging_imag_style: {
     justifyContent: 'center',
     alignItems: 'center',
-    marginBottom:20
+    marginBottom:30
   },
   managing_width: {
     paddingHorizontal: 20,

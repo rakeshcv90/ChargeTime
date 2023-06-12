@@ -26,7 +26,7 @@ const WaveLinearGradient = (props) => {
               color: COLORS.BLACK,
             }}
           >
-            {' '}
+            
             {props.KWH ? props.KWH + ' kWh' : 0 + ' kWh'}
           </Text>
           <Text

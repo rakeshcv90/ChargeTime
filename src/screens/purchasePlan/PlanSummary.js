@@ -22,11 +22,14 @@ import BoxFour from '../../Components/BoxFour';
 import axios from 'axios';
 import {API} from '../../api/API';
 import {navigationRef} from '../../../App';
+import ActivityLoader from '../../Components/ActivityLoader';
 const mobileW = Math.round(Dimensions.get('screen').width);
 
 export default function PlanSummary({route, navigation}) {
   const [tax, setTax] = useState('');
   const [data,setData] = useState('')
+  const [forLoading,setForLoading] = useState(false)
+  
 
   const {id, package_name, total_price, salestax} = route.params.data;
 
@@ -35,14 +38,16 @@ export default function PlanSummary({route, navigation}) {
   }, []);
 
   const getPlanSummary = () => {
+    setForLoading(true)
     axios
       .get(`${API}/planPurchase/${id}/${package_name}`)
       .then(res => {
-        console.log(res.data,'ppp')
+        setForLoading(false)
         setData(res.data.locations)
         setTax(res.data.locations[0].salestax);
       })
       .catch(err => {
+        setForLoading(false)
         console.log(err);
       });
   };
@@ -51,6 +56,7 @@ export default function PlanSummary({route, navigation}) {
       <ScrollView
         showsVerticalScrollIndicator={false}
         keyboardShouldPersistTaps="handled">
+          {forLoading?<ActivityLoader />:''}
         <View>
           <View
             style={{paddingHorizontal: 20, marginTop: 30, marginBottom: 20}}>

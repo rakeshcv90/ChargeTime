@@ -34,6 +34,8 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     backgroundColor: COLORS.CREAM, flex: 1,
     paddingVertical: PLATFORM_IOS? 20:0,
+    // marginTop:20,
+    paddingTop:20
   },
   
   

@@ -17,6 +17,7 @@ import { StrongPass } from '../../../assets/images/StrongPass';
 import { API } from '../../api/API';
 import { PLATFORM_IOS } from '../../constants/DIMENSIONS';
 import { Toast } from 'react-native-toast-message/lib/src/Toast';
+import ActivityLoader from '../../Components/ActivityLoader';
 const PasswordRegex =
   /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
 const validationSchema = Yup.object().shape({
@@ -40,7 +41,9 @@ const validationSchema = Yup.object().shape({
   const ResetPassword = (props) => {
     const {navigation, route} = props;
   const {email} = route?.params;
+  const [forLoading,setForLoading] = useState(false)
   const handleResetPasswordSubmit = async values => {
+    setForLoading(true)
     try{
       const payload = {
         ...values, // Formik form values
@@ -65,7 +68,7 @@ const validationSchema = Yup.object().shape({
           
         }):ToastAndroid.show('Password Reset  successfully.', ToastAndroid.SHORT);
         navigation.navigate('Login');
-      
+        setForLoading(false)
       } else {
         PLATFORM_IOS?
         Toast.show({
@@ -73,7 +76,7 @@ const validationSchema = Yup.object().shape({
           text1: "Password not Reset  successfully.",
           // position: 'bottom',
         }):ToastAndroid.show("Password not Reset  successfully.", ToastAndroid.SHORT);
-      
+        setForLoading(false)
          
         
         }
@@ -82,6 +85,7 @@ const validationSchema = Yup.object().shape({
       
   catch(err){
 console.log(err)
+setForLoading(false)
   }
   }
     return (
@@ -89,6 +93,7 @@ console.log(err)
         <ScrollView
           showsVerticalScrollIndicator={false}
           keyboardShouldPersistTaps="handled">
+            {forLoading?<ActivityLoader /> :""}
           <View style={styles.login_img}>
           <Image
             source={require('../../../assets/images/log.png')}
