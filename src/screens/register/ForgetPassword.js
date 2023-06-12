@@ -18,6 +18,7 @@ import { Message } from '../../../assets/images/Message';
 import { PLATFORM_IOS } from '../../constants/DIMENSIONS';
 import { Toast } from 'react-native-toast-message/lib/src/Toast';
 import { API } from '../../api/API';
+import ActivityLoader from '../../Components/ActivityLoader';
 
 const mobileW = Math.round(Dimensions.get('screen').width);
 
@@ -28,8 +29,9 @@ const validationSchema = Yup.object().shape({
 });
 
 const ForgetPassword = ({navigation}) => {
-  
+  const [forLoading,setForLoading] = useState(false)
   const handleRemberPassWord = async values => {
+    setForLoading(true)
     try{
       
         await fetch(`${API}/forgetPassword`, {
@@ -49,7 +51,7 @@ const ForgetPassword = ({navigation}) => {
             
           }):ToastAndroid.show('Email added successfully.', ToastAndroid.SHORT);
           navigation.navigate('ResetPassword', { email: values });
-        
+          setForLoading(false)
         } else {
           PLATFORM_IOS?
           Toast.show({
@@ -58,12 +60,13 @@ const ForgetPassword = ({navigation}) => {
             // position: 'bottom',
           }):ToastAndroid.show("Email already in use", ToastAndroid.SHORT);
         
-           
+          setForLoading(false)
           
           }
         })}
     catch(err){
 console.log(err)
+setForLoading(false)
     }
   }
   return (
@@ -71,6 +74,7 @@ console.log(err)
       <ScrollView
         showsVerticalScrollIndicator={false}
         keyboardShouldPersistTaps="handled">
+          {forLoading?<ActivityLoader /> :""}
         <View style={styles.login_img}>
           <Image
             source={require('../../../assets/images/log.png')}

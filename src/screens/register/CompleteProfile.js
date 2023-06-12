@@ -24,7 +24,11 @@ import {DIMENSIONS, PLATFORM_IOS} from '../../constants/DIMENSIONS';
 import { useDispatch } from 'react-redux';
 import {useSafeAreaFrame} from 'react-native-safe-area-context';
 import {Toast} from 'react-native-toast-message/lib/src/Toast';
+
 import { getCompleteData } from '../../redux/action';
+
+import ActivityLoader from '../../Components/ActivityLoader';
+
 
 const mobileW = Math.round(Dimensions.get('screen').width);
 const mobileH = Math.round(Dimensions.get('window').height);
@@ -43,7 +47,7 @@ export default function CompleteProfile(props) {
   const [value, setValue] = useState(null);
   const [locationId, setLocationId] = useState('');
   const [isFocus, setIsFocus] = useState(false);
-
+  const [forLoading,setForLoading] = useState(false)
   useEffect(() => {
     fetchOptions();
   }, []);
@@ -78,7 +82,7 @@ export default function CompleteProfile(props) {
   };
   const CompleteProfileFunction = async () => {
     
-    console.log(user_id, 'user');
+    setForLoading(true)
     if(locationId&& 
       addlineone&&
       addlinetwo&&
@@ -100,8 +104,12 @@ export default function CompleteProfile(props) {
       })
         .then(res => res.json())
         .then(data => {
+
           console.log(data, 'fff');
           dispatch(getCompleteData(data));
+
+          
+
           if (data.success !== false) {
             
             PLATFORM_IOS
@@ -114,6 +122,7 @@ export default function CompleteProfile(props) {
                   ToastAndroid.SHORT,
                 );
             navigation.navigate('Login');
+            setForLoading(false)
           } else {
             PLATFORM_IOS
               ? Toast.show({
@@ -122,10 +131,12 @@ export default function CompleteProfile(props) {
                   // position: 'bottom',
                 })
               : ToastAndroid.show('Profile already in use', ToastAndroid.SHORT);
+              setForLoading(false)
           }
         });
     } catch (err) {
       console.log(err);
+      setForLoading(false)
     }}else{
       PLATFORM_IOS
       ? Toast.show({
@@ -136,13 +147,16 @@ export default function CompleteProfile(props) {
           'Please fill required fields..',
           ToastAndroid.SHORT,
         );
+        setForLoading(false)
     }
   };
 
   // console.log(locationMap,"locationMap")
   return (
     <SafeAreaView style={{backgroundColor: COLORS.CREAM, flex: 1}}>
-      <ScrollView>
+      <ScrollView showsVerticalScrollIndicator={false}
+        keyboardShouldPersistTaps="handled">
+      {forLoading?<ActivityLoader /> :""}
         <View style={styles.mainDiv_signup}>
           <Image
             source={require('../../../assets/images/res.png')}

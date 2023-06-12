@@ -13,6 +13,7 @@ import {
 } from 'react-native';
 import COLORS from '../constants/COLORS';
 import {PLATFORM_IOS, DIMENSIONS} from '../constants/DIMENSIONS';
+import {Eye} from "../../assets/images/Eye"
 
 
 
@@ -110,12 +111,13 @@ const Input: FC<Props> = ({...Props}) => {
           {Props.passwordInput && (
             <TouchableOpacity onPress={Props.pasButton}>
               {Props.passwordInputIcon ? (
-                <Image source={require('../../assets/images/phone.png')} />
+                <Eye />
               ) : (
                 <Image source={require('../../assets/images/passwod.png')} />
               )}
             </TouchableOpacity>
           )}
+          
         </View>
       </View>
       {Props.errors && Props.touched && (

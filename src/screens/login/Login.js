@@ -13,7 +13,7 @@ import {
 } from 'react-native';
 import {SafeAreaView} from 'react-native-safe-area-context';
 
-import React, {useState} from 'react';
+import React, {useState,useEffect} from 'react';
 import COLORS from '../../constants/COLORS';
 import Toast from 'react-native-toast-message';
 import {API} from '../../api/API';
@@ -22,6 +22,11 @@ import { PLATFORM_IOS } from '../../constants/DIMENSIONS';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Message } from '../../../assets/images/Message';
 import { Eye } from '../../../assets/images/Eye';
+import ActivityLoader from '../../Components/ActivityLoader';
+import {useDispatch,useSelector} from 'react-redux';
+import { getGraphData, getLocationID, getPackageStatus, setKwhData, setRemainingData, setUserID, setWeekGraphData, setWeekTotalData } from '../../redux/action';
+import axios from 'axios';
+import { navigationRef } from '../../../App';
 
 const mobileH = Math.round(Dimensions.get('window').height);
 const mobileW = Math.round(Dimensions.get('window').width);
@@ -30,11 +35,15 @@ export default function Login({navigation}) {
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [isSecureTextEntry, setIsSecureTextEntry] = useState(true);
-  // const toggleSecureTextEntry = () => {
-  //   setIsSecureTextEntry(!isSecureTextEntry);
-  // };
+  const [showPassword, setShowPassword] = useState(true);
+  const [forLoading,setForLoading] = useState(false)
+  // const [graphData,setGraphData] = useState([])
+  const dispatch = useDispatch();
+  const getUserID  = useSelector((state) => state.getUserID)
+  // console.log(getUserID,"object")
+  
   const loginFunction = async () => {
+    setForLoading(true)
     try{
     await fetch(`${API}/logins`, {
       method: 'POST',
@@ -48,18 +57,38 @@ export default function Login({navigation}) {
     })
       .then(res => res.json())
       .then(data => {
+
         // AsyncStorage.setItem('loginDataOne', JSON.stringify(data.locationid ));
        
         if (data.message == 'Login Successfully') {
-          
-          PLATFORM_IOS?
+
+
+        
+
+        
+
+
+         PLATFORM_IOS?
           Toast.show({
             type: 'success',
             text1: 'Login Successful',
             
-          }):ToastAndroid.show('Login Successful', ToastAndroid.SHORT);
-
-          navigation.navigate('DrawerStack');
+          }):ToastAndroid.show('Login Successfully', ToastAndroid.SHORT);
+          setForLoading(false)
+          dispatch(getLocationID(data?.locationid))
+        dispatch(getPackageStatus(data?.status == 'true' ? true : false))
+        dispatch(setUserID(data?.user_id))
+          // if(data.status == "true"){
+          //   navigation.navigate('EnergyStats');
+          // }else if(data.status == "false"){
+            
+          // }
+            fetchGraphData(data?.user_id)
+            dailyUsuagekwh(data?.user_id)
+            remainigUsuageData(data?.user_id)
+            fetchWeekGraphData(data?.user_id)
+            // totalWeekUsedData(data?.user_id)
+          
           // navigation.navigate('Home');
         } else {
           PLATFORM_IOS?
@@ -68,23 +97,98 @@ export default function Login({navigation}) {
             text1: 'Login Failed',
             
           }):ToastAndroid.show('Login Failed', ToastAndroid.SHORT);
-
+          setForLoading(false)
         }
-       
         
       })
       .catch((error) => {
         console.error(error);
+        setForLoading(false)
       });
     }catch(err){
       console.log(err)
     }
   };
+  
+  
+  
+//day data start
+  const fetchGraphData = (userID) => {
+    axios.get(`${API}/dailyusagegraph/${userID}`)
+    .then((res) =>{
+      
+      dispatch(getGraphData(res?.data))
+      navigation.navigate('DrawerStack');
+    })
+    .catch((err) => {
+      console.log(err)
+      
+    })
+  }
+  const dailyUsuagekwh = (userId) => {
+    axios.get(`${API}/dailyusage/${userId}`)
+    .then((res) =>{
+      
+      dispatch(setKwhData(res?.data))
+      
+    })
+    .catch((err) => {
+      console.log(err)
+      
+    })
+  }
+  const remainigUsuageData =(userId) => {
+    let remaingData;
+    
+    axios.get(`${API}/remainingusage/${userId}`)
+    .then((res) => {
+      if(res.data?.kwh_unit_remaining>=0){
+        remaingData = res.data?.kwh_unit_remaining
+      }else{
+        remaingData = res.data?.kwh_unit_overusage
+      }
+      
+      dispatch(setRemainingData(remaingData))
+    })
+    .catch((err) => {
+      console.log(err)
+    })
+  }
+//day data end
+
+//week data start
+  const fetchWeekGraphData = (userID) => {
+    axios.get(`${API}/weeklyusage/${userID}`)
+    .then((res) =>{
+      console.log(res.data,'yyy')
+      dispatch(setWeekGraphData(res?.data))
+      
+    })
+    .catch((err) => {
+      console.log(err)
+      
+    })
+  }
+  // const totalWeekUsedData = (userId) => {
+  //   axios.get(`${API}/sumweeklyusage/${userId}`)
+  //   .then((res) =>{
+  //     console.log(res.data,'aaa')
+  //     dispatch(setWeekTotalData(res?.data))
+      
+  //   })
+  //   .catch((err) => {
+  //     console.log(err)
+      
+  //   })
+  // }
+
+  //week data end
   return (
     <SafeAreaView style={{backgroundColor: COLORS.CREAM, flex: 1}}>
       <ScrollView
         showsVerticalScrollIndicator={false}
         keyboardShouldPersistTaps="handled">
+          {forLoading?<ActivityLoader /> :""}
         <View style={styles.login_img}>
           <Image
             source={require('../../../assets/images/log.png')}
@@ -122,15 +226,15 @@ export default function Login({navigation}) {
             
             errors={undefined}
             touched={false}
-            secureTextEntry={true}
             placeholderTextColor={COLORS.BLACK}
             text="Password"
             
+            passwordInput={true}
+            pasButton={() => setShowPassword(!showPassword)}
+            secureTextEntry={showPassword}
+            passwordInputIcon={showPassword}
             onChangeText={text => setPassword(text)}
             value={password}
-            IconRight={() => (
-              <Eye />
-            )}
             mV={5}
             placeholder="Enter your password"
             bW={1}

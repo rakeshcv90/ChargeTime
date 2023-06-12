@@ -33,7 +33,7 @@ const PasswordRegex =
 const validationSchema = Yup.object().shape({
   name: Yup.string().required('Full Name is required'),
   email: Yup.string().email('Invalid Email').required('Email is required'),
-  mobile: Yup.string().min(10).max(10).required('Phone No. is required'),
+  mobile: Yup.string().max(10).required('Phone No. is required'),
   password: Yup.string()
     .matches(
       PasswordRegex,
@@ -42,10 +42,11 @@ const validationSchema = Yup.object().shape({
     .required('Password is required'),
 });
 export default function Register({navigation}) {
+  const [forLoading,setForLoading] = useState(false)
   const dispatch =useDispatch();
  
   const handleFormSubmit = async values => {
-   
+    setForLoading(true)
     try {
       const response = await axios.post(`${API}/createuser`, values);
       
@@ -59,9 +60,14 @@ export default function Register({navigation}) {
           
         }):ToastAndroid.show('User registered successfully.', ToastAndroid.SHORT);
         navigation.navigate('VerifyEmail', { email: values?.email,user_id:response.data?.user_id });
+
          const data=[{ email: values?.email },{ name: values?.name },{ mobile: values?.mobile },{ password: values?.password },{user_id:response.data?.user_id}]
         // const data = response.data
          console.log('------------------',data);
+
+
+         const data=[{ email: values?.email },{ name: values?.name },{ mobile: values?.mobile }]
+         setForLoading(false)
 
         dispatch(userRegisterData(data)); 
         
@@ -76,9 +82,11 @@ export default function Register({navigation}) {
               'Your Email is already exist.',
               ToastAndroid.SHORT,
             );
+            setForLoading(false)
       }
     } catch (error) {
       console.error(error);
+      setForLoading(false)
     }
   };
   return (
@@ -86,6 +94,7 @@ export default function Register({navigation}) {
       <ScrollView
         showsVerticalScrollIndicator={false}
         keyboardShouldPersistTaps="handled">
+          {forLoading?<ActivityLoader /> :""}
           <View>
         <Image
           source={require('../../../assets/images/res.png')}
@@ -159,7 +168,9 @@ export default function Register({navigation}) {
                     errors={undefined}
                     touched={false}
                     value={values.mobile}
+                    keyboardType='numeric'
                     onChangeText={handleChange('mobile')}
+                    maxLength={10}
                     onBlur={handleBlur('mobile')}
                     text="Phone No."
                     IconRight={() => <Call />}

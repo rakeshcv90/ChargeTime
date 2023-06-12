@@ -1,0 +1,85 @@
+import {StyleSheet, Text, View, Animated} from 'react-native';
+import React, {useEffect, useRef, useState} from 'react';
+import COLORS from '../constants/COLORS';
+import {DIMENSIONS} from '../constants/DIMENSIONS';
+import AnimatedLottieView from 'lottie-react-native';
+import LinearGradient from 'react-native-linear-gradient';
+const Charging = () => {
+  const slideAnimation = useState(new Animated.Value(0))[0];
+  // const [isSliding, setIsSliding] = useState(false);
+
+  useEffect(() => {
+    console.log('slide', slideAnimation);
+    Animated.timing(slideAnimation, {
+      toValue: 0,
+      duration: 300,
+      useNativeDriver: true,
+    }).start(() => {
+      // setIsSliding(!isSliding);
+    });
+
+    console.log('slide', slideAnimation);
+  },[]);
+
+  const slideButtonStyle = {
+    transform: [
+      {
+        translateX: slideAnimation.interpolate({
+          inputRange: [0, 1],
+          outputRange: [0, DIMENSIONS.SCREEN_WIDTH * 0.66], // Adjust the slide distance as per your needs
+        }),
+      },
+    ],
+  };
+
+  return (
+    <View
+      style={{
+        margin: 20,
+        marginLeft: 30,
+        backgroundColor: COLORS.WHITE,
+        height: 70,
+        width: DIMENSIONS.SCREEN_WIDTH * 0.75,
+        borderRadius: 15,
+        shadowColor: '#000',
+        shadowOffset: {
+          width: 5,
+          height: 3,
+        },
+        shadowOpacity: 0.29,
+        shadowRadius: 5.65,
+        elevation: 7,
+        overflow: 'hidden',
+      }}>
+      <LinearGradient
+        colors={['rgba(34, 147, 111, 1), 10%', 'rgba(157, 196, 47, 1), 15%']}
+        start={{x: 0, y: 0}}
+        end={{x: 1, y: 0}}
+        style={{
+          height: '100%',
+          width: '50%',
+          // justifyContent: 'center',
+          alignItems: 'center',
+          flexDirection: 'row',
+          
+        }}>
+        <AnimatedLottieView
+          source={{
+            uri: 'https://assets9.lottiefiles.com/packages/lf20_hbr24n88.json',
+          }} // Replace with your animation file
+          autoPlay
+          loop
+          style={{width: 50, height: 50}}
+        />
+      </LinearGradient>
+    </View>
+  );
+};
+
+export default Charging;
+
+const styles = StyleSheet.create({
+  gradient: {
+    flex: 1,
+  },
+});
