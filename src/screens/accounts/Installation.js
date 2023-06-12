@@ -1,22 +1,89 @@
-import { View, Text,SafeAreaView, TextInput,StyleSheet } from 'react-native'
-import React from 'react'
+import { View, Text,SafeAreaView, Button, TextInput,StyleSheet, Modal,TouchableOpacity } from 'react-native'
+import React, { useState, useEffect } from 'react'
 import Header from '../../Components/Header'
 import HorizontalLine from '../../Components/HorizontalLine'
 import Input from '../../Components/Input'
 import { Install } from '../../../assets/svgs/Install'
 import { Location } from '../../../assets/svgs/Location'
+import { useSelector } from 'react-redux';
+import COLORS from '../../constants/COLORS'
+
+
 
 const Installation = () => {
+  const getCompleteData = useSelector((state)=> state.getCompleteData)
+  const [isModalVisible, setModalVisible] = useState(false);
+  const [isEditable, setIsEditable] = useState(false);
+  
+  useEffect(() => {
+    console.log('data for this User:---------', getCompleteData); 
+ }, [getCompleteData]);
+
+  const handleConfirm = () => {
+    // Perform confirmation logic here
+    console.log('Confirmed');
+    setIsEditable(false)
+    setModalVisible(false);
+  };
+
+  const handleCancel = () => {
+    // Perform cancel logic here
+    console.log('Cancelled');
+    setIsEditable(false)
+    setModalVisible(false);
+  };
+
+  const onPress = ()=>{
+    console.log("onpress..",isModalVisible)
+    setModalVisible(true);
+  }
+  const enableEdit =()=>{
+    console.log("enable edit",isEditable)
+    setIsEditable(true)
+  }
+  const ConfirmModal = () => {
+    return (
+      <Modal
+        animationType="slide"
+        transparent={true}
+        visible={isModalVisible}
+        onRequestClose={() => setModalVisible(false)}>
+        <View style={styles.modalContainer}>
+          <View style={styles.modalContent}>
+            <Text style={styles.modalText}>
+            Change Location Base?
+            </Text>
+            <Text style={styles.selectedEmail}>Doing so will cancel your current plan. {'\n'}Are you sure?</Text>
+            <View style={styles.modalButtonsContainer}>
+              <TouchableOpacity
+                style={styles.cancelButton}
+                onPress={() => handleCancel()}>
+                <Text style={styles.buttonText}>Cancel</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={styles.okButton}
+                onPress={() => {
+                  handleConfirm();
+                }}>
+                <Text style={styles.buttonText}>OK</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </View>
+      </Modal>
+    );
+  };
+
   return (
     <SafeAreaView style={{backgroundColor: COLORS.CREAM, flex: 1}}>
-     <Header headerName="Installation" showRightButton={true}/>
+     <Header headerName="Installation" showRightButton={true} onPress={onPress} enableEdit ={enableEdit} editButton={isEditable} />
     <HorizontalLine style={styles.line}/>
      <View style={styles.mainDiv_container}>
           
             <Input
           IconLeft={null}
-          autoFocus
           bgColor={COLORS.CREAM}
+          editable={isEditable}
           IconRight={() => (
             <Install/>
           )}
@@ -35,11 +102,11 @@ const Installation = () => {
             
           }}
         />
-
             <Input
           IconLeft={null}
-          autoFocus
+
           bgColor={COLORS.CREAM}
+          editable={isEditable}
           IconRight={() => (
            <Location/>
           )}
@@ -49,7 +116,7 @@ const Installation = () => {
           text="Address Line"
           mV={10}
           textWidth={'35%'}
-          placeholder="Eg. 123/B, Street A2"
+          placeholder={getCompleteData?.pwa_add1}
           placeholderTextColor={COLORS.BLACK}
           style={{
             color: COLORS.BLACK,
@@ -59,8 +126,9 @@ const Installation = () => {
         />
          <Input
           IconLeft={null}
-          autoFocus
+        
           bgColor={COLORS.CREAM}
+          editable={isEditable}
           IconRight={() => (
            <Location/>
           )}
@@ -70,7 +138,7 @@ const Installation = () => {
           text="Address Line 2"
           mV={10}
           textWidth={'40%'}
-          placeholder="Eg. Block D, CA"
+          placeholder={getCompleteData?.pwa_add2}
           placeholderTextColor={COLORS.BLACK}
           style={{
             color: COLORS.BLACK,
@@ -85,6 +153,7 @@ const Installation = () => {
                   IconLeft={null}
                   errors={undefined}
                   touched={false}
+                  editable={isEditable}
                   //     value={values.name}
                   //     onChangeText={handleChange('name')}
                   // onBlur={handleBlur('name')}
@@ -92,7 +161,7 @@ const Installation = () => {
                   text="ZIP Code"
                   IconRight={null}
                   mV={15}
-                  placeholder="1100000"
+                  placeholder={getCompleteData?.pwa_zip}
                   bW={0.3}
                   textWidth={'60%'}
                   placeholderTextColor={COLORS.BLACK}
@@ -104,6 +173,7 @@ const Installation = () => {
                   IconLeft={null}
                   errors={undefined}
                   touched={false}
+                  editable={isEditable}
                   //     value={values.name}
                   //     onChangeText={handleChange('name')}
                   // onBlur={handleBlur('name')}
@@ -111,7 +181,7 @@ const Installation = () => {
                   text="State"
                   IconRight={null}
                   mV={15}
-                  placeholder="CA"
+                  placeholder={getCompleteData.pwa_state}
                   bW={0.3}
                   textWidth={'40%'}
                   placeholderTextColor={COLORS.BLACK}
@@ -120,7 +190,8 @@ const Installation = () => {
               </View>
             </View>            
           </View>
-          {/* </View> */}
+
+          {isModalVisible ?  <ConfirmModal /> :null}
 
     </SafeAreaView>
   )
@@ -129,6 +200,55 @@ const styles = StyleSheet.create({
   mainDiv_signup: {
     paddingTop: 20,
   },
+  modalContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    borderRadius: 28,
+  },
+  modalContent: {
+    backgroundColor: '#F5F5F5',
+    padding: 20,
+    borderRadius: 15,
+    alignItems: 'center',
+    marginRight:20,
+    marginLeft:20,
+  },
+  modalText: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    marginBottom: 10,
+  },
+  selectedEmail: {
+    fontSize: 16,
+    marginBottom: 20,
+  },
+  modalButtonsContainer: {
+    flexDirection: 'row',
+    // justifyContent: 'space-between',
+    width: '30%',
+  },
+  okButton: {
+    backgroundColor: '#B1D34F',
+    paddingVertical: 10,
+    paddingHorizontal: 10,
+    borderRadius: 20,
+  
+  },
+  cancelButton: {
+    backgroundColor: 'transparent',
+    paddingVertical: 10,
+    paddingHorizontal: 10,
+    borderRadius: 5,
+    marginLeft: 10,
+  },
+  buttonText: {
+    color: COLORS.BLACK,
+    fontSize: 16,
+    fontWeight: '400',
+  },
+
   // signup_img: {
   //   width: mobileW,
   //   // height: mobileH * 0.45,

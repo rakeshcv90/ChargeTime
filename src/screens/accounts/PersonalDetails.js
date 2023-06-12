@@ -1,8 +1,9 @@
-import { View, Text, StyleSheet, SafeAreaView, TextInput, useColorScheme } from 'react-native'
+import { View, Text, StyleSheet, SafeAreaView,ToastAndroid, TextInput, useColorScheme } from 'react-native'
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import React, {useState, useEffect} from 'react'
 import { useSelector } from 'react-redux';
 import HorizontalLine from '../../Components/HorizontalLine';
+import { PLATFORM_IOS } from '../../constants/DIMENSIONS';
 import Header from '../../Components/Header';
 import { State, TouchableOpacity } from 'react-native-gesture-handler';
 import Toast from 'react-native-toast-message';
@@ -14,49 +15,40 @@ import { Call } from '../../../assets/svgs/Call';
 import { Message } from '../../../assets/svgs/Message';
 import {Name} from '../../../assets/svgs/Name';
 import { API } from '../../api/API';
-import { Edit } from '../../../assets/svgs/Edit';
-
-import {Save} from '../../../assets/svgs/Save'
-
 import { navigationRef } from '../../../App';
 // import { userRegisterData } from '../../redux/action';
 
 
 
-const PersonalDetails = ({navigation}) => {
+const PersonalDetails = () => {
   const userRegisterData = useSelector((state)=> state.userRegisterData)
   const [isEditable, setIsEditable] = useState(false);
    const [name, setName]= useState('');
-   const [mail, setMail] =useState('');
    const [number, setNumber]=useState();
 
   useEffect(() => {
    console.log('data for this User:---------', userRegisterData); 
-  //  if (userRegisterData) {
-  //   setName(userRegisterData.name);
-  //   setNumber(userRegisterData.mobile || '');
-  //   setMail(userRegisterData.email || '');
-  // }
+  
 }, [userRegisterData]);
+const user_ID = userRegisterData[4]?.user_id;
 
   const theme = useColorScheme();
   const isDark = theme === 'dark';
 
-  const handleRightButtonClick = () => {
-    console.log("ASSSSS--------")
-    if (onPress != null) {
-      return showRightButton ? <Save /> : null;
-    
-    }
-    return showRightButton ? <Edit /> : null;
-  };
+  const onPress = ()=>{
+    updatePersonalDetails();
+  }
+  const enableEdit =()=>{
+    console.log("enable edit",isEditable)
+    setIsEditable(true)
+  }
 
 
   const updatePersonalDetails = async () =>{
 
     console.log("data")
-    setIsEditable(true);
-    await fetch(`${API}/personalInfo`, {
+    // setIsEditable(true);
+    await fetch(`${API}/personalInfo/${user_ID}`, {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json',
@@ -72,11 +64,11 @@ const PersonalDetails = ({navigation}) => {
           PLATFORM_IOS?
           Toast.show({
             type: 'success',
-            text1: "Your Profile Update Successful",
+            text1: "Your Profile Updated Successfully",
             
-          }):ToastAndroid.show("Your Profile Update Successful", ToastAndroid.SHORT);
-
-          navigation.navigate('Account');
+          }):ToastAndroid.show("Your Profile Updated Successfully", ToastAndroid.SHORT);
+          setIsEditable(false)
+          navigationRef.navigate('Account');
           // navigation.navigate('Home');
         } else {
           PLATFORM_IOS?
@@ -91,17 +83,17 @@ const PersonalDetails = ({navigation}) => {
       })
       .catch(error => {
         console.error(error);
-      });
+      })
   };
 
 
   return (
     <SafeAreaView style={{ backgroundColor: COLORS.CREAM, flex: 1 }}>
-      <Header headerName="Personal Details" showRightButton={true}  onPress={handleRightButtonClick}/>
+     <Header headerName="Personal Details" showRightButton={true} onPress={onPress} enableEdit ={enableEdit} editButton={isEditable} />
       
       <HorizontalLine style={styles.line} />
       <View style={[styles.mainDiv_container]}>
-    
+   
         <Input
           IconLeft={null}
            editable={isEditable}
@@ -115,7 +107,7 @@ const PersonalDetails = ({navigation}) => {
           text="Name"
           mV={5}
           textWidth={'17%'}
-          placeholder=''
+          placeholder= {userRegisterData[1]?.name}
           placeholderTextColor={COLORS.BLACK}
           style={{
             color: COLORS.BLACK,
@@ -123,7 +115,7 @@ const PersonalDetails = ({navigation}) => {
             fontWeight: '200',
           }}
           onChangeText={text => setName(text)}
-         value={name}
+          value={name}
         />
         <Input
           IconLeft={null}
@@ -138,7 +130,7 @@ const PersonalDetails = ({navigation}) => {
           text="Phone No."
           mV={15}
           textWidth={'27%'}
-          placeholder="Eg. +123 (456) 789"
+          placeholder={userRegisterData[2]?.mobile}
           placeholderTextColor={COLORS.BLACK}
           style={{
             color: COLORS.BLACK,
@@ -161,15 +153,13 @@ const PersonalDetails = ({navigation}) => {
           text="Email"
           mV={55}
           textWidth={'20%'}
-          placeholder="johndoe@xyz.com"
+          placeholder={userRegisterData[0]?.email}
           placeholderTextColor={COLORS.BLACK}
           style={{
             color: COLORS.BLACK,
             fontFamily: 'Roboto',
             fontWeight: '200',
           }}
-          onChangeText={text => setMail(text)}
-         value={number}
         />
         {/* <Text style={[styles.textdata,styles.forPaddingTOP]}>Phone No.</Text>
             <TextInput
@@ -194,7 +184,7 @@ const PersonalDetails = ({navigation}) => {
       <View style={styles.bottom}>
         <Text>Want to delete account?{' '}</Text>
         
-        <TouchableOpacity onPress={()=>navigation.navigate('deleteAccount')}>
+        <TouchableOpacity onPress={()=>navigationRef.navigate('deleteAccount')}>
           <Text 
           style={{
             fontWeight: 800,

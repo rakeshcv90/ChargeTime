@@ -22,12 +22,13 @@ import BoxFour from '../../Components/BoxFour';
 import axios from 'axios';
 import {API} from '../../api/API';
 import {navigationRef} from '../../../App';
+
 const mobileW = Math.round(Dimensions.get('screen').width);
 
 export default function PlanSummary({route, navigation}) {
   const [tax, setTax] = useState('');
-  const [data,setData] = useState('')
-
+  const [data,setData] = useState('');
+  const dispatch =useDispatch();
   const {id, package_name, total_price, salestax} = route.params.data;
 
   useEffect(() => {
@@ -40,7 +41,9 @@ export default function PlanSummary({route, navigation}) {
       .then(res => {
         console.log(res.data,'ppp')
         setData(res.data.locations)
+        dispatch(getPlanSummary(res))
         setTax(res.data.locations[0].salestax);
+        
       })
       .catch(err => {
         console.log(err);

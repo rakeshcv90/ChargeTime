@@ -44,6 +44,5 @@ public class IntroductionActivity extends AppCompatActivity {
     private void startMainActivity() {
         Intent intent = new Intent(IntroductionActivity.this, MainActivity.class);
         startActivity(intent);
-        finish();
     }
 }

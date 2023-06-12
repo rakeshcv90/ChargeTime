@@ -13,9 +13,10 @@ const WaveLinearGradient = (props) => {
           width: '100%',
           height: props.RemainingFill ? `${props.RemainingFill}%` : '1%',
           flexDirection: 'column-reverse',
+          background: linear-gradient('180deg', '#B1D34F 0%', '#50AC3D 100%')
         }}
       >
-        <View style={{ marginBottom: 30, marginLeft: 30 }}>
+        <View style={{ marginBottom: 30, marginLeft: 30 }}>   background: linear-gradient(180deg, #B1D34F 0%, #50AC3D 100%)
           <WaveAnimation />
           <Text
             style={{

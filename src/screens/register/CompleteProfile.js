@@ -21,13 +21,16 @@ import {Installation} from '../../../assets/images/Installation';
 import {Address} from '../../../assets/images/Address';
 import {Dropdown} from 'react-native-element-dropdown';
 import {DIMENSIONS, PLATFORM_IOS} from '../../constants/DIMENSIONS';
+import { useDispatch } from 'react-redux';
 import {useSafeAreaFrame} from 'react-native-safe-area-context';
 import {Toast} from 'react-native-toast-message/lib/src/Toast';
+import { getCompleteData } from '../../redux/action';
 
 const mobileW = Math.round(Dimensions.get('screen').width);
 const mobileH = Math.round(Dimensions.get('window').height);
 
 export default function CompleteProfile(props) {
+  const dispatch =useDispatch();
   const {navigation, route} = props;
   const {email, user_id} = route?.params;
 
@@ -98,7 +101,9 @@ export default function CompleteProfile(props) {
         .then(res => res.json())
         .then(data => {
           console.log(data, 'fff');
+          dispatch(getCompleteData(data));
           if (data.success !== false) {
+            
             PLATFORM_IOS
               ? Toast.show({
                   type: 'success',

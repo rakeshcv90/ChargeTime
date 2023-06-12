@@ -13,11 +13,11 @@ import COLORS from '../constants/COLORS';
           duration: 3000,
           useNativeDriver: true,
         }),
-        Animated.timing(wavePosition, {
-          toValue: 0,
-          duration: 3000,
-          useNativeDriver: true,
-        }),
+        // Animated.timing(wavePosition, {
+        //   toValue: 0,
+        //   duration: 3000,
+        //   useNativeDriver: true,
+        // }),
       ]),
     );
 
@@ -34,8 +34,9 @@ import COLORS from '../constants/COLORS';
         transform: [
           {
             translateY: wavePosition.interpolate({
-              inputRange: [0, 1],
+              inputRange: [1, 2],
               outputRange: [0, -100],
+              
             }),
           },
         ],

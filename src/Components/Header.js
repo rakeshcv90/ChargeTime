@@ -17,20 +17,16 @@ import { BackButton } from '../../assets/svgs/BackButton';
 import { Edit } from '../../assets/svgs/Edit';
 import { Save } from '../../assets/svgs/Save';
 
-const Header = ({ headerName, showRightButton, onPress }) => {
-const [RightButton, setRightButton] =useState()
+const Header = ({ headerName, showRightButton, onPress, enableEdit ,editButton }) => {
+// const [RightButton, setRightButton] =useState()
 const [pressed, setPressed]=useState(true)
-  const handleRightButtonClick = () => {
-    if (onPress != null) {
-      return showRightButton ? <Save /> : null;
-    }
-    return showRightButton ? <Edit /> : null;
-  };
+const [rightButton, setRightButton] = useState(null);
 
-  const renderIcon = () => {
-    return showRightButton ? <Edit /> : null;
-   
-  };
+useEffect(()=>{
+  if(!editButton){
+    setRightButton(false)
+  }
+},[editButton])
 
   return (
     <SafeAreaView style={styles.container}>
@@ -40,10 +36,20 @@ const [pressed, setPressed]=useState(true)
           <BackButton />
         </TouchableOpacity>
         <Text style={styles.headerText}>{headerName}</Text>
-        <TouchableOpacity style={styles.rightButton} onPress={handleRightButtonClick}>
+        <TouchableOpacity style={styles.rightButton} onPress={()=>{
+          if(!rightButton){
+            enableEdit();
+            setRightButton(true)
+          }else{
+            onPress();
+            
+          }
+          }}>
+        {rightButton  ? <Save /> :<Edit />}
           {/* {showRightButton && <Edit />} */}
-          {renderIcon()}
+          {/* {renderIcon()} */}
         </TouchableOpacity>
+        
       </View>
     </SafeAreaView>
   );

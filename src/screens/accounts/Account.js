@@ -6,14 +6,8 @@ import Picker from '@react-native-picker/picker'
 import logo from '../../../assets/images/logo.png';
 import COLORS from '../../constants/COLORS';
 import HorizontalLine from '../../Components/HorizontalLine';
-import PersonalDetails from './PersonalDetails';
-import Security from './Security';
-import Installation from './Installation';
-import Theme from './Theme';
-import Payment from './Payment';
-import Subscription from './Subscription';
-
-
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import Login from '../login/Login';
 
 const Account = ({ navigation }) => {
   const [selectedValue, setSelectedValue] = useState('');
@@ -57,6 +51,16 @@ const Account = ({ navigation }) => {
     // },
   ];
 
+  const handleLogOut =async () => {
+    try{
+    await AsyncStorage.removeItem('loginDataOne');
+    navigation.navigate('Login');
+    console.log('Log out successfully');
+    }catch (error) {
+      console.error('Error during logout:', error);
+    }
+  };
+
  
 
   const handleLinkPress = (screen) => {
@@ -93,17 +97,6 @@ const Account = ({ navigation }) => {
               <TouchableOpacity style={styles.button} >
         <Text style={styles.buttonText}>Follow System</Text>
                  </TouchableOpacity>
-               {/* {isOpen && (
-                 <Text style={styles.buttonText}>{selectedOption || 'Follow System'}</Text>
-                 <View style={styles.dropdown}>
-                      {options.map((option, index) => (
-                     <TouchableOpacity
-                       key={index}
-                       style={styles.option}
-                    onPress={() => handleOptionSelect(option)}
-                    >
-              <Text style={styles.optionText}>{option}</Text>
-            </TouchableOpacity> */}
               </View>
               <View style={styles.addContainer}>
       <TouchableOpacity style={styles.listItem}>
@@ -119,6 +112,13 @@ const Account = ({ navigation }) => {
         <Text style={styles.text}>Contact Us</Text>
       </TouchableOpacity>
     </View>
+    <View style={styles.ButtonsContainer}>
+              <TouchableOpacity
+                style={styles.logoutButton}
+                onPress={() => handleLogOut()}>
+                <Text style={styles.logoutbuttonText}>LOG OUT</Text>
+              </TouchableOpacity>
+              </View>
             </View>
        </SafeAreaView>
   );
@@ -163,6 +163,7 @@ const styles = StyleSheet.create({
   link: {
     color: 'blue',
   },
+ 
   button: {
     padding: 8,
     borderWidth: 1,
@@ -209,7 +210,23 @@ const styles = StyleSheet.create({
     marginRight: 20,
     marginLeft:30,
     marginTop:80,
-  }
+  },
+  ButtonsContainer: {
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  logoutButton: {
+    backgroundColor: '#F84E4E',
+    padding: 5,
+    borderRadius: 10,
+  },
+  logoutbuttonText: {
+    color: 'white',
+    fontWeight: '500',
+    paddingLeft:5,
+    paddingRight:5,
+    
+  },
 });
 
 export default Account;

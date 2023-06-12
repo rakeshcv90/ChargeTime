@@ -1,4 +1,4 @@
-import { View, Text, SafeAreaView,StyleSheet,TextInput, TouchableOpacity} from 'react-native'
+import { View, Text, SafeAreaView,StyleSheet,TextInput, TouchableOpacity,ToastAndroid,} from 'react-native'
 import React, { useEffect } from 'react'
 import * as Yup from 'yup';
 import COLORS from '../../constants/COLORS'
@@ -10,11 +10,11 @@ import {Eye} from '../../../assets/svgs/Eye'
 import { Formik } from 'formik';
 import { useState } from 'react';
 import { useSelector } from 'react-redux';
-import { Edit } from '../../../assets/svgs/Edit';
-import { Save } from '../../../assets/svgs/Save';
-import { BackButton } from '../../../assets/svgs/BackButton';
-
-
+import axios from 'axios';
+import {API} from '../../api/API';
+import Toast from 'react-native-toast-message';
+import { PLATFORM_IOS } from '../../constants/DIMENSIONS';
+import { navigationRef } from '../../../App';
 
 const PasswordRegex =
   /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
@@ -35,108 +35,102 @@ const ValidateSchema = Yup.object().shape({
 
 const Security = () => {
 const userRegisterData = useSelector((state)=> state.userRegisterData)
-const [showRightButton, setShowRightButton] = useState(false);
-const [isClicked, setIsClicked]=useState<Boolean>(false)
-const [showSaveIcon, setShowSaveIcon] = useState(false);
+const [isEditable, setIsEditable] = useState(false);
+const [currentPassword, setCurrentPassword] = useState('');
+// const [passwordError, setPasswordError] = useState('');
+const [newPassword, setNewPassword] = useState('');
+const [confirmPassword, setConfirmPassword] = useState('');
 
 useEffect(() => {
-  // console.log('data for this User:---------', userRegisterData); 
   console.log("+++++++++++++++",userRegisterData)
 }, []);
-
-const handleRightButtonClick = () => {
-  console.log ("-----------hhhhhhhhh------------")
-//   if (showRightButton) {
-//  console.log ("-----------------------")
-//     setShowRightButton(false);
+const onPress = ()=>{
+  // updatePersonalDetails();
+  UpdatePassword();
+}
+// const handlePasswordVerification = () => {
+//   const old_password = userRegisterData[3]?.password;
+//   if (currentPassword === old_password) {
+//     setPasswordError('');
 //   } else {
-//     setShowRightButton(true);
-//     console.log ("----------------------+++++++++-")
+//     setPasswordError('Old password does not match.');
 //   }
-};
-
-const UpdatePassword= async (values) =>{
-    console.log(values);
+// };
+const mail = userRegisterData[0]?.email;
+const enableEdit =()=>{
+  console.log("enable edit",isEditable)
+  setIsEditable(true)
+}
+const UpdatePassword= async () =>{
+    // console.log(values);
     try {
-      const response = await axios.post(`${API}/changePassword `, values);
+      await fetch(`${API}/changePassword `,{
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          pwa_email: mail,
+          old_password: currentPassword,
+          password: newPassword,
+          conifrm_password: confirmPassword,
+        }),
+      })
       
-      
-      if (response.data.message != "Your Email is already exist") {
-        PLATFORM_IOS?
-        Toast.show({
-          type: 'success',
-          text1: 'User registered successfully.',
-          
-        }):ToastAndroid.show('User registered successfully.', ToastAndroid.SHORT);
-        // navigation.navigate('VerifyEmail', { email: values?.email });
-        //  const data=[{ email: values?.email },{ name: values?.name },{ mobile: values?.mobile }]
-       
-      } else {
-        PLATFORM_IOS?
-        Toast.show({
-          type: 'error',
-          text1: 'Your Email is already exist.',
-          // position: 'bottom',
-        }):ToastAndroid.show('Your Email is already exist.', ToastAndroid.SHORT);
-      
-      
-      }
-    } catch (error) {
-      
-      console.error(error);
-      
+      .then(res => res.json())
+        .then(data => {
+          console.log(data, 'fff');
+          if (data.success !== false) { 
+            PLATFORM_IOS
+              ? Toast.show({
+                  type: 'success',
+                  text1: 'Password updated Successfully',
+                })
+              : ToastAndroid.show(
+                  'Password updated Successfully',
+                  ToastAndroid.SHORT,
+                );
+                setIsEditable(false)
+                navigationRef.navigate('Account');
+                setCurrentPassword(' ');
+                setNewPassword (' ');
+                setConfirmPassword(' ');
+          } else {
+            PLATFORM_IOS
+              ? Toast.show({
+                  type: 'error',
+                  text1: 'Current password does not match',
+                  // position: 'bottom',
+                })
+              : ToastAndroid.show('Current password does not match', ToastAndroid.SHORT);
+          }
+        });
+    } catch (err) {
+      console.log(err);
     }
   };
 
 
 
+
   return (
-    // <SafeAreaView style={{backgroundColor: COLORS.CREAM, flex: 1}}>
-    //  <Header headerName="Security"  />
-    //  <HorizontalLine style={styles.line}/>
-     <Formik
-  initialValues={{
-    currentPassword: '',
-    newPassword: '',
-    confirmNewPassword: '',
-  }}
-  onSubmit={(values) => {
-    
-    console.log(values);
-  }}
->
-  {({ handleChange, handleBlur, handleSubmit, values }) => (
     <SafeAreaView style={{ backgroundColor: COLORS.CREAM, flex: 1 }}>
-    <View style={[styles.innerContainer, styles.header]}>
-        <TouchableOpacity
-          style={[styles.backButton, styles.headerButton]}
-          onPress={() => navigationRef.current?.goBack()}
-        >
-          <BackButton />
-        </TouchableOpacity>
-        <Text style={[styles.headerText, styles.headerButton]}>Security</Text>
-        <TouchableOpacity
-          style={[styles.rightButton, styles.headerButton]}
-          onPress={handleRightButtonClick}
-        >
-        {/* {showRightButton && showRightButton ? <Save /> : <Edit />} */}
-        {/* {showSaveIcon ? <Save /> : <Edit />} */}
-        <Edit/>
-        </TouchableOpacity>
-      </View>
-      <HorizontalLine style={styles.line} />
-    
+     <Header headerName="Security" showRightButton={true} onPress={onPress} enableEdit ={enableEdit} editButton={isEditable} />
+      
+     <HorizontalLine style={styles.line} />
+     <View style={[styles.mainDiv_container]}>
       <Input
         IconLeft={null}
         autoFocus
         bgColor={COLORS.CREAM}
+        editable={isEditable}
         IconRight={() => <Key />}
         bR={5}
         bW={0.3}
         bColor={COLORS.BLACK}
-        onChangeText={handleChange('currentPassword')}
-        onBlur={handleBlur('currentPassword')}
-        value={values.currentPassword}
+        // secureTextEntry={true}
+        onChangeText={text => setCurrentPassword(text)}
+        value={currentPassword}
         text="Current Password"
         mV={7}
         textWidth={'50%'}
@@ -148,18 +142,22 @@ const UpdatePassword= async (values) =>{
           fontWeight: '200',
         }}
       />
+      {/* {passwordError !== '' && (
+        <Text style={{ color: 'red' }}>{passwordError}</Text>
+       )} */}
 
       <Input
         IconLeft={null}
         autoFocus
         bgColor={COLORS.CREAM}
+        editable={isEditable}
         IconRight={() => <Eye />}
         bR={5}
         bW={0.3}
         bColor={COLORS.BLACK}
-        onChangeText={handleChange('newPassword')}
-        onBlur={handleBlur('newPassword')}
-        value={values.newPassword}
+        // secureTextEntry={true}
+        onChangeText={text => setNewPassword(text)}
+         value={newPassword}
         text="New Password"
         mV={15}
         textWidth={'35%'}
@@ -179,9 +177,10 @@ const UpdatePassword= async (values) =>{
         bR={5}
         bW={0.3}
         bColor={COLORS.BLACK}
-        onChangeText={handleChange('confirmNewPassword')}
-        onBlur={handleBlur('confirmNewPassword')}
-        value={values.confirmNewPassword}
+        editable={isEditable}
+        // secureTextEntry={true}
+        onChangeText={text => setConfirmPassword(text)}
+         value={confirmPassword}
         text="Re-enter New Password"
         mV={7}
         textWidth={'53%'}
@@ -193,11 +192,8 @@ const UpdatePassword= async (values) =>{
         }}
       />
 
+</View>
     </SafeAreaView>
-  )}
-</Formik>
-              
-            // </SafeAreaView>
   )
 }
 const styles = StyleSheet.create({

@@ -1,25 +1,31 @@
 import {View, Text, StyleSheet, TouchableOpacity, SafeAreaView, ScrollView, Image,Dimensions, Platform} from 'react-native';
-import React from 'react';
+import React, {useEffect}from 'react';
 
 import HorizontalLine from  '../../Components/HorizontalLine'
 import Header from '../../Components/Header'
 import COLORS from '../../constants/COLORS';
-import BoxOne from '../../Components/BoxOne';
-import BoxTwo from '../../Components/BoxTwo';
+import SubBoxOne from '../../Components/BoxOne';
+import SubBoxTwo from '../../Components/BoxTwo';
 import { PLATFORM_IOS } from '../../constants/DIMENSIONS';
 import WaveAnimation from '../../Components/WaveAnimation';
 import { DIMENSIONS } from '../../constants/DIMENSIONS';
 import PriceValidity from '../../Components/PriceValidity';
+import { useSelector } from 'react-redux';
+
 const mobileW = Math.round(Dimensions.get('screen').width);
  const Subscription = () => {
+  const getPlanSummary = useSelector((state)=> state.getPlanSummary)
+  useEffect(() => {
+    console.log('data for this User:---------', getPlanSummary); 
+ }, []);
   return (
     <ScrollView showsVerticalScrollIndicator={false} >
   <View>
     <Header headerName="Subscription" />
     <HorizontalLine/>
     <View style={styles. managing_width}>
-          <BoxOne  />
-          <BoxTwo />
+          <SubBoxOne  />
+          <SubBoxTwo />
         
         </View>
         <View style={styles.mainDiv_installation}>

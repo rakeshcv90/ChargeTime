@@ -23,6 +23,8 @@ import axios from 'axios';
 import ActivityLoader from '../../Components/ActivityLoader';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import TabFour from './TabFour';
+import { useDispatch } from 'react-redux';
+import { getBasePackage } from '../../redux/action';
 
 const mobileW = Math.round(Dimensions.get('screen').width);
 const mobileH = Math.round(Dimensions.get('window').height);
@@ -102,7 +104,7 @@ function MyTabBar({state, descriptors, navigation, position}) {
 export default function Home(route) {
   const [isLoading, setIsLoading] = useState(true);
   const [showPackage, setShowPackage] = useState(false);
-  
+  const dispatch =useDispatch();
  
   const Tab = createMaterialTopTabNavigator();
 
@@ -123,6 +125,7 @@ export default function Home(route) {
         setShowPackage(true);
       } else {
         setApiData(response?.data?.locations);
+        dispatch(getBasePackage(response.data.locations));
         setIsLoading(false);
       }
     } catch (error) {

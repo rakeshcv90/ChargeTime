@@ -9,7 +9,7 @@ import { useSelector } from 'react-redux';
 
 
 const mobileW = Math.round(Dimensions.get('screen').width);
-const BoxOne = ({data}) => {
+const SubBoxOne = ({data}) => {
   // const {navigation, route} = props;
   const getBasePackage = useSelector((state)=> state.getBasePackage)
   useEffect(() => {
@@ -28,7 +28,7 @@ const BoxOne = ({data}) => {
       <View style={styles.shadowProp}>
         <View style={styles.location_div}>
           <Vanderberg style={styles.img_width} />
-          <Text style={styles.force_base}>{data?.location?data?.location:" Vandenberg Space Force Base"}</Text>
+          <Text style={styles.force_base}>{data?.location?data?.location}</Text>
               {/* <Text style={styles.force_base}>{getBasePackage[0].location}</Text> */}
 
         </View>
@@ -65,7 +65,7 @@ const BoxOne = ({data}) => {
   );
 };
 
-export default BoxOne;
+export default SubBoxOne;
 
 const styles = StyleSheet.create({
   managing_width: {

@@ -1,10 +1,16 @@
 import {View, Text, StyleSheet, TouchableOpacity, Image,Dimensions, Platform, SafeAreaView} from 'react-native';
-import React from 'react';
+import React, { useState, useEffect } from 'react'
 import { Connecticut } from '../../assets/images/Connecticut';
 import { Charge } from '../../assets/svgs/Charge';
 import COLORS from '../constants/COLORS';
+import { useSelector } from 'react-redux';
 const mobileW = Math.round(Dimensions.get('screen').width);
+
 const PriceValidity = () => {
+  const getBasePackage = useSelector((state)=> state.getBasePackage)
+  useEffect(() => {
+    console.log('data for package=============',getBasePackage);
+ }, [getBasePackage]);
   return (
     <View style={[styles.mainDiv_installation]}>
       <TouchableOpacity style={styles.install_touchable}>

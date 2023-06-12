@@ -277,7 +277,6 @@ useEffect(() => {
               ]}
               placeholder="Eg. john2xyz.com"
               placeholderTextColor={COLORS.BLACK}
-
                 value={email}
             />
             <Text style={styles.check_yourinbox}>

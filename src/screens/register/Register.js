@@ -61,7 +61,7 @@ export default function Register({navigation}) {
         navigation.navigate('VerifyEmail', { email: values?.email,user_id:response.data?.user_id });
          const data=[{ email: values?.email },{ name: values?.name },{ mobile: values?.mobile },{ password: values?.password },{user_id:response.data?.user_id}]
         // const data = response.data
-        //  console.log('------------------',data);
+         console.log('------------------',data);
 
         dispatch(userRegisterData(data)); 
         
