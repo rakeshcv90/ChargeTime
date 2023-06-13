@@ -115,7 +115,10 @@ console.log(getWeekGraphData,"getWeekGraphDataone")
     <>
       <SafeAreaView style={{backgroundColor: COLORS.CREAM, flex: 1}}>
         <StatusBar backgroundColor={COLORS.CREAM2} barStyle={'dark-content'} />
+        
         <DrawerOpen />
+       
+        
         <View style={{backgroundColor: COLORS.CREAM2, flex: 0.3}}>
           <View style={{flexDirection: 'row', alignItems: 'center'}}>
             {charging ? (
@@ -165,13 +168,14 @@ console.log(getWeekGraphData,"getWeekGraphDataone")
               </>
             )}
           </View>
-        </View>
+        </View >
+        <View style={{marginTop:-60}}>
         {showCar ? (
           <Image
             source={require('../../../assets/images/WithCar.png')}
             style={{
               width: DIMENSIONS.SCREEN_WIDTH,
-              height: DIMENSIONS.SCREEN_WIDTH / 2,
+              height: DIMENSIONS.SCREEN_WIDTH / 3,
             }}
           />
         ) : (
@@ -179,29 +183,32 @@ console.log(getWeekGraphData,"getWeekGraphDataone")
             source={require('../../../assets/images/WithoutCar.png')}
             style={{
               width: DIMENSIONS.SCREEN_WIDTH,
-              height: DIMENSIONS.SCREEN_WIDTH / 2,
+              height: DIMENSIONS.SCREEN_WIDTH / 3,
             }}
           />
         )}
         <Text
           style={{
             textAlign: 'center',
-            fontFamily: 'Roboto',
             fontWeight: '700',
             fontSize: 16,
             lineHeight: 19,
             textTransform: 'capitalize',
             color: '#000000',
             marginBottom: 15,
+            marginTop:15
           }}>
           Energy Statistics
         </Text>
+        </View>
         <Tab.Navigator
           screenOptions={{
             tabBarLabelStyle: {
               fontSize: 16,
               fontWeight: 'bold',
+              
             },
+            tabBarScrollEnabled:true
           }}
           tabBar={props => <MyTabBar {...props} />}>
           {/* {isLoading?<Tab.Screen name="Day" component={ActivityLoader}  />: */}

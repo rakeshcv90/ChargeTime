@@ -32,7 +32,6 @@ const TotalUsage = ({data}) => {
       <Text
         style={{
           padding: 5,
-          fontFamily: 'Roboto',
           fontWeight: '600',
           fontSize: 12,
           lineHeight: 14,
@@ -51,7 +50,6 @@ const TotalUsage = ({data}) => {
         <View style={{marginBottom: 30, marginLeft: 30}}>
           <Text
             style={{
-              fontFamily: 'Montserrat',
               fontWeight: '800',
               fontSize: 16,
               lineHeight: 20,
@@ -62,7 +60,6 @@ const TotalUsage = ({data}) => {
           </Text>
           <Text
             style={{
-              fontFamily: 'Montserrat',
               fontWeight: '400',
               fontSize: 10,
               lineHeight: 12,

@@ -20,7 +20,7 @@ const WaveLinearGradient = (props) => {
           <WaveAnimation />
           <Text
             style={{
-              fontFamily: 'Montserrat',
+             
               fontWeight: '800',
               fontSize: 16,
               lineHeight: 20,
@@ -32,7 +32,7 @@ const WaveLinearGradient = (props) => {
           </Text>
           <Text
             style={{
-              fontFamily: 'Montserrat',
+              
               fontWeight: '400',
               fontSize: 10,
               lineHeight: 12,

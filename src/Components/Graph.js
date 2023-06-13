@@ -40,7 +40,7 @@ console.log(userGraphData,"tt")
           <LineChart
             data={data}
             width={DIMENSIONS.SCREEN_WIDTH * 2.1}
-            verticalLabelRotation={90}
+            verticalLabelRotation={40}
             height={DIMENSIONS.SCREEN_WIDTH * 0.95}
             withVerticalLines={false}
             bezier
@@ -50,6 +50,8 @@ console.log(userGraphData,"tt")
             chartConfig={{
               ...chartConfig,
               labelFontSize: 10, // Adjust the font size to a smaller value
+              color: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`, // line color
+              labelColor: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`,
             }}
           />
         </ScrollView>

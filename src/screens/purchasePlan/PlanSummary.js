@@ -32,7 +32,7 @@ const mobileW = Math.round(Dimensions.get('screen').width);
 export default function PlanSummary({route, navigation}) {
   const [tax, setTax] = useState('');
 
-  const [data,setData] = useState('');
+  //const [data,setData] = useState('');
   const dispatch =useDispatch();
 
   const [data,setData] = useState('')

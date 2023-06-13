@@ -68,7 +68,7 @@ const Button: FC<Props> = ({...Props}) => {
             ? Props.textStyle
             : {
                 color: Props.textColor ? Props.textColor : COLORS.BLACK,
-                fontFamily: 'Roboto',
+                
                 fontSize: Props.textSize ? Props.textSize : 14,
                 fontWeight: '500',
               }

@@ -71,7 +71,7 @@ const styles = StyleSheet.create({
     width: 40,
   },
   headerText: {
-    fontFamily: 'Roboto',
+    
     color: COLORS.BLACK,
     fontSize: 20,
     fontWeight: '700',

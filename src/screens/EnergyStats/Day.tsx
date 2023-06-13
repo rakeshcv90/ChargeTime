@@ -37,6 +37,7 @@ const Day = (props:any) => {
               marginHorizontal: 20,
               marginTop: 10,
             }}>
+             
             <Remaining RemainingFill={50} KWH={400} />
             <TotalUsage data={getkwhData} />
           </View>

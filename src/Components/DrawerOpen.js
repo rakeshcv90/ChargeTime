@@ -19,7 +19,7 @@ export default function DrawerOpen({navigation}) {
         position:  'absolute',
         right: PLATFORM_IOS?25:20,
         alignSelf: 'flex-end',
-        top: PLATFORM_IOS?70:40,
+        top: PLATFORM_IOS?70:25,
         zIndex: 5,
       }}>
 {changeImage?

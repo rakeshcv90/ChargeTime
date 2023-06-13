@@ -31,7 +31,6 @@ const Remaining = ({...props}) => {
       <Text
         style={{
           padding: 5,
-          fontFamily: 'Roboto',
           fontWeight: '600',
           fontSize: 12,
           lineHeight: 14,
@@ -57,7 +56,6 @@ const Remaining = ({...props}) => {
         <View style={{marginBottom: 30, marginLeft: 30}}>
           <Text
             style={{
-              fontFamily: 'Montserrat',
               fontWeight: '800',
               fontSize: 16,
               lineHeight: 20,
@@ -68,7 +66,6 @@ const Remaining = ({...props}) => {
           </Text>
           <Text
             style={{
-              fontFamily: 'Montserrat',
               fontWeight: '400',
               fontSize: 10,
               lineHeight: 12,

@@ -38,7 +38,7 @@ const Charging = () => {
         margin: 20,
         marginLeft: 30,
         backgroundColor: COLORS.WHITE,
-        height: 70,
+        height: 50,
         width: DIMENSIONS.SCREEN_WIDTH * 0.75,
         borderRadius: 15,
         shadowColor: '#000',

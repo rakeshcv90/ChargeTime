@@ -16,7 +16,6 @@ import Input from '../../Components/Input';
 import {useEffect, useState} from 'react';
 import axios from 'axios';
 import {API} from '../../api/API';
-import DropDownPicker from 'react-native-dropdown-picker';
 import {Installation} from '../../../assets/images/Installation';
 import {Address} from '../../../assets/images/Address';
 import {Dropdown} from 'react-native-element-dropdown';
@@ -172,6 +171,7 @@ export default function CompleteProfile(props) {
               {renderLabel()}
               <Dropdown
                 style={styles.dropdown}
+                containerStyle={styles.dropdownContainer}
                 placeholderStyle={styles.placeholderStyle}
                 selectedTextStyle={styles.selectedTextStyle}
                 inputSearchStyle={styles.inputSearchStyle}
@@ -395,7 +395,7 @@ const styles = StyleSheet.create({
   postCodeContainer: {
     backgroundColor: COLORS.CREAM,
     paddingVertical: 10,
-    width: DIMENSIONS.SCREEN_WIDTH * 0.9,
+    width: DIMENSIONS.SCREEN_WIDTH * 0.92,
     alignSelf: 'center',
     marginTop: 20,
   },
@@ -432,5 +432,9 @@ const styles = StyleSheet.create({
   inputSearchStyle: {
     height: 40,
     fontSize: 16,
+    backgroundColor: COLORS.CREAM
+  },
+  dropdownContainer: {
+    backgroundColor: COLORS.CREAM, // Set your desired background color here
   },
 });

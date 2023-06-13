@@ -28,9 +28,9 @@ import {
           onPress={() => setShowBox(!showBox)}
           style={styles.install_touchable}>
           <Image
-            style={styles.img_width}
-            source={require('../../assets/images/details.png')}
-          />
+          // style={styles.img_width}
+          source={require('../../assets/images/details.png')}
+        />
           <Text style={styles.installation_text}>Price & Validity</Text>
         </TouchableOpacity>
         {showBox && (
@@ -98,6 +98,7 @@ import {
       backgroundColor: COLORS.GREEN,
       alignItems: 'center',
       paddingVertical: 10,
+      paddingLeft:20
     },
     img_width: {
       marginLeft: 20,
@@ -105,10 +106,9 @@ import {
       height: 20,
     },
     installation_text: {
-      fontWeight: '700',
-      fontSize: 14,
-      paddingLeft: 10,
-      color: COLORS.BLACK,
+      fontWeight: 700,
+    fontSize: 12,
+    paddingLeft: 10,
     },
     installation_text2: {
       fontWeight: '700',
