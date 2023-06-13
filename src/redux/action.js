@@ -40,6 +40,15 @@ export const setWeekTotalData = (data) => {
 export const setWeekGraphData = (data) => {
   return {type:types.GET_WEEK_GRAPH_DATA,payload:data}
 }
+export const setMonthGraphData = (data) => {
+  return {type:types.GET_MONTH_DATA,payload:data}
+}
+export const setQuarterGraphData = (data) => {
+  return {type:types.GET_QUARTER_DATA,payload:data}
+}
+export const setYearGraphData = (data) => {
+  return {type:types.GET_YEAR_DATA,payload:data}
+}
 
 // week action end
 

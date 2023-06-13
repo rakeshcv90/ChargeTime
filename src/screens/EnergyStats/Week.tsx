@@ -8,6 +8,7 @@ import Graph from '../../Components/Graph';
 import BoxTwo from '../../Components/BoxTwo';
 import PriceBox from '../../Components/PriceBox';
 import ButtonSlider from '../../Components/ButtonSlider';
+import { useSelector } from 'react-redux';
 
 export default function Week() {
   const [showSlider, setShowSlider] = useState(true);
@@ -15,6 +16,8 @@ export default function Week() {
   useEffect(() => {
     setShowSlider(true);
   }, []);
+  const {getWeekGraphData} =  useSelector((state:any) => state)
+ 
   return (
     <>
       <View style={{flex: 1, backgroundColor: COLORS.CREAM}}>
@@ -33,11 +36,11 @@ export default function Week() {
               marginTop: 10,
             }}>
             <Remaining RemainingFill={50} KWH={400} />
-            <TotalUsage />
+            <TotalUsage data={getWeekGraphData?.Totalusedkwhs} />
           </View>
           
           <View style={{marginHorizontal: 20,}}>
-          <Graph />
+          <Graph dataOne={getWeekGraphData.Usage} />
           <BoxTwo />
           </View>
           <PriceBox />

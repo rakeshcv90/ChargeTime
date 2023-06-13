@@ -108,8 +108,8 @@ export default function EnergyStats() {
   
   const [isLoading, setIsLoading] = useState(true);
   const {getGraphData}  = useSelector((state:any) => state)
-const {getWeekGraphData} =  useSelector((state:any) => state)
-console.log(getWeekGraphData,"getWeekGraphDataone")
+// const {getWeekGraphData} =  useSelector((state:any) => state)
+
   
   return (
     <>
@@ -220,6 +220,7 @@ console.log(getWeekGraphData,"getWeekGraphDataone")
           <Tab.Screen name="Quarter" component={Quarter} />
           <Tab.Screen name="Year" component={Year} />
         </Tab.Navigator>
+       
       </SafeAreaView>
     </>
   );

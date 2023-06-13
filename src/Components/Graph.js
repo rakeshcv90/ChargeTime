@@ -7,13 +7,12 @@ import ActivityLoader from './ActivityLoader';
 import {useSelector} from 'react-redux';
 
 const Graph = ({dataOne}) => {
-  const userGraphData = useSelector(state => state.getGraphData);
-console.log(userGraphData,"tt")
-  let num = userGraphData && userGraphData.map(item => item?.Usage);
-  let numOne = userGraphData && userGraphData.map(item => item?.date);
+  
+  let num = dataOne && dataOne.map(item => item?.Usage);
+  let numOne = dataOne && dataOne.map(item => item?.date);
 
   const data = {
-    //labels: Object.values(dataOne).map(item => item?.date),
+   
     labels: numOne,
     datasets: [
       {
@@ -38,10 +37,11 @@ console.log(userGraphData,"tt")
          */}
         <ScrollView horizontal showsHorizontalScrollIndicator={false} >
           <LineChart
-            data={data}
+             data={data}
             width={DIMENSIONS.SCREEN_WIDTH * 2.1}
-            verticalLabelRotation={40}
-            height={DIMENSIONS.SCREEN_WIDTH * 0.95}
+            verticalLabelRotation={45}
+            
+            height={DIMENSIONS.SCREEN_WIDTH * 0.85}
             withVerticalLines={false}
             bezier
             style={{

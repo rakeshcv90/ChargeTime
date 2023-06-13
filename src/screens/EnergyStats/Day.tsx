@@ -12,7 +12,7 @@ import { useSelector } from 'react-redux';
 const Day = (props:any) => {
   const {getkwhData} =useSelector((state:any) => state)
   
-  
+  //console.log(props.route.params.getGraphData,'qqqq')
   
   const [showSlider, setShowSlider] = useState(true);
   const ScrollRef = useRef(null);
@@ -39,11 +39,11 @@ const Day = (props:any) => {
             }}>
              
             <Remaining RemainingFill={50} KWH={400} />
-            <TotalUsage data={getkwhData} />
+            <TotalUsage data={getkwhData.Totalusedkwhs} />
           </View>
           
           <View style={{marginHorizontal: 20,}}>
-          <Graph dataOne={props.route.params} />
+          <Graph dataOne={props.route.params.getGraphData} />
           <BoxTwo />
           </View>
           <PriceBox />

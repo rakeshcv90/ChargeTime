@@ -15,7 +15,6 @@ const initialState = {
     getRemainingData:[],
     getWeekKwhdata:'',
     getWeekGraphData:[]
-
   };
   
   const rootReducer = (state = initialState, action) => {
@@ -47,6 +46,12 @@ const initialState = {
         return { ...state, getWeekKwhdata: action.payload }
         case types.GET_WEEK_GRAPH_DATA:
         return { ...state, getWeekGraphData: action.payload }
+        case types.GET_MONTH_DATA:
+        return { ...state, getMonthData: action.payload }
+        case types.GET_QUARTER_DATA:
+        return { ...state, getQuarterData: action.payload }
+        case types.GET_YEAR_DATA:
+        return { ...state, getYearData: action.payload }
         //week reducer end
 
       default:
