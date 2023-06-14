@@ -15,6 +15,8 @@ import Toast from 'react-native-toast-message';
 import CustomDrawerContent from './CustomDrawer';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import PlanSummary from '../screens/purchasePlan/PlanSummary';
+import Testing from '../screens/testing/Testing';
 import Payment from '../screens/accounts/Payment';
 import PersonalDetails from '../screens/accounts/PersonalDetails';
 import Security from '../screens/accounts/Security';
@@ -22,12 +24,10 @@ import Installation from '../screens/accounts/Installation';
 import Theme from '../screens/accounts/Theme';
 import Subscription from '../screens/accounts/Subscription';
 import deleteAccount from '../screens/accounts/deleteAccount';
-
-
 import EnergyStats from '../screens/EnergyStats';
 import { useSelector } from 'react-redux';
+import Splash from '../src/splash/Splash.js'
 // import Plan from '../screens/planSummary/Plan';
-
 
 const Drawer = createDrawerNavigator();
 const Stack = createNativeStackNavigator();
@@ -36,14 +36,11 @@ const screenOptions = {
 };
 
 const DrawerNavigation = () => {
-
-
   const [focus, setFocus] = useState();
   const [focusOne, setFocusOne] = useState();
   const getPackageStatus  = useSelector((state) => state.getPackageStatus)
 
   // console.log('object',getPackageStatus)
-
 
 
   return (
@@ -52,26 +49,6 @@ const DrawerNavigation = () => {
       screenOptions={{headerShown: false}}
       drawerContent={CustomDrawerContent}>
       <Drawer.Screen
-
-        options={{
-          drawerActiveBackgroundColor: 'rgba(177, 211, 79, 0.5)',
-          drawerActiveTintColor: 'black',
-          drawerIcon: ({focused, color, size}) => (
-            <Image
-              source={require('../../assets/images/account.png')}
-              style={{width: size, height: size}}
-            />
-          ),
-        }}
-        name="Home"
-        component={Home}
-      />
-        <Drawer.Screen
-          options={{
-            drawerActiveBackgroundColor: 'rgba(177, 211, 79, 0.5)',
-            drawerActiveTintColor: 'black',
-            drawerIcon: ({ focused, color, size }) => (
-
         options={{
           drawerActiveBackgroundColor: '#fff',
           drawerIcon: ({focused, color, size}) => {
@@ -128,9 +105,22 @@ const DrawerNavigation = () => {
           title: 'Account',
         }}
         name="AccountStack"
-component={AccounctStack}/>
-
-
+        component={AccountStack}
+      />
+      <Drawer.Screen
+        options={{
+          drawerActiveBackgroundColor: '#fff',
+          drawerIcon: ({focused, color, size}) => {
+            setFocusOne(focused);
+            return (
+              <Image
+                source={
+                  !focused
+                    ? require('../../assets/images/testing.png')
+                    : require('../../assets/images/green_account.png')
+                }
+                style={{width: 50, height: 40, padding: 0, margin: -10}}
+              />
             );
           },
           drawerLabelStyle: {
@@ -146,12 +136,14 @@ component={AccounctStack}/>
         name="EnergyStats"
         component={EnergyStats}
       />
-</Drawer.Navigator>
+      
+    </Drawer.Navigator>
   );
 };
 const LoginStack = () => {
   return (
     <Stack.Navigator screenOptions={screenOptions}>
+      <Stack.Screen name='Splash' component={Splash}/>
       <Stack.Screen name="Login" component={Login} />
       <Stack.Screen name="Register" component={Register} />
       <Stack.Screen name="VerifyEmail" component={VerifyEmail} />
@@ -159,7 +151,7 @@ const LoginStack = () => {
       <Stack.Screen name="ForgetPassword" component={ForgetPassword} />
       <Stack.Screen name="ResetPassword" component={ResetPassword} />
       <Stack.Screen name="DrawerStack" component={DrawerNavigation} />
-</Stack.Navigator>
+    </Stack.Navigator>
   );
 };
 
@@ -182,34 +174,10 @@ const AccountStack = () => {
       <Stack.Screen name="Subscription" component={Subscription} />
       <Stack.Screen name="Theme" component={Theme} />
       <Stack.Screen name="deleteAccount" component={deleteAccount} />
-
     </Stack.Navigator>
   );
 };
 
-export default function Router() {
-  const [isAuthorized, setIsAuthorized] = useState(false);
-  let loginDataString;
-
-  React.useEffect(() => {
-    retrieveLoginData();
-    console.log('Retrieved login data: ', isAuthorized);
-  }, []);
-  const retrieveLoginData = async () => {
-    try {
-      loginDataString = await AsyncStorage.getItem('loginData');
-      if (loginDataString !== null) {
-        const loginData = JSON.parse(loginDataString);
-        setIsAuthorized(true);
-        console.log('Retrieved login data: ', loginDataString);
-        // Use the login data as needed
-      }
-    } catch (error) {
-      console.log('Error retrieving login data: ', error);
-      // setIsAuthorized(false);
-    }
-  };
-  
 export default function Router() {
   
 
@@ -240,7 +208,6 @@ export default function Router() {
   //   }
   // };
 
-
   return (
     <Stack.Navigator screenOptions={screenOptions}>
       {getLocationID == 0 ? (
@@ -255,4 +222,3 @@ export default function Router() {
     </Stack.Navigator>
   );
 }
-

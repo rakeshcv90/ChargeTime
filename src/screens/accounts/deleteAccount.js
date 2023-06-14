@@ -45,9 +45,9 @@ const DeleteAccountScreen = () => {
           PLATFORM_IOS?
           Toast.show({
             type: 'success',
-            text1: 'Account deleted successfully',
+            text1: 'Account delete successfully',
             
-          }):ToastAndroid.show('Account deleted successfully', ToastAndroid.SHORT);
+          }):ToastAndroid.show('Account delete Permanently', ToastAndroid.SHORT);
 
           navigation.navigate('Login');
   

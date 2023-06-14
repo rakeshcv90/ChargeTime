@@ -7,9 +7,9 @@ import logo from '../../../assets/images/logo.png';
 import COLORS from '../../constants/COLORS';
 import HorizontalLine from '../../Components/HorizontalLine';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import Login from '../login/Login';
+import { navigationRef } from '../../../App';
 
-const Account = ({ navigation }) => {
+const Account = ({navigation}) => {
   const [selectedValue, setSelectedValue] = useState('');
   const Screen = [
     {
@@ -53,8 +53,10 @@ const Account = ({ navigation }) => {
 
   const handleLogOut =async () => {
     try{
-    await AsyncStorage.removeItem('loginDataOne');
-    navigation.navigate('Login');
+    // await AsyncStorage.removeItem('loginDataOne');
+    AsyncStorage.clear();
+    persistor.purge();
+    navigationRef.navigate('Login');
     console.log('Log out successfully');
     }catch (error) {
       console.error('Error during logout:', error);

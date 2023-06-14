@@ -48,14 +48,7 @@ const onPress = ()=>{
   // updatePersonalDetails();
   UpdatePassword();
 }
-// const handlePasswordVerification = () => {
-//   const old_password = userRegisterData[3]?.password;
-//   if (currentPassword === old_password) {
-//     setPasswordError('');
-//   } else {
-//     setPasswordError('Old password does not match.');
-//   }
-// };
+
 const mail = userRegisterData[0]?.email;
 const enableEdit =()=>{
   console.log("enable edit",isEditable)
@@ -142,9 +135,7 @@ const UpdatePassword= async () =>{
           fontWeight: '200',
         }}
       />
-      {/* {passwordError !== '' && (
-        <Text style={{ color: 'red' }}>{passwordError}</Text>
-       )} */}
+
 
       <Input
         IconLeft={null}

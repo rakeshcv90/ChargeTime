@@ -26,6 +26,7 @@ import { Call } from '../../../assets/images/Call';
 import { StrongPass } from '../../../assets/images/StrongPass';
 import { useDispatch } from 'react-redux';
 import { userRegisterData } from '../../redux/action';
+import ActivityLoader from '../../Components/ActivityLoader';
 const mobileH = Math.round(Dimensions.get('window').height);
 const mobileW = Math.round(Dimensions.get('screen').width);
 const PasswordRegex =
@@ -61,12 +62,7 @@ export default function Register({navigation}) {
         }):ToastAndroid.show('User registered successfully.', ToastAndroid.SHORT);
         navigation.navigate('VerifyEmail', { email: values?.email,user_id:response.data?.user_id });
 
-         const data=[{ email: values?.email },{ name: values?.name },{ mobile: values?.mobile },{ password: values?.password },{user_id:response.data?.user_id}]
-        // const data = response.data
-         console.log('------------------',data);
-
-
-         const data=[{ email: values?.email },{ name: values?.name },{ mobile: values?.mobile }]
+      const data=[{ email: values?.email },{ name: values?.name },{ mobile: values?.mobile }]
          setForLoading(false)
 
         dispatch(userRegisterData(data)); 

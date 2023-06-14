@@ -8,29 +8,6 @@
       android:icon="@mipmap/ic_launcher"    
       android:allowBackup="false"
       android:theme="@style/AppTheme">
- <!-- android:roundIcon="@mipmap/ic_launcher_round" -->
-       <!-- Splash Start Activity -->
-        <activity
-            android:name=".SplashStartActivity"
-            android:theme="@style/Theme.AppCompat.NoActionBar"
-             android:exported="true">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
-
-        <!-- Introduction Activity -->
-        <activity
-            android:name=".IntroductionActivity"
-            android:theme="@style/Theme.AppCompat.NoActionBar" 
-             android:exported="true">
-              <!-- <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter> -->
-        </activity>
-
 
       <activity
         android:name=".MainActivity"
@@ -39,10 +16,10 @@
         android:launchMode="singleTask"
         android:windowSoftInputMode="adjustResize"
         android:exported="true">
-        <!-- <intent-filter>
+        <intent-filter>
             <action android:name="android.intent.action.MAIN" />
             <category android:name="android.intent.category.LAUNCHER" />
-        </intent-filter> -->
+        </intent-filter>
       </activity>
     </application>
 </manifest>

@@ -6,7 +6,12 @@ import Input from '../../Components/Input'
 import { Install } from '../../../assets/svgs/Install'
 import { Location } from '../../../assets/svgs/Location'
 import { useSelector } from 'react-redux';
-import COLORS from '../../constants/COLORS'
+import COLORS from '../../constants/COLORS';
+import DropDownPicker from 'react-native-dropdown-picker';
+import {Dropdown} from 'react-native-element-dropdown';
+import {DIMENSIONS, PLATFORM_IOS} from '../../constants/DIMENSIONS';
+import { API } from '../../api/API'
+import axios from 'axios';
 
 
 
@@ -17,10 +22,107 @@ const Installation = () => {
   
   useEffect(() => {
     console.log('data for this User:---------', getCompleteData); 
+    fetchOptions();
  }, [getCompleteData]);
 
-  const handleConfirm = () => {
-    // Perform confirmation logic here
+//  const {navigation, route} = props;
+//  const {email, user_id} = route?.params;
+
+
+ const [locationMap, setLocationMap] = useState([]);
+ const [selectedValue, setSelectedValue] = useState('');
+ const [newState, setState] = useState('');
+ const [newZipcode, setZipCode] = useState('');
+ const [addlineone, setAddLineOne] = useState('');
+ const [addlinetwo, setAddLineTwo] = useState('');
+ const [value, setValue] = useState(null);
+ const [locationId, setLocationId] = useState('');
+ const [isFocus, setIsFocus] = useState(false);
+ const [forLoading,setForLoading] = useState(false)
+ 
+ const fetchOptions = async () => {
+   try {
+     const response = await fetch(`${API}/locations`);
+     const result = await response.json();
+console.log(result,'ttt');
+     setLocationMap(result);
+   } catch (error) {
+     console.error(error);
+   }
+ };
+
+ const renderLabel = () => {
+   return <Text style={styles.label}>Installation Location</Text>;
+ };
+
+const handleSelect = (id, item) => {
+  setIsFocus(false);
+  setSelectedValue(item.location);
+  setLocationId(id);
+  axios
+    .get(`${API}/completePro/${id}`)
+    .then(res => {
+      setState(res.data.locations.state);
+      setZipCode(res.data.locations.ZIP_code);
+    })
+    .catch(err => {
+      console.log(err);
+    });
+};
+
+const InstalltionUpdate = async () => {
+    
+  setForLoading(true)
+  if(locationId&& 
+    addlineone&&
+    addlinetwo&&
+    newZipcode&&
+    newState){
+  try {
+    await fetch(`${API}/installation/${user_id}`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    })
+      .then(res => res.json())
+      .then(data => {
+
+        console.log(data, 'fff');
+
+        if (data) {
+          
+          PLATFORM_IOS
+            ? Toast.show({
+                type: 'success',
+                text1: 'Profile Updated successfully.',
+              })
+            : ToastAndroid.show(
+                'Profile Updated successfully.',
+                ToastAndroid.SHORT,
+              );
+          navigation.navigate('Account');
+          setForLoading(false)
+        } else {
+          PLATFORM_IOS
+            ? Toast.show({
+                type: 'error',
+                text1: 'Profile Not Updated',
+                // position: 'bottom',
+              })
+            : ToastAndroid.show('Profile Not Updated', ToastAndroid.SHORT);
+            setForLoading(false)
+        }
+      });
+  } catch (err) {
+    console.log(err);
+    setForLoading(false)
+  }}
+};
+
+  const handleOk = () => {
+  
+    InstalltionUpdate();
     console.log('Confirmed');
     setIsEditable(false)
     setModalVisible(false);
@@ -63,7 +165,7 @@ const Installation = () => {
               <TouchableOpacity
                 style={styles.okButton}
                 onPress={() => {
-                  handleConfirm();
+                  handleOk();
                 }}>
                 <Text style={styles.buttonText}>OK</Text>
               </TouchableOpacity>
@@ -79,29 +181,28 @@ const Installation = () => {
      <Header headerName="Installation" showRightButton={true} onPress={onPress} enableEdit ={enableEdit} editButton={isEditable} />
     <HorizontalLine style={styles.line}/>
      <View style={styles.mainDiv_container}>
-          
-            <Input
-          IconLeft={null}
-          bgColor={COLORS.CREAM}
-          editable={isEditable}
-          IconRight={() => (
-            <Install/>
-          )}
-          bR={3}
-          bW={0.3}
-          bColor={COLORS.LIGHT_GREY}
-          text="Installation Location"
-          mV={7}
-          textWidth={'55%'}
-          placeholder="Vandenberg Space Force Base"
-          placeholderTextColor={COLORS.BLACK}
-          style={{
-            color: COLORS.BLACK,
-            fontFamily: 'Roboto',
-            fontWeight: '200',
-            
-          }}
-        />
+     <View style={styles.postCodeContainer}>
+              {renderLabel()}
+              <Dropdown
+                style={styles.dropdown}
+                placeholderStyle={styles.placeholderStyle}
+                selectedTextStyle={styles.selectedTextStyle}
+                inputSearchStyle={styles.inputSearchStyle}
+                iconStyle={styles.iconStyle}
+                data={locationMap}
+                search
+                maxHeight={500}
+                labelField="location"
+                valueField="location"
+                placeholder={!isFocus ? getCompleteData?.location : selectedValue}
+                keyboardAvoiding
+                searchPlaceholder="Search..."
+                value={selectedValue}
+                onFocus={() => setIsFocus(false)}
+                onBlur={() => setIsFocus(false)}
+                onChange={item => handleSelect(item.id, item)}
+              />
+            </View>
             <Input
           IconLeft={null}
 
@@ -116,6 +217,8 @@ const Installation = () => {
           text="Address Line"
           mV={10}
           textWidth={'35%'}
+          value={addlineone}
+          onChangeText={values => setAddLineOne(values)}
           placeholder={getCompleteData?.pwa_add1}
           placeholderTextColor={COLORS.BLACK}
           style={{
@@ -138,6 +241,8 @@ const Installation = () => {
           text="Address Line 2"
           mV={10}
           textWidth={'40%'}
+          value={addlinetwo}
+          onChangeText={values => setAddLineTwo(values)}
           placeholder={getCompleteData?.pwa_add2}
           placeholderTextColor={COLORS.BLACK}
           style={{
@@ -153,17 +258,18 @@ const Installation = () => {
                   IconLeft={null}
                   errors={undefined}
                   touched={false}
-                  editable={isEditable}
+                  editable={false}
                   //     value={values.name}
                   //     onChangeText={handleChange('name')}
                   // onBlur={handleBlur('name')}
-
+                  value={newZipcode}
                   text="ZIP Code"
                   IconRight={null}
                   mV={15}
                   placeholder={getCompleteData?.pwa_zip}
                   bW={0.3}
                   textWidth={'60%'}
+                  // value={newZipcode}
                   placeholderTextColor={COLORS.BLACK}
                   w="half"
                 />
@@ -173,7 +279,9 @@ const Installation = () => {
                   IconLeft={null}
                   errors={undefined}
                   touched={false}
-                  editable={isEditable}
+                  editable={false}
+                  value={newState}
+                  // editable={isEditable}
                   //     value={values.name}
                   //     onChangeText={handleChange('name')}
                   // onBlur={handleBlur('name')}
@@ -200,6 +308,22 @@ const styles = StyleSheet.create({
   mainDiv_signup: {
     paddingTop: 20,
   },
+  dropdown: {
+    height: 50,
+    borderColor: '#808080',
+    borderWidth: 1,
+    borderRadius: 8,
+    // backgroundColor:'black',
+    paddingHorizontal: 8,
+    // color:"#fff"
+  },
+  postCodeContainer: {
+    backgroundColor: COLORS.CREAM,
+    paddingVertical: 10,
+    width: DIMENSIONS.SCREEN_WIDTH * 0.92,
+    alignSelf: 'center',
+    // marginTop: 20,
+  },
   modalContainer: {
     flex: 1,
     justifyContent: 'center',
@@ -214,6 +338,23 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginRight:20,
     marginLeft:20,
+  },
+  label: {
+    position: 'absolute',
+    backgroundColor: COLORS.CREAM,
+    left: 11,
+    zIndex: 999,
+    paddingHorizontal: 6,
+    fontSize: 14,
+    color: COLORS.BLACK,
+  },
+  placeholderStyle: {
+    fontSize: 14,
+    color: COLORS.GRAY,
+  },
+  selectedTextStyle: {
+    fontSize: 16,
+    color: COLORS.BLACK,
   },
   modalText: {
     fontSize: 18,
@@ -258,7 +399,7 @@ const styles = StyleSheet.create({
   marginLeft:10,
   marginRight:10,
   paddingTop: 10,
-  marginTop:30,
+  marginTop:10,
   paddingBottom:200 ,
   borderRadius:4,
   border:14,
