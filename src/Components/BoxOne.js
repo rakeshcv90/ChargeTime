@@ -12,9 +12,7 @@ const mobileW = Math.round(Dimensions.get('screen').width);
 const BoxOne = ({data}) => {
   // const {navigation, route} = props;
   const getBasePackage = useSelector((state)=> state.getBasePackage)
-  useEffect(() => {
-    console.log('data for this User:---------', getBasePackage); 
- }, []);
+  
 
 
   return (
@@ -95,9 +93,10 @@ const styles = StyleSheet.create({
     marginLeft: 20,
   },
   installation_text: {
-    fontWeight: 900,
+    fontWeight: "700",
     fontSize: 12,
     paddingLeft: 10,
+    color:COLORS.BLACK
   },
   location_div: {
     flexDirection: 'row',
@@ -119,10 +118,11 @@ const styles = StyleSheet.create({
     elevation: Platform.OS === 'android' ? 8 : 0,
   },
   force_base: {
-    fontWeight: 400,
+    fontWeight: "400",
     fontSize: 14,
     paddingLeft: 10,
     paddingRight:70,
+    color:COLORS.BLACK
   },
   mainDiv_state_zip: {
     flexDirection: 'row',

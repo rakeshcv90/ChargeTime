@@ -12,9 +12,7 @@ const mobileW = Math.round(Dimensions.get('screen').width);
 const SubBoxOne = ({data}) => {
   // const {navigation, route} = props;
   const getBasePackage = useSelector((state)=> state.getBasePackage)
-  useEffect(() => {
-    console.log('data for this User:---------', getBasePackage); 
- }, []);
+  
 
 
   return (
@@ -28,7 +26,7 @@ const SubBoxOne = ({data}) => {
       <View style={styles.shadowProp}>
         <View style={styles.location_div}>
           <Vanderberg style={styles.img_width} />
-          <Text style={styles.force_base}>{data?.location?data?.location}</Text>
+          <Text style={styles.force_base}>{data?.location}</Text>
               {/* <Text style={styles.force_base}>{getBasePackage[0].location}</Text> */}
 
         </View>

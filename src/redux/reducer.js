@@ -14,7 +14,11 @@ const initialState = {
     getkwhData:'',
     getRemainingData:[],
     getWeekKwhdata:'',
-    getWeekGraphData:[]
+    getWeekGraphData:[],
+    getBoxTwoDataForDashboard:[],
+    getPriceAndDetailsDataforDashboard:[],
+    getChargerStatus:'',
+    getDataForPayment:[],
   };
   
   const rootReducer = (state = initialState, action) => {
@@ -53,6 +57,16 @@ const initialState = {
         case types.GET_YEAR_DATA:
         return { ...state, getYearData: action.payload }
         //week reducer end
+        //dashboard boxtwo and price details data start
+        case types.GET_PRICE_AND_DETAILS_DATA:
+          return { ...state, getPriceAndDetailsDataforDashboard: action.payload }
+          case types.GET_BOX_TWO_DATA_DASHBOARD:
+          return { ...state, getBoxTwoDataForDashboard: action.payload }
+          case types.CHARGER_STATUS:
+          return { ...state, getChargerStatus: action.payload }
+          case types.DATA_FOR_PAYMENT:
+          return { ...state, getDataForPayment: action.payload }
+        //dashboard boxtwo and price details data end
 
       default:
         return state;

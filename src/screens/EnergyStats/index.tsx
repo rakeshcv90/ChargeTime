@@ -109,7 +109,8 @@ export default function EnergyStats() {
   const [isLoading, setIsLoading] = useState(true);
   const {getGraphData}  = useSelector((state:any) => state)
 // const {getWeekGraphData} =  useSelector((state:any) => state)
-
+const {getChargerStatus} = useSelector((state:any) => state)
+  
   
   return (
     <>
@@ -119,18 +120,19 @@ export default function EnergyStats() {
         <DrawerOpen />
        
         
-        <View style={{backgroundColor: COLORS.CREAM2, flex: 0.3}}>
+        <View style={{backgroundColor: COLORS.CREAM2, flex: 0.2}}>
           <View style={{flexDirection: 'row', alignItems: 'center'}}>
-            {charging ? (
-              <Charging />
+            {getChargerStatus?.message =="Offline" ? (
+              // <Charging />
+              ''
             ) : (
               <>
                 <View
                   style={{
                     margin: 20,
                     backgroundColor: COLORS.WHITE,
-                    height: 70,
-                    width: 70,
+                    height: 50,
+                    width: 60,
                     borderRadius: 15,
                     justifyContent: 'center',
                     alignItems: 'center',
@@ -143,7 +145,7 @@ export default function EnergyStats() {
                     shadowRadius: 4.65,
                     elevation: 7,
                   }}>
-                  {offline ? <NoCharge /> : <OnlineCharge />}
+                  {getChargerStatus?.message == "Online" ? <OnlineCharge style={{marginTop: 8,marginLeft:5}} /> : <NoCharge style={{marginTop: 8,marginLeft:5}} />}
                 </View>
                 <View>
                   <Text
@@ -162,17 +164,17 @@ export default function EnergyStats() {
                       lineHeight: 17,
                       color: COLORS.BLACK,
                     }}>
-                    {offline ? 'Offline' : 'Online'}
+                    {getChargerStatus?.message  =="Online" ? "Online" : 'Offline'}
                   </Text>
                 </View>
               </>
             )}
           </View>
         </View >
-        <View style={{marginTop:-60}}>
-        {showCar ? (
+        <View>
+        {getChargerStatus?.message =="Online" ? (
           <Image
-            source={require('../../../assets/images/WithCar.png')}
+            source={require('../../../assets/images/dashboard_img.png')}
             style={{
               width: DIMENSIONS.SCREEN_WIDTH,
               height: DIMENSIONS.SCREEN_WIDTH / 3,

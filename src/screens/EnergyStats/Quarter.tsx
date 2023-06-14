@@ -41,7 +41,7 @@ export default function Quarter() {
           </View>
           
           <View style={{marginHorizontal: 20,}}>
-          <Graph dataOne={getQuarterData.Usage} />
+          {/* <Graph dataOne={getQuarterData.Usage} /> */}
           <BoxTwo />
           </View>
           <PriceBox />

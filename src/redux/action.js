@@ -51,4 +51,20 @@ export const setYearGraphData = (data) => {
 }
 
 // week action end
+//dashboard boxtwo and price details data start
+
+export const setBoxTwoDataForDashboard = (data) => {
+  return {type:types.GET_BOX_TWO_DATA_DASHBOARD,payload:data}
+}
+export const setPriceAndDetailsData = (data) => {
+  return {type:types.GET_PRICE_AND_DETAILS_DATA,payload:data}
+}
+export const setChargerStatus = (data) => {
+  return {type:types.CHARGER_STATUS,payload:data}
+}
+export const setDataForPayment = (data) => {
+  return {type:types.DATA_FOR_PAYMENT,payload:data}
+}
+
+    //dashboard boxtwo and price details data end
 

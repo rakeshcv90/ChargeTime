@@ -268,6 +268,7 @@ import Subscription from '../screens/accounts/Subscription';
 import deleteAccount from '../screens/accounts/deleteAccount';
 import EnergyStats from '../screens/EnergyStats';
 import { useSelector } from 'react-redux';
+import PaymentGateWay from '../screens/payment/PaymentGateWay';
 // import Plan from '../screens/planSummary/Plan';
 
 const Drawer = createDrawerNavigator();
@@ -400,6 +401,7 @@ const HomeStack = () => {
     <Stack.Navigator screenOptions={screenOptions}>
       <Stack.Screen name="Home" component={Home} />
       <Stack.Screen name="PlanSummary" component={PlanSummary} />
+      <Stack.Screen name="PaymentGateWay" component={PaymentGateWay} />
     </Stack.Navigator>
   );
 };

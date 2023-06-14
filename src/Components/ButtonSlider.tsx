@@ -17,7 +17,7 @@ const ButtonSlider = () => {
   const slideAnimation = useState(new Animated.Value(0))[0];
 
   const handleSlide = () => {
-    console.log('slide', slideAnimation);
+    
     Animated.timing(slideAnimation, {
       toValue: isSliding ? 0 : 1,
       duration: 300,
@@ -27,7 +27,7 @@ const ButtonSlider = () => {
       setHideText(!hideText);
     });
 
-    console.log('slide', slideAnimation);
+    
   };
 
   const slideButtonStyle = {

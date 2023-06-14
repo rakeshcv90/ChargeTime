@@ -76,9 +76,10 @@ const styles = StyleSheet.create({
     marginLeft: 20,
   },
   installation_text: {
-    fontWeight: 700,
+    fontWeight: "700",
     fontSize: 12,
     paddingLeft: 10,
+    color:COLORS.BLACK
   },
   
   force_base: {
@@ -109,6 +110,7 @@ const styles = StyleSheet.create({
     fontWeight: 800,
     fontSize: 16,
     paddingTop: 8,
+    color:COLORS.BLACK
   },
   second_main_div_kwh: {
     flexDirection: 'column',

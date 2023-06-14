@@ -40,7 +40,7 @@ export default function Week() {
           </View>
           
           <View style={{marginHorizontal: 20,}}>
-          <Graph dataOne={getWeekGraphData.Usage} />
+          {/* <Graph dataOne={getWeekGraphData.Usage} /> */}
           <BoxTwo />
           </View>
           <PriceBox />

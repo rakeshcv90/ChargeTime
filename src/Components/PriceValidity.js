@@ -8,9 +8,7 @@ const mobileW = Math.round(Dimensions.get('screen').width);
 
 const PriceValidity = () => {
   const getBasePackage = useSelector((state)=> state.getBasePackage)
-  useEffect(() => {
-    console.log('data for package=============',getBasePackage);
- }, [getBasePackage]);
+  
   return (
     <View style={[styles.mainDiv_installation]}>
       <TouchableOpacity style={styles.install_touchable}>

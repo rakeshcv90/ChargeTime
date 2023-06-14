@@ -13,8 +13,7 @@ import {
   import {Connecticut} from '../../assets/images/Connecticut';
   const mobileW = Math.round(Dimensions.get('screen').width);
   const BoxFour = ({data}) => {
-    console.log(data,'yyy')
-    // const {navigation, route} = props;
+    
     
     return (
       <View style={styles.mainDiv_installation}>

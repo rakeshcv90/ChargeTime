@@ -26,11 +26,14 @@ import {navigationRef} from '../../../App';
 
 
 import ActivityLoader from '../../Components/ActivityLoader';
+import { useDispatch } from 'react-redux';
+import { setDataForPayment } from '../../redux/action';
 
 const mobileW = Math.round(Dimensions.get('screen').width);
 
 export default function PlanSummary({route, navigation}) {
   const [tax, setTax] = useState('');
+  const [totalSalexTax,setTotalSalextax] = useState('')
 
   //const [data,setData] = useState('');
   const dispatch =useDispatch();
@@ -51,10 +54,12 @@ export default function PlanSummary({route, navigation}) {
     axios
       .get(`${API}/planPurchase/${id}/${package_name}`)
       .then(res => {
+        
         setForLoading(false)
         setData(res.data.locations)
-        dispatch(getPlanSummary(res))
+         dispatch(setDataForPayment(res.data?.locations[0]))
         setTax(res.data.locations[0].salestax);
+        setTotalSalextax(res.data.locations[0].totalSalexTax)
         
       })
       .catch(err => {
@@ -209,7 +214,7 @@ export default function PlanSummary({route, navigation}) {
                       fontWeight: '600',
                       color: COLORS.BLACK,
                     }}>
-                    $135.00/-
+                    ${totalSalexTax}/-
                   </Text>
                 </View>
               </View>
@@ -231,6 +236,7 @@ export default function PlanSummary({route, navigation}) {
                   paddingVertical: 10,
                   borderRadius: 12,
                 }}>
+                  <TouchableOpacity onPress={() => navigation.navigate("PaymentGateWay")}>
                 <Text
                   style={{
                     fontSize: 14,
@@ -239,6 +245,7 @@ export default function PlanSummary({route, navigation}) {
                   }}>
                   CHECKOUT
                 </Text>
+                </TouchableOpacity>
               </View>
             </View>
         </View>
