@@ -122,9 +122,9 @@ const {getChargerStatus} = useSelector((state:any) => state)
         
         <View style={{backgroundColor: COLORS.CREAM2, flex: 0.2}}>
           <View style={{flexDirection: 'row', alignItems: 'center'}}>
-            {getChargerStatus?.message =="Offline" ? (
-              // <Charging />
-              ''
+            {getChargerStatus?.message =="Charging" ? (
+              <Charging />
+              
             ) : (
               <>
                 <View
@@ -145,7 +145,7 @@ const {getChargerStatus} = useSelector((state:any) => state)
                     shadowRadius: 4.65,
                     elevation: 7,
                   }}>
-                  {getChargerStatus?.message == "Online" ? <OnlineCharge style={{marginTop: 8,marginLeft:5}} /> : <NoCharge style={{marginTop: 8,marginLeft:5}} />}
+                  {getChargerStatus?.message == "Online"  ? <OnlineCharge style={{marginTop: 8,marginLeft:5}} /> : <NoCharge style={{marginTop: 8,marginLeft:5}} />}
                 </View>
                 <View>
                   <Text
@@ -172,7 +172,7 @@ const {getChargerStatus} = useSelector((state:any) => state)
           </View>
         </View >
         <View>
-        {getChargerStatus?.message =="Online" ? (
+        {getChargerStatus?.message !=="Offline" ? (
           <Image
             source={require('../../../assets/images/dashboard_img.png')}
             style={{

@@ -269,6 +269,7 @@ import deleteAccount from '../screens/accounts/deleteAccount';
 import EnergyStats from '../screens/EnergyStats';
 import { useSelector } from 'react-redux';
 import PaymentGateWay from '../screens/payment/PaymentGateWay';
+import HomeOne from '../screens/downgrade/HomeOne';
 // import Plan from '../screens/planSummary/Plan';
 
 const Drawer = createDrawerNavigator();
@@ -378,6 +379,35 @@ const DrawerNavigation = () => {
         name="EnergyStats"
         component={EnergyStats}
       />
+      <Drawer.Screen
+        options={{
+          drawerActiveBackgroundColor: '#fff',
+          drawerIcon: ({focused, color, size}) => {
+            // setFocusOne(focused);
+            return (
+              <Image
+                source={
+                  !focused
+                    ? require('../../assets/images/testing.png')
+                    : require('../../assets/images/green_account.png')
+                }
+                style={{width: 50, height: 40, padding: 0, margin: -10}}
+              />
+            );
+          },
+          drawerLabelStyle: {
+            backgroundColor:  'rgba(177, 211, 79, 0.8)' ,
+            paddingVertical: 10,
+            paddingLeft: 10,
+            width: '200%',
+            marginLeft: -15,
+          },
+          drawerActiveTintColor: 'black',
+          title: 'HomeOne',
+        }}
+        name="HomeOne"
+        component={HomeOne}
+      />
       
     </Drawer.Navigator>
   );
@@ -428,7 +458,7 @@ export default function Router() {
   const getLocationID  = useSelector((state) => state.getLocationID)
   const getPackageStatus = useSelector((state) => state.getPackageStatus)
   const getUserID  = useSelector((state) => state.getUserID)
-  console.log(getLocationID,getPackageStatus,'userid',getUserID)
+  
   // console.log(getLocationId,"getLocationId")
   // let locationId;
 
@@ -452,7 +482,7 @@ export default function Router() {
 
   return (
     <Stack.Navigator screenOptions={screenOptions}>
-      {!getLocationID == 0 ? (
+      {getLocationID == 0 ? (
         <>
           <Stack.Screen name="LoginStack" component={LoginStack} />
         </>

@@ -2,26 +2,28 @@ import {View, Text, StyleSheet, TouchableOpacity, Image} from 'react-native';
 import React from 'react';
 import { Dolllar } from '../../assets/images/Dollar';
 import { navigationRef } from '../../App';
+import COLORS from '../constants/COLORS';
 
-const BoxThree = ({data}) => {
+const BoxFive = ({data}) => {
   
   return (
     <View style={[styles.mainDiv_purchage_dollar,styles.shadowProp]}>
+      
+      <View>
+        <TouchableOpacity style={styles.btn_purchage} onPress={() => navigationRef.navigate("PlanSummary", {data: data})}>
+          <Text style={styles.purchage_text}>DOWNGRADE</Text>
+        </TouchableOpacity>
+      </View>
       <View style={styles.dollar_div}>
         {/* <Image source={require('../../assets/images/price.png')} /> */}
         <Dolllar />
         <Text style={styles.per_month}>${data?.total_price} /month</Text>
       </View>
-      <View>
-        <TouchableOpacity style={styles.btn_purchage} onPress={() => navigationRef.navigate("PlanSummary", {data: data})}>
-          <Text style={styles.purchage_text}>PURCHAGE</Text>
-        </TouchableOpacity>
-      </View>
     </View>
   );
 };
 
-export default BoxThree;
+export default BoxFive;
 const styles = StyleSheet.create({
   managing_width: {
     paddingHorizontal: 20,
@@ -133,16 +135,16 @@ const styles = StyleSheet.create({
     paddingLeft: 7,
   },
   btn_purchage: {
-    paddingHorizontal: 30,
+    paddingHorizontal: 24,
     paddingVertical: 10,
-    backgroundColor: COLORS.GREEN,
+    backgroundColor: COLORS.RED,
     alignItems: 'center',
     borderRadius: 12,
 
   },
   purchage_text: {
-    fontWeight: 700,
+    fontWeight: "700",
     fontSize: 14,
-    color: COLORS.BLACK,
+    color: COLORS.WHITE,
   },
 });
