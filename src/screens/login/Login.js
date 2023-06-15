@@ -24,7 +24,7 @@ import { Message } from '../../../assets/images/Message';
 import { Eye } from '../../../assets/images/Eye';
 import ActivityLoader from '../../Components/ActivityLoader';
 import {useDispatch,useSelector} from 'react-redux';
-import { getGraphData, getLocationID, getPackageStatus, setBoxTwoDataForDashboard, setKwhData, setMonthGraphData, setQuarterGraphData, setRemainingData, setUserID, setWeekGraphData, setWeekTotalData, setYearGraphData,setChargerStatus } from '../../redux/action';
+import { getGraphData, getLocationID, getPackageStatus, setBoxTwoDataForDashboard, setKwhData, setMonthGraphData, setQuarterGraphData, setRemainingData, setUserID, setWeekGraphData, setWeekTotalData, setYearGraphData,setChargerStatus, setEmailData } from '../../redux/action';
 import axios from 'axios';
 import { navigationRef } from '../../../App';
 
@@ -69,6 +69,7 @@ export default function Login({navigation}) {
           }):ToastAndroid.show('Login Successfully', ToastAndroid.SHORT);
           setForLoading(false)
           dispatch(getLocationID(data?.locationid))
+          dispatch(setEmailData(data?.email))
         dispatch(getPackageStatus(data?.status == 'true' ? true : false))
         dispatch(setUserID(data?.user_id))
           // if(data.status == "true"){

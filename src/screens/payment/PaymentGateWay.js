@@ -5,8 +5,9 @@ import {
   StyleSheet,
   Image,
   Dimensions,
+  ScrollView,
 } from 'react-native';
-import React, {useState} from 'react';
+import React, {useState,useRef} from 'react';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import Input from '../../Components/Input';
 import COLORS from '../../constants/COLORS';
@@ -21,6 +22,7 @@ import {Message} from '../../../assets/images/Message';
 import {useSelector} from 'react-redux';
 import axios from 'axios';
 import { API } from '../../api/API';
+import { navigationRef } from '../../../App';
 const mobileW = Math.round(Dimensions.get('screen').width);
 const mobileH = Math.round(Dimensions.get('window').height);
 const validationSchema = Yup.object().shape({
@@ -29,33 +31,32 @@ const validationSchema = Yup.object().shape({
   validTill: Yup.string().required('expiry date required'),
   cvv: Yup.string().required('cvv is required'),
 });
-export default function PaymentGateWay() {
-  const {getDataForPayment, getUserID} = useSelector(state => state);
-  
+export default function PaymentGateWay({navigation}) {
+  const {getDataForPayment, getUserID,getEmailDAta} = useSelector(state => state);
+  const inputRef = useRef(null);
 
   const handlePaymentSubmit = async values => {
     let exp_month = values?.validTill?.split('/')[0]
     let exp_year = values?.validTill?.split('/')[1]
-    console.log(exp_month,"object",exp_year)
+    console.log(exp_month,"object",exp_year,getEmailDAta)
     console.log(values);
     //console.log(values.cardHolderName,,"4567890")
     try {
       const response = await axios.post(`${API}/checkout`, {
-        customerName: values.cardHolderName,
-        
-        customerZipcode: getDataForPayment.ZIP_code,
-        customerState: getDataForPayment.state,
-        customerCountry: getDataForPayment.location,
-        card_number: values.cardNumber,
-        card_cvc: values.cvv,
-        card_exp_month: exp_month,
-        card_exp_year: exp_year,
-        item_details: getDataForPayment.package_name,
-        price: getDataForPayment.total_price,
-        total_amount: getDataForPayment.totalSalexTax,
-
-        price_stripe_id: getDataForPayment.price_stripe_id,
-        cust_id: getUserID,
+        "customerName": values.cardHolderName,
+        "pwa_email":getEmailDAta,
+        "customerZipcode": getDataForPayment.ZIP_code,
+        "customerState": getDataForPayment.state,
+        "customerCountry": getDataForPayment.location,
+        "card_number": values.cardNumber,
+        "card_cvc": values.cvv,
+        "card_exp_month": exp_month,
+        "card_exp_year": exp_year,
+        "item_details": getDataForPayment.package_name,
+        "price": getDataForPayment.total_price,
+        "total_amount": getDataForPayment.totalSalexTax,
+        "price_stripe_id": getDataForPayment.price_stripe_id,
+        "cust_id": getUserID,
       });
       console.log(response, 'payment');
     } catch (err) {
@@ -65,12 +66,10 @@ export default function PaymentGateWay() {
 
   return (
     <SafeAreaView style={{backgroundColor: COLORS.CREAM, flex: 1}}>
+        <ScrollView>
       <View style={{marginHorizontal: 20, paddingTop: 20}}>
         <Text style={styles.complete_profile}>Payment Details</Text>
-        <Image
-          source={require('../../../assets/images/visaCard.png')}
-          style={{width: DIMENSIONS.SCREEN_WIDTH * 0.9, resizeMode: 'contain'}}
-        />
+        
       </View>
 
       <View style={styles.mainDiv_container}>
@@ -93,6 +92,14 @@ export default function PaymentGateWay() {
               touched,
             }) => (
               <View>
+                
+                <Image
+          source={require('../../../assets/images/visaCard.png')}
+          style={{width: DIMENSIONS.SCREEN_WIDTH * 0.9, resizeMode: 'contain'}}
+        />
+        <View style={styles.cardNumber_position}>
+        <Text style={{color:"#fff",fontWeight:"600",fontSize:13}}>{values.cardNumber}</Text>
+        </View>
                 <Input
                   IconLeft={null}
                   errors={undefined}
@@ -112,12 +119,30 @@ export default function PaymentGateWay() {
                   <Text style={{color: 'red'}}>{errors.cardHolderName}</Text>
                 )}
                 <Input
+                
                   IconLeft={null}
                   errors={undefined}
                   touched={false}
                   value={values.cardNumber}
-                  onChangeText={handleChange('cardNumber')}
+                
+                  onChangeText={(text) => {
+                    // Remove non-digit characters from the input
+                    const cardNumber = text.replace(/\D/g, '');
+
+  // Insert a space after every fourth digit
+  let formattedCardNumber = '';
+  for (let i = 0; i < cardNumber.length; i += 4) {
+    formattedCardNumber += cardNumber.substr(i, 4) + ' ';
+  }
+
+  // Remove any trailing space
+  formattedCardNumber = formattedCardNumber.trim();
+
+  // Update the card number value
+  handleChange('cardNumber')(formattedCardNumber)
+                  }}
                   onBlur={handleBlur('cardNumber')}
+                  maxLength={14}
                   text="Card Number"
                   IconRight={() => <Message />}
                   mV={15}
@@ -125,6 +150,7 @@ export default function PaymentGateWay() {
                   bW={1}
                   textWidth={'35%'}
                   placeholderTextColor={COLORS.BLACK}
+                  keyboardType="numeric"
                 />
                 {errors.cardNumber && touched.cardNumber && (
                   <Text style={{color: 'red'}}>{errors.cardNumber}</Text>
@@ -136,7 +162,20 @@ export default function PaymentGateWay() {
                       errors={undefined}
                       touched={false}
                       value={values.validTill}
-                      onChangeText={handleChange('validTill')}
+                    //   
+                    onChangeText={(text) => {
+                        // Remove non-digit characters from the input
+                        const validTill = text.replace(/\D/g, '');
+                    
+                        // Insert a slash after the second character
+                        let formattedValidTill = validTill;
+                        if (validTill.length > 2) {
+                          formattedValidTill = validTill.slice(0, 2) + '/' + validTill.slice(2);
+                        }
+                    
+                        // Update the valid till value
+                        handleChange('validTill')(formattedValidTill);
+                      }}
                       onBlur={handleBlur('validTill')}
                       text="Valid Till"
                       IconRight={null}
@@ -146,6 +185,8 @@ export default function PaymentGateWay() {
                       textWidth={'70%'}
                       placeholderTextColor={COLORS.BLACK}
                       w="half"
+                      keyboardType="numeric"
+                      maxLength={5}
                     />
                     {errors.validTill && touched.validTill && (
                       <Text style={{color: 'red'}}>{errors.validTill}</Text>
@@ -168,6 +209,8 @@ export default function PaymentGateWay() {
                       placeholderTextColor={COLORS.BLACK}
                       w="half"
                       secureTextEntry={true}
+                      maxLength={3}
+                      keyboardType='numeric'
                     />
                     {errors.cvv && touched.cvv && (
                       <Text style={{color: 'red'}}>{errors.cvv}</Text>
@@ -176,7 +219,7 @@ export default function PaymentGateWay() {
                 </View>
                 <View style={styles.bottom_tab}>
                   <TouchableOpacity
-                    onPress={() => navigationRef.navigate('Home')}
+                    onPress={() => navigation.goBack()}
                     style={{
                       padding: 20,
                       backgroundColor: COLORS.GRAY,
@@ -209,6 +252,7 @@ export default function PaymentGateWay() {
           </Formik>
         </View>
       </View>
+      </ScrollView>
     </SafeAreaView>
   );
 }
@@ -238,4 +282,9 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     // borderRadius: 6,
   },
+  cardNumber_position:{
+    position:'absolute',
+top:130,
+left:30
+  }
 });

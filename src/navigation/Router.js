@@ -452,7 +452,7 @@ export default function Router() {
 
   return (
     <Stack.Navigator screenOptions={screenOptions}>
-      {getLocationID == 0 ? (
+      {!getLocationID == 0 ? (
         <>
           <Stack.Screen name="LoginStack" component={LoginStack} />
         </>

@@ -43,7 +43,7 @@ export default function PlanSummary({route, navigation}) {
   
 
 
-  const {id, package_name, total_price, salestax} = route.params.data;
+  const {id, package_name, total_price, salestax} = route.params?.data;
 
   useEffect(() => {
     getPlanSummary();

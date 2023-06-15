@@ -11,6 +11,7 @@ const initialState = {
     getLocationID:0,
     getPackageStatus:false,
     getUserID:'',
+    getEmailDAta:'',
     getkwhData:'',
     getRemainingData:[],
     getWeekKwhdata:'',
@@ -31,6 +32,8 @@ const initialState = {
         return { ...state, getkwhData: action.payload };
         case types.GET_USER_ID:
         return { ...state, getUserID: action.payload };
+        case types.GET_EMAIL_DATA:
+        return { ...state, getEmailDAta: action.payload };
       case types.GET_USER_DATA:
         return { ...state, userRegisterData: action.payload };
       case types.GET_BASE_PACKAGE:

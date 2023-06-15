@@ -9,6 +9,9 @@ export const getPackageStatus = (data) => {
 export const setUserID = (data) => {
   return {type: types.GET_USER_ID, payload: data};
 };
+export const setEmailData = (data) => {
+  return {type: types.GET_EMAIL_DATA, payload: data};
+};
 export const setKwhData = (data) => {
   return {type:types.GET_KWH_DATA,payload:data}
 }
