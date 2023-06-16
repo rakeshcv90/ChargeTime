@@ -12,7 +12,7 @@ const Splash = () => {
         const isFirstTime = await AsyncStorage.getItem('isFirstTime');
         if (isFirstTime === null) {
           // First time user, show intro
-          await AsyncStorage.setItem('isFirstTime', 'false');
+          await AsyncStorage.setItem('isFirstTime', 'true');
           navigationRef.navigate('Introduction');
         } else {
           // Not first time user, show login

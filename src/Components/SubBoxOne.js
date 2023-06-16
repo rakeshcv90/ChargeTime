@@ -5,20 +5,11 @@ import {InstallBase} from '../../assets/svgs/InstallBase';
 import { Vanderberg } from '../../assets/images/Vanderberg';
 import { Connecticut } from '../../assets/images/Connecticut';
 import COLORS from '../constants/COLORS';
-import { useSelector } from 'react-redux';
 
 
 const mobileW = Math.round(Dimensions.get('screen').width);
 const SubBoxOne = ({data}) => {
   // const {navigation, route} = props;
-  const getBasePackage = useSelector((state)=>{ 
-    console.log("state.getBasePackage..",state.getBasePackage)
-    return state.getBasePackage})
-  
-  useEffect(() => {
-    console.log("basepackege...",data)
- }, [data]);
-
 
   return (
     <View style={[styles.mainDiv_installation]}>
@@ -99,9 +90,10 @@ const styles = StyleSheet.create({
     marginLeft: 20,
   },
   installation_text: {
-    fontWeight: 900,
+    fontWeight: "700",
     fontSize: 12,
     paddingLeft: 10,
+    color:COLORS.BLACK
   },
   location_div: {
     flexDirection: 'row',
@@ -123,10 +115,11 @@ const styles = StyleSheet.create({
     elevation: Platform.OS === 'android' ? 8 : 0,
   },
   force_base: {
-    fontWeight: 400,
+    fontWeight: "400",
     fontSize: 14,
     paddingLeft: 10,
     paddingRight:70,
+    color:COLORS.BLACK
   },
   mainDiv_state_zip: {
     flexDirection: 'row',

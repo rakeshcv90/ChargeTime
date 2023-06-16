@@ -34,7 +34,7 @@ import COLORS from '../constants/COLORS';
         transform: [
           {
             translateY: wavePosition.interpolate({
-              inputRange: [1, 2],
+              inputRange: [0, 1],
               outputRange: [0, -100],
               
             }),

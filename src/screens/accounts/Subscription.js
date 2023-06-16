@@ -32,7 +32,7 @@ const mobileW = Math.round(Dimensions.get('screen').width);
  const userSubscription = async () =>{
   // const response = await fetch(`${API}/userexisting/${user_ID}`);
   try {
-    const response = await fetch(`${API}/subscriptionplan/8`);
+    const response = await fetch(`${API}/subscriptionplan/${user_id}`);
     const result = await response.json();
    console.log("response...>>>",JSON.stringify(response))
    console.log("result...>>>",JSON.stringify(result))
@@ -64,7 +64,7 @@ console.log("Dispatch..",dispatch)
         
         </View>
         <View style={styles.mainDiv_installation}>
-      {/* <WaveAnimation /> */}
+      <WaveAnimation />
       </View>
       <View style={styles.managing_width}>
       <PriceValidity data={getSubscription} />

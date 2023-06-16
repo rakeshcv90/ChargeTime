@@ -78,7 +78,7 @@ const handleSelect = (id, item) => {
 };
 const PlanCancel = async () => {
   try {
-    const response = await fetch(`${API}/plancancel/41`,{
+    const response = await fetch(`${API}/plancancel/${user_id}`,{
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -87,6 +87,7 @@ const PlanCancel = async () => {
     const result = await response.json();
 console.log(result,'ttt');
     if(result.message == 'Plan Cancelled Successfully'){
+      InstalltionUpdate();
       PLATFORM_IOS
       ? Toast.show({
           type: 'success',
@@ -97,7 +98,7 @@ console.log(result,'ttt');
           ToastAndroid.SHORT,
         );
 
-        InstalltionUpdate();
+        // InstalltionUpdate();
     }
   } catch (error) {
     console.error(error);
@@ -112,7 +113,7 @@ const InstalltionUpdate = async () => {
     newZipcode&&
     newState){
   try {
-    await fetch(`${API}/installation/41`, {
+    await fetch(`${API}/installation/${user_id}`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -232,7 +233,8 @@ const InstalltionUpdate = async () => {
                 maxHeight={500}
                 labelField="location"
                 valueField="location"
-                placeholder={!isFocus ? userRegisterData?.location : selectedValue}
+                // placeholder={!isFocus ? userRegisterData[0]?.location : selectedValue}
+                placeholder={!isFocus ? userRegisterData[0]?.location : selectedValue}
                 keyboardAvoiding
                 searchPlaceholder="Search..."
                 value={selectedValue}
@@ -255,9 +257,9 @@ const InstalltionUpdate = async () => {
           text="Address Line"
           mV={15}
           textWidth={'45%'}
-          value={addlineone}
+          value={isEditable ? addlineone : userRegisterData[0]?.pwa_add1}
           onChangeText={values => setAddLineOne(values)}
-          placeholder={userRegisterData?.pwa_add1}
+          // placeholder={userRegisterData[0]?.pwa_add1}
           placeholderTextColor={COLORS.BLACK}
           style={{
             color: COLORS.BLACK,
@@ -280,9 +282,9 @@ const InstalltionUpdate = async () => {
           text="Address Line 2"
           mV={10}
           textWidth={'50%'}
-          value={addlinetwo}
+          value={isEditable ? addlinetwo : userRegisterData[0]?.pwa_add2}
           onChangeText={values => setAddLineTwo(values)}
-          placeholder={userRegisterData?.pwa_add2}
+          // placeholder={userRegisterData[0]?.pwa_add2}
           placeholderTextColor={COLORS.BLACK}
           style={{
             color: COLORS.BLACK,
@@ -306,7 +308,7 @@ const InstalltionUpdate = async () => {
                   text="ZIP Code"
                   IconRight={null}
                   mV={15}
-                  placeholder={userRegisterData?.pwa_zip}
+                  placeholder={userRegisterData[0]?.pwa_zip}
                   bW={0.3}
                   textWidth={'60%'}
                   // value={newZipcode}
@@ -329,7 +331,7 @@ const InstalltionUpdate = async () => {
                   text="State"
                   IconRight={null}
                   mV={15}
-                  placeholder={userRegisterData?.pwa_state}
+                  placeholder={userRegisterData[0]?.pwa_state}
                   bW={0.3}
                   textWidth={'40%'}
                   placeholderTextColor={COLORS.BLACK}

@@ -7,7 +7,7 @@ const WaveLinearGradient = (props) => {
     return (
       <LinearGradient
         colors={['rgba(177, 211, 79, 0.7) 0%', 'rgb(177, 211, 79) 0%']}
-        start={{ x: 0, y: 0 }}
+        start={{ x: 1, y: 2 }}
         end={{ x: 0, y: 1 }}
         style={{
           width: '100%',

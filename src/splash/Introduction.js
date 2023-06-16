@@ -1,10 +1,11 @@
 import React from 'react';
-import { View, Image, StyleSheet, SafeAreaView, Text,TouchableOpacity } from 'react-native';
+import { View, Image, StyleSheet, SafeAreaView,Dimensions, Text,TouchableOpacity } from 'react-native';
 import { DIMENSIONS } from '../constants/DIMENSIONS';
-import Button from '../Components/Button';
 import COLORS from '../constants/COLORS';
-import { navigationRef } from '../../App';
-// import { navigationRef } from '../../App';
+
+
+const mobileH = Math.round(Dimensions.get('window').height);
+const mobileW = Math.round(Dimensions.get('window').width);
 
 const Introduction = ({navigation}) => {
   return (
@@ -50,8 +51,8 @@ const styles = StyleSheet.create({
     backgroundColor: '#F7FBED',
   },
   splash_botm_image: {
-    width: DIMENSIONS.SCREEN_WIDTH * 1,
-    height: 450,
+    width: mobileW,
+    height: mobileH * 0.58,
     top: 27,
   },
  

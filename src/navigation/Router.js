@@ -26,7 +26,8 @@ import deleteAccount from '../screens/accounts/deleteAccount';
 import EnergyStats from '../screens/EnergyStats';
 import { useSelector } from 'react-redux';
 import PaymentGateWay from '../screens/payment/PaymentGateWay';
-// import HomeOne from '../screens/downgrade/HomeOne';
+import Splash from '../splash/Splash'
+import Introduction from '../splash/Introduction';
 // import Plan from '../screens/planSummary/Plan';
 
 const Drawer = createDrawerNavigator();
@@ -45,7 +46,7 @@ const DrawerNavigation = () => {
 
   return (
     <Drawer.Navigator
-    initialRouteName={+getPackageStatus !== true ?  'HomeStack':"EnergyStats"}
+    // initialRouteName={+getPackageStatus !== true ?  'HomeStack':"EnergyStats"}
       screenOptions={{headerShown: false}}
       drawerContent={CustomDrawerContent}>
       <Drawer.Screen
@@ -136,42 +137,15 @@ const DrawerNavigation = () => {
         name="EnergyStats"
         component={EnergyStats}
       />
-      {/* <Drawer.Screen
-        options={{
-          drawerActiveBackgroundColor: '#fff',
-          drawerIcon: ({focused, color, size}) => {
-            // setFocusOne(focused);
-            return (
-              <Image
-                source={
-                  !focused
-                    ? require('../../assets/images/testing.png')
-                    : require('../../assets/images/green_account.png')
-                }
-                style={{width: 50, height: 40, padding: 0, margin: -10}}
-              />
-            );
-          },
-          drawerLabelStyle: {
-            backgroundColor:  'rgba(177, 211, 79, 0.8)' ,
-            paddingVertical: 10,
-            paddingLeft: 10,
-            width: '200%',
-            marginLeft: -15,
-          },
-          drawerActiveTintColor: 'black',
-          title: 'HomeOne',
-        }}
-        name="HomeOne"
-        component={HomeOne}
-      /> */}
-      
+
     </Drawer.Navigator>
   );
 };
 const LoginStack = () => {
   return (
     <Stack.Navigator screenOptions={screenOptions}>
+      <Stack.Screen name='Splash' component={Splash}/>
+      <Stack.Screen name='Introduction' component={Introduction}/>
       <Stack.Screen name="Login" component={Login} />
       <Stack.Screen name="Register" component={Register} />
       <Stack.Screen name="VerifyEmail" component={VerifyEmail} />
@@ -203,6 +177,9 @@ const AccountStack = () => {
       <Stack.Screen name="Subscription" component={Subscription} />
       <Stack.Screen name="Theme" component={Theme} />
       <Stack.Screen name="deleteAccount" component={deleteAccount} />
+      <Stack.Screen name="Login" component={Login} />
+      <Stack.Screen name="DrawerStack" component={DrawerNavigation} />
+      <Stack.Screen name="HomeStack" component={HomeStack} />
     </Stack.Navigator>
   );
 };

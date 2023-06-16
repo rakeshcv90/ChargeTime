@@ -168,7 +168,7 @@ const UpdatePassword= async () =>{
             placeholderTextColor={COLORS.BLACK}
             passwordInput={true}
             pasButton={() => setShowNew(!showNew)}
-            secureTextEntry={showNew}
+            // secureTextEntry={showNew}
             passwordInputIcon={showNew}
             placeholder=""
             onChangeText={text => setNewPassword(text)}
@@ -218,8 +218,8 @@ const UpdatePassword= async () =>{
             secureTextEntry={showReE}
             passwordInputIcon={showReE}
             placeholder=""
-            onChangeText={text => setNewPassword(text)}
-            value={newPassword}
+            onChangeText={text => setConfirmPassword(text)}
+            value={confirmPassword}
             text="Re-enter New Password"
             mV={15}
             bW={1}

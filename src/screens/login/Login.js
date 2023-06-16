@@ -57,6 +57,7 @@ export default function Login({navigation}) {
     })
       .then(res => res.json())
       .then(data => {
+        console.log("hhhhhhhhhh",data);
         // AsyncStorage.setItem('loginDataOne', JSON.stringify(data.locationid ));
         if (data.message == 'Login Successfully') {
          PLATFORM_IOS?

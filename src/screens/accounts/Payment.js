@@ -4,6 +4,7 @@ import {
   TouchableOpacity,
   StyleSheet,
   Image,
+  ToastAndroid,
   Dimensions,
   ScrollView,
   Modal,
@@ -28,6 +29,8 @@ import Header from '../../Components/Header'
 import HorizontalLine from '../../Components/HorizontalLine'
 import {API} from '../../api/API';
 import { Delete } from '../../../assets/svgs/Delete'
+import { PLATFORM_IOS } from '../../constants/DIMENSIONS';
+
 
 import {navigationRef} from '../../../App';
 const mobileW = Math.round(Dimensions.get('screen').width);
@@ -39,45 +42,57 @@ const validationSchema = Yup.object().shape({
   cvv: Yup.string().required('cvv is required'),
 });
 export default function PaymentGateWay({navigation}) {
-  const {getDataForPayment, getUserID, getEmailDAta} = useSelector(
+  const { getUserID} = useSelector(
     state => state,
   );
-  const [modalVisible, setModalVisible] = useState(false);
-  const inputRef = useRef(null);
-
-  const handlePaymentSubmit = async values => {
+const user_ID =getUserID;
+  const handleAddCard = async (values) => {
     let exp_month = values?.validTill?.split('/')[0];
     let exp_year = values?.validTill?.split('/')[1];
-    console.log(exp_month, 'object', exp_year, getEmailDAta);
+    // console.log(exp_month, 'object', exp_year, getEmailDAta);
     console.log(values);
+    console.log('month is',exp_month);
+    console.log('year is',exp_year);
+    console.log("user_id is",user_id)
     //console.log(values.cardHolderName,,"4567890")
     try {
-      const response = await axios.post(`${API}/checkout`, {
-        customerName: values.cardHolderName,
-        pwa_email: getEmailDAta,
-        customerZipcode: getDataForPayment.ZIP_code,
-        customerState: getDataForPayment.state,
-        customerCountry: getDataForPayment.location,
-        card_number: values.cardNumber,
-        card_cvc: values.cvv,
-        card_exp_month: exp_month,
-        card_exp_year: exp_year,
-        item_details: getDataForPayment.package_name,
-        price: getDataForPayment.total_price,
-        total_amount: getDataForPayment.totalSalexTax,
-        price_stripe_id: getDataForPayment.price_stripe_id,
-        cust_id: getUserID,
-      });
-      console.log(response, 'payment');
-    } catch (err) {
-      console.log(err);
+      const response = await fetch(`${API}/addcarddetail`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        }, 
+       body: JSON.stringify({
+          user_id: getUserID,
+          cust_name: values.cardHolderName,
+          card_number: values.cardNumber,
+          card_cvc: values.cvv,
+          card_exp_month: exp_month,
+          card_exp_year: exp_year,
+        }) 
+       
+      })
+      const result = await response.json();
+  console.log(result,'ttt');
+      if(result.msg == 'Your Card Detail Save'){
+        PLATFORM_IOS
+        ? Toast.show({
+            type: 'success',
+            text1: ' Your Card Detail Save.',
+          })
+        : ToastAndroid.show(
+            'Your Card Detail Save.',
+            ToastAndroid.SHORT,
+          );
+      }
+    } catch (error) {
+      console.error(error);
     }
   };
 
   return (
     <SafeAreaView style={{backgroundColor: COLORS.CREAM, flex: 1}}>
        <Header headerName="Payment Methods" editShow={false} />
-    <HorizontalLine style={styles.line} />
+    <HorizontalLine />
       <ScrollView>
         <View style={styles.mainDiv_container}>
           <View>
@@ -88,7 +103,7 @@ export default function PaymentGateWay({navigation}) {
                 validTill: '',
                 cvv: '',
               }}
-              onSubmit={values => handlePaymentSubmit(values)}
+              onSubmit={values => handleAddCard(values)}
               validationSchema={validationSchema}>
               {({
                 values,
@@ -148,8 +163,9 @@ export default function PaymentGateWay({navigation}) {
                     <Delete/>
                     </TouchableOpacity>
                   </View>
-                  <HorizontalLine/>
+                  
                   <View style={styles.cardNumber_position}>
+                    
                     <Text
                       style={{color: '#fff', fontWeight: '600', fontSize: 13}}>
                       {values.cardNumber}
@@ -176,8 +192,10 @@ export default function PaymentGateWay({navigation}) {
                       {values.cvv}
                     </Text>
                     </View>
-                    </View>
+                     </View>
                   </View>
+                  <HorizontalLine/>
+
                   <Input
                     IconLeft={null}
                     errors={undefined}
@@ -218,7 +236,7 @@ export default function PaymentGateWay({navigation}) {
                       handleChange('cardNumber')(formattedCardNumber);
                     }}
                     onBlur={handleBlur('cardNumber')}
-                    maxLength={14}
+                    maxLength={19}
                     text="Card Number"
                     IconRight={() => <Message />}
                     mV={15}
@@ -294,23 +312,13 @@ export default function PaymentGateWay({navigation}) {
                       )}
                     </View>
                   </View>
-                  <View style={styles.bottom_tab}>
-                    <TouchableOpacity
-                      onPress={() => navigation.goBack()}
-                      style={{
-                        padding: 20,
-                        backgroundColor: COLORS.GRAY,
-                        borderRadius: 25,
-                      }}>
-                      <LeftIcon />
-                    </TouchableOpacity>
-
                     <View
                       style={{
                         backgroundColor: COLORS.GREEN,
                         paddingHorizontal: 20,
                         paddingVertical: 10,
                         borderRadius: 12,
+                        marginLeft:240,
                       }}>
                       <TouchableOpacity onPress={handleSubmit}>
                         <Text
@@ -324,7 +332,6 @@ export default function PaymentGateWay({navigation}) {
                       </TouchableOpacity>
                     </View>
                   </View>
-                </View>
               )}
             </Formik>
           </View>
@@ -354,7 +361,7 @@ const styles = StyleSheet.create({
     // paddingHorizontal: 20,
     paddingVertical: 15,
     display: 'flex',
-    flexDirection: 'row',
+    flexDirection: 'left',
     justifyContent: 'space-between',
     alignItems: 'center',
     // borderRadius: 6,

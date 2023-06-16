@@ -56,11 +56,12 @@ const PersonalDetails = () => {
         try {
           const response = await fetch(`${API}/userexisting/${user_ID}`);
           const result = await response.json();
-          if(result.message == "sucess")
+          if(result[0].message == "sucess")
           {
      console.log('wwwwww',result);
      setUserData(result);
      dispatch(userRegisterData(result)); 
+     console.log(userData)
           }else{
             console.log("iiiiiiiiiiii")
           }
@@ -72,6 +73,9 @@ const PersonalDetails = () => {
   const updatePersonalDetails = async () =>{
 
     console.log("data")
+
+    // console.log(name, "--------");
+    // console.log(number, "------------")
     // setIsEditable(true);
     await fetch(`${API}/personalInfo/${user_ID}`, {
       method: 'PUT',
@@ -79,8 +83,8 @@ const PersonalDetails = () => {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        name : name,
-        mobile : number,
+        pwa_name : name,
+        pwa_mobile : number,
       }),
     })
       .then(res => res.json())
@@ -132,7 +136,7 @@ const PersonalDetails = () => {
           text="Name"
           mV={5}
           textWidth={'27%'}
-          placeholder= {userData.name}
+          placeholder= {userData[0]?.name}
           placeholderTextColor={COLORS.BLACK}
           style={{
             color: COLORS.BLACK,
@@ -155,7 +159,7 @@ const PersonalDetails = () => {
           text="Phone No."
           mV={15}
           textWidth={'37%'}
-          placeholder={userData.mobile}
+          placeholder={userData[0]?.mobile}
           placeholderTextColor={COLORS.BLACK}
           style={{
             color: COLORS.BLACK,
@@ -178,7 +182,7 @@ const PersonalDetails = () => {
           text="Email"
           mV={55}
           textWidth={'25%'}
-          placeholder={userData.email}
+          placeholder={userData[0]?.email}
           placeholderTextColor={COLORS.BLACK}
           style={{
             color: COLORS.BLACK,
