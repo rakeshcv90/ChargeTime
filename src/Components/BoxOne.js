@@ -12,9 +12,7 @@ const mobileW = Math.round(Dimensions.get('screen').width);
 const BoxOne = ({data}) => {
   // const {navigation, route} = props;
   const getBasePackage = useSelector((state)=> state.getBasePackage)
-  useEffect(() => {
-    console.log('data for this User:---------', getBasePackage); 
- }, []);
+  
 
 
   return (
@@ -28,7 +26,7 @@ const BoxOne = ({data}) => {
       <View style={styles.shadowProp}>
         <View style={styles.location_div}>
           <Vanderberg style={styles.img_width} />
-          <Text style={styles.force_base}>{data?.location?data?.location:" Vandenberg Space Force Base"}</Text>
+          <Text style={styles.force_base}>{data?.location}</Text>
               {/* <Text style={styles.force_base}>{getBasePackage[0].location}</Text> */}
 
         </View>
@@ -45,7 +43,7 @@ const BoxOne = ({data}) => {
             source={require('../../assets/images/connecticut.png')}
           /> */}
             <Connecticut style={styles.img_width} />
-            <Text style={styles.force_base}>{data?.state?data?.state:"Conneticut"}</Text>
+            <Text style={styles.force_base}>{data?.state}</Text>
             {/* <Text style={styles.force_base}>{getBasePackage[0].state}</Text> */}
           </View>
           <View style={styles.state_div}>
@@ -54,7 +52,7 @@ const BoxOne = ({data}) => {
               source={require('../../assets/images/zip_code.png')}
               style={{width: 20, height: 20}}
             />
-            <Text style={styles.force_base}>{data?.ZIP_code?data?.ZIP_code:"123456"}</Text>
+            <Text style={styles.force_base}>{data?.ZIP_code}</Text>
             {/* <Text style={styles.force_base}>{getBasePackage[0].ZIP_code}</Text> */}
 
           </View>
@@ -95,9 +93,10 @@ const styles = StyleSheet.create({
     marginLeft: 20,
   },
   installation_text: {
-    fontWeight: 900,
+    fontWeight: "700",
     fontSize: 12,
     paddingLeft: 10,
+    color:COLORS.BLACK
   },
   location_div: {
     flexDirection: 'row',
@@ -119,10 +118,11 @@ const styles = StyleSheet.create({
     elevation: Platform.OS === 'android' ? 8 : 0,
   },
   force_base: {
-    fontWeight: 400,
+    fontWeight: "400",
     fontSize: 14,
     paddingLeft: 10,
     paddingRight:70,
+    color:COLORS.BLACK
   },
   mainDiv_state_zip: {
     flexDirection: 'row',

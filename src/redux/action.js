@@ -9,6 +9,9 @@ export const getPackageStatus = (data) => {
 export const setUserID = (data) => {
   return {type: types.GET_USER_ID, payload: data};
 };
+export const setEmailData = (data) => {
+  return {type: types.GET_EMAIL_DATA, payload: data};
+};
 export const setKwhData = (data) => {
   return {type:types.GET_KWH_DATA,payload:data}
 }
@@ -40,6 +43,31 @@ export const setWeekTotalData = (data) => {
 export const setWeekGraphData = (data) => {
   return {type:types.GET_WEEK_GRAPH_DATA,payload:data}
 }
+export const setMonthGraphData = (data) => {
+  return {type:types.GET_MONTH_DATA,payload:data}
+}
+export const setQuarterGraphData = (data) => {
+  return {type:types.GET_QUARTER_DATA,payload:data}
+}
+export const setYearGraphData = (data) => {
+  return {type:types.GET_YEAR_DATA,payload:data}
+}
 
 // week action end
+//dashboard boxtwo and price details data start
+
+export const setBoxTwoDataForDashboard = (data) => {
+  return {type:types.GET_BOX_TWO_DATA_DASHBOARD,payload:data}
+}
+export const setPriceAndDetailsData = (data) => {
+  return {type:types.GET_PRICE_AND_DETAILS_DATA,payload:data}
+}
+export const setChargerStatus = (data) => {
+  return {type:types.CHARGER_STATUS,payload:data}
+}
+export const setDataForPayment = (data) => {
+  return {type:types.DATA_FOR_PAYMENT,payload:data}
+}
+
+    //dashboard boxtwo and price details data end
 

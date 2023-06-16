@@ -190,24 +190,7 @@ export default function CompleteProfile(props) {
                 onChange={item => handleSelect(item.id, item)}
               />
             </View>
-            {/* <Input
-              IconLeft={null}
-              errors={undefined}
-              touched={false}
-              //     value={values.name}
-              //     onChangeText={handleChange('name')}
-              // onBlur={handleBlur('name')}
-
-              text="Installation"
-              IconRight={() => (
-                <Installation />
-              )}
-              mV={15}
-              placeholder="Vandenberg Space Force Base"
-              bW={1}
-              textWidth={'28%'}
-              placeholderTextColor={COLORS.BLACK}
-            /> */}
+            
 
             <Input
               IconLeft={null}
@@ -258,6 +241,7 @@ export default function CompleteProfile(props) {
                   textWidth={'70%'}
                   placeholderTextColor={COLORS.BLACK}
                   w="half"
+                  editable={false}
                 />
               </View>
               <View style={styles.zip_state_view}>
@@ -277,6 +261,7 @@ export default function CompleteProfile(props) {
                   textWidth={'50%'}
                   placeholderTextColor={COLORS.BLACK}
                   w="half"
+                  editable={false}
                 />
               </View>
             </View>

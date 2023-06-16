@@ -6,11 +6,9 @@ import COLORS from '../constants/COLORS';
 import { useSelector } from 'react-redux';
 const mobileW = Math.round(Dimensions.get('screen').width);
 
-const PriceValidity = () => {
+const PriceValidity = ({data}) => {
   const getBasePackage = useSelector((state)=> state.getBasePackage)
-  useEffect(() => {
-    console.log('data for package=============',getBasePackage);
- }, [getBasePackage]);
+  
   return (
     <View style={[styles.mainDiv_installation]}>
       <TouchableOpacity style={styles.install_touchable}>
@@ -21,7 +19,7 @@ const PriceValidity = () => {
       <View style={styles.location_div}>
         
       <Text style={styles.force_base_b}>Package Name :</Text>
-        <Text style={styles.force_base}>Base Package - 1</Text>
+        <Text style={styles.force_base}>{data?.energy_plan}</Text>
       </View>
       <Image
           // style={styles.img_width}
@@ -30,7 +28,7 @@ const PriceValidity = () => {
         />
         <View style={styles.location_div}>
         <Text style={styles.force_base_b}>Price :</Text>
-        <Text style={styles.force_base}>$ 50.66</Text>
+        <Text style={styles.force_base}>${data?.energy_price}</Text>
         </View>
     </View>
 

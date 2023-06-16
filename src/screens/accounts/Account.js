@@ -1,4 +1,4 @@
-import { Image, View, Text, StyleSheet, TouchableOpacity,SafeAreaView } from 'react-native';
+import { Image, View, Text, StyleSheet, Dimensions, TouchableOpacity,SafeAreaView } from 'react-native';
 import React, { useState } from 'react';
 import { createDrawerNavigator } from '@react-navigation/drawer';
 import { NavigationContainer } from '@react-navigation/native';
@@ -7,9 +7,16 @@ import logo from '../../../assets/images/logo.png';
 import COLORS from '../../constants/COLORS';
 import HorizontalLine from '../../Components/HorizontalLine';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import Login from '../login/Login';
+import { navigationRef } from '../../../App';
+import { FONTS } from '../../constants/FONTS';
+import { DIMENSIONS } from '../../constants/DIMENSIONS';
+import DrawerOpen from '../../Components/DrawerOpen';
+import {persistor} from '../../redux/store';
 
-const Account = ({ navigation }) => {
+const mobileW = Math.round(Dimensions.get('screen').width);
+
+
+const Account = ({navigation}) => {
   const [selectedValue, setSelectedValue] = useState('');
   const Screen = [
     {
@@ -52,14 +59,11 @@ const Account = ({ navigation }) => {
   ];
 
   const handleLogOut =async () => {
-    try{
-    await AsyncStorage.removeItem('loginDataOne');
+    AsyncStorage.clear();
+    persistor.purge();
     navigation.navigate('Login');
     console.log('Log out successfully');
-    }catch (error) {
-      console.error('Error during logout:', error);
-    }
-  };
+  }
 
  
 
@@ -69,10 +73,10 @@ const Account = ({ navigation }) => {
 
   return (
     <SafeAreaView style={{backgroundColor: COLORS.CREAM, flex: 1}}>
-            <View >
+            <View style={styles.main_div}>
               <View style={styles.row}>
                 <Text style={styles.heading}>Account</Text>
-                <Image source={logo} style={styles.logo} />
+                <DrawerOpen />
               </View>
               {Screen.map((item, index) => (
                 <TouchableOpacity
@@ -87,7 +91,15 @@ const Account = ({ navigation }) => {
                      <Image source={item.side_image} style={styles.side_icon} />
                       </View>
                   </View>
-                  <HorizontalLine />
+                  <View
+            style={{
+              flexDirection: 'row',
+              alignItems: 'center',
+              justifyContent: 'center',
+              width: mobileW,
+            }}>
+            <Image source={require('../../../assets/images/dotted.png')} style={{width: mobileW * 0.97 }} />
+          </View>
                   
                 </TouchableOpacity>
               ))}
@@ -125,10 +137,14 @@ const Account = ({ navigation }) => {
 };
 
 const styles = StyleSheet.create({
-  row: { width: '100%', flexDirection: 'row', alignItems: 'center'},
+  row: { width: DIMENSIONS.SCREEN_WIDTH * 0.95, flexDirection: 'row', alignItems: 'center'},
+  main_div:{
+width:DIMENSIONS.SCREEN_WIDTH * 0.95,
+height: DIMENSIONS.SCREEN_HEIGHT * 0.9,
+  },
   heading: {
     color: COLORS.BLACK,
-    font: 'Montserrat',
+    fontStyle: FONTS.MONTSERRAT_REGULAR,
     fontSize: 26,
     fontWeight: 'bold',
     marginBottom: 40,
@@ -139,21 +155,29 @@ const styles = StyleSheet.create({
     marginBottom: 3,
   },
   title: {
-    font: 'Roboto',
-    fontSize: 18,
-    marginLeft: 10,
-    color: COLORS.BLACK,
+    width: 132,
+    height: 20,
+    marginLeft:5, 
+    fontfamily: 'Roboto',
+    fontstyle: 'normal',
+    fontweight: 900,
+    fontsize: 14,
+    lineheight: 10,
+    marginBottom:20,
+    marginTop:20,
+    color: '#000000',
+    
   },
   listItem: {
     flexDirection: 'row',
     alignItems: 'center',
-    paddingVertical: 5,
+    paddingVertical: 7,
   },
   text: {
     font: 'Roboto',
-    fontSize: 12,
+    fontSize: 14,
     marginLeft: 10,
-    color: COLORS.BLACK,
+    color: 'rgba(0, 0, 0, 1)',
   },
   bullet: {
     marginRight: 5,
@@ -168,15 +192,16 @@ const styles = StyleSheet.create({
     padding: 8,
     borderWidth: 1,
     borderColor: '#ccc',
-    marginLeft : 90,
+    marginLeft : 65,
     borderRadius: 5,
-   
+    // marginRight:10, 
   
   },
   buttonText: {
     fontSize: 15,
     color:COLORS.BLACK,
-    marginRight:20,
+    // marginRight:20,
+    textAlign:'center',
   },
   logo: {
     width: 40,
@@ -187,9 +212,10 @@ const styles = StyleSheet.create({
     // alignItems: 'flex-end',
   },
   icon: {
-    width: 25,
-    height: 25,
+    width: 20,
+    height: 20,
     marginLeft: 20,
+    marginRight:5,
   },
   sideImageContainer: {
     flex: 1,
@@ -209,22 +235,23 @@ const styles = StyleSheet.create({
   addContainer:{
     marginRight: 20,
     marginLeft:30,
-    marginTop:80,
+    marginTop:30,
   },
   ButtonsContainer: {
     justifyContent: 'center',
     alignItems: 'center',
+    marginTop:30,
   },
   logoutButton: {
     backgroundColor: '#F84E4E',
-    padding: 5,
+    padding: 10,
     borderRadius: 10,
   },
   logoutbuttonText: {
     color: 'white',
     fontWeight: '500',
-    paddingLeft:5,
-    paddingRight:5,
+    paddingLeft:10,
+    paddingRight:10,
     
   },
 });

@@ -16,21 +16,30 @@ import { Message } from '../../../assets/svgs/Message';
 import {Name} from '../../../assets/svgs/Name';
 import { API } from '../../api/API';
 import { navigationRef } from '../../../App';
+import { FONTS } from '../../constants/FONTS';
+import { useDispatch } from 'react-redux';
+import { userRegisterData } from '../../redux/action';
+import axios from 'axios';
+
 // import { userRegisterData } from '../../redux/action';
 
 
 
 const PersonalDetails = () => {
-  const userRegisterData = useSelector((state)=> state.userRegisterData)
+  // const userRegisterData = useSelector((state)=> state.userRegisterData)
+  const getUserID = useSelector((state)=> state.getUserID)
   const [isEditable, setIsEditable] = useState(false);
    const [name, setName]= useState('');
    const [number, setNumber]=useState();
+   const [userData, setUserData] = useState([]);
+   const dispatch =useDispatch();
+   const user_ID = getUserID;
 
   useEffect(() => {
-   console.log('data for this User:---------', userRegisterData); 
-  
-}, [userRegisterData]);
-const user_ID = userRegisterData[4]?.user_id;
+  //  console.log('data for this User:---------', userRegisterData); 
+   console.log('iiiiddddddd',user_ID)
+   userDetails()
+}, []);
 
   const theme = useColorScheme();
   const isDark = theme === 'dark';
@@ -42,8 +51,24 @@ const user_ID = userRegisterData[4]?.user_id;
     console.log("enable edit",isEditable)
     setIsEditable(true)
   }
-
-
+  const userDetails = async () =>{
+        // const response = await fetch(`${API}/userexisting/${user_ID}`);
+        try {
+          const response = await fetch(`${API}/userexisting/${user_ID}`);
+          const result = await response.json();
+          if(result.message == "sucess")
+          {
+     console.log('wwwwww',result);
+     setUserData(result);
+     dispatch(userRegisterData(result)); 
+          }else{
+            console.log("iiiiiiiiiiii")
+          }
+          // setLocationMap(result);
+        } catch (error) {
+          console.error(error);
+        }
+    };
   const updatePersonalDetails = async () =>{
 
     console.log("data")
@@ -89,7 +114,7 @@ const user_ID = userRegisterData[4]?.user_id;
 
   return (
     <SafeAreaView style={{ backgroundColor: COLORS.CREAM, flex: 1 }}>
-     <Header headerName="Personal Details" showRightButton={true} onPress={onPress} enableEdit ={enableEdit} editButton={isEditable} />
+     <Header headerName="Personal Details" editShow={true} onPress={onPress} enableEdit ={enableEdit} editButton={isEditable} />
       
       <HorizontalLine style={styles.line} />
       <View style={[styles.mainDiv_container]}>
@@ -101,13 +126,13 @@ const user_ID = userRegisterData[4]?.user_id;
           IconRight={() => (
            <Name/>
           )}
-          bR={5}
-          bW={0.3}
-          bColor={COLORS.LIGHT_GREY}
+          bR={3}
+          bW={0.4}
+          bColor={COLORS.BLACK}
           text="Name"
           mV={5}
-          textWidth={'17%'}
-          placeholder= {userRegisterData[1]?.name}
+          textWidth={'27%'}
+          placeholder= {userData.name}
           placeholderTextColor={COLORS.BLACK}
           style={{
             color: COLORS.BLACK,
@@ -124,13 +149,13 @@ const user_ID = userRegisterData[4]?.user_id;
           IconRight={() => (
            <Call/>
           )}
-          bR={5}
-          bW={0.3}
-          bColor={COLORS.LIGHT_GREY}
+          bR={3}
+          bW={0.4}
+          bColor={COLORS.BLACK}
           text="Phone No."
           mV={15}
-          textWidth={'27%'}
-          placeholder={userRegisterData[2]?.mobile}
+          textWidth={'37%'}
+          placeholder={userData.mobile}
           placeholderTextColor={COLORS.BLACK}
           style={{
             color: COLORS.BLACK,
@@ -147,13 +172,13 @@ const user_ID = userRegisterData[4]?.user_id;
           IconRight={() => (
            <Message/>
           )}
-          bR={5}
-          bW={0.3}
-          bColor={COLORS.LIGHT_GREY}
+          bR={3}
+          bW={0.4}
+          bColor={COLORS.BLACK}
           text="Email"
           mV={55}
-          textWidth={'20%'}
-          placeholder={userRegisterData[0]?.email}
+          textWidth={'25%'}
+          placeholder={userData.email}
           placeholderTextColor={COLORS.BLACK}
           style={{
             color: COLORS.BLACK,
@@ -187,7 +212,7 @@ const user_ID = userRegisterData[4]?.user_id;
         <TouchableOpacity onPress={()=>navigationRef.navigate('deleteAccount')}>
           <Text 
           style={{
-            fontWeight: 800,
+            fontWeight: 'bold',
             font: 14,
             height: 25,
           }}
@@ -202,7 +227,7 @@ const styles = StyleSheet.create({
     marginTop: 400,
     marginLeft: 70,
     font: 14,
-    fontfamily: 'Roboto',
+    fontfamily: FONTS.MONTSERRAT_REGULAR,
     height: 25,
     color: COLORS.BLACK,
     flexDirection: 'row',
@@ -211,10 +236,12 @@ const styles = StyleSheet.create({
   mainDiv_container: {
     paddingHorizontal: 10,
     paddingBottom: 10,
-    marginLeft: 30,
-    marginRight: 30,
+    marginLeft: 20,
+    // marginRight: 30,
     marginTop: 20,
     marginBottom:40,
+    width: DIMENSIONS.SCREEN_WIDTH * 0.9,
+     height:DIMENSIONS.SCREEN_HEIGHT * 1,
   // fontfamily: "Roboto",
   // color: "#000000",
   // fontSize: 24,
@@ -252,9 +279,10 @@ const styles = StyleSheet.create({
     elevation: Platform.OS === 'android' ? 8 : 0,
   },
   line: {
-    marginTop: 50,
+    marginTop: 20,
     marginBottom: 10,
-    marginHorizontal: 5,
+    marginHorizontal: 2,
+    paddingBottom:20,
   },
   icon: {
     width: 15,

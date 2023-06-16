@@ -1,249 +1,434 @@
-import { View, Text, SafeAreaView,TouchableOpacity,StyleSheet, Image } from 'react-native'
-import React, { useState } from 'react'
-import HorizontalLine from '../../Components/HorizontalLine'
-import { Name } from '../../../assets/svgs/Name'
-import { Card } from '../../../assets/svgs/Card'
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  StyleSheet,
+  Image,
+  Dimensions,
+  ScrollView,
+  Modal,
+  Pressable,
+  Alert
+} from 'react-native';
+import React, {useState, useRef} from 'react';
+import {SafeAreaView} from 'react-native-safe-area-context';
 import Input from '../../Components/Input';
 import COLORS from '../../constants/COLORS';
+import {Card} from '../../../assets/svgs/Card';
+import {Name} from '../../../assets/svgs/Name';
+import {DIMENSIONS} from '../../constants/DIMENSIONS';
+import {LeftIcon} from '../../../assets/images/LeftIcon';
+import {Formik} from 'formik';
+import * as Yup from 'yup';
+import {Admin} from '../../../assets/images/Admin';
+import {Message} from '../../../assets/images/Message';
+import {useSelector} from 'react-redux';
+import axios from 'axios';
 import Header from '../../Components/Header'
+import HorizontalLine from '../../Components/HorizontalLine'
+import {API} from '../../api/API';
 import { Delete } from '../../../assets/svgs/Delete'
-import masterCard from '../../../assets/images/masterCard.png'
-import visaCard from '../../../assets/images/visaCard.png'
 
+import {navigationRef} from '../../../App';
+const mobileW = Math.round(Dimensions.get('screen').width);
+const mobileH = Math.round(Dimensions.get('window').height);
+const validationSchema = Yup.object().shape({
+  cardHolderName: Yup.string().required('Card Holder Name is required'),
+  cardNumber: Yup.string().required('Invalid Card Number'),
+  validTill: Yup.string().required('expiry date required'),
+  cvv: Yup.string().required('cvv is required'),
+});
+export default function PaymentGateWay({navigation}) {
+  const {getDataForPayment, getUserID, getEmailDAta} = useSelector(
+    state => state,
+  );
+  const [modalVisible, setModalVisible] = useState(false);
+  const inputRef = useRef(null);
 
-
-const Payment = () => {
-  const [cardNumber, setCardNumber] = useState('');
-  const [cardType, setCardType] = useState('');
-
-  const handleCardNumberChange = (value) => {
-    setCardNumber(value);
-    setCardType(determineCardType(value));
-  };
-
-  const determineCardType = (cardNumber) => {
-    if (cardNumber.startsWith('5')) {
-      return 'mastercard';
-    } else if (cardNumber.startsWith('4')) {
-      return 'visa';
+  const handlePaymentSubmit = async values => {
+    let exp_month = values?.validTill?.split('/')[0];
+    let exp_year = values?.validTill?.split('/')[1];
+    console.log(exp_month, 'object', exp_year, getEmailDAta);
+    console.log(values);
+    //console.log(values.cardHolderName,,"4567890")
+    try {
+      const response = await axios.post(`${API}/checkout`, {
+        customerName: values.cardHolderName,
+        pwa_email: getEmailDAta,
+        customerZipcode: getDataForPayment.ZIP_code,
+        customerState: getDataForPayment.state,
+        customerCountry: getDataForPayment.location,
+        card_number: values.cardNumber,
+        card_cvc: values.cvv,
+        card_exp_month: exp_month,
+        card_exp_year: exp_year,
+        item_details: getDataForPayment.package_name,
+        price: getDataForPayment.total_price,
+        total_amount: getDataForPayment.totalSalexTax,
+        price_stripe_id: getDataForPayment.price_stripe_id,
+        cust_id: getUserID,
+      });
+      console.log(response, 'payment');
+    } catch (err) {
+      console.log(err);
     }
-    return '';
-  };
-  const renderCardImage = () => {
-    if (cardType === 'mastercard') {
-      return <Image source={masterCard} style={styles.card_image} />;
-    } else if (cardType === 'visa') {
-      return <Image source={visaCard} style={styles.card_image} />;
-    }
-    
-    return null;
   };
 
   return (
-    <SafeAreaView style={{ backgroundColor: COLORS.CREAM, flex: 1 }}>
-    <Header headerName="Payment Methods" showRightButton={false} />
+    <SafeAreaView style={{backgroundColor: COLORS.CREAM, flex: 1}}>
+       <Header headerName="Payment Methods" editShow={false} />
     <HorizontalLine style={styles.line} />
-    {/* <View> */}
-    <View >
-      <Image source={require('../../../assets/images/visaCard.png')} style={styles.card_image}/>
-      </View>
-    <View
-                style={{
-                  flexDirection: 'row',
-                  justifyContent: 'center',
-                  // width: '100%',
-                  marginHorizontal: 60,
-                  marginTop:30,
-                }}>
-                <TouchableOpacity
-                  style={{
-                    // marginTop: 200,
-                    marginLeft:95,
-                    marginRight:60,
-                    backgroundColor: '#CCCCCC',
-                    alignItems: 'center',
-                    padding: 13,
-                    borderRadius: 60,
-                    width: '70%',
-                  }}>
-                  <Text
+      <ScrollView>
+        <View style={styles.mainDiv_container}>
+          <View>
+            <Formik
+              initialValues={{
+                cardHolderName: '',
+                cardNumber: '',
+                validTill: '',
+                cvv: '',
+              }}
+              onSubmit={values => handlePaymentSubmit(values)}
+              validationSchema={validationSchema}>
+              {({
+                values,
+                handleChange,
+                handleSubmit,
+                handleBlur,
+                errors,
+                touched,
+              }) => (
+                <View>
+                  <Image
+                    source={require('../../../assets/images/visaCard.png')}
                     style={{
-                      color: COLORS.BLACK,
-                      fontSize: 12,
-                      fontWeight: '400',
-                    }}>
-                    Default Payment Method
-                  </Text>
-                </TouchableOpacity>
-                <TouchableOpacity
+                      width: DIMENSIONS.SCREEN_WIDTH * 0.9,
+                      resizeMode: 'contain',
+                    }}
+                  />
+                  <View
                   style={{
-                    
-                    marginLeft:35,
-                    marginRight:100,
-                    backgroundColor: '#CCCCCC',
-                    alignItems: 'center',
-                    padding: 13,
-                    borderRadius: 150,
-                    width: '15%',
+                    flexDirection: 'row',
+                    justifyContent: 'center',
+                    // width: '100%',
+                    marginHorizontal: 60,
+                    marginTop:10,
                   }}>
-                  <Delete/>
+                  <TouchableOpacity
+                    style={{
+                      // marginTop: 200,
+                      marginLeft:95,
+                      marginRight:50,
+                      backgroundColor: '#CCCCCC',
+                      alignItems: 'center',
+                      padding: 10,
+                      borderRadius: 60,
+                      width: '70%',
+                    }}>
+                    <Text
+                      style={{
+                        color: COLORS.BLACK,
+                        fontSize: 12,
+                        fontWeight: '400',
+                      }}>
+                      Default Payment Method
+                    </Text>
                   </TouchableOpacity>
-                </View>
-                <HorizontalLine/>
-    {/* </View> */}
-    <View style={[styles.mainDiv_container]}>
-    <Input
-          IconLeft={null}
-          autoFocus
-          bgColor={COLORS.CREAM}
-          IconRight={() => (
-           <Name/>
-          )}
-          bR={5}
-          bW={0.3}
-          bColor={COLORS.BLACK}
-          text="Card Holder Name"
-          mV={15}
-          textWidth={'45%'}
-          placeholder="John Doe"
-          placeholderTextColor={COLORS.BLACK}
-          style={{
-            color: COLORS.BLACK,
-            fontFamily: 'Roboto',
-            fontWeight: '200',
-          }}
-        />
-        <Input
-          IconLeft={null}
-          bgColor={COLORS.CREAM}
-          IconRight={() => (
-           <Card/>
-          )}
-          bR={5}
-          bW={0.3}
-          bColor={COLORS.BLACK}
-          text="Card Number"
-          mV={5}
-          textWidth={'33%'}
-          placeholder="1234  5678  xxxx  xxxx"
-          placeholderTextColor={COLORS.BLACK}
-          style={{
-            color: COLORS.BLACK,
-            fontFamily: 'Roboto',
-            fontWeight: '200',
-          }}
-          value={cardNumber}
-        onChangeText={handleCardNumberChange}
-        />
-         <View style={styles.mainDiv_state_ZIP}>
-              <View style={styles.zip_state_view}>
-                
-                <Input
-                  IconLeft={null}
-                  errors={undefined}
-                  touched={false}
-                  //     value={values.name}
-                  //     onChangeText={handleChange('name')}
-                  // onBlur={handleBlur('name')}
-
-                  text="Valid Till"
-                  IconRight={null}
-                  mV={15}
-                  placeholder="07 / 23"
-                  bW={0.3}
-                  textWidth={'60%'}
-                  placeholderTextColor={COLORS.BLACK}
-                  w="half"
-                />
-              </View>
-              <View style={styles.zip_state_view}>
-                <Input
-                  IconLeft={null}
-                  errors={undefined}
-                  touched={false}
-                  //     value={values.name}
-                  //     onChangeText={handleChange('name')}
-                  // onBlur={handleBlur('name')}
-
-                  text="CVV"
-                  IconRight={null}
-                  mV={15}
-                  placeholder="***"
-                  bW={0.3}
-                  textWidth={'40%'}
-                  placeholderTextColor={COLORS.BLACK}
-                  w="half"
-                />
-              </View>
-              </View>
-              <View
-                style={{
-                  flexDirection: 'row',
-                  justifyContent: 'center',
-                  // width: '100%',
-                  marginHorizontal: 60,
-                }}>
-                <TouchableOpacity
-                  style={{
-                    marginTop: 85,
-                    marginLeft:255,
-                    backgroundColor: '#B1D34F',
-                    alignItems: 'center',
-                    padding: 13,
-                    borderRadius: 10,
-                    width: '50%',
-                  }}>
-                  <Text
+                  <TouchableOpacity
                     style={{
-                      color: COLORS.BLACK,
-                      fontSize: 14,
-                      fontWeight: '700',
+                      
+                      marginLeft:35,
+                      marginRight:100,
+                      backgroundColor: '#CCCCCC',
+                      alignItems: 'center',
+                      padding: 13,
+                      borderRadius: 150,
+                      width: '15%',
                     }}>
-                    ADD CARD
-                  </Text>
-                </TouchableOpacity>
-              </View>
+                    <Delete/>
+                    </TouchableOpacity>
+                  </View>
+                  <HorizontalLine/>
+                  <View style={styles.cardNumber_position}>
+                    <Text
+                      style={{color: '#fff', fontWeight: '600', fontSize: 13}}>
+                      {values.cardNumber}
+                    </Text>
+                    <View style={styles.text_div}>
+                    <View style={{gap:5, width:100}}>
+                      <Text style={{color: 'gray', fontWeight: '600', fontSize: 8}}>Card Holder</Text>
+                    <Text
+                      style={{color: '#fff', fontWeight: '600', fontSize: 13}}>
+                      {values.cardHolderName}
+                    </Text>
+                    </View>
+                    <View style={{gap:5}}>
+                    <Text style={{ fontWeight: '600', fontSize: 8,color:'gray'}}>Expires</Text>
+                    <Text
+                      style={{color: '#fff', fontWeight: '600', fontSize: 13}}>
+                      {values.validTill}
+                    </Text>
+                    </View>
+                    <View style={{gap:5}}>
+                    <Text style={{fontWeight: '600', fontSize: 8,color:'gray'}}>CVV</Text>
+                    <Text
+                      style={{color: '#fff', fontWeight: '600', fontSize: 13}}>
+                      {values.cvv}
+                    </Text>
+                    </View>
+                    </View>
+                  </View>
+                  <Input
+                    IconLeft={null}
+                    errors={undefined}
+                    touched={false}
+                    value={values.cardHolderName}
+                    onChangeText={handleChange('cardHolderName')}
+                    onBlur={handleBlur('cardHolderName')}
+                    text="Card Holder Name"
+                    IconRight={() => <Admin />}
+                    mV={15}
+                    placeholder="John Doe"
+                    bW={1}
+                    textWidth={'45%'}
+                    placeholderTextColor={COLORS.BLACK}
+                  />
+                  {errors.cardHolderName && touched.cardHolderName && (
+                    <Text style={{color: 'red'}}>{errors.cardHolderName}</Text>
+                  )}
+                  <Input
+                    IconLeft={null}
+                    errors={undefined}
+                    touched={false}
+                    value={values.cardNumber}
+                    onChangeText={text => {
+                      // Remove non-digit characters from the input
+                      const cardNumber = text.replace(/\D/g, '');
 
-    </View>
+                      // Insert a space after every fourth digit
+                      let formattedCardNumber = '';
+                      for (let i = 0; i < cardNumber.length; i += 4) {
+                        formattedCardNumber += cardNumber.substr(i, 4) + ' ';
+                      }
+
+                      // Remove any trailing space
+                      formattedCardNumber = formattedCardNumber.trim();
+
+                      // Update the card number value
+                      handleChange('cardNumber')(formattedCardNumber);
+                    }}
+                    onBlur={handleBlur('cardNumber')}
+                    maxLength={14}
+                    text="Card Number"
+                    IconRight={() => <Message />}
+                    mV={15}
+                    placeholder="1234  5678  xxxx  xxxx"
+                    bW={1}
+                    textWidth={'35%'}
+                    placeholderTextColor={COLORS.BLACK}
+                    keyboardType="numeric"
+                  />
+                  {errors.cardNumber && touched.cardNumber && (
+                    <Text style={{color: 'red'}}>{errors.cardNumber}</Text>
+                  )}
+                  <View style={styles.mainDiv_state_ZIP}>
+                    <View style={styles.zip_state_view}>
+                      <Input
+                        IconLeft={null}
+                        errors={undefined}
+                        touched={false}
+                        value={values.validTill}
+                        //
+                        onChangeText={text => {
+                          // Remove non-digit characters from the input
+                          const validTill = text.replace(/\D/g, '');
+
+                          // Insert a slash after the second character
+                          let formattedValidTill = validTill;
+                          if (validTill.length > 2) {
+                            formattedValidTill =
+                              validTill.slice(0, 2) + '/' + validTill.slice(2);
+                          }
+
+                          // Update the valid till value
+                          handleChange('validTill')(formattedValidTill);
+                        }}
+                        onBlur={handleBlur('validTill')}
+                        text="Valid Till"
+                        IconRight={null}
+                        mV={15}
+                        placeholder="07/23"
+                        bW={1}
+                        textWidth={'70%'}
+                        placeholderTextColor={COLORS.BLACK}
+                        w="half"
+                        keyboardType="numeric"
+                        maxLength={5}
+                      />
+                      {errors.validTill && touched.validTill && (
+                        <Text style={{color: 'red'}}>{errors.validTill}</Text>
+                      )}
+                    </View>
+                    <View style={styles.zip_state_view}>
+                      <Input
+                        IconLeft={null}
+                        errors={undefined}
+                        touched={false}
+                        value={values.cvv}
+                        onChangeText={handleChange('cvv')}
+                        onBlur={handleBlur('cvv')}
+                        text="CVV"
+                        IconRight={null}
+                        mV={15}
+                        placeholder="***"
+                        bW={1}
+                        textWidth={'50%'}
+                        placeholderTextColor={COLORS.BLACK}
+                        w="half"
+                        secureTextEntry={true}
+                        maxLength={3}
+                        keyboardType="numeric"
+                      />
+                      {errors.cvv && touched.cvv && (
+                        <Text style={{color: 'red'}}>{errors.cvv}</Text>
+                      )}
+                    </View>
+                  </View>
+                  <View style={styles.bottom_tab}>
+                    <TouchableOpacity
+                      onPress={() => navigation.goBack()}
+                      style={{
+                        padding: 20,
+                        backgroundColor: COLORS.GRAY,
+                        borderRadius: 25,
+                      }}>
+                      <LeftIcon />
+                    </TouchableOpacity>
+
+                    <View
+                      style={{
+                        backgroundColor: COLORS.GREEN,
+                        paddingHorizontal: 20,
+                        paddingVertical: 10,
+                        borderRadius: 12,
+                      }}>
+                      <TouchableOpacity onPress={handleSubmit}>
+                        <Text
+                          style={{
+                            fontSize: 14,
+                            fontWeight: '700',
+                            color: COLORS.BLACK,
+                          }}>
+                          ADD CARD
+                        </Text>
+                      </TouchableOpacity>
+                    </View>
+                  </View>
+                </View>
+              )}
+            </Formik>
+          </View>
+        </View>
+      </ScrollView>
     </SafeAreaView>
-  )
+  );
 }
-const styles = StyleSheet.create({
-  mainDiv_container: {
-    paddingHorizontal: 10,
-    marginLeft:10,
-    marginRight:10,
-    paddingTop: 10,
-    marginTop:5,
-    paddingBottom:200 ,
-    borderRadius:4,
-    border:14,
-      
-    },
 
-  line:{
-    marginTop:20,
-    marginBottom:10,
-    marginHorizontal:5,
-  }, 
+const styles = StyleSheet.create({
+  complete_profile: {
+    textAlign: 'left',
+    fontSize: 24,
+    fontWeight: '800',
+    color: COLORS.BLACK,
+  },
+  mainDiv_container: {
+    paddingHorizontal: 20,
+    // paddingTop: 30,
+  },
   mainDiv_state_ZIP: {
-    // display: 'flex',
-    flex: 1,
     flexDirection: 'row',
     justifyContent: 'space-between',
-    gap: 28,
+    gap: 5,
   },
-  zip_state_view: {
+  bottom_tab: {
+    // paddingHorizontal: 20,
+    paddingVertical: 15,
     display: 'flex',
-    //flexDirection:'row',
+    flexDirection: 'row',
     justifyContent: 'space-between',
+    alignItems: 'center',
+    // borderRadius: 6,
   },
-card_image:{
-  width:380,
-  height:220,
-  marginLeft:5,
-  marginRight:5,
-}
-})
-
-export default Payment
+  cardNumber_position: {
+    position: 'absolute',
+    top: 130,
+    left: 30,
+  },
+  text_div:{
+    position: 'relative',
+    top: 45,
+    left: 0,
+    flexDirection:'row',
+    gap:40
+  },
+  centeredView: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginTop: 22,
+  },
+  modalView: {
+    margin: 20,
+    backgroundColor: '#F5F5F5',
+    borderRadius: 20,
+    padding: 35,
+    alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 5,
+  },
+  button: {
+    borderRadius: 20,
+    padding: 10,
+    elevation: 2,
+    
+  },
+  button_one: {
+   marginLeft:80,
+   marginTop:40,
+    alignItems:"flex-end",
+    justifyContent:'flex-end',
+    
+  },
+  button: {
+    borderRadius: 20,
+    padding: 10,
+    elevation: 2,
+    borderRadius: 100
+  },
+  buttonOpen: {
+    backgroundColor: '#F194FF',
+  },
+  buttonClose: {
+     backgroundColor: COLORS.GREEN,
+  },
+  textStyle: {
+    color: 'black',
+    fontWeight: 'bold',
+    textAlign: 'center',
+    paddingVertical:5,
+    paddingHorizontal:20
+  },
+  modalText: {
+    marginBottom: 15,
+    textAlign: 'center',
+    fontWeight:"400",
+    fontSize:24,
+    color:"#000000"
+  }
+});

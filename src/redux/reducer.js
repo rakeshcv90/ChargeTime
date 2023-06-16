@@ -6,16 +6,20 @@ const initialState = {
 
     getCompleteData:[],
     getPlanPurchage:[],
-
+    getBasePackage:[],
     getGraphData:[],
     getLocationID:0,
     getPackageStatus:false,
     getUserID:'',
+    getEmailDAta:'',
     getkwhData:'',
     getRemainingData:[],
     getWeekKwhdata:'',
-    getWeekGraphData:[]
-
+    getWeekGraphData:[],
+    getBoxTwoDataForDashboard:[],
+    getPriceAndDetailsDataforDashboard:[],
+    getChargerStatus:'',
+    getDataForPayment:[],
   };
   
   const rootReducer = (state = initialState, action) => {
@@ -28,6 +32,8 @@ const initialState = {
         return { ...state, getkwhData: action.payload };
         case types.GET_USER_ID:
         return { ...state, getUserID: action.payload };
+        case types.GET_EMAIL_DATA:
+        return { ...state, getEmailDAta: action.payload };
       case types.GET_USER_DATA:
         return { ...state, userRegisterData: action.payload };
       case types.GET_BASE_PACKAGE:
@@ -47,7 +53,23 @@ const initialState = {
         return { ...state, getWeekKwhdata: action.payload }
         case types.GET_WEEK_GRAPH_DATA:
         return { ...state, getWeekGraphData: action.payload }
+        case types.GET_MONTH_DATA:
+        return { ...state, getMonthData: action.payload }
+        case types.GET_QUARTER_DATA:
+        return { ...state, getQuarterData: action.payload }
+        case types.GET_YEAR_DATA:
+        return { ...state, getYearData: action.payload }
         //week reducer end
+        //dashboard boxtwo and price details data start
+        case types.GET_PRICE_AND_DETAILS_DATA:
+          return { ...state, getPriceAndDetailsDataforDashboard: action.payload }
+          case types.GET_BOX_TWO_DATA_DASHBOARD:
+          return { ...state, getBoxTwoDataForDashboard: action.payload }
+          case types.CHARGER_STATUS:
+          return { ...state, getChargerStatus: action.payload }
+          case types.DATA_FOR_PAYMENT:
+          return { ...state, getDataForPayment: action.payload }
+        //dashboard boxtwo and price details data end
 
       default:
         return state;

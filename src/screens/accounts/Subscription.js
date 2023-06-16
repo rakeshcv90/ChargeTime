@@ -1,38 +1,73 @@
 import {View, Text, StyleSheet, TouchableOpacity, SafeAreaView, ScrollView, Image,Dimensions, Platform} from 'react-native';
-import React, {useEffect}from 'react';
-
+import React, {useEffect, useState}from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import HorizontalLine from  '../../Components/HorizontalLine'
 import Header from '../../Components/Header'
 import COLORS from '../../constants/COLORS';
-import SubBoxOne from '../../Components/BoxOne';
-import SubBoxTwo from '../../Components/BoxTwo';
+import SubBoxOne from '../../Components/SubBoxOne';
+import SubBoxTwo from '../../Components/SubBoxTwo';
 import { PLATFORM_IOS } from '../../constants/DIMENSIONS';
 import WaveAnimation from '../../Components/WaveAnimation';
 import { DIMENSIONS } from '../../constants/DIMENSIONS';
 import PriceValidity from '../../Components/PriceValidity';
-import { useSelector } from 'react-redux';
+import { API } from '../../api/API';
+import { getBasePackage } from '../../redux/action';
+
 
 const mobileW = Math.round(Dimensions.get('screen').width);
  const Subscription = () => {
-  const getPlanSummary = useSelector((state)=> state.getPlanSummary)
+ 
+  // const getPlanSummary = useSelector((state)=> state.getPlanSummary)
+  const getUserID = useSelector((state)=> state.getUserID)
+  const [getSubscription, setGetSubscription] = useState([]);
+  const dispatch =useDispatch();
   useEffect(() => {
-    console.log('data for this User:---------', getPlanSummary); 
+    // console.log('data for this User:---------', getPlanSummary); 
+    userSubscription();
  }, []);
+
+ const user_id= getUserID;
+ console.log("user_id", user_id)
+
+ const userSubscription = async () =>{
+  // const response = await fetch(`${API}/userexisting/${user_ID}`);
+  try {
+    const response = await fetch(`${API}/subscriptionplan/8`);
+    const result = await response.json();
+   console.log("response...>>>",JSON.stringify(response))
+   console.log("result...>>>",JSON.stringify(result))
+ 
+    if(result[0].message == "sucess")
+    {
+      setGetSubscription(result[0])
+console.log('wwwwww',result);
+// setGetSubscription(result);
+console.log("Dispatch..",dispatch)
+  dispatch(getBasePackage(result)); 
+    }else{
+      console.log("iiiiiiiiiiii")
+    }
+    // setLocationMap(result);
+  } catch (error) {
+    console.error(error);
+  }
+};
+
   return (
     <ScrollView showsVerticalScrollIndicator={false} >
   <View>
-    <Header headerName="Subscription" />
+    <Header headerName="Subscription" editShow={false} />
     <HorizontalLine/>
     <View style={styles. managing_width}>
-          <SubBoxOne  />
-          <SubBoxTwo />
+          <SubBoxOne data={getSubscription} />
+          <SubBoxTwo data={getSubscription} />
         
         </View>
         <View style={styles.mainDiv_installation}>
-      <WaveAnimation />
+      {/* <WaveAnimation /> */}
       </View>
       <View style={styles.managing_width}>
-      <PriceValidity />
+      <PriceValidity data={getSubscription} />
       </View>
         </View>
         </ScrollView>
@@ -69,112 +104,5 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     overflow: 'hidden',
   },
- 
-//   install_touchable: {
-//     flexDirection: 'row',
-//     backgroundColor: COLORS.GREEN,
-//     alignItems: 'center',
-//     paddingVertical: 15,
-//   },
-//   img_width: {
-//     marginLeft: 20,
-//   },
-//   installation_text: {
-//     fontWeight: '900',
-//     fontSize: 14,
-//     paddingLeft: 10,
-//     fontFamily:'Roboto',
-//     color:COLORS.BLACK,
-//   },
-//   location_div: {
-//     flexDirection: 'row',
-//     backgroundColor: COLORS.GRAY,
-//     alignItems: 'center',
-//     paddingVertical: 20,
-//     // borderBottomWidth: 1,
-//     // borderBottomColor: COLORS.GREEN,
-    
-//   },
- 
-//   force_base: {
-//     fontWeight: 400,
-//     fontSize: 14,
-//     paddingLeft: 10,
-//     color:COLORS.BLACK,
-//   },
-//   mainDiv_state_zip: {
-//     flexDirection: 'row',
-//     alignItems: 'center',
-//     justifyContent: 'space-between',
-//     paddingRight: 10,
-//     paddingVertical: 20,
-//     backgroundColor: COLORS.GRAY,
-//   },
-//   state_div: {
-//     flexDirection: 'row',
-//     alignItems: 'center',
-//     paddingVertical:10,
-//     paddingRight:80,
-//   },
-//   shadowProp: {
-//     backgroundColor: 'white',
-//     shadowColor: Platform.OS === 'android' ? 'black' : "rgba(0,0,0,.555)",
-//     shadowOffset: {
-//       width: 10,
-//       height: 8,
-//     },
-//     shadowOpacity: 2,
-//     shadowRadius: 4,
-//     elevation: Platform.OS === 'android' ? 8 : 0,
-//   },
-//   plan_div:{
-//     flexDirection: 'column',
-//     backgroundColor: COLORS.GRAY,
-//     justifyContent: 'space-between',
-//     paddingLeft:  20,
-//     paddingVertical: 60,
-//     // borderBottomWidth: 1,
-//     // borderBottomColor: COLORS.GREEN,
-// },
-// kwh_image:{
-// backgroundColor:COLORS.GREEN,
-// },
-//   kwh_mieq_text: {
-//     fontWeight: 800,
-//     fontSize: 16,
-//     paddingTop: 8,
-//   },
-//   second_main_div_kwh: {
-//     flexDirection: 'column',
-//     alignItems: 'center',
-//     // alignSelf: 'center',
-//     alignContent: 'center',
-//     paddingHorizontal: 10,
-//   },
-//   mainDiv_purchage_dollar: {
-//     flexDirection: 'row',
-//     justifyContent: 'space-between',
-//     alignItems: 'center',
-//     borderWidth: 1,
-//     borderColor: COLORS.GREEN,
-//     borderRadius: 5,
-//     backgroundColor: COLORS.WHITE,
-//     marginTop: 20,
-//     paddingHorizontal: 10,
-//     paddingVertical: 10,
-//     borderRadius: 30,
-//     elevation: 4,
-//     shadowColor: 'rgba(1, 0, 0, 0.25)',
-//     shadowOffset: {
-//       width: 4,
-//       height: 4,
-//     },
-//     shadowOpacity: 0,
-//     shadowRadius: 4,
-//   },
-//   dollar_div: {
-//     flexDirection: 'row',
-//     alignItems: 'center',
-//   },
  
 });

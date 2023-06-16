@@ -24,7 +24,7 @@ import { Message } from '../../../assets/images/Message';
 import { Eye } from '../../../assets/images/Eye';
 import ActivityLoader from '../../Components/ActivityLoader';
 import {useDispatch,useSelector} from 'react-redux';
-import { getGraphData, getLocationID, getPackageStatus, setKwhData, setRemainingData, setUserID, setWeekGraphData, setWeekTotalData } from '../../redux/action';
+import { getGraphData, getLocationID, getPackageStatus, setBoxTwoDataForDashboard, setKwhData, setMonthGraphData, setQuarterGraphData, setRemainingData, setUserID, setWeekGraphData, setWeekTotalData, setYearGraphData,setChargerStatus, setEmailData } from '../../redux/action';
 import axios from 'axios';
 import { navigationRef } from '../../../App';
 
@@ -57,17 +57,8 @@ export default function Login({navigation}) {
     })
       .then(res => res.json())
       .then(data => {
-
         // AsyncStorage.setItem('loginDataOne', JSON.stringify(data.locationid ));
-       
         if (data.message == 'Login Successfully') {
-
-
-        
-
-        
-
-
          PLATFORM_IOS?
           Toast.show({
             type: 'success',
@@ -76,8 +67,10 @@ export default function Login({navigation}) {
           }):ToastAndroid.show('Login Successfully', ToastAndroid.SHORT);
           setForLoading(false)
           dispatch(getLocationID(data?.locationid))
+          dispatch(setEmailData(data?.email))
         dispatch(getPackageStatus(data?.status == 'true' ? true : false))
         dispatch(setUserID(data?.user_id))
+        console.log("login");
           // if(data.status == "true"){
           //   navigation.navigate('EnergyStats');
           // }else if(data.status == "false"){
@@ -87,7 +80,13 @@ export default function Login({navigation}) {
             dailyUsuagekwh(data?.user_id)
             remainigUsuageData(data?.user_id)
             fetchWeekGraphData(data?.user_id)
-            // totalWeekUsedData(data?.user_id)
+             fetchMonthGraphData(data?.user_id)
+             fetchQuarterGraphData(data?.user_id)
+            fetchYearGraphData(data?.user_id)
+            fetchBoxTwoDashboardData(data?.user_id)
+            fetchStatusdata(data?.user_id)
+            // fetchPriceDetailsDashboardData(data?.user_id)
+           
           
           // navigation.navigate('Home');
         } else {
@@ -160,7 +159,7 @@ export default function Login({navigation}) {
   const fetchWeekGraphData = (userID) => {
     axios.get(`${API}/weeklyusage/${userID}`)
     .then((res) =>{
-      console.log(res.data,'yyy')
+      
       dispatch(setWeekGraphData(res?.data))
       
     })
@@ -169,11 +168,72 @@ export default function Login({navigation}) {
       
     })
   }
-  // const totalWeekUsedData = (userId) => {
-  //   axios.get(`${API}/sumweeklyusage/${userId}`)
+  const fetchMonthGraphData = (userID) => {
+    axios.get(`${API}/monthlyusage/${userID}`)
+    .then((res) =>{
+      
+      dispatch(setMonthGraphData(res?.data))
+      
+    })
+    .catch((err) => {
+      console.log(err)
+      
+    })
+  }
+  const fetchQuarterGraphData = (userID) => {
+    axios.get(`${API}/threemonthusage/${userID}`)
+    .then((res) =>{
+     
+      dispatch(setQuarterGraphData(res?.data))
+      
+    })
+    .catch((err) => {
+      console.log(err)
+      
+    })
+  }
+  const fetchYearGraphData = (userID) => {
+    axios.get(`${API}/yearlyusage/${userID}`)
+    .then((res) =>{
+      
+      dispatch(setYearGraphData(res?.data))
+      
+    })
+    .catch((err) => {
+      console.log(err)
+      
+    })
+  }
+
+  const fetchBoxTwoDashboardData = (userId) =>{
+    axios.get(`${API}/currentplan/${userId}`)
+    .then((res) =>{
+      
+      dispatch(setBoxTwoDataForDashboard(res?.data))
+      
+    })
+    .catch((err) => {
+      console.log(err)
+      
+    })
+  }
+  const fetchStatusdata = (userId) => {
+    axios.get(`${API}/chargerstatus/${userId}`)
+    .then((res) =>{
+      
+      dispatch(setChargerStatus(res?.data))
+      
+    })
+    .catch((err) => {
+      console.log(err)
+      
+    })
+  }
+  // const fetchPriceDetailsDashboardData = (userId) =>{
+  //   axios.get(`${API}/yearlyusage/${userID}`)
   //   .then((res) =>{
-  //     console.log(res.data,'aaa')
-  //     dispatch(setWeekTotalData(res?.data))
+      
+  //     dispatch(setPriceAndDetailsData(res?.data))
       
   //   })
   //   .catch((err) => {
@@ -181,7 +241,7 @@ export default function Login({navigation}) {
       
   //   })
   // }
-
+  
   //week data end
   return (
     <SafeAreaView style={{backgroundColor: COLORS.CREAM, flex: 1}}>

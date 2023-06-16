@@ -6,8 +6,8 @@ import {DIMENSIONS} from '../constants/DIMENSIONS';
 import { useSelector } from 'react-redux';
 
 const TotalUsage = ({data}) => {
-  console.log(data,'rr')
-  const {getkwhData} =useSelector((state:any) => state)
+  
+ 
   
   return (
     <View
@@ -56,7 +56,7 @@ const TotalUsage = ({data}) => {
               color: COLORS.BLACK,
             }}>
             
-            {data?.Totalusedkwhs ? data?.Totalusedkwhs + ' kWh' : 0 + ' kWh'}
+            {data ? data?.toFixed(2) + ' kWh' : 0 + ' kWh'}
           </Text>
           <Text
             style={{

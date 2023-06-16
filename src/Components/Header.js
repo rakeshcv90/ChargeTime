@@ -17,7 +17,7 @@ import { BackButton } from '../../assets/svgs/BackButton';
 import { Edit } from '../../assets/svgs/Edit';
 import { Save } from '../../assets/svgs/Save';
 
-const Header = ({ headerName, showRightButton, onPress, enableEdit ,editButton }) => {
+const Header = ({ headerName, showRightButton, onPress, enableEdit ,editButton, editShow }) => {
 // const [RightButton, setRightButton] =useState()
 const [pressed, setPressed]=useState(true)
 const [rightButton, setRightButton] = useState(null);
@@ -36,7 +36,7 @@ useEffect(()=>{
           <BackButton />
         </TouchableOpacity>
         <Text style={styles.headerText}>{headerName}</Text>
-        <TouchableOpacity style={styles.rightButton} onPress={()=>{
+        {editShow ? <TouchableOpacity style={styles.rightButton} onPress={()=>{
           if(!rightButton){
             enableEdit();
             setRightButton(true)
@@ -48,7 +48,7 @@ useEffect(()=>{
         {rightButton  ? <Save /> :<Edit />}
           {/* {showRightButton && <Edit />} */}
           {/* {renderIcon()} */}
-        </TouchableOpacity>
+        </TouchableOpacity>:null}
         
       </View>
     </SafeAreaView>
@@ -63,19 +63,19 @@ const styles = StyleSheet.create({
   innerContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    paddingHorizontal: 15,
-    paddingVertical: 10,
+    paddingHorizontal: 25,
+    paddingVertical: 25,
     alignItems: 'center',
   },
   backButton: {
-    width: 40,
+    width: 30,
   },
   headerText: {
     
     color: COLORS.BLACK,
     fontSize: 20,
     fontWeight: '700',
-    width: 250,
+    width: 280,
     lineHeight: 26,
     letterSpacing: 0.5,
     height: 30,

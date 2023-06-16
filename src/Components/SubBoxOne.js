@@ -11,10 +11,13 @@ import { useSelector } from 'react-redux';
 const mobileW = Math.round(Dimensions.get('screen').width);
 const SubBoxOne = ({data}) => {
   // const {navigation, route} = props;
-  const getBasePackage = useSelector((state)=> state.getBasePackage)
+  const getBasePackage = useSelector((state)=>{ 
+    console.log("state.getBasePackage..",state.getBasePackage)
+    return state.getBasePackage})
+  
   useEffect(() => {
-    console.log('data for this User:---------', getBasePackage); 
- }, []);
+    console.log("basepackege...",data)
+ }, [data]);
 
 
   return (
@@ -28,9 +31,10 @@ const SubBoxOne = ({data}) => {
       <View style={styles.shadowProp}>
         <View style={styles.location_div}>
           <Vanderberg style={styles.img_width} />
-          <Text style={styles.force_base}>{data?.location?data?.location}</Text>
+          {/* <Text style={styles.force_base}>{data?.location?data?.location}</Text> */}
+              <Text style={styles.force_base}>{data?.location}</Text>
+          {/* <Text style={styles.force_base}>{data?.location}</Text> */}
               {/* <Text style={styles.force_base}>{getBasePackage[0].location}</Text> */}
-
         </View>
         <Image
           // style={styles.img_width}
@@ -45,7 +49,7 @@ const SubBoxOne = ({data}) => {
             source={require('../../assets/images/connecticut.png')}
           /> */}
             <Connecticut style={styles.img_width} />
-            <Text style={styles.force_base}>{data?.state?data?.state:"Conneticut"}</Text>
+            <Text style={styles.force_base}>{data?.pwa_state}</Text>
             {/* <Text style={styles.force_base}>{getBasePackage[0].state}</Text> */}
           </View>
           <View style={styles.state_div}>
@@ -54,7 +58,7 @@ const SubBoxOne = ({data}) => {
               source={require('../../assets/images/zip_code.png')}
               style={{width: 20, height: 20}}
             />
-            <Text style={styles.force_base}>{data?.ZIP_code?data?.ZIP_code:"123456"}</Text>
+            <Text style={styles.force_base}>{data?.pwa_zip}</Text>
             {/* <Text style={styles.force_base}>{getBasePackage[0].ZIP_code}</Text> */}
 
           </View>

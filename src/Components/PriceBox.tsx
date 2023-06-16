@@ -12,7 +12,8 @@ import {
   
   const mobileW = Math.round(Dimensions.get('screen').width);
   
-  const PriceBox = () => {
+  const PriceBox = ({data}) => {
+    
     const [showBox, setShowBox] = useState(true);
     return (
       <View
@@ -37,7 +38,7 @@ import {
           <>
             <View style={styles.location_div}>
               <Text style={styles.installation_text2}>Installation Base:</Text>
-              <Text style={styles.force_base}>Vanderberg Space Force Base</Text>
+              <Text style={styles.force_base}>{data?.location}</Text>
             </View>
             <Image
               // style={styles.img_width}
@@ -47,7 +48,7 @@ import {
             />
             <View style={styles.location_div}>
               <Text style={styles.installation_text2}>Package Name:</Text>
-              <Text style={styles.force_base}>Vanderberg Space Force Base</Text>
+              <Text style={styles.force_base}>{data?.energy_plan}</Text>
             </View>
             <Image
               // style={styles.img_width}
@@ -57,7 +58,7 @@ import {
             />
             <View style={styles.location_div}>
               <Text style={styles.installation_text2}>Price: </Text>
-              <Text style={styles.force_base}>Vanderberg Space Force Base</Text>
+              <Text style={styles.force_base}>{data?.energy_price}</Text>
             </View>
             <Image
               // style={styles.img_width}
@@ -67,7 +68,7 @@ import {
             />
             <View style={styles.location_div}>
               <Text style={styles.installation_text2}>Valid Till:</Text>
-              <Text style={styles.force_base}>Vanderberg Space Force Base</Text>
+              <Text style={styles.force_base}>{data?.End_validity}</Text>
             </View>
             <Image
               // style={styles.img_width}

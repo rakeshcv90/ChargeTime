@@ -11,6 +11,7 @@ import { useSelector } from 'react-redux';
 
 const Day = (props:any) => {
   const {getkwhData} =useSelector((state:any) => state)
+  const {getBoxTwoDataForDashboard} = useSelector((state:any) => state)
   
   
   
@@ -39,14 +40,14 @@ const Day = (props:any) => {
             }}>
              
             <Remaining RemainingFill={50} KWH={400} />
-            <TotalUsage data={getkwhData} />
+            <TotalUsage data={getkwhData.Totalusedkwhs} />
           </View>
           
           <View style={{marginHorizontal: 20,}}>
-          <Graph dataOne={props.route.params} />
-          <BoxTwo />
+          <Graph dataOne={props.route.params.getGraphData} />
+          <BoxTwo data={getBoxTwoDataForDashboard[0]} />
           </View>
-          <PriceBox />
+          <PriceBox data={getBoxTwoDataForDashboard[0]} />
         </ScrollView>
       </View>
       {showSlider && <ButtonSlider />}

@@ -9,7 +9,7 @@ const Charging = () => {
   // const [isSliding, setIsSliding] = useState(false);
 
   useEffect(() => {
-    console.log('slide', slideAnimation);
+    
     Animated.timing(slideAnimation, {
       toValue: 0,
       duration: 300,
@@ -18,7 +18,7 @@ const Charging = () => {
       // setIsSliding(!isSliding);
     });
 
-    console.log('slide', slideAnimation);
+    
   },[]);
 
   const slideButtonStyle = {

@@ -4,7 +4,7 @@ import COLORS from '../constants/COLORS';
 import {Unit} from '../../assets/images/Unit';
 import {Mieq} from '../../assets/images/Mieq';
 
-const SubBoxTwo = () => {
+const SubBoxTwo = ({data}) => {
   return (
     <View style={styles.mainDiv_installation}>
       <TouchableOpacity style={styles.install_touchable}>
@@ -18,7 +18,7 @@ const SubBoxTwo = () => {
         <View style={styles.second_main_div_kwh}>
           {/* <Image source={require('../../assets/images/kwh.png')} /> */}
           <Unit />
-          <Text style={styles.kwh_mieq_text}>{data?.kwh?data?.kwh:"600"} kWh</Text>
+          <Text style={styles.kwh_mieq_text}>{data?.kwh} kWh</Text>
           <Text style={styles.unit_allowed}>Units Alloted</Text>
         </View>
         <View style={styles.second_main_div_kwh}>
@@ -26,7 +26,7 @@ const SubBoxTwo = () => {
                   source={require('../../assets/images/kwh_icon_one.png')}
                 /> */}
           <Mieq />
-          <Text style={styles.kwh_mieq_text}>~ {data?.mi_eq?data?.mi_eq:"1500"}</Text>
+          <Text style={styles.kwh_mieq_text}>~ {data?.mi_eq}</Text>
           <Text style={styles.unit_allowed}>Mi Eq</Text>
         </View>
         <View style={styles.second_main_div_kwh}>
@@ -35,7 +35,7 @@ const SubBoxTwo = () => {
             style={{width: 20, height: 20}}
           />
           {/* <MileOne /> */}
-          <Text style={styles.kwh_mieq_text}>{data?.dollar_mi?data?.dollar_mi:'0.11'}</Text>
+          <Text style={styles.kwh_mieq_text}>{data?.dollar_mi}</Text>
           <Text style={styles.unit_allowed}>$ / Mile</Text>
         </View>
       </View>

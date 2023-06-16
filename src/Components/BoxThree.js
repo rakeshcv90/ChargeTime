@@ -137,11 +137,12 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
     backgroundColor: COLORS.GREEN,
     alignItems: 'center',
-    borderRadius: 20,
+    borderRadius: 12,
+
   },
   purchage_text: {
     fontWeight: 700,
     fontSize: 14,
-    color: COLORS.WHITE,
+    color: COLORS.BLACK,
   },
 });
