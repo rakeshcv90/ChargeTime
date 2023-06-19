@@ -106,9 +106,10 @@ import SliderOne from './SliderOne';
     const dispatch =useDispatch();
     const [changePage,setChangePage] = useState('')
     const Tab = createMaterialTopTabNavigator();
+    // const [purChaseButton,setPurchaseButton] = use
   
     const [apiData, setApiData] = useState([]);
-    const getLocationID = useSelector((state) => state.getLocationID)
+    const {getLocationID,getPurchaseData} = useSelector((state) => state)
   
   
     useEffect(() => {
@@ -254,12 +255,16 @@ import SliderOne from './SliderOne';
               {apiData?.length >= 1 &&
                 apiData &&
                 apiData.map((item, ind) => {
+                 
+                  let purchageData = item.kwh> getPurchaseData[0].kwh ?"UPGRADE":"DOWNGRADE"
+
+                  
                   return (
                     <Tab.Screen
                       key={ind}
                       name={item?.package_name}
                       component={SliderOne}
-                      initialParams={{item}}
+                      initialParams={{item:item,purchageData:purchageData}}
                     />
                   );
                 })}

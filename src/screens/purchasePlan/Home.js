@@ -110,7 +110,7 @@ export default function Home(route) {
   const [apiData, setApiData] = useState([]);
   const getLocationID = useSelector((state) => state.getLocationID)
 
-console.log(changePage,'ii')
+
   useEffect(() => {
     fetchData();
   }, []);

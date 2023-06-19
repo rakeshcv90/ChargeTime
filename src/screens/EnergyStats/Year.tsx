@@ -16,9 +16,11 @@ export default function Year() {
   useEffect(() => {
     setShowSlider(true);
   }, []);
-  const {getYearData} =  useSelector((state:any) => state)
+  const {getYearData,getBoxTwoDataForDashboard} =  useSelector((state:any) => state)
   
- 
+  const [toggleState, setToggleState] = useState(false);
+
+  const handleToggle = (value:any) => setToggleState(value);
   return (
     <>
       <View style={{flex: 1, backgroundColor: COLORS.CREAM}}>
@@ -44,10 +46,11 @@ export default function Year() {
           <Graph dataOne={getYearData.Usage} />
           <BoxTwo />
           </View>
-          <PriceBox />
+          <PriceBox data={getBoxTwoDataForDashboard[0]}/>
         </ScrollView>
       </View>
-      {showSlider && <ButtonSlider />}
+      {/* {showSlider && <ButtonSlider />} */}
+      <ButtonSlider onToggle={handleToggle}  />
     </>
   );
 }

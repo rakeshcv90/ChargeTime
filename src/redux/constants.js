@@ -26,4 +26,6 @@ export default {
   //dashboard boxtwo and price details data end
   CHARGER_STATUS: 'CHARGER_STATUS',
   DATA_FOR_PAYMENT: 'DATA_FOR_PAYMENT',
+  GET_PURCHASE_DATA:"GET_PURCHASE_DATA",
+  GET_DEVICE_ID:"GET_DEVICE_ID",
 };

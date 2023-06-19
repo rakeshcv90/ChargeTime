@@ -8,8 +8,9 @@ import {
   ScrollView,
   Modal,
   Pressable,
-  Alert
+  Alert,
 } from 'react-native';
+import AnimatedLottieView from 'lottie-react-native';
 import React, {useState, useRef} from 'react';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import Input from '../../Components/Input';
@@ -26,6 +27,7 @@ import {useSelector} from 'react-redux';
 import axios from 'axios';
 import {API} from '../../api/API';
 import {navigationRef} from '../../../App';
+import ActivityLoader from '../../Components/ActivityLoader';
 const mobileW = Math.round(Dimensions.get('screen').width);
 const mobileH = Math.round(Dimensions.get('window').height);
 const validationSchema = Yup.object().shape({
@@ -34,76 +36,103 @@ const validationSchema = Yup.object().shape({
   validTill: Yup.string().required('expiry date required'),
   cvv: Yup.string().required('cvv is required'),
 });
-export default function PaymentGateWay({navigation}) {
+export default function PaymentGateWay({navigation, route}) {
+  
+
   const {getDataForPayment, getUserID, getEmailDAta} = useSelector(
     state => state,
   );
   const [modalVisible, setModalVisible] = useState(false);
+  const [loader,setLoader] = useState(false)
   const inputRef = useRef(null);
-
+  
   const handlePaymentSubmit = async values => {
+    setLoader(true)
+    let payload = new FormData();
+
     let exp_month = values?.validTill?.split('/')[0];
     let exp_year = values?.validTill?.split('/')[1];
-    console.log(exp_month, 'object', exp_year, getEmailDAta);
-    console.log(values);
-    //console.log(values.cardHolderName,,"4567890")
+    
+    payload.append('kwh_unit', route.params.data.kwh);
+    payload.append('card_number', values.cardNumber.replace(/\s/g, ''));
+    payload.append('card_cvc', values.cvv);
+    payload.append('card_exp_month', exp_month);
+    payload.append('card_exp_year', exp_year);
+    payload.append('item_details', getDataForPayment.package_name);
+    payload.append('price', getDataForPayment.total_price);
+    payload.append('price_stripe_id', getDataForPayment.price_stripe_id);
+    payload.append('user_id', getUserID);
+    console.log(payload,"object")
     try {
-      const response = await axios.post(`${API}/checkout`, {
-        customerName: values.cardHolderName,
-        pwa_email: getEmailDAta,
-        customerZipcode: getDataForPayment.ZIP_code,
-        customerState: getDataForPayment.state,
-        customerCountry: getDataForPayment.location,
-        card_number: values.cardNumber,
-        card_cvc: values.cvv,
-        card_exp_month: exp_month,
-        card_exp_year: exp_year,
-        item_details: getDataForPayment.package_name,
-        price: getDataForPayment.total_price,
-        total_amount: getDataForPayment.totalSalexTax,
-        price_stripe_id: getDataForPayment.price_stripe_id,
-        cust_id: getUserID,
+      const response = await axios.post(`${API}/checkout`, payload, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
       });
-      console.log(response, 'payment');
+      if(response.data.status="success"){
+        setLoader(false)
+        setModalVisible(true)
+        
+      }
     } catch (err) {
-      console.log(err);
+      setLoader(false)
+      if (err.response) {
+        
+        console.log(err.response.data);
+        console.log(err.response.status);
+      } else {
+        console.log(err);
+      }
     }
   };
 
   return (
     <SafeAreaView style={{backgroundColor: COLORS.CREAM, flex: 1}}>
+     {loader&& <ActivityLoader />}
       <ScrollView>
         <View style={{marginHorizontal: 20, paddingTop: 20}}>
           <Text style={styles.complete_profile}>Payment Details</Text>
         </View>
         <View style={styles.centeredView}>
-      <Modal
-        animationType="slide"
-        transparent={true}
-        visible={modalVisible}
-        onRequestClose={() => {
-          Alert.alert('Modal has been closed.');
-          setModalVisible(!modalVisible);
-        }}>
-        <View style={styles.centeredView}>
-          <View style={styles.modalView}>
-            <Text style={styles.modalText}>Plan Purchased</Text>
-            <View style={styles.button_one}>
-            <Pressable
-              style={[styles.button, styles.buttonClose]}
-              onPress={() => setModalVisible(!modalVisible)}>
-              <Text style={styles.textStyle}>OK</Text>
-            </Pressable>
+          <Modal
+            animationType="slide"
+            transparent={true}
+            visible={modalVisible}
+            onRequestClose={() => {
+              Alert.alert('Modal has been closed.');
+              setModalVisible(!modalVisible);
+            }}>
+            <View style={styles.centeredView}>
+              <View style={styles.modalView}>
+                <Text style={styles.modalText}>Plan Purchased</Text>
+                <AnimatedLottieView
+                  source={{
+                    uri: 'https://assets6.lottiefiles.com/private_files/lf30_mf7q9oho.json',
+                  }} // Replace with your animation file
+                  autoPlay
+                  loop
+                  style={{width: 50, height: 50}}
+                />
+                <Text
+                  style={{
+                    fontSize: 14,
+                    fontWeight: '400',
+                    color: COLORS.BLACK,
+                  }}>
+                  Thank you for subscribing!
+                </Text>
+                <View style={styles.button_one}>
+                  <Pressable
+                    style={[styles.button, styles.buttonClose]}
+                    onPress={() => setModalVisible(!modalVisible)}>
+                    <Text style={styles.textStyle}>OK</Text>
+                  </Pressable>
+                </View>
+              </View>
             </View>
-          </View>
+          </Modal>
         </View>
-      </Modal>
-      </View>
-      <Pressable
-        style={[styles.button, styles.buttonOpen]}
-        onPress={() => setModalVisible(true)}>
-        <Text style={styles.textStyle}>Show Modal</Text>
-      </Pressable>
+        
         <View style={styles.mainDiv_container}>
           <View>
             <Formik
@@ -137,27 +166,60 @@ export default function PaymentGateWay({navigation}) {
                       {values.cardNumber}
                     </Text>
                     <View style={styles.text_div}>
-                    <View style={{gap:5, width:100}}>
-                      <Text style={{color: 'gray', fontWeight: '600', fontSize: 8}}>Card Holder</Text>
-                    <Text
-                      style={{color: '#fff', fontWeight: '600', fontSize: 13}}>
-                      {values.cardHolderName}
-                    </Text>
-                    </View>
-                    <View style={{gap:5}}>
-                    <Text style={{ fontWeight: '600', fontSize: 8,color:'gray'}}>Expires</Text>
-                    <Text
-                      style={{color: '#fff', fontWeight: '600', fontSize: 13}}>
-                      {values.validTill}
-                    </Text>
-                    </View>
-                    <View style={{gap:5}}>
-                    <Text style={{fontWeight: '600', fontSize: 8,color:'gray'}}>CVV</Text>
-                    <Text
-                      style={{color: '#fff', fontWeight: '600', fontSize: 13}}>
-                      {values.cvv}
-                    </Text>
-                    </View>
+                      <View style={{gap: 5, width: 100}}>
+                        <Text
+                          style={{
+                            color: 'gray',
+                            fontWeight: '600',
+                            fontSize: 8,
+                          }}>
+                          Card Holder
+                        </Text>
+                        <Text
+                          style={{
+                            color: '#fff',
+                            fontWeight: '600',
+                            fontSize: 13,
+                          }}>
+                          {values.cardHolderName}
+                        </Text>
+                      </View>
+                      <View style={{gap: 5}}>
+                        <Text
+                          style={{
+                            fontWeight: '600',
+                            fontSize: 8,
+                            color: 'gray',
+                          }}>
+                          Expires
+                        </Text>
+                        <Text
+                          style={{
+                            color: '#fff',
+                            fontWeight: '600',
+                            fontSize: 13,
+                          }}>
+                          {values.validTill}
+                        </Text>
+                      </View>
+                      <View style={{gap: 5}}>
+                        <Text
+                          style={{
+                            fontWeight: '600',
+                            fontSize: 8,
+                            color: 'gray',
+                          }}>
+                          CVV
+                        </Text>
+                        <Text
+                          style={{
+                            color: '#fff',
+                            fontWeight: '600',
+                            fontSize: 13,
+                          }}>
+                          {values.cvv}
+                        </Text>
+                      </View>
                     </View>
                   </View>
                   <Input
@@ -183,24 +245,22 @@ export default function PaymentGateWay({navigation}) {
                     errors={undefined}
                     touched={false}
                     value={values.cardNumber}
+                    //onChangeText={handleChange('cardNumber')}
                     onChangeText={text => {
-                      // Remove non-digit characters from the input
-                      const cardNumber = text.replace(/\D/g, '');
+                      
+                      const cardNumber = text.replace(/\s/g, ''); // Remove spaces from card number
 
-                      // Insert a space after every fourth digit
                       let formattedCardNumber = '';
                       for (let i = 0; i < cardNumber.length; i += 4) {
                         formattedCardNumber += cardNumber.substr(i, 4) + ' ';
                       }
-
-                      // Remove any trailing space
+                    
                       formattedCardNumber = formattedCardNumber.trim();
-
-                      // Update the card number value
+                    
                       handleChange('cardNumber')(formattedCardNumber);
                     }}
                     onBlur={handleBlur('cardNumber')}
-                    maxLength={14}
+                    maxLength={19}
                     text="Card Number"
                     IconRight={() => <Message />}
                     mV={15}
@@ -346,18 +406,19 @@ const styles = StyleSheet.create({
     top: 130,
     left: 30,
   },
-  text_div:{
+  text_div: {
     position: 'relative',
     top: 45,
     left: 0,
-    flexDirection:'row',
-    gap:40
+    flexDirection: 'row',
+    gap: 40,
   },
   centeredView: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    marginTop: 22,
+
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
   },
   modalView: {
     margin: 20,
@@ -378,39 +439,55 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     padding: 10,
     elevation: 2,
-    
   },
   button_one: {
-   marginLeft:80,
-   marginTop:40,
-    alignItems:"flex-end",
-    justifyContent:'flex-end',
-    
+    marginLeft: 80,
+    marginTop: 40,
+    alignItems: 'flex-end',
+    justifyContent: 'flex-end',
   },
   button: {
     borderRadius: 20,
     padding: 10,
     elevation: 2,
-    borderRadius: 100
+    borderRadius: 100,
   },
   buttonOpen: {
     backgroundColor: '#F194FF',
   },
   buttonClose: {
-     backgroundColor: COLORS.GREEN,
+    backgroundColor: COLORS.GREEN,
   },
   textStyle: {
     color: 'black',
     fontWeight: 'bold',
     textAlign: 'center',
-    paddingVertical:5,
-    paddingHorizontal:20
+    paddingVertical: 5,
+    paddingHorizontal: 20,
   },
   modalText: {
     marginBottom: 15,
     textAlign: 'center',
-    fontWeight:"400",
-    fontSize:24,
-    color:"#000000"
-  }
+    fontWeight: '400',
+    fontSize: 24,
+    color: '#000000',
+  },
 });
+
+
+
+// //customerName: values.cardHolderName,
+        
+        // // customerZipcode: getDataForPayment.ZIP_code,
+        // // customerState: getDataForPayment.state,
+        // // customerCountry: getDataForPayment.location,
+        // kwh_unit:route.params.data.kwh,
+        // card_number: values.cardNumber,
+        // card_cvc: values.cvv,
+        // card_exp_month: exp_month,
+        // card_exp_year: exp_year,
+        // item_details: getDataForPayment.package_name,
+        // price: getDataForPayment.total_price,
+        // // total_amount: getDataForPayment.totalSalexTax,
+        // price_stripe_id: getDataForPayment.price_stripe_id,
+        // cust_id: getUserID,

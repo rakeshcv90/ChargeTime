@@ -30,12 +30,12 @@ export default function DrawerOpen({navigation}) {
   <Image
       source={require('../../assets/images/slash_line.png')}
       resizeMode="cover"
-      style={{width: 40, height: 40}}
+      style={{width: 30, height: 30}}
     />
       :<Image
       source={require('../../assets/images/logo_one.png')}
       resizeMode="cover"
-      style={{width: 50, height: 50}}
+      style={{width: 30, height: 30}}
     />}
     </TouchableOpacity>
   );

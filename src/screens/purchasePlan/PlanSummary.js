@@ -32,6 +32,7 @@ import { setDataForPayment } from '../../redux/action';
 const mobileW = Math.round(Dimensions.get('screen').width);
 
 export default function PlanSummary({route, navigation}) {
+  console.log(route.params.data,'jj')
   const [tax, setTax] = useState('');
   const [totalSalexTax,setTotalSalextax] = useState('')
 
@@ -236,7 +237,7 @@ export default function PlanSummary({route, navigation}) {
                   paddingVertical: 10,
                   borderRadius: 12,
                 }}>
-                  <TouchableOpacity onPress={() => navigation.navigate("PaymentGateWay")}>
+                  <TouchableOpacity onPress={() => navigation.navigate("PaymentGateWay",{data:route.params.data})}>
                 <Text
                   style={{
                     fontSize: 14,

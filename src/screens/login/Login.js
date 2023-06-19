@@ -24,7 +24,7 @@ import { Message } from '../../../assets/images/Message';
 import { Eye } from '../../../assets/images/Eye';
 import ActivityLoader from '../../Components/ActivityLoader';
 import {useDispatch,useSelector} from 'react-redux';
-import { getGraphData, getLocationID, getPackageStatus, setBoxTwoDataForDashboard, setKwhData, setMonthGraphData, setQuarterGraphData, setRemainingData, setUserID, setWeekGraphData, setWeekTotalData, setYearGraphData,setChargerStatus, setEmailData } from '../../redux/action';
+import { setGraphData, getLocationID, setPackageStatus, setBoxTwoDataForDashboard, setKwhData, setMonthGraphData, setQuarterGraphData, setRemainingData, setUserID, setWeekGraphData, setWeekTotalData, setYearGraphData,setChargerStatus, setEmailData, setPurchaseData, setDeviceId } from '../../redux/action';
 import axios from 'axios';
 import { navigationRef } from '../../../App';
 
@@ -39,7 +39,7 @@ export default function Login({navigation}) {
   const [forLoading,setForLoading] = useState(false)
   // const [graphData,setGraphData] = useState([])
   const dispatch = useDispatch();
-  const getUserID  = useSelector((state) => state.getUserID)
+  const {getUserID, getGraphData}  = useSelector((state) => state)
   // console.log(getUserID,"object")
   
   const loginFunction = async () => {
@@ -57,7 +57,9 @@ export default function Login({navigation}) {
     })
       .then(res => res.json())
       .then(data => {
-
+        console.log(data,'ttww')
+        AsyncStorage.setItem('locationID', JSON.stringify(data?.locationid))
+              
         // AsyncStorage.setItem('loginDataOne', JSON.stringify(data.locationid ));
        
         if (data.message == 'Login Successfully') {
@@ -67,29 +69,35 @@ export default function Login({navigation}) {
             text1: 'Login Successful',
             
           }):ToastAndroid.show('Login Successfully', ToastAndroid.SHORT);
-          setForLoading(false)
-          dispatch(getLocationID(data?.locationid))
-          dispatch(setEmailData(data?.email))
-        dispatch(getPackageStatus(data?.status == 'true' ? true : false))
-        dispatch(setUserID(data?.user_id))
+          console.log(data.status,'qqq')
           // if(data.status == "true"){
-          //   navigation.navigate('EnergyStats');
-          // }else if(data.status == "false"){
-            
-          // }
-            fetchGraphData(data?.user_id)
-            dailyUsuagekwh(data?.user_id)
-            remainigUsuageData(data?.user_id)
-            fetchWeekGraphData(data?.user_id)
-             fetchMonthGraphData(data?.user_id)
-             fetchQuarterGraphData(data?.user_id)
-            fetchYearGraphData(data?.user_id)
-            fetchBoxTwoDashboardData(data?.user_id)
-            fetchStatusdata(data?.user_id)
-            // fetchPriceDetailsDashboardData(data?.user_id)
+            //   navigation.navigate('EnergyStats');
+            // }else if(data.status == "false"){
+              
+              // }
+              getDeviceIDData(data?.user_id)
+              fetchGraphData(data?.user_id)
+              fetchWeekGraphData(data?.user_id)
+              fetchMonthGraphData(data?.user_id)
+              fetchQuarterGraphData(data?.user_id)
+              fetchYearGraphData(data?.user_id)
+              fetchBoxTwoDashboardData(data?.user_id)
+              fetchStatusdata(data?.user_id)
+              getPlanCurrent(data?.user_id)
+              // fetchPriceDetailsDashboardData(data?.user_id)
+              dispatch(setEmailData(data?.email))
+              dispatch(setPackageStatus(data?.status == 'true' ? true : false))
+              dispatch(setUserID(data?.user_id))
+              dispatch(getLocationID(data?.locationid))
+
+              // else
+              // if(getGraphData.length)
+              // navigation.navigate('DrawerStack');
+              // setForLoading(false)
            
           
-          // navigation.navigate('Home');
+          //  setTimeout(() => {
+          //  },5000)
         } else {
           PLATFORM_IOS?
           Toast.show({
@@ -112,13 +120,27 @@ export default function Login({navigation}) {
   
   
   
+  const getDeviceIDData = (userID) => {
+    axios.get(`${API}/devicecheck/${userID}}`)
+    .then((res) =>{
+      dispatch(setDeviceId(res.data.message))
+      console.log(res.data,'tt')
+    }).catch((err) => {
+      console.log(err)
+    })  
+  }
+  
 //day data start
   const fetchGraphData = (userID) => {
+    console.log(userID,"object")
     axios.get(`${API}/dailyusagegraph/${userID}`)
     .then((res) =>{
+       
+        dispatch(setGraphData(res?.data))
       
-      dispatch(getGraphData(res?.data))
-      navigation.navigate('DrawerStack');
+     
+      dailyUsuagekwh(userID)
+      // navigation.navigate('DrawerStack');
     })
     .catch((err) => {
       console.log(err)
@@ -128,8 +150,11 @@ export default function Login({navigation}) {
   const dailyUsuagekwh = (userId) => {
     axios.get(`${API}/dailyusage/${userId}`)
     .then((res) =>{
-      
-      dispatch(setKwhData(res?.data))
+      if(res?.data){
+        dispatch(setKwhData(res?.data))
+      }
+     
+      remainigUsuageData(userId)
       
     })
     .catch((err) => {
@@ -149,7 +174,9 @@ export default function Login({navigation}) {
       }
       
       dispatch(setRemainingData(remaingData))
-    })
+              navigation.navigate('DrawerStack');
+              setForLoading(false)
+            })
     .catch((err) => {
       console.log(err)
     })
@@ -160,9 +187,9 @@ export default function Login({navigation}) {
   const fetchWeekGraphData = (userID) => {
     axios.get(`${API}/weeklyusage/${userID}`)
     .then((res) =>{
-      
+      if(res?.data){
       dispatch(setWeekGraphData(res?.data))
-      
+      }
     })
     .catch((err) => {
       console.log(err)
@@ -172,9 +199,9 @@ export default function Login({navigation}) {
   const fetchMonthGraphData = (userID) => {
     axios.get(`${API}/monthlyusage/${userID}`)
     .then((res) =>{
-      
+      if(res?.data){
       dispatch(setMonthGraphData(res?.data))
-      
+      }
     })
     .catch((err) => {
       console.log(err)
@@ -184,9 +211,9 @@ export default function Login({navigation}) {
   const fetchQuarterGraphData = (userID) => {
     axios.get(`${API}/threemonthusage/${userID}`)
     .then((res) =>{
-     
+      if(res?.data){
       dispatch(setQuarterGraphData(res?.data))
-      
+      }
     })
     .catch((err) => {
       console.log(err)
@@ -196,9 +223,9 @@ export default function Login({navigation}) {
   const fetchYearGraphData = (userID) => {
     axios.get(`${API}/yearlyusage/${userID}`)
     .then((res) =>{
-      
+      if(res?.data){
       dispatch(setYearGraphData(res?.data))
-      
+      }
     })
     .catch((err) => {
       console.log(err)
@@ -230,6 +257,23 @@ export default function Login({navigation}) {
       
     })
   }
+  const getPlanCurrent = (userId) => {
+        
+    setForLoading(true)
+    axios
+      .get(`${API}/currentplan/${userId}`)
+      .then(res => {
+        setForLoading(false)
+        
+        dispatch(setPurchaseData(res?.data))
+         
+        
+      })
+      .catch(err => {
+        setForLoading(false)
+        console.log(err);
+      });
+    }
   // const fetchPriceDetailsDashboardData = (userId) =>{
   //   axios.get(`${API}/yearlyusage/${userID}`)
   //   .then((res) =>{

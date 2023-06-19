@@ -1,17 +1,41 @@
-import {View, Text, StyleSheet, TouchableOpacity, Image} from 'react-native';
+import {View, Text, StyleSheet, TouchableOpacity, Image, Alert} from 'react-native';
 import React from 'react';
 import { Dolllar } from '../../assets/images/Dollar';
 import { navigationRef } from '../../App';
 import COLORS from '../constants/COLORS';
+import axios from 'axios';
+import { API } from '../api/API';
 
-const BoxFive = ({data}) => {
+const BoxFive = ({data,purchageData}) => {
+
+  let payload = new FormData()
+  const forDownUpgrade = async() => {
+    payload.append("energy_price",data.totalSalexTax)
+    payload.append("selectedEnergyPlan",data.package_name)
+    try{
+  const response =  await axios.get(`${API}/upgrade_downgrade/31`,payload,{
+    headers: {
+      'Content-Type': 'multipart/form-data',
+    },})
+    if(response.data.status !=="No"){
+          navigationRef.navigate("DownGradeData", {data: data, purchageData:purchageData})
+
+    }
+    else{
+      Alert.alert(response.data.message)
+    }
+
+    }catch(err)  {
+      console.log(err)
+    }
+  }
   
   return (
     <View style={[styles.mainDiv_purchage_dollar,styles.shadowProp]}>
       
       <View>
-        <TouchableOpacity style={styles.btn_purchage} onPress={() => navigationRef.navigate("PlanSummary", {data: data})}>
-          <Text style={styles.purchage_text}>DOWNGRADE</Text>
+        <TouchableOpacity style={styles.btn_purchage} onPress={() => forDownUpgrade()}>
+          <Text style={styles.purchage_text}>{purchageData}</Text>
         </TouchableOpacity>
       </View>
       <View style={styles.dollar_div}>

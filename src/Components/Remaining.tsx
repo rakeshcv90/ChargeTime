@@ -6,13 +6,14 @@ import {DIMENSIONS} from '../constants/DIMENSIONS';
 import { useSelector } from 'react-redux';
 
 const Remaining = ({...props}) => {
+  
   const {getRemainingData} =useSelector((state:any) => state)
   
   return (
     <View
       style={{
         backgroundColor: '#F5F5F5',
-        width: DIMENSIONS.SCREEN_WIDTH * 0.4,
+        width: props?.data !=="energy" ? DIMENSIONS.SCREEN_WIDTH * 0.4:DIMENSIONS.SCREEN_WIDTH * 0.9,
         height: DIMENSIONS.SCREEN_WIDTH * 0.35,
         marginVertical: 20,
         flexDirection: 'column-reverse',
