@@ -121,7 +121,7 @@ const {getChargerStatus,getDeviceID} = useSelector((state:any) => state)
         <StatusBar backgroundColor={COLORS.CREAM2} barStyle={'dark-content'} />
         
         <DrawerOpen />
-        {getDeviceID !== "Account linked"? <View style={{justifyContent:'center',alignItems:"center",paddingHorizontal:20}}><Text>{getDeviceID}</Text></View>
+        {getDeviceID !== "Account linked"? <View style={{justifyContent:'center',alignItems:"center",paddingHorizontal:20,flex:1}}><Text>{getDeviceID}</Text></View>
         :
        <View> 
         <View style={{backgroundColor: COLORS.CREAM2, }}>
@@ -211,7 +211,7 @@ const {getChargerStatus,getDeviceID} = useSelector((state:any) => state)
        
           {getDeviceID !== "Account linked" ?
          
-          <View style={{justifyContent:'center',alignItems:"center",paddingHorizontal:20}}><Text>{getDeviceID}</Text></View>
+          <View style={{justifyContent:'center',alignItems:"center",paddingHorizontal:20}}><Text>''</Text></View>
      
           :
           

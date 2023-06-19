@@ -142,6 +142,7 @@ const user_ID =getUserID;
         setCardDetails(defaultCard[0]) 
         setCardId(defaultCard[0].id);
         console.log(defaultCard[0].id,"--------")
+
       }else{
         console.log("iiiiiiiiiiii")
       }
@@ -321,7 +322,7 @@ const card_id = cardId;
                     mV={15}
                     placeholder="John Doe"
                     bW={1}
-                    textWidth={'45%'}
+                    textWidth={'55%'}
                     placeholderTextColor={COLORS.BLACK}
                       />
 
