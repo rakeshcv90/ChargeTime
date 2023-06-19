@@ -20,6 +20,7 @@ const initialState = {
     getPriceAndDetailsDataforDashboard:[],
     getChargerStatus:'',
     getDataForPayment:[],
+    userSubsData:[],
   };
   
   const rootReducer = (state = initialState, action) => {
@@ -69,6 +70,8 @@ const initialState = {
           return { ...state, getChargerStatus: action.payload }
           case types.DATA_FOR_PAYMENT:
           return { ...state, getDataForPayment: action.payload }
+          case types.USER_SUBS_DATA:
+          return { ...state, userSubsData: action.payload }
         //dashboard boxtwo and price details data end
 
       default:

@@ -40,6 +40,9 @@ export const setRemainingData = (data) => {
 export const setWeekTotalData = (data) => {
   return {type:types.GET_WEEK_KWH,payload:data}
 }
+export const userSubsData = (data) => {
+  return {type:types.USER_SUBS_DATA,payload:data}
+}
 export const setWeekGraphData = (data) => {
   return {type:types.GET_WEEK_GRAPH_DATA,payload:data}
 }

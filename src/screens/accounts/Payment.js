@@ -32,6 +32,7 @@ import { Delete } from '../../../assets/svgs/Delete'
 import { PLATFORM_IOS } from '../../constants/DIMENSIONS';
 import {navigationRef} from '../../../App';
 import creditCardType,{types as CardType} from 'credit-card-type';
+import { FlatList } from 'react-native-gesture-handler';
 
 const mobileW = Math.round(Dimensions.get('screen').width);
 const mobileH = Math.round(Dimensions.get('window').height);
@@ -132,11 +133,15 @@ const user_ID =getUserID;
     try {
       const response = await fetch(`${API}/getcarddetails/${user_ID}`);
       const result = await response.json();
-      console.log("-----",result)
-      if(result[0].message == "sucess")
+      // console.log("Result",result[0])
+      const defaultCard = result[0].filter(item =>{ return item.status === 1})
+      // console.log("-----",defaultCard)
+      if(defaultCard[0].status===1)
       {
-        setCardDetails(result[0]) 
-        setCardId(result[0].id);
+        // console.log("defaultCard",defaultCard[0])
+        setCardDetails(defaultCard[0]) 
+        setCardId(defaultCard[0].id);
+        console.log(defaultCard[0].id,"--------")
       }else{
         console.log("iiiiiiiiiiii")
       }
@@ -218,7 +223,6 @@ const card_id = cardId;
                 <>
                   <Image
                     source={cardTypeImage}
-                    // source={cardTypeImage}
                     style={{
                       width: DIMENSIONS.SCREEN_WIDTH * 0.9,
                       resizeMode: 'contain',
@@ -271,7 +275,7 @@ const card_id = cardId;
                     <Delete/>
                     </TouchableOpacity>
                   </View>
-                  
+                
                   <View style={styles.cardNumber_position}>
                     
                     <Text

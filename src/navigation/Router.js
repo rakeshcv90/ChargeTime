@@ -178,6 +178,7 @@ const AccountStack = () => {
       <Stack.Screen name="Theme" component={Theme} />
       <Stack.Screen name="deleteAccount" component={deleteAccount} />
       <Stack.Screen name="Login" component={Login} />
+      <Stack.Screen name= "LoginStack" component={LoginStack} />
       <Stack.Screen name="DrawerStack" component={DrawerNavigation} />
       <Stack.Screen name="HomeStack" component={HomeStack} />
     </Stack.Navigator>

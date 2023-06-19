@@ -12,6 +12,7 @@ import { DIMENSIONS } from '../../constants/DIMENSIONS';
 import PriceValidity from '../../Components/PriceValidity';
 import { API } from '../../api/API';
 import { getBasePackage } from '../../redux/action';
+import { userSubsData } from '../../redux/action';
 
 
 const mobileW = Math.round(Dimensions.get('screen').width);
@@ -20,34 +21,29 @@ const mobileW = Math.round(Dimensions.get('screen').width);
   // const getPlanSummary = useSelector((state)=> state.getPlanSummary)
   const getUserID = useSelector((state)=> state.getUserID)
   const [getSubscription, setGetSubscription] = useState([]);
+  const [getData, setGetData] = useState([]);
   const dispatch =useDispatch();
   useEffect(() => {
     // console.log('data for this User:---------', getPlanSummary); 
     userSubscription();
+    userSubsEnergy();
  }, []);
 
  const user_id= getUserID;
 //  console.log("user_id", user_id)
 
  const userSubscription = async () =>{
-  // const response = await fetch(`${API}/userexisting/${user_ID}`);
   try {
     const response = await fetch(`${API}/subscriptionplan/${user_id}`);
     const result = await response.json();
-  //  console.log("response...>>>",JSON.stringify(response))
-  //  console.log("result...>>>",JSON.stringify(result))
  
     if(result[0].message == "sucess")
     {
-      setGetSubscription(result[0])
-// console.log('wwwwww',result);
-// setGetSubscription(result);
-// console.log("Dispatch..",dispatch)
+      setGetSubscription(result[0]);
   dispatch(getBasePackage(result)); 
     }else{
       console.log("iiiiiiiiiiii")
     }
-    // setLocationMap(result);
   } catch (error) {
     console.error(error);
   }
@@ -56,13 +52,14 @@ const mobileW = Math.round(Dimensions.get('screen').width);
 const userSubsEnergy = async () => {
 
   try {
-    const response = await fetch(`${API}/getcarddetails/${user_ID}`);
+    const response = await fetch(`${API}/subscription/15`);
     const result = await response.json();
     console.log("-----",result)
-    if(result[0].message == "sucess")
+    if(result !== null)
     {
-      setCardDetails(result[0]) 
-      setCardId(result[0].id);
+    console.log(result, "----------------")
+    // dispatch(userSubsData(result));
+    setGetData(result)
     }else{
       console.log("iiiiiiiiiiii")
     }
