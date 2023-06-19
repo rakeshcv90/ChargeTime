@@ -234,7 +234,7 @@ const InstalltionUpdate = async () => {
                 labelField="location"
                 valueField="location"
                 // placeholder={!isFocus ? userRegisterData[0]?.location : selectedValue}
-                placeholder={!isFocus ? userRegisterData[0]?.location : selectedValue}
+                placeholder={isFocus ? userRegisterData[0]?.location : selectedValue}
                 keyboardAvoiding
                 searchPlaceholder="Search..."
                 value={selectedValue}

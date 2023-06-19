@@ -45,35 +45,55 @@ export default function PaymentGateWay({navigation}) {
   const { getUserID} = useSelector(
     state => state,
   );
+
+  const [getCard_Number, setGetCard_Number]=useState('');
+
+  
 const user_ID =getUserID;
+
+  const getCardType = (cardNumber) => {
+    // Regular expressions to match different card types
+    const visaRegex = /^4[0-9]{12}(?:[0-9]{3})?$/;
+    const mastercardRegex = /^5[1-5][0-9]{14}$/;
+    const amexRegex = /^3[47][0-9]{13}$/;
+    const discoverRegex = /^6(?:011|5[0-9]{2})[0-9]{12}$/;
+    if (visaRegex.test(cardNumber)) {
+      return require('../../../assets/images/Visa.png'); 
+    } else if (mastercardRegex.test(cardNumber)) {
+      return require('../../../assets/images/Master.png'); 
+    } else if (amexRegex.test(cardNumber)) {
+      return require('../../../assets/images/Amex.png'); 
+    } else if (discoverRegex.test(cardNumber)) {
+      return require('../../../assets/images/Discover.png'); 
+    } else {
+      return require('../../../assets/images/visaCard.png');
+    }
+  }
+
   const handleAddCard = async (values) => {
     let exp_month = values?.validTill?.split('/')[0];
     let exp_year = values?.validTill?.split('/')[1];
-    // console.log(exp_month, 'object', exp_year, getEmailDAta);
-    console.log(values);
-    console.log('month is',exp_month);
-    console.log('year is',exp_year);
-    console.log("user_id is",user_id)
-    //console.log(values.cardHolderName,,"4567890")
+    let cust_number= values?.cardNumber.split(" ").join("");
+    setGetCard_Number(values?.cardNumber)
+    console.log('month is',getUserID);
     try {
-      const response = await fetch(`${API}/addcarddetail`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        }, 
-       body: JSON.stringify({
-          user_id: getUserID,
-          cust_name: values.cardHolderName,
-          card_number: values.cardNumber,
-          card_cvc: values.cvv,
-          card_exp_month: exp_month,
-          card_exp_year: exp_year,
-        }) 
-       
+ 
+      const response = await axios.post(`${API}/addcarddetail`, {
+        // data: payload,
+        "user_id": getUserID,
+          "cust_name":values?.cardHolderName,
+          "card_number":cust_number,
+          "card_cvc":values?.cvv,
+          "card_exp_month":exp_month,
+          "card_exp_year":exp_year ,
+        // headers: {
+        //   'Content-Type': 'application/json',
+        // }, 
       })
-      const result = await response.json();
-  console.log(result,'ttt');
-      if(result.msg == 'Your Card Detail Save'){
+      // const result = await response.json();
+  // console.log(response,'ttt');
+      if(response.data.msg === 'Your Card Detail Save'){
+        console.log("card add success")
         PLATFORM_IOS
         ? Toast.show({
             type: 'success',
@@ -84,18 +104,29 @@ const user_ID =getUserID;
             ToastAndroid.SHORT,
           );
       }
+      else{
+        PLATFORM_IOS
+        ? Toast.show({
+            type: 'success',
+            text1: ' Your Card Detail Not Save.',
+          })
+        : ToastAndroid.show(
+            'Your Card Detail Not Save.',
+            ToastAndroid.SHORT,
+          );
+      }
     } catch (error) {
       console.error(error);
     }
   };
 
+  const cardTypeImage = getCardType(getCard_Number);
+
   return (
     <SafeAreaView style={{backgroundColor: COLORS.CREAM, flex: 1}}>
        <Header headerName="Payment Methods" editShow={false} />
     <HorizontalLine />
-      <ScrollView>
         <View style={styles.mainDiv_container}>
-          <View>
             <Formik
               initialValues={{
                 cardHolderName: '',
@@ -113,12 +144,15 @@ const user_ID =getUserID;
                 errors,
                 touched,
               }) => (
-                <View>
+                <>
                   <Image
                     source={require('../../../assets/images/visaCard.png')}
+                    // source={cardTypeImage}
                     style={{
                       width: DIMENSIONS.SCREEN_WIDTH * 0.9,
                       resizeMode: 'contain',
+                      height:240,
+
                     }}
                   />
                   <View
@@ -128,6 +162,7 @@ const user_ID =getUserID;
                     // width: '100%',
                     marginHorizontal: 60,
                     marginTop:10,
+                    marginBottom:35,
                   }}>
                   <TouchableOpacity
                     style={{
@@ -194,7 +229,7 @@ const user_ID =getUserID;
                     </View>
                      </View>
                   </View>
-                  <HorizontalLine/>
+                  <HorizontalLine />
 
                   <Input
                     IconLeft={null}
@@ -331,12 +366,10 @@ const user_ID =getUserID;
                         </Text>
                       </TouchableOpacity>
                     </View>
-                  </View>
+                  </>
               )}
             </Formik>
-          </View>
         </View>
-      </ScrollView>
     </SafeAreaView>
   );
 }
@@ -350,6 +383,7 @@ const styles = StyleSheet.create({
   },
   mainDiv_container: {
     paddingHorizontal: 20,
+  
     // paddingTop: 30,
   },
   mainDiv_state_ZIP: {

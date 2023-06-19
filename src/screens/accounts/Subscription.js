@@ -27,22 +27,22 @@ const mobileW = Math.round(Dimensions.get('screen').width);
  }, []);
 
  const user_id= getUserID;
- console.log("user_id", user_id)
+//  console.log("user_id", user_id)
 
  const userSubscription = async () =>{
   // const response = await fetch(`${API}/userexisting/${user_ID}`);
   try {
     const response = await fetch(`${API}/subscriptionplan/${user_id}`);
     const result = await response.json();
-   console.log("response...>>>",JSON.stringify(response))
-   console.log("result...>>>",JSON.stringify(result))
+  //  console.log("response...>>>",JSON.stringify(response))
+  //  console.log("result...>>>",JSON.stringify(result))
  
     if(result[0].message == "sucess")
     {
       setGetSubscription(result[0])
-console.log('wwwwww',result);
+// console.log('wwwwww',result);
 // setGetSubscription(result);
-console.log("Dispatch..",dispatch)
+// console.log("Dispatch..",dispatch)
   dispatch(getBasePackage(result)); 
     }else{
       console.log("iiiiiiiiiiii")
@@ -52,6 +52,8 @@ console.log("Dispatch..",dispatch)
     console.error(error);
   }
 };
+
+
 
   return (
     <ScrollView showsVerticalScrollIndicator={false} >
