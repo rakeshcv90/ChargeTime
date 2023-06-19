@@ -4,13 +4,14 @@ import { Dolllar } from '../../assets/images/Dollar';
 import { navigationRef } from '../../App';
 
 const BoxThree = ({data}) => {
+  console.log(data,'gg')
   
   return (
     <View style={[styles.mainDiv_purchage_dollar,styles.shadowProp]}>
       <View style={styles.dollar_div}>
         {/* <Image source={require('../../assets/images/price.png')} /> */}
         <Dolllar />
-        <Text style={styles.per_month}>${data.total_price} /month</Text>
+        <Text style={styles.per_month}>${data?.total_price} /month</Text>
       </View>
       <View>
         <TouchableOpacity style={styles.btn_purchage} onPress={() => navigationRef.navigate("PlanSummary", {data: data})}>
@@ -112,7 +113,7 @@ const styles = StyleSheet.create({
     marginTop: 20,
     paddingHorizontal: 10,
     paddingVertical: 10,
-    borderRadius: 30,
+    borderRadius: 16,
     elevation: 4,
     shadowColor: 'rgba(1, 0, 0, 0.25)',
     shadowOffset: {

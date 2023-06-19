@@ -56,7 +56,7 @@ const TotalUsage = ({data}) => {
               color: COLORS.BLACK,
             }}>
             
-            {/* {data ? data?.toFixed(2) + ' kWh' : 0 + ' kWh'} */}
+            {data ? data?.toFixed(2) + ' kWh' : 0 + ' kWh'}
           </Text>
           <Text
             style={{

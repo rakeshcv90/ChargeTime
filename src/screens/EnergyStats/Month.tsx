@@ -16,7 +16,10 @@ export default function Month() {
   useEffect(() => {
     setShowSlider(true);
   }, []);
-  const {getMonthData} =  useSelector((state:any) => state)
+  const {getMonthData,getBoxTwoDataForDashboard} =  useSelector((state:any) => state)
+  const [toggleState, setToggleState] = useState(false);
+
+  const handleToggle = (value:any) => setToggleState(value);
   
  
   return (
@@ -41,13 +44,14 @@ export default function Month() {
           </View>
           
           <View style={{marginHorizontal: 20,}}>
-          {/* <Graph dataOne={getMonthData.Usage} /> */}
+          <Graph dataOne={getMonthData.Usage} />
           <BoxTwo />
           </View>
-          <PriceBox />
+          <PriceBox data={getBoxTwoDataForDashboard[0]}/>
         </ScrollView>
       </View>
-      {showSlider && <ButtonSlider />}
+      {/* {showSlider && <ButtonSlider />} */}
+      <ButtonSlider onToggle={handleToggle}  />
     </>
   );
 }

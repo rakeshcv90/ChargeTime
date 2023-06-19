@@ -105,11 +105,14 @@ export default function EnergyStats() {
   const [showCar, setShowCar] = useState(true);
   const [offline, setOffline] = useState(true);
   const [charging, setCharging] = useState(true);
+  const [deviceId,setDeviceId] = useState('')
   
   const [isLoading, setIsLoading] = useState(true);
   const {getGraphData}  = useSelector((state:any) => state)
-// const {getWeekGraphData} =  useSelector((state:any) => state)
-const {getChargerStatus} = useSelector((state:any) => state)
+
+const {getChargerStatus,getDeviceID} = useSelector((state:any) => state)
+
+
   
   
   return (
@@ -118,13 +121,13 @@ const {getChargerStatus} = useSelector((state:any) => state)
         <StatusBar backgroundColor={COLORS.CREAM2} barStyle={'dark-content'} />
         
         <DrawerOpen />
-       
-        
-        <View style={{backgroundColor: COLORS.CREAM2, flex: 0.2}}>
+        {getDeviceID !== "Account linked"? <View style={{justifyContent:'center',alignItems:"center",paddingHorizontal:20}}><Text>{getDeviceID}</Text></View>
+        :
+       <View> 
+        <View style={{backgroundColor: COLORS.CREAM2, }}>
           <View style={{flexDirection: 'row', alignItems: 'center'}}>
-            {getChargerStatus?.message =="Offline" ? (
-              // <Charging />
-              ''
+            {getChargerStatus?.message == "Charging" ? (
+              <Charging />             
             ) : (
               <>
                 <View
@@ -145,7 +148,7 @@ const {getChargerStatus} = useSelector((state:any) => state)
                     shadowRadius: 4.65,
                     elevation: 7,
                   }}>
-                  {getChargerStatus?.message == "Online" ? <OnlineCharge style={{marginTop: 8,marginLeft:5}} /> : <NoCharge style={{marginTop: 8,marginLeft:5}} />}
+                  {getChargerStatus?.message == "Online"  ? <OnlineCharge style={{marginTop: 8,marginLeft:5}} /> : <NoCharge style={{marginTop: 8,marginLeft:5}} />}
                 </View>
                 <View>
                   <Text
@@ -172,7 +175,7 @@ const {getChargerStatus} = useSelector((state:any) => state)
           </View>
         </View >
         <View>
-        {getChargerStatus?.message =="Online" ? (
+        {getChargerStatus?.message !=="Offline" ? (
           <Image
             source={require('../../../assets/images/dashboard_img.png')}
             style={{
@@ -203,6 +206,16 @@ const {getChargerStatus} = useSelector((state:any) => state)
           Energy Statistics
         </Text>
         </View>
+        </View>
+        }
+       
+          {getDeviceID !== "Account linked" ?
+         
+          <View style={{justifyContent:'center',alignItems:"center",paddingHorizontal:20}}><Text>{getDeviceID}</Text></View>
+     
+          :
+          
+        
         <Tab.Navigator
           screenOptions={{
             tabBarLabelStyle: {
@@ -213,15 +226,18 @@ const {getChargerStatus} = useSelector((state:any) => state)
             tabBarScrollEnabled:true
           }}
           tabBar={props => <MyTabBar {...props} />}>
-          {/* {isLoading?<Tab.Screen name="Day" component={ActivityLoader}  />: */}
-      <Tab.Screen name="Day" component={Day} initialParams={{getGraphData}} />
+         
+      <Tab.Screen name="Day" component={Day}  />
 
     
-          <Tab.Screen name="Week" component={Week} />
+          <Tab.Screen name="Week" component={Week}  />
           <Tab.Screen name="Month" component={Month} />
           <Tab.Screen name="Quarter" component={Quarter} />
           <Tab.Screen name="Year" component={Year} />
         </Tab.Navigator>
+       
+}
+       
        
       </SafeAreaView>
     </>

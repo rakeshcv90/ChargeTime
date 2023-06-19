@@ -3,7 +3,7 @@ import types from './constants';
 export const getLocationID = (data) => {
   return {type: types.GET_LOCATION_ID, payload: data};
 };
-export const getPackageStatus = (data) => {
+export const setPackageStatus = (data) => {
   return {type: types.GET_PACKAGE_STATUS, payload: data};
 };
 export const setUserID = (data) => {
@@ -29,7 +29,7 @@ export const getPlanPurchage = (data) => {
   return {type:types.GET_PLAN_PURCHAGE,payload:data}
 }
 
-export const getGraphData = (data) => {
+export const setGraphData = (data) => {
   return {type:types.GET_GRAPH_DATA,payload:data}
 }
 export const setRemainingData = (data) => {
@@ -71,6 +71,13 @@ export const setChargerStatus = (data) => {
 export const setDataForPayment = (data) => {
   return {type:types.DATA_FOR_PAYMENT,payload:data}
 }
+export const setPurchaseData = (data) => {
+  return {type:types.GET_PURCHASE_DATA,payload:data}
+} 
+
+export const setDeviceId = (data) => {
+  return {type:types.GET_DEVICE_ID,payload:data}
+} 
 
     //dashboard boxtwo and price details data end
 

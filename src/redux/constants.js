@@ -4,7 +4,6 @@ export default {
   GET_USER_ID: 'GET_USER_ID',
   GET_EMAIL_DATA:"GET_EMAIL_DATA",
   GET_USER_DATA: 'GET_USER_DATA',
-  //subscription details
   GET_BASE_PACKAGE: 'GET_BASE_PACKAGE',
   USER_SUBS_DATA: 'USER_SUBS_DATA',
 
@@ -28,4 +27,6 @@ export default {
   //dashboard boxtwo and price details data end
   CHARGER_STATUS: 'CHARGER_STATUS',
   DATA_FOR_PAYMENT: 'DATA_FOR_PAYMENT',
+  GET_PURCHASE_DATA:"GET_PURCHASE_DATA",
+  GET_DEVICE_ID:"GET_DEVICE_ID",
 };

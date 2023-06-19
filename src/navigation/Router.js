@@ -3,7 +3,7 @@ import {NavigationContainer, useFocusEffect} from '@react-navigation/native';
 import Login from '../screens/login/Login';
 import Register from '../screens/register/Register';
 import VerifyEmail from '../screens/register/VerifyEmail';
-import {Image, View, StyleSheet} from 'react-native';
+import {Image, View, StyleSheet, TouchableOpacity, Linking,Text} from 'react-native';
 import CompleteProfile from '../screens/register/CompleteProfile';
 import Home from '../screens/purchasePlan/Home';
 import {createDrawerNavigator} from '@react-navigation/drawer';
@@ -28,6 +28,12 @@ import { useSelector } from 'react-redux';
 import PaymentGateWay from '../screens/payment/PaymentGateWay';
 import Splash from '../splash/Splash'
 import Introduction from '../splash/Introduction';
+import HomeOne from '../screens/downgrade/HomeOne';
+import UpgradeData from '../screens/downgrade/DownGradeData';
+import DownGradeData from '../screens/downgrade/DownGradeData';
+import ContactUs from '../screens/drawerPart/ContactUs';
+import Privacy from '../screens/drawerPart/Privacy';
+import Terms from '../screens/drawerPart/Terms';
 // import Plan from '../screens/planSummary/Plan';
 
 const Drawer = createDrawerNavigator();
@@ -36,19 +42,49 @@ const screenOptions = {
   headerShown: false, // Hide the header for all screens
 };
 
+
 const DrawerNavigation = () => {
   const [focus, setFocus] = useState();
   const [focusOne, setFocusOne] = useState();
+  const [focusTwo,setFocusTwo] = useState()
   const getPackageStatus  = useSelector((state) => state.getPackageStatus)
 
-  // console.log('object',getPackageStatus)
+   
 
 
   return (
     <Drawer.Navigator
-    // initialRouteName={+getPackageStatus !== true ?  'HomeStack':"EnergyStats"}
-      screenOptions={{headerShown: false}}
+          screenOptions={{headerShown: false}}
       drawerContent={CustomDrawerContent}>
+        {getPackageStatus ? <Drawer.Screen
+        options={{
+          drawerActiveBackgroundColor: '#fff',
+          drawerIcon: ({focused, color, size}) => {
+            setFocus(focused);
+            return (
+              <Image
+                source={
+                  !focused
+                    ? require('../../assets/images/home_white.png')
+                    : require('../../assets/images/home_green.png')
+                }
+                style={{width: 50, height: 40, padding: 0, margin: -10}}
+              />
+            );
+          },
+          drawerLabelStyle: {
+            backgroundColor: focus ? 'rgba(177, 211, 79, 0.8)' : '#fff',
+            paddingVertical: 10,
+            paddingLeft: 10,
+            width: '200%',
+            marginLeft: -15,
+          },
+          drawerActiveTintColor: 'black',
+          title: 'Home',
+        }}
+        name="EnergyStats"
+        component={EnergyStats}
+      />:
       <Drawer.Screen
         options={{
           drawerActiveBackgroundColor: '#fff',
@@ -58,8 +94,8 @@ const DrawerNavigation = () => {
               <Image
                 source={
                   !focused
-                    ? require('../../assets/images/testing.png')
-                    : require('../../assets/images/green_account.png')
+                  ? require('../../assets/images/home_white.png')
+                  : require('../../assets/images/home_green.png')
                 }
                 style={{width: 50, height: 40, margin: -10}}
               />
@@ -78,17 +114,46 @@ const DrawerNavigation = () => {
         name="HomeStack"
         component={HomeStack}
       />
-
+      }
       <Drawer.Screen
         options={{
           drawerActiveBackgroundColor: '#fff',
           drawerIcon: ({focused, color, size}) => {
-            setFocusOne(focused);
+             setFocusOne(focused);
             return (
               <Image
                 source={
                   !focused
                     ? require('../../assets/images/testing.png')
+                    : require('../../assets/images/energy_green.png')
+                }
+                style={{width: 50, height: 40, padding: 0, margin: -10}}
+              />
+            );
+          },
+          drawerLabelStyle: {
+            backgroundColor:  focusOne ? 'rgba(177, 211, 79, 0.8)' : '#fff',
+            paddingVertical: 10,
+            paddingLeft: 10,
+            width: '200%',
+            marginLeft: -15,
+          },
+          drawerActiveTintColor: 'black',
+          title: 'Energy',
+        }}
+        name="EnergyOptions"
+        component={EnergyOptions}
+      />
+      <Drawer.Screen
+        options={{
+          drawerActiveBackgroundColor: '#fff',
+          drawerIcon: ({focused, color, size}) => {
+            setFocusTwo(focused);
+            return (
+              <Image
+                source={
+                  !focused
+                    ? require('../../assets/images/account_white.png')
                     : require('../../assets/images/green_account.png')
                 }
                 style={{width: 50, height: 40, padding: 0, margin: -10}}
@@ -96,7 +161,7 @@ const DrawerNavigation = () => {
             );
           },
           drawerLabelStyle: {
-            backgroundColor: focusOne ? 'rgba(177, 211, 79, 0.8)' : '#fff',
+            backgroundColor: focusTwo? 'rgba(177, 211, 79, 0.8)' : '#fff',
             paddingVertical: 10,
             paddingLeft: 10,
             width: '200%',
@@ -108,37 +173,92 @@ const DrawerNavigation = () => {
         name="AccountStack"
         component={AccountStack}
       />
+
       <Drawer.Screen
+      
         options={{
           drawerActiveBackgroundColor: '#fff',
           drawerIcon: ({focused, color, size}) => {
-            setFocusOne(focused);
+            
             return (
               <Image
                 source={
-                  !focused
-                    ? require('../../assets/images/testing.png')
-                    : require('../../assets/images/green_account.png')
+               
+                     require('../../assets/images/contact_us.png')
                 }
-                style={{width: 50, height: 40, padding: 0, margin: -10}}
+                style={{width: 30, height: 30, padding: 0}}
               />
             );
           },
+          drawerItemStyle: { marginTop: 100 },
           drawerLabelStyle: {
-            backgroundColor: focusOne ? 'rgba(177, 211, 79, 0.8)' : '#fff',
-            paddingVertical: 10,
-            paddingLeft: 10,
-            width: '200%',
-            marginLeft: -15,
+            backgroundColor:  '#fff' ,
+            
+            
           },
           drawerActiveTintColor: 'black',
-          title: 'EnergyStats',
+          title: 'Contact Us',
+          
         }}
-        name="EnergyStats"
-        component={EnergyStats}
+        
+         name="Contact Us"
+        component={ContactUs}
       />
-
-    </Drawer.Navigator>
+      <Drawer.Screen
+      
+      options={{
+        drawerActiveBackgroundColor: '#fff',
+        drawerIcon: ({focused, color, size}) => {
+          
+          return (
+            <Image
+              source={
+             
+                   require('../../assets/images/privacy.png')
+              }
+              style={{width: 30, height: 30, padding: 0}}
+            />
+          );
+        },
+        drawerLabelStyle: {
+          backgroundColor:  '#fff' ,
+         
+         
+        },
+        drawerActiveTintColor: 'black',
+        
+      }}
+      name="Privacy Policy"
+      component={Privacy}
+    />
+    <Drawer.Screen
+      
+      options={{
+        drawerActiveBackgroundColor: '#fff',
+        drawerIcon: ({focused, color, size}) => {
+          
+          return (
+            <Image
+              source={
+             
+                   require('../../assets/images/terms.png')
+              }
+              style={{width: 30, height: 30, padding: 0}}
+            />
+          );
+        },
+        drawerLabelStyle: {
+          backgroundColor:  '#fff' ,
+         
+          
+        },
+        drawerActiveTintColor: 'black',
+        
+      }}
+      name="Terms & Conditions"
+      component={Terms}
+    />
+          </Drawer.Navigator>
   );
 };
 const LoginStack = () => {
@@ -164,6 +284,15 @@ const HomeStack = () => {
       <Stack.Screen name="PlanSummary" component={PlanSummary} />
       <Stack.Screen name="PaymentGateWay" component={PaymentGateWay} />
     </Stack.Navigator>
+  );
+};
+const EnergyOptions = () => {
+  return (
+    <Stack.Navigator screenOptions={screenOptions}>
+      <Stack.Screen name="HomeOne" component={HomeOne} />
+      <Stack.Screen name="DownGradeData" component={DownGradeData} />
+      <Stack.Screen name="PaymentGateWay" component={PaymentGateWay} />
+          </Stack.Navigator>
   );
 };
 const AccountStack = () => {
@@ -194,6 +323,14 @@ export default function Router() {
   const getPackageStatus = useSelector((state) => state.getPackageStatus)
   const getUserID  = useSelector((state) => state.getUserID)
   
+  useEffect(() =>{
+    checkLogin()
+  },[])
+let id
+const checkLogin = async () => {
+  id = await AsyncStorage.getItem('locationID')
+}
+
   // console.log(getLocationId,"getLocationId")
   // let locationId;
 
@@ -217,7 +354,7 @@ export default function Router() {
 
   return (
     <Stack.Navigator screenOptions={screenOptions}>
-      {getLocationID == 0 ? (
+      {id == null ? (
         <>
           <Stack.Screen name="LoginStack" component={LoginStack} />
         </>

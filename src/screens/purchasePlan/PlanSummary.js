@@ -32,6 +32,7 @@ import { setDataForPayment } from '../../redux/action';
 const mobileW = Math.round(Dimensions.get('screen').width);
 
 export default function PlanSummary({route, navigation}) {
+  console.log(route.params.data,'jj')
   const [tax, setTax] = useState('');
   const [totalSalexTax,setTotalSalextax] = useState('')
 
@@ -89,73 +90,7 @@ export default function PlanSummary({route, navigation}) {
               <BoxFour data={data} />
             </View>
           </View>
-          {/* <View style={styles.mainDiv_installation_one}>
-        
-        <TouchableOpacity style={styles.install_touchable}>
-          <Address style={styles.img_width} />
-          <Text style={styles.installation_text}>Installation Base</Text>
-        </TouchableOpacity>
-        <View style={styles.shadowProp}>
-          <View style={styles.location_div}>
-            <Vanderberg style={styles.img_width} />
-            <Text style={styles.force_base}>Vanderberg</Text>
-          </View>
-          <Image
-            source={require('../../../assets/images/dotted.png')}
-            resizeMode="cover"
-            style={{alignSelf: 'center', width: mobileW}}
-          />
-          <View style={styles.mainDiv_state_zip}>
-            <View style={styles.state_div}>
-              
-              <Connecticut style={styles.img_width} />
-              <Text style={styles.force_base}>fgchvjk</Text>
-            </View>
-            <View style={styles.state_div}>
-              <Image
-                //style={styles.img_width}
-                source={require('../../../assets/images/zip_code.png')}
-                style={{width: 20, height: 20}}
-              />
-              <Text style={styles.force_base}>sdfghjk</Text>
-            </View>
-          </View>
-        </View>
-        
-      </View> */}
-
-          {/* <View style={styles.mainDiv_installation_one}>
-        <TouchableOpacity style={styles.install_touchable}>
-          <Address style={styles.img_width} />
-          <Text style={styles.installation_text}>Plan Details</Text>
-        </TouchableOpacity>
-        <View style={styles.shadowProp}>
-          <View style={styles.location_div}>
-            <Vanderberg style={styles.img_width} />
-            <Text style={styles.force_base}>Vanderberg</Text>
-          </View>
-          <Image
-            source={require('../../../assets/images/dotted.png')}
-            resizeMode="contain"
-            style={{alignSelf: 'center', width: mobileW}}
-          />
-          <View style={styles.mainDiv_state_zip}>
-            <View style={styles.state_div}>
-              
-              <Connecticut style={styles.img_width} />
-              <Text style={styles.force_base}>fgchvjk</Text>
-            </View>
-            <View style={styles.state_div}>
-              <Image
-                
-                source={require('../../../assets/images/zip_code.png')}
-                style={{width: 20, height: 20}}
-              />
-              <Text style={styles.force_base}>sdfghjk</Text>
-            </View>
-          </View>
-        </View>
-      </View> */}
+   
           <View style={styles.plan_pricing_div}>
             <View>
               <View>
@@ -236,7 +171,9 @@ export default function PlanSummary({route, navigation}) {
                   paddingVertical: 10,
                   borderRadius: 12,
                 }}>
-                  <TouchableOpacity onPress={() => navigation.navigate("PaymentGateWay")}>
+
+                  <TouchableOpacity onPress={() => navigation.navigate("PaymentGateWay",{data:route.params.data})}>
+
                 <Text
                   style={{
                     fontSize: 14,
