@@ -53,6 +53,25 @@ const mobileW = Math.round(Dimensions.get('screen').width);
   }
 };
 
+const userSubsEnergy = async () => {
+
+  try {
+    const response = await fetch(`${API}/getcarddetails/${user_ID}`);
+    const result = await response.json();
+    console.log("-----",result)
+    if(result[0].message == "sucess")
+    {
+      setCardDetails(result[0]) 
+      setCardId(result[0].id);
+    }else{
+      console.log("iiiiiiiiiiii")
+    }
+ 
+  } catch (error) {
+   console.log("get deleted", error)
+  }
+}  
+
 
 
   return (

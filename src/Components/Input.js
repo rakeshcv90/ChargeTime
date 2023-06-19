@@ -111,9 +111,10 @@ const Input: FC<Props> = ({...Props}) => {
           {Props.passwordInput && (
             <TouchableOpacity onPress={Props.pasButton}>
               {Props.passwordInputIcon ? (
-                <Eye />
-              ) : (
                 <Image source={require('../../assets/images/passwod.png')} />
+              
+              ) : (
+                  <Eye />
               )}
             </TouchableOpacity>
           )}

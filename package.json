@@ -19,6 +19,7 @@
     "@react-navigation/native-stack": "^6.9.12",
     "@reduxjs/toolkit": "^1.9.5",
     "axios": "^1.4.0",
+    "credit-card-type": "^9.1.0",
     "formik": "^2.4.1",
     "install": "^0.13.0",
     "lottie-react-native": "^5.1.6",

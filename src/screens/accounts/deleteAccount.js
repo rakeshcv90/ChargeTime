@@ -122,6 +122,7 @@ const DeleteAccountScreen = () => {
             color: COLORS.BLACK,
             fontFamily: 'Roboto',
             fontWeight: '100',
+            // height:100,
           }}
           onChangeText={text => setReason(text)}
           value={reason}

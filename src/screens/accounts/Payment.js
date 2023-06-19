@@ -11,7 +11,7 @@ import {
   Pressable,
   Alert
 } from 'react-native';
-import React, {useState, useRef} from 'react';
+import React, {useState, useRef, useEffect} from 'react';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import Input from '../../Components/Input';
 import COLORS from '../../constants/COLORS';
@@ -30,9 +30,9 @@ import HorizontalLine from '../../Components/HorizontalLine'
 import {API} from '../../api/API';
 import { Delete } from '../../../assets/svgs/Delete'
 import { PLATFORM_IOS } from '../../constants/DIMENSIONS';
-
-
 import {navigationRef} from '../../../App';
+import creditCardType,{types as CardType} from 'credit-card-type';
+
 const mobileW = Math.round(Dimensions.get('screen').width);
 const mobileH = Math.round(Dimensions.get('window').height);
 const validationSchema = Yup.object().shape({
@@ -47,28 +47,39 @@ export default function PaymentGateWay({navigation}) {
   );
 
   const [getCard_Number, setGetCard_Number]=useState('');
+  const [creditCard,setCreditCard] = useState('');
+  const [cardDetails, setCardDetails] = useState('');
+  const [cardId, setCardId] = useState('');
 
   
 const user_ID =getUserID;
 
   const getCardType = (cardNumber) => {
-    // Regular expressions to match different card types
-    const visaRegex = /^4[0-9]{12}(?:[0-9]{3})?$/;
-    const mastercardRegex = /^5[1-5][0-9]{14}$/;
-    const amexRegex = /^3[47][0-9]{13}$/;
-    const discoverRegex = /^6(?:011|5[0-9]{2})[0-9]{12}$/;
-    if (visaRegex.test(cardNumber)) {
+
+    const cardType = creditCardType(cardNumber?cardNumber :creditCard)[0]?.type;
+
+    // console.log("Card ...", cardType)
+
+    if (cardType === 'visa') {
       return require('../../../assets/images/Visa.png'); 
-    } else if (mastercardRegex.test(cardNumber)) {
+    } else if (cardType === 'master') {
       return require('../../../assets/images/Master.png'); 
-    } else if (amexRegex.test(cardNumber)) {
+    } else if (cardType==='american-express') {
       return require('../../../assets/images/Amex.png'); 
-    } else if (discoverRegex.test(cardNumber)) {
+    } else if (cardType === 'discover') {
       return require('../../../assets/images/Discover.png'); 
     } else {
       return require('../../../assets/images/visaCard.png');
     }
   }
+
+
+  useEffect(()=>{
+
+    // console.log("Credit card...",creditCardType(creditCard))
+  getCardType(cardDetails?.card_number ?? "")   
+
+  },[creditCard,cardDetails,cardId])
 
   const handleAddCard = async (values) => {
     let exp_month = values?.validTill?.split('/')[0];
@@ -79,21 +90,16 @@ const user_ID =getUserID;
     try {
  
       const response = await axios.post(`${API}/addcarddetail`, {
-        // data: payload,
         "user_id": getUserID,
           "cust_name":values?.cardHolderName,
           "card_number":cust_number,
           "card_cvc":values?.cvv,
           "card_exp_month":exp_month,
           "card_exp_year":exp_year ,
-        // headers: {
-        //   'Content-Type': 'application/json',
-        // }, 
       })
-      // const result = await response.json();
-  // console.log(response,'ttt');
       if(response.data.msg === 'Your Card Detail Save'){
         console.log("card add success")
+        setCardDetails('');
         PLATFORM_IOS
         ? Toast.show({
             type: 'success',
@@ -118,7 +124,72 @@ const user_ID =getUserID;
     } catch (error) {
       console.error(error);
     }
+   
   };
+
+  const handleGetCard = async () => {
+
+    try {
+      const response = await fetch(`${API}/getcarddetails/${user_ID}`);
+      const result = await response.json();
+      console.log("-----",result)
+      if(result[0].message == "sucess")
+      {
+        setCardDetails(result[0]) 
+        setCardId(result[0].id);
+      }else{
+        console.log("iiiiiiiiiiii")
+      }
+   
+    } catch (error) {
+      PLATFORM_IOS
+      ? Toast.show({
+          type: 'success',
+          text1: ' Your card details not saved.',
+        })
+      : ToastAndroid.show(
+        ' Your card details not saved.',
+          ToastAndroid.SHORT,
+        );
+    }
+  }  
+const card_id = cardId;
+
+  const handleDeleteCard = async () => {
+    try {
+      const response = await fetch(`${API}/deletecard/${card_id}`, {
+        method: 'DELETE',
+      });
+      const result = await response.json();
+      if (result.success === "Your card is deleted") {
+        setCardDetails('')
+        console.log("Card deleted successfully");
+        PLATFORM_IOS
+        ? Toast.show({
+            type: 'success',
+            text1: ' Your Card Deleted Successfully.',
+          })
+        : ToastAndroid.show(
+            'Your Card Deleted Successfully.',
+            ToastAndroid.SHORT,
+          );
+      } else {
+        // console.log("Error deleting card");
+        PLATFORM_IOS
+        ? Toast.show({
+            type: 'success',
+            text1: "Your card is not exist",
+          })
+        : ToastAndroid.show(
+          "Your card is not exist",
+            ToastAndroid.SHORT,
+          );
+      }
+    } catch (error) {
+      console.error("Error deleting card", error);
+    }
+  };
+  
 
   const cardTypeImage = getCardType(getCard_Number);
 
@@ -134,7 +205,7 @@ const user_ID =getUserID;
                 validTill: '',
                 cvv: '',
               }}
-              onSubmit={values => handleAddCard(values)}
+              onSubmit={(values) => handleAddCard(values)}
               validationSchema={validationSchema}>
               {({
                 values,
@@ -146,7 +217,7 @@ const user_ID =getUserID;
               }) => (
                 <>
                   <Image
-                    source={require('../../../assets/images/visaCard.png')}
+                    source={cardTypeImage}
                     // source={cardTypeImage}
                     style={{
                       width: DIMENSIONS.SCREEN_WIDTH * 0.9,
@@ -165,6 +236,7 @@ const user_ID =getUserID;
                     marginBottom:35,
                   }}>
                   <TouchableOpacity
+                  onPress={()=> handleGetCard()}
                     style={{
                       // marginTop: 200,
                       marginLeft:95,
@@ -185,6 +257,7 @@ const user_ID =getUserID;
                     </Text>
                   </TouchableOpacity>
                   <TouchableOpacity
+                  onPress={()=> handleDeleteCard()}
                     style={{
                       
                       marginLeft:35,
@@ -202,41 +275,42 @@ const user_ID =getUserID;
                   <View style={styles.cardNumber_position}>
                     
                     <Text
-                      style={{color: '#fff', fontWeight: '600', fontSize: 13}}>
-                      {values.cardNumber}
+                      style={{color: '#fff', fontWeight: '600', fontSize: 20 }}>
+
+                      {cardDetails ? String(cardDetails.card_number).replace(/^(\d{12})(\d{4})$/, 'xxxx xxxx xxxx $2') : values.cardNumber}
                     </Text>
                     <View style={styles.text_div}>
                     <View style={{gap:5, width:100}}>
                       <Text style={{color: 'gray', fontWeight: '600', fontSize: 8}}>Card Holder</Text>
                     <Text
                       style={{color: '#fff', fontWeight: '600', fontSize: 13}}>
-                      {values.cardHolderName}
+                      {cardDetails? String(cardDetails.cust_name ): values.cardHolderName}
                     </Text>
                     </View>
                     <View style={{gap:5}}>
                     <Text style={{ fontWeight: '600', fontSize: 8,color:'gray'}}>Expires</Text>
                     <Text
                       style={{color: '#fff', fontWeight: '600', fontSize: 13}}>
-                      {values.validTill}
+                      {cardDetails? String(cardDetails.card_exp_month+'/'+cardDetails.card_exp_year):values.validTill}
                     </Text>
                     </View>
                     <View style={{gap:5}}>
                     <Text style={{fontWeight: '600', fontSize: 8,color:'gray'}}>CVV</Text>
                     <Text
                       style={{color: '#fff', fontWeight: '600', fontSize: 13}}>
-                      {values.cvv}
+                      {cardDetails? String(cardDetails.card_cvc):values.cvv}
+                      {/* {cardDetails ? '*'.repeat(String(cardDetails.card_cvc).length) : values.cvv} */}
                     </Text>
                     </View>
                      </View>
                   </View>
                   <HorizontalLine />
-
                   <Input
                     IconLeft={null}
                     errors={undefined}
                     touched={false}
                     value={values.cardHolderName}
-                    onChangeText={handleChange('cardHolderName')}
+                    onChangeText={(text) => {handleChange('cardHolderName')(text),setCardDetails('')}}
                     onBlur={handleBlur('cardHolderName')}
                     text="Card Holder Name"
                     IconRight={() => <Admin />}
@@ -245,7 +319,8 @@ const user_ID =getUserID;
                     bW={1}
                     textWidth={'45%'}
                     placeholderTextColor={COLORS.BLACK}
-                  />
+                      />
+
                   {errors.cardHolderName && touched.cardHolderName && (
                     <Text style={{color: 'red'}}>{errors.cardHolderName}</Text>
                   )}
@@ -255,9 +330,10 @@ const user_ID =getUserID;
                     touched={false}
                     value={values.cardNumber}
                     onChangeText={text => {
+
+                      setCardDetails('');
                       // Remove non-digit characters from the input
                       const cardNumber = text.replace(/\D/g, '');
-
                       // Insert a space after every fourth digit
                       let formattedCardNumber = '';
                       for (let i = 0; i < cardNumber.length; i += 4) {
@@ -266,7 +342,7 @@ const user_ID =getUserID;
 
                       // Remove any trailing space
                       formattedCardNumber = formattedCardNumber.trim();
-
+                      setCreditCard(text)
                       // Update the card number value
                       handleChange('cardNumber')(formattedCardNumber);
                     }}
@@ -293,6 +369,7 @@ const user_ID =getUserID;
                         value={values.validTill}
                         //
                         onChangeText={text => {
+                          setCardDetails('');
                           // Remove non-digit characters from the input
                           const validTill = text.replace(/\D/g, '');
 
@@ -327,8 +404,10 @@ const user_ID =getUserID;
                         IconLeft={null}
                         errors={undefined}
                         touched={false}
-                        value={values.cvv}
-                        onChangeText={handleChange('cvv')}
+                        value={ values.cvv}
+                        onChangeText={(text)=>{handleChange('cvv')(text),
+                        setCardDetails('');
+                      }}
                         onBlur={handleBlur('cvv')}
                         text="CVV"
                         IconRight={null}
@@ -383,7 +462,8 @@ const styles = StyleSheet.create({
   },
   mainDiv_container: {
     paddingHorizontal: 20,
-  
+  width:mobileW,
+  height:mobileH,
     // paddingTop: 30,
   },
   mainDiv_state_ZIP: {
@@ -402,15 +482,15 @@ const styles = StyleSheet.create({
   },
   cardNumber_position: {
     position: 'absolute',
-    top: 130,
-    left: 30,
+    top: 100,
+    left: 40,
   },
   text_div:{
     position: 'relative',
-    top: 45,
-    left: 0,
+    top: 35,
+    left: 10,
     flexDirection:'row',
-    gap:40
+    gap:35
   },
   centeredView: {
     flex: 1,
