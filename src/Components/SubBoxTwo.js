@@ -49,22 +49,35 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     // paddingVertical:15
   },
+  // mainDiv_installation: {
+  //   //backgroundColor: COLORS.GRAY,
+  //   borderRadius: 20,
+  //   marginTop: 20,
+  //   overflow: 'hidden',
+  // },
+  // shadowProp: {
+  //   //backgroundColor: 'white',
+  //   shadowColor: '#000000', 
+  //   shadowOffset: {
+  //     width: 4, 
+  //     height: 6, 
+  //   },
+  //   shadowOpacity: 1, 
+  //   shadowRadius:  4, 
+  //   elevation: Platform.OS === 'android' ? 8 : 0,
+  // },
   mainDiv_installation: {
-    //backgroundColor: COLORS.GRAY,
-    borderRadius: 10,
-    marginTop: 20,
     overflow: 'hidden',
-  },
-  shadowProp: {
-    //backgroundColor: 'white',
-    shadowColor: '#000000', 
+    borderRadius: 10,
+    marginTop: Platform.OS === "ios"?20: 20,
+    shadowColor: '#000000',
     shadowOffset: {
-      width: 4, 
-      height: 6, 
+      width: 4,
+      height: 6,
     },
-    shadowOpacity: 1, 
-    shadowRadius:  4, 
-    elevation: Platform.OS === 'android' ? 8 : 0,
+    shadowOpacity: 0.2,
+    shadowRadius: 5.62,
+    elevation: 8,
   },
   install_touchable: {
     flexDirection: 'row',
@@ -76,9 +89,10 @@ const styles = StyleSheet.create({
     marginLeft: 20,
   },
   installation_text: {
-    fontWeight: 700,
+    fontWeight:"700",
     fontSize: 12,
     paddingLeft: 10,
+    color:COLORS.BLACK,
   },
   
   force_base: {
@@ -106,9 +120,10 @@ const styles = StyleSheet.create({
     backgroundColor:COLORS.GRAY
   },
   kwh_mieq_text: {
-    fontWeight: 800,
+    fontWeight: 700,
     fontSize: 16,
     paddingTop: 8,
+    color:COLORS.BLACK
   },
   second_main_div_kwh: {
     flexDirection: 'column',
@@ -116,6 +131,7 @@ const styles = StyleSheet.create({
     // alignSelf: 'center',
     alignContent: 'center',
     paddingHorizontal: 10,
+    
     
   },
   
@@ -140,5 +156,6 @@ const styles = StyleSheet.create({
   unit_allowed: {
     fontWeight: 400,
     fontSize: 10,
+    color:COLORS.BLACK,
   },
 });

@@ -355,6 +355,7 @@ const styles = StyleSheet.create({
     borderColor: '#808080',
     borderWidth: 1,
     borderRadius: 8,
+    borderColor:COLORS.GREEN,
     // backgroundColor:'black',
     paddingHorizontal: 8,
     // color:"#fff"
@@ -388,6 +389,7 @@ const styles = StyleSheet.create({
     zIndex: 999,
     paddingHorizontal: 6,
     fontSize: 14,
+    fontWeight:'500',
     color: COLORS.BLACK,
   },
   placeholderStyle: {

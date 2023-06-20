@@ -1,13 +1,36 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect , useRef} from 'react';
 import { View, Image, StyleSheet } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import App, { navigationRef } from '../../App';
 import { DIMENSIONS } from '../constants/DIMENSIONS';
-import Introduction from './Introduction';
+import { BackHandler } from 'react-native';
 
 const Splash = () => {
-  const [showIntro, setShowIntro] = useState(false)
-  useEffect(() => {
+  const backHandler = useRef(null);
+
+    useEffect(() => {
+      const timer = setTimeout(() => {
+        SplashScreen.hide();
+        checkFirstTime();
+      }, 3000);
+    
+      const handleBackButton = () => {
+        clearTimeout(timer);
+        BackHandler.exitApp();
+        // return true;
+      };
+    
+      // if (Platform.OS === 'android') {
+      //   BackHandler.addEventListener('hardwareBackPress', handleBackButton);
+      // }
+    
+      return () => {
+        clearTimeout(timer);
+        if (Platform.OS === 'android') {
+          BackHandler.removeEventListener('hardwareBackPress', handleBackButton);
+        }
+      };
+    }, []);
     const checkFirstTime = async () => {
       try {
         
@@ -64,7 +87,10 @@ const styles = StyleSheet.create({
     position: 'absolute',
     width: 200,
     height: 150,
-    left: 83,
+    // left: 83,
+    alignSelf: 'center',
+    resizeMode: 'contain',
+
     top: 141,
   },
   splash_botm_image: {

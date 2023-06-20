@@ -11,7 +11,6 @@ import com.facebook.soloader.SoLoader;
 import java.util.List;
 import android.os.Bundle; 
 import android.content.Intent;
-// import com.chargetime.SplashStartActivity;
 
 public class MainApplication extends Application implements ReactApplication {
 

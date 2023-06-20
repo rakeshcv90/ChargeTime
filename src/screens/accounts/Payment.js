@@ -143,15 +143,18 @@ const user_ID =getUserID;
       const response = await fetch(`${API}/getcarddetails/${user_ID}`);
       const result = await response.json();
        console.log("Result",result[0])
-     //const defaultCard = result[0].filter(item => item.status === 1 )
-     // console.log("-----",defaultCard)
+      // const defaultCard = result[0].filter(item =>{ return item.status === 1})    
+      //  console.log("-----",defaultCard)
+    //  setCardId(defaultCard[0].id);
+
       if(result[0]?.length > 0)
       {
         // console.log("defaultCard",defaultCard[0])
         setSavedCard(result[0]) 
+        console.log(result[0].filter(item =>{ return item.status === 1}),".............");
         
-       // setCardId(defaultCard[0].id);
-       // console.log(defaultCard[0].id,"--------")
+      //  console.log(defaultCard[0].id,"--------")
+
       }else{
         console.log("iiiiiiiiiiii")
       }
@@ -172,7 +175,7 @@ const card_id = cardId;
 
   const handleDeleteCard = async () => {
     try {
-      const response = await fetch(`${API}/deletecard/${card_id}`, {
+      const response = await fetch(`${API}/deletecard/${savedCard?.id}`, {
         method: 'DELETE',
       });
       const result = await response.json();
@@ -342,7 +345,7 @@ const card_id = cardId;
                     flexDirection: 'row',
                     justifyContent: 'center',
                     // width: '100%',
-                    marginHorizontal: 60,
+                    marginHorizontal: 30,
                     marginTop:30,
                     marginBottom:35,
                   }}>
@@ -439,7 +442,7 @@ const card_id = cardId;
                     mV={15}
                     placeholder="1234  5678  xxxx  xxxx"
                     bW={1}
-                    textWidth={'35%'}
+                    textWidth={'42%'}
                     placeholderTextColor={COLORS.BLACK}
                     keyboardType="numeric"
                   />
@@ -574,15 +577,15 @@ const styles = StyleSheet.create({
   },
   cardNumber_position: {
     position: 'absolute',
-    top: 100,
-    left: 40,
+    top: 130,
+    left: 25,
   },
   text_div:{
     position: 'relative',
     top: 35,
     left: 10,
     flexDirection:'row',
-    gap:35
+    gap:25
   },
   centeredView: {
     flex: 1,
