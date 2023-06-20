@@ -108,7 +108,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#F5F5F5',
     width: DIMENSIONS.SCREEN_WIDTH * 0.9,
     height: DIMENSIONS.SCREEN_WIDTH * 0.35,
-    marginVertical: 20,
+    marginVertical: 10,
     flexDirection: 'column-reverse',
     shadowColor: '#000000',
     shadowOffSet: {

@@ -1,12 +1,37 @@
-import React, { useEffect } from 'react';
+import React, { useEffect , useRef} from 'react';
 import { View, Image, StyleSheet } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { navigationRef } from '../../App';
 import SplashScreen from 'react-native-splash-screen';
 import { DIMENSIONS } from '../constants/DIMENSIONS';
+import { BackHandler } from 'react-native';
 
 const Splash = () => {
-  useEffect(() => {
+  const backHandler = useRef(null);
+
+    useEffect(() => {
+      const timer = setTimeout(() => {
+        SplashScreen.hide();
+        checkFirstTime();
+      }, 3000);
+    
+      const handleBackButton = () => {
+        clearTimeout(timer);
+        BackHandler.exitApp();
+        // return true;
+      };
+    
+      // if (Platform.OS === 'android') {
+      //   BackHandler.addEventListener('hardwareBackPress', handleBackButton);
+      // }
+    
+      return () => {
+        clearTimeout(timer);
+        if (Platform.OS === 'android') {
+          BackHandler.removeEventListener('hardwareBackPress', handleBackButton);
+        }
+      };
+    }, []);
     const checkFirstTime = async () => {
       try {
         const isFirstTime = await AsyncStorage.getItem('isFirstTime');
@@ -24,18 +49,8 @@ const Splash = () => {
         navigationRef.navigate('Login');
       }
     };
-
-    // const checkFirstTime=async ()=>{{
-    //   navigationRef.navigate('Introduction');
-    // }}
-
-    const timer = setTimeout(() => {
-      SplashScreen.hide();
-      checkFirstTime();
-    }, 3000);
-
-    return () => clearTimeout(timer);
-  }, []);
+    
+  
 
   return (
     <View style={styles.container}>
@@ -60,7 +75,10 @@ const styles = StyleSheet.create({
     position: 'absolute',
     width: 200,
     height: 150,
-    left: 83,
+    // left: 83,
+    alignSelf: 'center',
+    resizeMode: 'contain',
+
     top: 141,
   },
   splash_botm_image: {

@@ -70,6 +70,7 @@ const styles = StyleSheet.create({
     fontWeight: 700,
     fontSize: 12,
     paddingLeft: 10,
+    color:COLORS.BLACK,
   },
   location_div: {
     flexDirection: 'column',
@@ -84,10 +85,12 @@ const styles = StyleSheet.create({
     fontWeight: 700,
     fontSize: 14,
     paddingLeft: 20,
+    color:COLORS.BLACK
     // paddingRight:250,
   },
   force_base: {
-    fontWeight: 400,
+    fontWeight: 350,
+    color:COLORS.BLACK,
     fontSize: 14,
     paddingLeft: 20,
     // marginRight:200,

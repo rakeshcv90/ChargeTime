@@ -135,7 +135,7 @@ const PersonalDetails = () => {
           bColor={COLORS.BLACK}
           text="Name"
           mV={5}
-          textWidth={'27%'}
+          textWidth={'25%'}
           placeholder= {userData[0]?.name}
           placeholderTextColor={COLORS.BLACK}
           style={{
@@ -158,7 +158,7 @@ const PersonalDetails = () => {
           bColor={COLORS.BLACK}
           text="Phone No."
           mV={15}
-          textWidth={'37%'}
+          textWidth={'35%'}
           placeholder={userData[0]?.mobile}
           placeholderTextColor={COLORS.BLACK}
           style={{
@@ -181,7 +181,7 @@ const PersonalDetails = () => {
           bColor={COLORS.BLACK}
           text="Email"
           mV={55}
-          textWidth={'25%'}
+          textWidth={'23%'}
           placeholder={userData[0]?.email}
           placeholderTextColor={COLORS.BLACK}
           style={{

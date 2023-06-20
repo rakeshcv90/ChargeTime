@@ -12,7 +12,6 @@ import java.util.List;
 import android.os.Bundle; 
 import org.devio.rn.splashscreen.SplashScreen;
 import android.content.Intent;
-// import com.chargetime.SplashStartActivity;
 
 public class MainApplication extends Application implements ReactApplication {
 

@@ -130,7 +130,7 @@ const UpdatePassword= async () =>{
             mV={15}
             bW={1}
             bR={3}
-            textWidth={'60%'}
+            textWidth={'55%'}
             style={{
               color: COLORS.BLACK,
               fontFamily: 'Roboto',
@@ -177,7 +177,7 @@ const UpdatePassword= async () =>{
             mV={5}
             bW={1}
             bR={3}
-            textWidth={'60%'}
+            textWidth={'50%'}
             style={{
               color: COLORS.BLACK,
               fontFamily: 'Roboto',
