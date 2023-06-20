@@ -80,7 +80,7 @@ const userSubsEnergy = async () => {
           <SubBoxOne data={getSubscription} />
           <SubBoxTwo data={getSubscription} />
         
-        </View>
+        </View> 
         <View style={styles.mainDiv_installation}>
       <WaveAnimation />
       </View>
