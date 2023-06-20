@@ -4,6 +4,7 @@ import { createDrawerNavigator } from '@react-navigation/drawer';
 import { DrawerActions, DrawerStatus, DrawerActionHelpers } from '@react-navigation/native';
 import { navigationRef } from '../../App';
 import { PLATFORM_IOS } from '../constants/DIMENSIONS';
+import COLORS from '../constants/COLORS';
 
 
 
@@ -21,17 +22,20 @@ export default function DrawerOpen({navigation}) {
         alignSelf: 'flex-end',
         top: PLATFORM_IOS?70:25,
         zIndex: 5,
+        backgroundColor:COLORS.WHITE,
+        borderRadius:35,
+        padding:10
       }}>
 {changeImage?
   <Image
       source={require('../../assets/images/slash_line.png')}
       resizeMode="cover"
-      style={{width: 40, height: 40}}
+      style={{width: 30, height: 30}}
     />
       :<Image
       source={require('../../assets/images/logo_one.png')}
       resizeMode="cover"
-      style={{width: 50, height: 50}}
+      style={{width: 30, height: 30}}
     />}
     </TouchableOpacity>
   );

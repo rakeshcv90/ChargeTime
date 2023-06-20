@@ -3,20 +3,17 @@ import React from 'react';
 import {LineChart} from 'react-native-chart-kit';
 import COLORS from '../constants/COLORS';
 import {DIMENSIONS} from '../constants/DIMENSIONS';
-import ActivityLoader from './ActivityLoader';
-import {useSelector} from 'react-redux';
 
-const Graph = ({dataOne}) => {
-  
-  let num = dataOne && dataOne.map(item => item?.Usage);
-  let numOne = dataOne && dataOne.map(item => item?.date);
+
+const Graph = ({ dataOne }) => {
+  let num = (dataOne || []).map(item => (item?.Usage === undefined || item?.Usage === [] || item?.Usage === '') ? [0, 0, 0] : item?.Usage);
+  let numOne = (dataOne || []).map(item => (item?.date === undefined || item?.date === [] || item?.date === '') ? ["sun", "mon", "tues"] : item?.date);
 
   const data = {
-   
-    labels: numOne,
+    labels: numOne.length ? numOne : ["sun", "mon", "tues"],
     datasets: [
       {
-        data: num ? num : [],
+        data: num.length ? num : [0, 0, 0],
       },
     ],
   };
@@ -33,19 +30,16 @@ const Graph = ({dataOne}) => {
         kWh
       </Text>
       <View style={styles.container}>
-        {/* {dataOne =={}?<ActivityLoader />:
-         */}
-        <ScrollView horizontal showsHorizontalScrollIndicator={false} >
+        <ScrollView horizontal showsHorizontalScrollIndicator={false}>
           <LineChart
-             data={data}
+            data={data}
             width={DIMENSIONS.SCREEN_WIDTH * 2.1}
             verticalLabelRotation={45}
-            
             height={DIMENSIONS.SCREEN_WIDTH * 0.85}
             withVerticalLines={false}
             bezier
             style={{
-              xAxisLabelRotation: 45, // Rotate the labels by 45 degrees
+              xAxisLabelRotation: 75, // Rotate the labels by 45 degrees
             }}
             chartConfig={{
               ...chartConfig,
@@ -55,12 +49,12 @@ const Graph = ({dataOne}) => {
             }}
           />
         </ScrollView>
-
-        {/* } */}
       </View>
     </>
   );
 };
+
+
 
 const chartConfig = {
   backgroundColor: COLORS.CREAM,

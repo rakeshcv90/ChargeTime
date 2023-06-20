@@ -35,11 +35,11 @@ const Charging = () => {
   return (
     <View
       style={{
-        margin: 20,
-        marginLeft: 30,
+         marginTop: 27,
+        marginLeft: 20,
         backgroundColor: COLORS.WHITE,
         height: 50,
-        width: DIMENSIONS.SCREEN_WIDTH * 0.75,
+        width: DIMENSIONS.SCREEN_WIDTH * 0.65,
         borderRadius: 15,
         shadowColor: '#000',
         shadowOffset: {

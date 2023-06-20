@@ -107,9 +107,10 @@ import {
       height: 20,
     },
     installation_text: {
-      fontWeight: 700,
+      fontWeight: "700",
     fontSize: 12,
     paddingLeft: 10,
+    color:COLORS.BLACK
     },
     installation_text2: {
       fontWeight: '700',

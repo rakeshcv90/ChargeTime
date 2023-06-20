@@ -8,6 +8,7 @@ export default COLORS = {
   CREAM2: "#E3F0D6",
   HALFBLACK:"#808080",
   LIGHT_GREY: '#000000',
-  RED:' #F84E4E',
+  RED:'#F84E4E',
+  
 
 }

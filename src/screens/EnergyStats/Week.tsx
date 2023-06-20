@@ -16,7 +16,10 @@ export default function Week() {
   useEffect(() => {
     setShowSlider(true);
   }, []);
-  const {getWeekGraphData} =  useSelector((state:any) => state)
+  const {getWeekGraphData,getBoxTwoDataForDashboard} =  useSelector((state:any) => state)
+  const [toggleState, setToggleState] = useState(false);
+
+  const handleToggle = (value:any) => setToggleState(value);
  
   return (
     <>
@@ -40,13 +43,14 @@ export default function Week() {
           </View>
           
           <View style={{marginHorizontal: 20,}}>
-          {/* <Graph dataOne={getWeekGraphData.Usage} /> */}
+          <Graph dataOne={getWeekGraphData?.Usage} />
           <BoxTwo />
           </View>
-          <PriceBox />
+          <PriceBox data={getBoxTwoDataForDashboard[0]}/>
         </ScrollView>
       </View>
-      {showSlider && <ButtonSlider />}
+      {/* {showSlider && <ButtonSlider />} */}
+      <ButtonSlider onToggle={handleToggle}  />
     </>
   );
 }

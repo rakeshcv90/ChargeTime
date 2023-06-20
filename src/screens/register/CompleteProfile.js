@@ -104,7 +104,7 @@ export default function CompleteProfile(props) {
         .then(res => res.json())
         .then(data => {
 
-          console.log(data, 'fff');
+          
           dispatch(getCompleteData(data));
 
           

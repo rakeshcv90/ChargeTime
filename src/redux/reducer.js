@@ -21,6 +21,8 @@ const initialState = {
     getChargerStatus:'',
     getDataForPayment:[],
     userSubsData:[],
+    getPurchaseData:[],
+    getDeviceID:''
   };
   
   const rootReducer = (state = initialState, action) => {
@@ -72,6 +74,10 @@ const initialState = {
           return { ...state, getDataForPayment: action.payload }
           case types.USER_SUBS_DATA:
           return { ...state, userSubsData: action.payload }
+          case types.GET_PURCHASE_DATA:
+          return { ...state, getPurchaseData: action.payload }
+          case types.GET_DEVICE_ID:
+          return { ...state, getDeviceID: action.payload }
         //dashboard boxtwo and price details data end
 
       default:

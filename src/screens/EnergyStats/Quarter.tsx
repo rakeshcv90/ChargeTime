@@ -16,7 +16,10 @@ export default function Quarter() {
   useEffect(() => {
     setShowSlider(true);
   }, []);
-  const {getQuarterData} =  useSelector((state:any) => state)
+  const {getQuarterData,getBoxTwoDataForDashboard} =  useSelector((state:any) => state)
+  const [toggleState, setToggleState] = useState(false);
+
+  const handleToggle = (value:any) => setToggleState(value);
   
  
   return (
@@ -41,13 +44,14 @@ export default function Quarter() {
           </View>
           
           <View style={{marginHorizontal: 20,}}>
-          {/* <Graph dataOne={getQuarterData.Usage} /> */}
+          <Graph dataOne={getQuarterData.Usage} />
           <BoxTwo />
           </View>
-          <PriceBox />
+          <PriceBox data={getBoxTwoDataForDashboard[0]} />
         </ScrollView>
       </View>
-      {showSlider && <ButtonSlider />}
+      {/* {showSlider && <ButtonSlider />} */}
+      <ButtonSlider onToggle={handleToggle}  />
     </>
   );
 }
