@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {NavigationContainer, useFocusEffect} from '@react-navigation/native';
+import {DrawerActions, NavigationContainer, useFocusEffect} from '@react-navigation/native';
 import Login from '../screens/login/Login';
 import Register from '../screens/register/Register';
 import VerifyEmail from '../screens/register/VerifyEmail';
@@ -41,6 +41,38 @@ const Stack = createNativeStackNavigator();
 const screenOptions = {
   headerShown: false, // Hide the header for all screens
 };
+export const DrawerScreenPart = ({ navigation }) => {
+  const getEmailData = useSelector((state) => state.getEmailData);
+  useEffect(() => {
+    handleLinkPress();
+  }, []);
+  const handleLinkPress = () => {
+    // Handle the link press action here
+    // For example, navigate to a different screen
+    
+    Linking.openURL(`mailto:${getEmailData}`)
+    // Close the drawer after the navigation
+    navigation.dispatch(DrawerActions.closeDrawer());
+  };
+
+  return (
+    <View>
+      {/* Drawer content */}
+      <TouchableOpacity onPress={handleLinkPress}>
+        <Text></Text>
+      </TouchableOpacity>
+    </View>
+  );
+};
+
+
+
+
+
+
+
+
+
 
 
 const DrawerNavigation = () => {
@@ -202,7 +234,7 @@ const DrawerNavigation = () => {
         }}
         
          name="Contact Us"
-        component={ContactUs}
+        component={DrawerScreenPart}
       />
       <Drawer.Screen
       

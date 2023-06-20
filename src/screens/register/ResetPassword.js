@@ -42,6 +42,7 @@ const validationSchema = Yup.object().shape({
     const {navigation, route} = props;
   const {email} = route?.params;
   const [forLoading,setForLoading] = useState(false)
+  const [showPassword, setShowPassword] = useState(true);
   const handleResetPasswordSubmit = async values => {
     setForLoading(true)
     try{
@@ -132,10 +133,13 @@ setForLoading(false)
             onChangeText={handleChange('password')}
                     onBlur={handleBlur('password')}
             text="New Password"
-            IconRight={() => (
+            // IconRight={() => (
              
-              <StrongPass />
-            )}
+            //   <StrongPass />
+            // )}
+            pasButton={() => setShowPassword(!showPassword)}
+                    passwordInputIcon={showPassword}
+                    secureTextEntry={showPassword}
             mV={10}
             placeholder="Enter your new password..."
             
@@ -143,7 +147,7 @@ setForLoading(false)
             textWidth={'40%'}
             placeholderTextColor={COLORS.BLACK}
             autoCapitalize='none'
-            secureTextEntry={true}
+            
             
           />
           {errors.password && touched.password && (

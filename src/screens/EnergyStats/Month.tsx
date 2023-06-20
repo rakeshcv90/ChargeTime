@@ -47,11 +47,13 @@ export default function Month() {
           <Graph dataOne={getMonthData.Usage} />
           <BoxTwo />
           </View>
+          <View style={{marginBottom:80}}>
           <PriceBox data={getBoxTwoDataForDashboard[0]}/>
+          </View>
         </ScrollView>
       </View>
       {/* {showSlider && <ButtonSlider />} */}
-      <ButtonSlider onToggle={handleToggle}  />
+      {/* <ButtonSlider onToggle={handleToggle}  /> */}
     </>
   );
 }

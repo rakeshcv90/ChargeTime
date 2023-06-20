@@ -44,6 +44,7 @@ const validationSchema = Yup.object().shape({
 });
 export default function Register({navigation}) {
   const [forLoading,setForLoading] = useState(false)
+  const [showPassword, setShowPassword] = useState(true);
   const dispatch =useDispatch();
  
   const handleFormSubmit = async values => {
@@ -132,7 +133,7 @@ export default function Register({navigation}) {
                     onBlur={handleBlur('name')}
                     text="Full Name"
                     IconRight={() => <Admin />}
-                    mV={20}
+                    mV={10}
                     placeholder="Ex. John Doe"
                     bW={1}
                     textWidth={'30%'}
@@ -187,21 +188,42 @@ export default function Register({navigation}) {
                     IconLeft={null}
                     errors={undefined}
                     touched={false}
+                    autoFocus
                     value={values.password}
                     onChangeText={handleChange('password')}
                     onBlur={handleBlur('password')}
                     text="Password"
-                    IconRight={() => <StrongPass />}
+                    passwordInput={true}
+                    pasButton={() => setShowPassword(!showPassword)}
+                    passwordInputIcon={showPassword}
+                    // IconRight={() => <StrongPass />}
                     mV={10}
                     placeholder="Create a strong password"
                     bW={1}
                     textWidth={'30%'}
                     placeholderTextColor={COLORS.BLACK}
-                    secureTextEntry={true}
+                    secureTextEntry={showPassword}
                   />
                   {errors.password && touched.password && (
                     <Text style={{color: 'red'}}>{errors.password}</Text>
                   )}
+                  {/* IconLeft={null}
+            
+            errors={undefined}
+            touched={false}
+            placeholderTextColor={COLORS.BLACK}
+            text="Password"
+            
+            passwordInput={true}
+            pasButton={() => setShowPassword(!showPassword)}
+            secureTextEntry={showPassword}
+            passwordInputIcon={showPassword}
+            onChangeText={text => setPassword(text)}
+            value={password}
+            mV={5}
+            placeholder="Enter your password"
+            bW={1}
+            textWidth={'30%'} */}
                 </View>
 
                 <View

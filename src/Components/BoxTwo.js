@@ -1,4 +1,4 @@
-import {View, Text, StyleSheet, TouchableOpacity, Image} from 'react-native';
+import {View, Text, StyleSheet, TouchableOpacity, Image, Platform} from 'react-native';
 import React from 'react';
 import COLORS from '../constants/COLORS';
 import {Unit} from '../../assets/images/Unit';
@@ -14,7 +14,7 @@ const BoxTwo = ({data}) => {
         />
         <Text style={styles.installation_text}>Plan Details</Text>
       </TouchableOpacity>
-      <View style={[styles.mainDiv_plan_details,styles.shadowProp]}>
+      <View style={[styles.mainDiv_plan_details]}>
         <View style={styles.second_main_div_kwh}>
           {/* <Image source={require('../../assets/images/kwh.png')} /> */}
           <Unit />
@@ -47,25 +47,34 @@ export default BoxTwo;
 const styles = StyleSheet.create({
   managing_width: {
     paddingHorizontal: 20,
-    // paddingVertical:15
+    
   },
   mainDiv_installation: {
-    //backgroundColor: COLORS.GRAY,
-    borderRadius: 10,
-    marginTop: 20,
     overflow: 'hidden',
-  },
-  shadowProp: {
-    //backgroundColor: 'white',
-    shadowColor: '#000000', 
+    borderRadius: 10,
+    marginTop: Platform.OS === "ios"?0: 30,
+    marginBottom:Platform.OS === "ios"?0: 15,
+    
+    shadowColor: '#000000',
     shadowOffset: {
-      width: 4, 
-      height: 6, 
+      width: 4,
+      height: 6,
     },
-    shadowOpacity: 1, 
-    shadowRadius:  4, 
+    shadowOpacity: 0.2,
+    shadowRadius: 5.62,
     elevation: Platform.OS === 'android' ? 8 : 0,
   },
+  // shadowProp: {
+  //   //backgroundColor: 'white',
+  //   shadowColor: '#000000', 
+  //   shadowOffset: {
+  //     width: 4, 
+  //     height: 6, 
+  //   },
+  //   shadowOpacity: 1, 
+  //   shadowRadius:  4, 
+  //   elevation: Platform.OS === 'android' ? 8 : 0,
+  // },
   install_touchable: {
     flexDirection: 'row',
     backgroundColor: COLORS.GREEN,
