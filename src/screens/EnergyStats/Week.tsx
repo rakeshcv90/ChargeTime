@@ -46,11 +46,13 @@ export default function Week() {
           <Graph dataOne={getWeekGraphData?.Usage} />
           <BoxTwo />
           </View>
+          <View style={{marginBottom:80}}>
           <PriceBox data={getBoxTwoDataForDashboard[0]}/>
+          </View>
         </ScrollView>
       </View>
       {/* {showSlider && <ButtonSlider />} */}
-      <ButtonSlider onToggle={handleToggle}  />
+      {/* <ButtonSlider onToggle={handleToggle}  /> */}
     </>
   );
 }

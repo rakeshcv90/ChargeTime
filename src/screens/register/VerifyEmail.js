@@ -20,6 +20,7 @@ import axios from 'axios';
 import { Toast } from 'react-native-toast-message/lib/src/Toast';
 import { PLATFORM_IOS } from '../../constants/DIMENSIONS';
 import ActivityLoader from '../../Components/ActivityLoader';
+import AnimatedLottieView from 'lottie-react-native';
 
 //   const mobileH = Math.round(Dimensions.get('window').height);
 const mobileW = Math.round(Dimensions.get('screen').width);
@@ -32,7 +33,7 @@ export default function VerifyEmail(props) {
   
   const [emailCheck,setEmailCheck] = useState(false)
   const [stopTimer,setStopTimer] = useState(false)
-  
+  const [statusCheck,setStatusCheck] = useState(false)
   
   const [forLoading,setForLoading] = useState(false)
   const [firstDigit, setFirstDigit] = useState('');
@@ -117,6 +118,7 @@ export default function VerifyEmail(props) {
       }).then((res) => res.json())
       .then((data) => {
         if (data.message === "New OTP sent successfully") {
+          setStatusCheck(false)
           PLATFORM_IOS?
         Toast.show({
           type: 'success',
@@ -153,6 +155,7 @@ export default function VerifyEmail(props) {
        
         if (data.message !== "Invalid Email") {
           setEmailCheck(true)
+          setStatusCheck(true)
           PLATFORM_IOS?
         Toast.show({
           type: 'success',
@@ -222,7 +225,7 @@ useEffect(() => {
             <Text style={styles.VerifyEmail_text}>Verify your email</Text>
             <Text style={styles.confirm_text}>Confirm your email address</Text>
             <Text style={styles.sendOtp_text}>
-              We have sent a confirmation OTP email to:
+             {statusCheck ? `We have sent a verification email to:` : `We have sent a confirmation OTP email to:`}
             </Text>
             <TextInput
               style={[
@@ -234,16 +237,17 @@ useEffect(() => {
                 value={email}
             />
             <Text style={styles.check_yourinbox}>
-              Check your inbox and input the OTP here, button to confirm your
-              account.
+              {statusCheck? `Check your inbox and click on the button to confirm your account.
+` : `Check your inbox and input the OTP here to confirm your account.`}
             </Text>
           </View>
           <View style={styles.otp_yet}>
-            <Text style={styles.havenot_received_email}>
-              Haven't received the OTP yet?
+            <Text style={statusCheck? {color:COLORS.BLACK,fontSize:14,fontWeight:"400"}:{color:COLORS.BLACK,fontSize:14,fontWeight:"600"}}
+>
+             {statusCheck?`Verify with OTP instead.`:`Haven't received the OTP yet?`}
             </Text>
             <TouchableOpacity style={styles.resend_OTP_btn} onPress={resendOTp}>
-              <Text style={styles.resend_otp_text}>Resend OTP</Text>
+              <Text style={styles.resend_otp_text}>{statusCheck?`Send OTP`:`Resend OTP`}</Text>
             </TouchableOpacity>
           </View>
           <View
@@ -267,13 +271,27 @@ useEffect(() => {
             </Text>
           </View>
           <View style={styles.otp_yet}>
-            <Text style={styles.verification_email}>
-              Receive verification email instead.
+            <Text style={statusCheck? {color:COLORS.BLACK,fontSize:14,fontWeight:"600",width:mobileW*0.6}:{color:COLORS.BLACK,fontSize:14,fontWeight:"400"}}>
+              {statusCheck? `Haven’t received verification email yet?`:`Receive verification email instead.`}
             </Text>
             <TouchableOpacity style={styles.resend_OTP_btn} onPress={resendLink}>
-              <Text style={styles.resend_otp_text}>Send Link</Text>
+              <Text style={styles.resend_otp_text}>{ statusCheck?`Resend Link`:`Send Link`}</Text>
             </TouchableOpacity>
           </View>
+          {statusCheck ?
+          <View style={{paddingTop:80}} >
+            
+            <AnimatedLottieView
+                  source={{
+                    uri: 'https://assets4.lottiefiles.com/packages/lf20_qliQPUmnXJ.json',
+                  }} // Replace with your animation file
+                  autoPlay
+                  loop
+                  // style={{width: 50, height: 50}}
+                />
+                
+                <Text style={{textAlign:"center",fontWeight:"500",fontSize:14,color:COLORS.BLACK}}>Waiting For Account Verification</Text>
+          </View>:
           <View style={[styles.mainDiv_verify_email, styles.enter_Otp]}>
             <Text style={styles.havenot_received_email}>
               Enter the OTP Below
@@ -341,6 +359,8 @@ useEffect(() => {
               />
             </View>
           </View>
+}
+{statusCheck?'':
           <View
             style={{
               flexDirection: 'row',
@@ -364,6 +384,7 @@ useEffect(() => {
               </Text>
             </TouchableOpacity>
           </View>
+}
           <View style={styles.mainDiv_VErify_account}>
             <Text style={styles.wrong_email_text}>Entered wrong email? </Text>
             <TouchableOpacity onPress={() => navigation.navigate("Register")}>
@@ -391,6 +412,7 @@ const styles = StyleSheet.create({
   verification_email: {
     fontSize: 14,
     fontWeight: '400',
+    color:COLORS.BLACK
   },
   otp_yet: {
     flexDirection: 'row',
@@ -427,9 +449,9 @@ const styles = StyleSheet.create({
   },
 
   havenot_received_email: {
-    fontSize: 14,
+    fontSize:  14,
     fontWeight: '600',
-    color: COLORS.BLACK,
+    color:COLORS.BLACK
   },
   resend_OTP_btn: {
     paddingVertical: 9,
