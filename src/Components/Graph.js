@@ -33,14 +33,14 @@ const Graph = ({ dataOne }) => {
         <ScrollView horizontal showsHorizontalScrollIndicator={false}>
           <LineChart
             data={data}
-            width={DIMENSIONS.SCREEN_WIDTH * 2.1}
+            width={DIMENSIONS.SCREEN_WIDTH * 2.4}
             verticalLabelRotation={45}
-            height={DIMENSIONS.SCREEN_WIDTH * 0.85}
+            height={DIMENSIONS.SCREEN_WIDTH * 0.95}
             withVerticalLines={false}
             bezier
-            style={{
-              xAxisLabelRotation: 75, // Rotate the labels by 45 degrees
-            }}
+            // style={{
+            //   xAxisLabelRotation: 75, // Rotate the labels by 45 degrees
+            // }}
             chartConfig={{
               ...chartConfig,
               labelFontSize: 10, // Adjust the font size to a smaller value

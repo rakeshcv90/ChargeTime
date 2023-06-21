@@ -62,6 +62,7 @@ export default function CompleteProfile(props) {
   };
 
   const renderLabel = () => {
+    
     return <Text style={styles.label}>Installation</Text>;
   };
 

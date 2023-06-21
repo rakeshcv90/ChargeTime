@@ -10,11 +10,13 @@ const ActivityLoader = (props) => {
     <Modal visible={visible} transparent={true} animationType="fade">
       <View
         style={{
-          height: DIMENSIONS.SCREEN_HEIGHT,
-          width: DIMENSIONS.SCREEN_WIDTH,
+          height: 100,
+          width: 100,
           backgroundColor: COLORS.BLACK,
           alignItems: 'center',
-          justifyContent: 'center',
+          alignContent:'center',
+          alignSelf:'center',
+         justifyContent: 'center',
           opacity: 0.8
         }}>
         <ActivityIndicator size={'large'} color={COLORS.GREEN} />
