@@ -1,8 +1,9 @@
-import React, { useEffect , useRef} from 'react';
+import React, { useEffect, useState } from 'react';
 import { View, Image, StyleSheet } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import App, { navigationRef } from '../../App';
 import { DIMENSIONS } from '../constants/DIMENSIONS';
+import Introduction from './Introduction';
 import { BackHandler } from 'react-native';
 
 const Splash = () => {
@@ -31,6 +32,8 @@ const Splash = () => {
         }
       };
     }, []);
+  const [showIntro, setShowIntro] = useState(false)
+  useEffect(() => {
     const checkFirstTime = async () => {
       try {
         

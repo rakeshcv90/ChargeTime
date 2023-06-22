@@ -77,6 +77,15 @@ export const DrawerScreenPart = ({navigation}) => {
 };
 
 
+
+
+
+
+
+
+
+
+
 const DrawerNavigation = () => {
   const [focus, setFocus] = useState();
   const [focusOne, setFocusOne] = useState();
