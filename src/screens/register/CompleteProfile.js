@@ -9,6 +9,7 @@ import {
   TextInput,
   TouchableOpacity,
   ToastAndroid,
+  KeyboardAvoidingView,
 } from 'react-native';
 import COLORS from '../../constants/COLORS';
 import {SignUp} from '../../../assets/images/SignUp';
@@ -20,7 +21,7 @@ import {Installation} from '../../../assets/images/Installation';
 import {Address} from '../../../assets/images/Address';
 import {Dropdown} from 'react-native-element-dropdown';
 import {DIMENSIONS, PLATFORM_IOS} from '../../constants/DIMENSIONS';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import {useSafeAreaFrame} from 'react-native-safe-area-context';
 import {Toast} from 'react-native-toast-message/lib/src/Toast';
 
@@ -47,6 +48,7 @@ export default function CompleteProfile(props) {
   const [locationId, setLocationId] = useState('');
   const [isFocus, setIsFocus] = useState(false);
   const [forLoading,setForLoading] = useState(false)
+  const {userRegisterData} = useSelector(state => state)
   useEffect(() => {
     fetchOptions();
   }, []);
@@ -62,7 +64,7 @@ export default function CompleteProfile(props) {
   };
 
   const renderLabel = () => {
-    return <Text style={styles.label}>Installation</Text>;
+    return <Text style={styles.label}>Installation Location</Text>;
   };
 
   const handleSelect = (id, item) => {
@@ -99,6 +101,7 @@ export default function CompleteProfile(props) {
           addlinetwo: addlinetwo,
           newZipcode: newZipcode,
           newState: newState,
+          ...userRegisterData
         }),
       })
         .then(res => res.json())
@@ -154,15 +157,15 @@ export default function CompleteProfile(props) {
   return (
     <SafeAreaView style={{backgroundColor: COLORS.CREAM, flex: 1}}>
       <ScrollView showsVerticalScrollIndicator={false}
+      scrollEnabled={false}
         keyboardShouldPersistTaps="handled">
+        <KeyboardAvoidingView behavior="position">
       {forLoading?<ActivityLoader /> :""}
-        <View style={styles.mainDiv_signup}>
           <Image
             source={require('../../../assets/images/res.png')}
             resizeMode="contain"
             style={{width: mobileW, height: mobileH / 5}}
           />
-        </View>
         <View style={styles.mainDiv_container}>
           <View style={styles.mainDiv_complete_profile}>
             <Text style={styles.complete_profile}>Complete your profile</Text>
@@ -181,7 +184,7 @@ export default function CompleteProfile(props) {
                 maxHeight={300}
                 labelField="location"
                 valueField="location"
-                placeholder={!isFocus ? 'Installation' : selectedValue}
+                placeholder='Installation' 
                 keyboardAvoiding
                 searchPlaceholder="Search..."
                 value={selectedValue}
@@ -298,6 +301,7 @@ export default function CompleteProfile(props) {
             </TouchableOpacity>
           </View>
         </View>
+        </KeyboardAvoidingView>
       </ScrollView>
     </SafeAreaView>
   );
@@ -318,7 +322,7 @@ const styles = StyleSheet.create({
   mainDiv_complete_profile: {
     // paddingHorizontal: 20,
     backgroundColor: COLORS.CREAM,
-    paddingTop: 20,
+    // paddingTop: 20,
     paddingBottom: 25,
     borderRadius: 15,
   },
@@ -334,7 +338,7 @@ const styles = StyleSheet.create({
     elevation: Platform.OS === 'android' ? 8 : 0,
   },
   complete_profile: {
-    textAlign: 'center',
+    // textAlign: 'center',
     fontSize: 24,
     fontWeight: '800',
     color: COLORS.BLACK,
@@ -388,7 +392,7 @@ const styles = StyleSheet.create({
     height: 50,
     borderColor: '#808080',
     borderWidth: 1,
-    borderRadius: 8,
+    borderRadius: 5,
     // backgroundColor:'black',
     paddingHorizontal: 8,
     // color:"#fff"
@@ -396,15 +400,15 @@ const styles = StyleSheet.create({
   label: {
     position: 'absolute',
     backgroundColor: COLORS.CREAM,
-    left: 11,
+    // left: 11,
     zIndex: 999,
     paddingHorizontal: 8,
-    fontSize: 14,
+    fontSize: 12,
     color: COLORS.BLACK,
-  },
-  placeholderStyle: {
-    fontSize: 14,
-    color: COLORS.GRAY,
+    marginLeft: 35,
+    lineHeight: 16,
+    fontWeight: '400',
+    letterSpacing: 0.4
   },
   selectedTextStyle: {
     fontSize: 16,
@@ -421,5 +425,10 @@ const styles = StyleSheet.create({
   },
   dropdownContainer: {
     backgroundColor: COLORS.CREAM, // Set your desired background color here
+  },
+  placeholderStyle: {
+    fontSize: 14,
+    color: COLORS.LIGHT_GREY,
+    marginHorizontal: 10
   },
 });

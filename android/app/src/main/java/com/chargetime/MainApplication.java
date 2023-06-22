@@ -10,7 +10,6 @@ import com.facebook.react.defaults.DefaultReactNativeHost;
 import com.facebook.soloader.SoLoader;
 import java.util.List;
 import android.os.Bundle; 
-import org.devio.rn.splashscreen.SplashScreen;
 import android.content.Intent;
 // import com.chargetime.SplashStartActivity;
 

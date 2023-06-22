@@ -1,16 +1,19 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { View, Image, StyleSheet } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { navigationRef } from '../../App';
-import SplashScreen from 'react-native-splash-screen';
+import App, { navigationRef } from '../../App';
 import { DIMENSIONS } from '../constants/DIMENSIONS';
+import Introduction from './Introduction';
 
 const Splash = () => {
+  const [showIntro, setShowIntro] = useState(false)
   useEffect(() => {
     const checkFirstTime = async () => {
       try {
+        
         const isFirstTime = await AsyncStorage.getItem('isFirstTime');
-        if (isFirstTime === null) {
+        if (isFirstTime === null || isFirstTime == undefined ) {
+          // setShowIntro(true)
           // First time user, show intro
           await AsyncStorage.setItem('isFirstTime', 'true');
           navigationRef.navigate('Introduction');
@@ -21,7 +24,7 @@ const Splash = () => {
       } catch (error) {
         console.log('Error checking first time:', error);
         // In case of error, show login as fallback
-        navigationRef.navigate('Login');
+        // navigationRef.navigate('Login');
       }
     };
 
@@ -30,14 +33,13 @@ const Splash = () => {
     // }}
 
     const timer = setTimeout(() => {
-      SplashScreen.hide();
       checkFirstTime();
     }, 3000);
 
     return () => clearTimeout(timer);
   }, []);
 
-  return (
+  return (<>
     <View style={styles.container}>
       <Image
         source={require('../../assets/images/splash_screen_top.png')}
@@ -48,6 +50,8 @@ const Splash = () => {
         style={styles.splash_botm_image}
       />
     </View>
+    {/* {showIntro ? <Introduction /> : <App /> } */}
+    </>
   );
 };
 
