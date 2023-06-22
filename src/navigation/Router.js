@@ -80,9 +80,6 @@ export const DrawerScreenPart = ({navigation}) => {
     </View>
   );
 };
-<<<<<<< HEAD
-
-=======
 export const chargerStatus = () => {
   const getChargerStatus = useSelector(state => state.getChargerStatus);
   console.log(getChargerStatus, 'getChargerStatus');
@@ -92,7 +89,7 @@ export const chargerStatus = () => {
     </View>
   );
 };
->>>>>>> origin/final_merge
+
 
 const DrawerNavigation = () => {
   const [focus, setFocus] = useState();
@@ -467,10 +464,10 @@ export default function Router() {
 
   return (
     <Stack.Navigator screenOptions={screenOptions}>
-      <>
+      {/* <>
         <Stack.Screen name="DrawerStack" component={DrawerNavigation} />
-      </>
-      {/* {id == null ? (
+      </> */}
+      {id == null ? (
         <>
           <Stack.Screen name="LoginStack" component={LoginStack} />
         </>
@@ -478,7 +475,7 @@ export default function Router() {
         <>
           <Stack.Screen name="DrawerStack" component={DrawerNavigation} />
         </>
-      )} */}
+      )}
     </Stack.Navigator>
   );
 }
