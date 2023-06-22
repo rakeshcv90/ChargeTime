@@ -2,7 +2,6 @@ import React, { useEffect , useRef} from 'react';
 import { View, Image, StyleSheet } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { navigationRef } from '../../App';
-import SplashScreen from 'react-native-splash-screen';
 import { DIMENSIONS } from '../constants/DIMENSIONS';
 import { BackHandler } from 'react-native';
 
@@ -11,7 +10,7 @@ const Splash = () => {
 
     useEffect(() => {
       const timer = setTimeout(() => {
-        SplashScreen.hide();
+   
         checkFirstTime();
       }, 3000);
     
