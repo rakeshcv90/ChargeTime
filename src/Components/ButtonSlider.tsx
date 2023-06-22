@@ -501,7 +501,7 @@ navigationRef.dispatch(DrawerActions.closeDrawer())
       </PanGestureHandler>
       <Animated.Text style={[styles.swipeText, AnimatedStyles.swipeText]}>
       
-        {showText ? 'Swipe left to stop charging' : 'Swipe right to start charging'}
+        {showText==true? 'Swipe left to stop charging' : 'Swipe right to start charging'}
       </Animated.Text>
       
     </Animated.View>

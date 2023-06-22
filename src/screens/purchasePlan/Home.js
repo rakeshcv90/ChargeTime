@@ -7,6 +7,8 @@ import {
   Animated,
   Image,
   Dimensions,
+  BackHandler,
+  Alert
 } from 'react-native';
 import { useNavigationState } from '@react-navigation/native';
 import {SafeAreaView} from 'react-native-safe-area-context';
@@ -109,6 +111,27 @@ export default function Home(route) {
 
   const [apiData, setApiData] = useState([]);
   const getLocationID = useSelector((state) => state.getLocationID)
+  useEffect(() => {
+    const backAction = () => {
+      Alert.alert(
+        'Exit App',
+        'Are you sure you want to exit?',
+        [
+          {
+            text: 'Cancel',
+            onPress: () => null,
+            style: 'cancel',
+          },
+          { text: 'Exit', onPress: () => BackHandler.exitApp() },
+        ],
+        { cancelable: false }
+      );
+      return true;
+    };
+    const backHandler = BackHandler.addEventListener('hardwareBackPress', backAction);
+
+    return () => backHandler.remove();
+  }, []);
 
 
   useEffect(() => {

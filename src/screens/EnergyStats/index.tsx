@@ -9,6 +9,8 @@ import {
   Image,
   Dimensions,
   StatusBar,
+  BackHandler,
+  Alert
 } from 'react-native';
 import {useSelector} from 'react-redux';
 import {SafeAreaView} from 'react-native-safe-area-context';
@@ -114,6 +116,29 @@ export default function EnergyStats() {
 
   const {getChargerStatus, getDeviceID} = useSelector((state: any) => state);
   const [toggleState, setToggleState] = useState(false);
+  useEffect(() => {
+    const backAction = () => {
+      Alert.alert(
+        'Exit App',
+        'Are you sure you want to exit?',
+        [
+          {
+            text: 'Cancel',
+            onPress: () => null,
+            style: 'cancel',
+          },
+          { text: 'Exit', onPress: () => BackHandler.exitApp() },
+        ],
+        { cancelable: false }
+      );
+      return true;
+    };
+    const backHandler = BackHandler.addEventListener('hardwareBackPress', backAction);
+
+    return () => backHandler.remove();
+  }, []);
+
+
 
   const handleToggle = (value: any) => {
     setToggleState(value);
