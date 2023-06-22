@@ -90,7 +90,7 @@ export default function CompleteProfile(props) {
       newZipcode&&
       newState){
     try {
-      await fetch(`${API}/completeProfile/${user_id}`, {
+      await fetch(`${API}/completeProfile`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -101,7 +101,10 @@ export default function CompleteProfile(props) {
           addlinetwo: addlinetwo,
           newZipcode: newZipcode,
           newState: newState,
-          ...userRegisterData
+          pwa_email: userRegisterData.email,
+          pwa_mobile: userRegisterData.mobile,
+          pwa_password: userRegisterData.password,
+          pwa_name: userRegisterData.name,
         }),
       })
         .then(res => res.json())

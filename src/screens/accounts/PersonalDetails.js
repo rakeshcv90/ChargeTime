@@ -217,7 +217,7 @@ const PersonalDetails = () => {
           <Text 
           style={{
             fontWeight: 'bold',
-            font: 14,
+            fontSize: 14,
             height: 25,
           }}
           >Request here.</Text>
@@ -230,8 +230,8 @@ const styles = StyleSheet.create({
   bottom: {
     marginTop: 400,
     marginLeft: 70,
-    font: 14,
-    fontfamily: FONTS.MONTSERRAT_REGULAR,
+    fontSize: 14,
+    fontFamily: FONTS.MONTSERRAT_REGULAR,
     height: 25,
     color: COLORS.BLACK,
     flexDirection: 'row',
@@ -246,7 +246,7 @@ const styles = StyleSheet.create({
     marginBottom:40,
     width: DIMENSIONS.SCREEN_WIDTH * 0.9,
      height:DIMENSIONS.SCREEN_HEIGHT * 1,
-  // fontfamily: "Roboto",
+  // fontFamily: "Roboto",
   // color: "#000000",
   // fontSize: 24,
   // fontWeight: 700,

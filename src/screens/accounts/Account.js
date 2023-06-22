@@ -61,8 +61,7 @@ const Account = ({navigation}) => {
   const handleLogOut =async () => {
     AsyncStorage.clear();
     persistor.purge();
-    navigation.navigate('Login');
-    console.log('Log out successfully');
+    navigation.navigate('LoginStack');
   }
 
  
@@ -158,10 +157,10 @@ height: DIMENSIONS.SCREEN_HEIGHT * 0.9,
     width: 132,
     height: 20,
     marginLeft:5, 
-    fontfamily: 'Roboto',
+    fontFamily: 'Roboto',
     // fontstyle: 'normal',
-    fontweight: 900,
-    fontsize: 14,
+    fontWeight: '900',
+    fontSize: 14,
     lineheight: 10,
     marginBottom:20,
     marginTop:20,
@@ -174,7 +173,7 @@ height: DIMENSIONS.SCREEN_HEIGHT * 0.9,
     paddingVertical: 7,
   },
   text: {
-    font: 'Roboto',
+    // font: 'Roboto',
     fontSize: 14,
     marginLeft: 10,
     color: 'rgba(0, 0, 0, 1)',

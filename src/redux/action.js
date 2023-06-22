@@ -18,7 +18,7 @@ export const setKwhData = (data) => {
 export const setUserRegisterData = (data) => {
   return {type: types.GET_USER_DATA, payload: data};
 };
-export const getBasePackage = (data) => {
+export const setBasePackage = (data) => {
   return {type:types.GET_BASE_PACKAGE,payload:data}
 }
 

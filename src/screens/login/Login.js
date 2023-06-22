@@ -11,6 +11,7 @@ import {
   Platform,
   ToastAndroid,
   KeyboardAvoidingView,
+  BackHandler,
 } from 'react-native';
 import {SafeAreaView} from 'react-native-safe-area-context';
 
@@ -43,6 +44,7 @@ import {
   setPurchaseData,
   setDeviceId,
   setIsAuthorized,
+  setBasePackage,
 } from '../../redux/action';
 import axios from 'axios';
 import {navigationRef} from '../../../App';
@@ -59,87 +61,139 @@ export default function Login({navigation}) {
   const dispatch = useDispatch();
   const {getUserID, getGraphData} = useSelector(state => state);
   // console.log(getUserID,"object")
+  useEffect(() => {
+    // const backAction = () => {
+    //   Alert.alert(
+    //     'Exit App',
+    //     'Are you sure you want to exit?',
+    //     [
+    //       {
+    //         text: 'Cancel',
+    //         onPress: () => null,
+    //         style: 'cancel',
+    //       },
+    //       { text: 'Exit', onPress: () => BackHandler.exitApp() },
+    //     ],
+    //     { cancelable: false }
+    //   );
+    //   return true;
+    // };
+    BackHandler.addEventListener('hardwareBackPress', () => BackHandler.exitApp());
 
+    // return () => backHandler.remove();
+  }, []);
+  const packagePlans = async locationID => {
+    //  loginData = await AsyncStorage.getItem('loginDataOne');
+
+    try {
+      const response = await axios.get(`${API}/packagePlan/${locationID}`);
+
+      if (response?.data?.locations.length == 0) {
+        setForLoading(true);
+        setShowPackage(true);
+      } else {
+        console.log(response.data);
+        dispatch(setBasePackage(response.data.locations));
+        dispatch(setIsAuthorized(true));
+        setForLoading(false);
+        navigation.navigate('DrawerStack');
+      }
+    } catch (error) {
+      console.error('Error fetching data:', error);
+      setForLoading(false);
+    }
+  };
   const loginFunction = async () => {
     setForLoading(true);
     try {
-      await fetch(`${API}/logins`, {
+      const res = await axios(`${API}/logins`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({
+        data: {
           email: email,
           password: password,
-        }),
-      })
-        .then(res => res.json())
-        .then(data => {
-          console.log(data, 'ttww');
-          AsyncStorage.setItem('locationID', JSON.stringify(data?.locationid));
+        },
+      });
+      if (res.data) {
+        console.log(res.data, 'ttww');
+        
+        // AsyncStorage.setItem('loginDataOne', JSON.stringify(data.locationid ));
+        
+        if (res.data.message == 'Login Successfull') {
+          AsyncStorage.setItem(
+            'locationID',
+            JSON.stringify(res.data?.locationid),
+          );
+          PLATFORM_IOS
+            ? Toast.show({
+                type: 'success',
+                text1: 'Login SuccessfulL',
+              })
+            : ToastAndroid.show('Login Successfull', ToastAndroid.SHORT);
+          console.log(res.data, 'Loginnnnnnnnnn');
+          // if(data.status == "true"){
+          //   navigation.navigate('EnergyStats');
+          // }else if(data.status == "false"){
 
-          // AsyncStorage.setItem('loginDataOne', JSON.stringify(data.locationid ));
-
-          if (data.message == 'Login Successfully') {
-            PLATFORM_IOS
-              ? Toast.show({
-                  type: 'success',
-                  text1: 'Login Successful',
-                })
-              : ToastAndroid.show('Login Successfully', ToastAndroid.SHORT);
-            console.log(data.status, 'qqq');
-            // if(data.status == "true"){
-            //   navigation.navigate('EnergyStats');
-            // }else if(data.status == "false"){
-
-            // }
-            getDeviceIDData(data?.user_id);
-            fetchGraphData(data?.user_id);
-            fetchWeekGraphData(data?.user_id);
-            fetchMonthGraphData(data?.user_id);
-            fetchQuarterGraphData(data?.user_id);
-            fetchYearGraphData(data?.user_id);
-            fetchBoxTwoDashboardData(data?.user_id);
-            fetchStatusdata(data?.user_id);
-            getPlanCurrent(data?.user_id);
-            // fetchPriceDetailsDashboardData(data?.user_id)
-            dispatch(setEmailData(data?.email));
-            dispatch(setPackageStatus(data?.status == 'true' ? true : false));
-            dispatch(setUserID(data?.user_id));
-            dispatch(getLocationID(data?.locationid));
-            dispatch(setIsAuthorized(true));
-            // else
-            // if(getGraphData.length)
-            // navigation.navigate('DrawerStack');
-            // setForLoading(false)
-
-            //  setTimeout(() => {
-            //  },5000)
+          // }
+          if (res.data.status == 'true') {
+            getDeviceIDData(res.data);
+            dispatch(setEmailData(res.data?.email));
+            dispatch(setPackageStatus(true));
+            dispatch(setUserID(res.data?.user_id));
+            dispatch(getLocationID(res.data?.locationid));
           } else {
-            PLATFORM_IOS
-              ? Toast.show({
-                  type: 'error',
-                  text1: 'Login Failed',
-                })
-              : ToastAndroid.show('Login Failed', ToastAndroid.SHORT);
-            setForLoading(false);
+            packagePlans(res.data?.locationid);
+            dispatch(setEmailData(res.data?.email));
+            dispatch(setPackageStatus(false));
+            dispatch(setUserID(res.data?.user_id));
+            dispatch(getLocationID(res.data?.locationid));
           }
-        })
-        .catch(error => {
-          console.error(error);
+          // fetchPriceDetailsDashboardData(data?.user_id)
+          // else
+          // if(getGraphData.length)
+          // navigation.navigate('DrawerStack');
+          // setForLoading(false)
+
+          //  setTimeout(() => {
+          //  },5000)
+        } else {
+          PLATFORM_IOS
+            ? Toast.show({
+                type: 'error',
+                text1: 'Login Failed',
+              })
+            : ToastAndroid.show('Login Failed', ToastAndroid.SHORT);
           setForLoading(false);
-        });
+        }
+      }
     } catch (err) {
+      setForLoading(false);
       console.log(err);
     }
   };
 
-  const getDeviceIDData = userID => {
+  const getDeviceIDData = prevData => {
     axios
-      .get(`${API}/devicecheck/${userID}}`)
+      .get(`${API}/devicecheck/${prevData?.user_id}}`)
       .then(res => {
-        dispatch(setDeviceId(res.data.message));
         console.log(res.data, 'tt');
+        if (res.data.status == 'False') {
+          dispatch(setDeviceId(res.data.message));
+          getPlanCurrent(prevData?.user_id);
+        } else {
+          dispatch(setDeviceId(''));
+          fetchGraphData(prevData?.user_id);
+          fetchWeekGraphData(prevData?.user_id);
+          fetchMonthGraphData(prevData?.user_id);
+          fetchQuarterGraphData(prevData.user_id);
+          fetchYearGraphData(prevData?.user_id);
+          fetchBoxTwoDashboardData(prevData?.user_id);
+          fetchStatusdata(prevData?.user_id);
+          getPlanCurrent(prevData?.user_id);
+        }
       })
       .catch(err => {
         console.log(err);
@@ -186,9 +240,8 @@ export default function Login({navigation}) {
         } else {
           remaingData = res.data?.kwh_unit_overusage;
         }
-
+        console.log('first', res.data);
         dispatch(setRemainingData(remaingData));
-        navigation.navigate('DrawerStack');
         setForLoading(false);
       })
       .catch(err => {
@@ -275,6 +328,8 @@ export default function Login({navigation}) {
         setForLoading(false);
 
         dispatch(setPurchaseData(res?.data));
+        dispatch(setIsAuthorized(true));
+        navigation.navigate('DrawerStack');
       })
       .catch(err => {
         setForLoading(false);
@@ -297,13 +352,13 @@ export default function Login({navigation}) {
   //week data end
   return (
     <SafeAreaView style={{backgroundColor: COLORS.CREAM, flex: 1}}>
-      <KeyboardAvoidingView behavior='position' >
+      <KeyboardAvoidingView behavior="position" style={{marginTop: 10}}>
         {forLoading ? <ActivityLoader /> : ''}
-          <Image
-            source={require('../../../assets/images/log.png')}
-            resizeMode="contain"
-            style={{width: mobileW, height: mobileW * 0.7 }}
-          />
+        <Image
+          source={require('../../../assets/images/log.png')}
+          resizeMode="contain"
+          style={{width: mobileW, height: mobileW * 0.7}}
+        />
         <View style={styles.login_css}>
           <Text style={styles.login}>Login</Text>
 
@@ -452,7 +507,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
-    marginTop: 50,
+    marginTop: 30,
     paddingBottom: 20,
   },
   dont_have_text: {

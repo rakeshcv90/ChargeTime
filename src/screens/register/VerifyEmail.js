@@ -65,13 +65,13 @@ export default function VerifyEmail(props) {
       sixDigit;
 
     try {
-      if (email !== '' && otp.length !== 6) {
+      if (email !== '' && otp.length == 6) {
         await fetch(`${API}/verifyotp`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
           },
-          body: JSON.stringify({pwa_email: email, otp: otp}),
+          body: JSON.stringify({email: email, otp: otp}),
         })
           .then(res => res.json())
           .then(data => {
@@ -503,9 +503,7 @@ export default function VerifyEmail(props) {
               </View>
             </View>
           )}
-          {statusCheck ? (
-            ''
-          ) : (
+          {!statusCheck && (
             <View
               style={{
                 flexDirection: 'row',
@@ -624,7 +622,7 @@ const styles = StyleSheet.create({
   otp_box: {
     display: 'flex',
     flexDirection: 'row',
-    justifyContent: 'flex-start',
+    justifyContent: 'center',
     gap: 10,
     paddingTop: 15,
   },

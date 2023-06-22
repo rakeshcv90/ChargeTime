@@ -21,7 +21,7 @@ import axios from 'axios';
 import ActivityLoader from '../../Components/ActivityLoader';
 
 import {useDispatch} from 'react-redux';
-import {getBasePackage} from '../../redux/action';
+import {setBasePackage} from '../../redux/action';
 
 import {useSelector} from 'react-redux';
 import SliderOne from './SliderOne';
@@ -123,7 +123,7 @@ export default function HomeOne(route) {
         setShowPackage(true);
       } else {
         setApiData(response?.data?.locations);
-        dispatch(getBasePackage(response.data.locations));
+        dispatch(setBasePackage(response.data.locations));
         setIsLoading(false);
       }
     } catch (error) {

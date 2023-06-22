@@ -49,9 +49,6 @@ export default function Register({navigation}) {
   const dispatch = useDispatch();
   const {userRegisterData} = useSelector(state => state);
 
-  useEffect(() => {
-    navigation.goBack ? dispatch(setUserRegisterData([])) : null;
-  }, [navigation]);
 
   const handleFormSubmit = async values => {
     setForLoading(true);
@@ -60,8 +57,8 @@ export default function Register({navigation}) {
         name: values.name,
         email: values.email,
       });
-      console.log(response.data);
-      if (response.data.message != 'Your Email is already exist') {
+      console.log(response.data.error);
+      if (response.data.error != 1) {
         PLATFORM_IOS
           ? Toast.show({
               type: 'success',
@@ -87,10 +84,10 @@ export default function Register({navigation}) {
         PLATFORM_IOS
           ? Toast.show({
               type: 'error',
-              text1: 'Your Email is already exist.',
+              text1: 'User not Found',
             })
           : ToastAndroid.show(
-              'Your Email is already exist.',
+              'User not Found',
               ToastAndroid.SHORT,
             );
         setForLoading(false);
@@ -103,6 +100,7 @@ export default function Register({navigation}) {
   return (
     <SafeAreaView style={{backgroundColor: COLORS.CREAM, flex: 1}}>
       <ScrollView
+      // scrollEnabled={false}
         showsVerticalScrollIndicator={false}
         keyboardShouldPersistTaps="handled">
         <KeyboardAvoidingView behavior="position">
@@ -307,7 +305,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
-    marginTop: 50,
+    marginTop: 30,
     paddingBottom: 15,
   },
   dont_have_text: {

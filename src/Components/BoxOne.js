@@ -11,7 +11,7 @@ import { useSelector } from 'react-redux';
 const mobileW = Math.round(Dimensions.get('screen').width);
 const BoxOne = ({data}) => {
   // const {navigation, route} = props;
-  const getBasePackage = useSelector((state)=> state.getBasePackage)
+  const setBasePackage = useSelector((state)=> state.setBasePackage)
   
 
 
@@ -27,7 +27,7 @@ const BoxOne = ({data}) => {
         <View style={styles.location_div}>
           <Vanderberg style={styles.img_width} />
           <Text style={styles.force_base}>{data?.location}</Text>
-              {/* <Text style={styles.force_base}>{getBasePackage[0].location}</Text> */}
+              {/* <Text style={styles.force_base}>{setBasePackage[0].location}</Text> */}
 
         </View>
         <Image
@@ -44,7 +44,7 @@ const BoxOne = ({data}) => {
           /> */}
             <Connecticut style={styles.img_width} />
             <Text style={styles.force_base}>{data?.state}</Text>
-            {/* <Text style={styles.force_base}>{getBasePackage[0].state}</Text> */}
+            {/* <Text style={styles.force_base}>{setBasePackage[0].state}</Text> */}
           </View>
           <View style={styles.state_div}>
             <Image
@@ -53,7 +53,7 @@ const BoxOne = ({data}) => {
               style={{width: 20, height: 20}}
             />
             <Text style={styles.force_base}>{data?.ZIP_code}</Text>
-            {/* <Text style={styles.force_base}>{getBasePackage[0].ZIP_code}</Text> */}
+            {/* <Text style={styles.force_base}>{setBasePackage[0].ZIP_code}</Text> */}
 
           </View>
         </View>

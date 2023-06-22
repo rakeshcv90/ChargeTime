@@ -50,17 +50,16 @@ const ForgetPassword = ({navigation}) => {
   const handleRemberPassWord = async values => {
     setForLoading(true);
     try {
-      await fetch(`${API}/forgetPassword`, {
+     const res = await axios(`${API}/forgetPassword`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(values),
+        data: values,
       })
-        .then(res => res.json())
-        .then(data => {
-          console.log(data);
-          if (data.success == true) {
+        if(res.data) {
+          console.log(res.data);
+          if (res.data.success == true) {
             PLATFORM_IOS
               ? Toast.show({
                   type: 'success',
@@ -69,7 +68,7 @@ const ForgetPassword = ({navigation}) => {
               : ToastAndroid.show('Otp sent successfully.', ToastAndroid.SHORT);
             // navigation.navigate('ResetPassword', {email: values});
             setForLoading(false);
-            setShowOTP(!showOTP);
+            setShowOTP(true);
             setEmail(values.email);
           } else {
             PLATFORM_IOS
@@ -82,7 +81,7 @@ const ForgetPassword = ({navigation}) => {
 
             setForLoading(false);
           }
-        });
+        }
     } catch (err) {
       console.log(err);
       setForLoading(false);
@@ -103,18 +102,17 @@ const ForgetPassword = ({navigation}) => {
       if (email !== '' && otp !== '') {
         let payload = new FormData();
         payload.append('email', email);
-        payload.append('otp', otp);
+        payload.append('randomotp', otp);
         console.log(payload);
-        const res = await axios('https://tro.tentoptoday.com/Development/public/api/verifyotp', {
+        const res = await axios(`${API}/forgetverifyOtp`, {
           method: 'POST',
           headers: {
-            // 'Content-Type': 'multipart/form-data',
+            'Content-Type': 'multipart/form-data',
           },
           data: payload,
         });
-        console.log('RESSSSSSSSS',res);
-        if (res) {
-          if (res) {
+        if (res.data) {
+          if (res.data.message == 'OTP verification successful' ) {
             PLATFORM_IOS
               ? Toast.show({
                   type: 'success',
@@ -162,15 +160,12 @@ const ForgetPassword = ({navigation}) => {
 
   return (
     <SafeAreaView style={{backgroundColor: COLORS.CREAM, flex: 1}}>
-      <ScrollView
-        showsVerticalScrollIndicator={false}
-        keyboardShouldPersistTaps="handled">
-        <KeyboardAvoidingView behavior="position">
+        <KeyboardAvoidingView behavior="position" style={{marginTop: 10}} >
           {forLoading ? <ActivityLoader /> : ''}
           <Image
             source={require('../../../assets/images/log.png')}
             resizeMode="contain"
-            style={{width: mobileW}}
+            style={{width: mobileW, height: mobileW * 0.7  }}
           />
           <View style={styles.super_div}>
             <Formik
@@ -240,105 +235,146 @@ const ForgetPassword = ({navigation}) => {
             </Formik>
             {showOTP && (
               <>
-                <View style={styles.mainDiv_verify_email}>
-                  <Text style={styles.havenot_received_email}>
-                    Enter the OTP Below
-                  </Text>
-                  <View style={styles.otp_box}>
-                    <TextInput
-                      ref={otp1}
-                      onChangeText={value => {
-                        if (value != '') {
-                          otp2.current.focus();
-                          setFirstDigit(value);
-                        } else setFirstDigit('');
-                      }}
-                      keyboardType="numeric"
-                      maxLength={1}
-                      style={styles.textInput_otp}
-                      value={firstDigit}
-                    />
-                    <TextInput
-                      ref={otp2}
-                      onChangeText={value => {
-                        if (value != '') {
-                          otp3.current.focus();
-                          setsecondDigit(value);
-                        } else {
-                          otp1.current.focus();
-                          setFirstDigit('');
-                        }
-                      }}
-                      keyboardType="numeric"
-                      maxLength={1}
-                      style={styles.textInput_otp}
-                      value={secondDigit}
-                    />
-                    <TextInput
-                      keyboardType="numeric"
-                      ref={otp3}
-                      onChangeText={value => {
-                        if (value != '') {
-                          otp4.current.focus();
-                          setthirdDigit(value);
-                        } else {
-                          otp2.current.focus();
-                          setsecondDigit('');
-                        }
-                      }}
-                      maxLength={1}
-                      style={styles.textInput_otp}
-                      value={thirdDigit}
-                    />
-                    <TextInput
-                      keyboardType="numeric"
-                      ref={otp4}
-                      onChangeText={value => {
-                        if (value != '') {
-                          otp5.current.focus();
-                          setforthDigit(value);
-                        } else {
-                          otp3.current.focus();
-                          setthirdDigit('');
-                        }
-                      }}
-                      maxLength={1}
-                      style={styles.textInput_otp}
-                      value={forthDigit}
-                    />
-                    <TextInput
-                      keyboardType="numeric"
-                      ref={otp5}
-                      onChangeText={value => {
-                        if (value != '') {
-                          otp6.current.focus();
-                          setfifthDigit(value);
-                        } else {
-                          otp4.current.focus();
-                          setforthDigit('');
-                        }
-                      }}
-                      maxLength={1}
-                      style={styles.textInput_otp}
-                      value={fifthDigit}
-                    />
-                    <TextInput
-                      keyboardType="numeric"
-                      ref={otp6}
-                      onChangeText={value => {
-                        if (value != '') {
-                          setSixDigit(value);
-                        } else {
-                          otp5.current.focus();
-                          setfifthDigit('');
-                        }
-                      }}
-                      maxLength={1}
-                      style={styles.textInput_otp}
-                      value={sixDigit}
-                    />
-                  </View>
+              <View style={styles.mainDiv_verify_email}>
+                <Text style={styles.havenot_received_email}>
+                  Enter the OTP Below
+                </Text>
+                <View style={styles.otp_box}>
+                  <TextInput
+                    ref={otp1}
+                    onChangeText={value => {
+                      if (value != '') {
+                        otp2.current.focus();
+                        setFirstDigit(value);
+                      }
+                      // else setFirstDigit('');
+                    }}
+                    keyboardType="numeric"
+                    maxLength={1}
+                    style={styles.textInput_otp}
+                    value={firstDigit}
+                    onKeyPress={({nativeEvent}) => {
+                      nativeEvent.key == 'Backspace' && setFirstDigit('');
+                    }}
+                  />
+                  <TextInput
+                    ref={otp2}
+                    onChangeText={value => {
+                      if (value != '') {
+                        otp3.current.focus();
+                        setsecondDigit(value);
+                      }
+                      // else {
+                      //   otp1.current.focus();
+                      //   setFirstDigit('');
+                      // }
+                    }}
+                    keyboardType="numeric"
+                    maxLength={1}
+                    style={styles.textInput_otp}
+                    value={secondDigit}
+                    onKeyPress={({nativeEvent}) => {
+                      if (nativeEvent.key == 'Backspace') {
+                        setFirstDigit('');
+                        otp1.current.focus();
+                      }
+                    }}
+                  />
+                  <TextInput
+                    keyboardType="numeric"
+                    ref={otp3}
+                    onChangeText={value => {
+                      if (value != '') {
+                        otp4.current.focus();
+                        setthirdDigit(value);
+                      }
+                      // else {
+                      //   otp2.current.focus();
+                      //   setsecondDigit('');
+                      // }
+                    }}
+                    maxLength={1}
+                    style={styles.textInput_otp}
+                    value={thirdDigit}
+                    onKeyPress={({nativeEvent}) => {
+                      if (nativeEvent.key == 'Backspace') {
+                        setsecondDigit('');
+                        otp2.current.focus();
+                      }
+                    }}
+                  />
+                  <TextInput
+                    keyboardType="numeric"
+                    ref={otp4}
+                    onChangeText={value => {
+                      if (value != '') {
+                        otp5.current.focus();
+                        setforthDigit(value);
+                      }
+                      // else {
+                      //   otp3.current.focus();
+                      //   setthirdDigit('');
+                      // }
+                    }}
+                    maxLength={1}
+                    style={styles.textInput_otp}
+                    value={forthDigit}
+                    onKeyPress={({nativeEvent}) => {
+                      if (nativeEvent.key == 'Backspace') {
+                        otp3.current.focus();
+                        setthirdDigit('');
+                      }
+                    }}
+                  />
+                  <TextInput
+                    keyboardType="numeric"
+                    ref={otp5}
+                    onChangeText={value => {
+                      if (value != '') {
+                        otp6.current.focus();
+                        setfifthDigit(value);
+                      }
+                      // else {
+                      //   otp4.current.focus();
+                      //   setforthDigit('');
+                      // }
+                    }}
+                    maxLength={1}
+                    style={styles.textInput_otp}
+                    value={fifthDigit}
+                    onKeyPress={({nativeEvent}) => {
+                      if (nativeEvent.key == 'Backspace') {
+                        otp4.current.focus();
+                        setforthDigit('');
+                      }
+                    }}
+                  />
+                  <TextInput
+                    keyboardType="numeric"
+                    ref={otp6}
+                    onChangeText={value => {
+                      if (value != '') {
+                        setSixDigit(value);
+                      }
+                      // else {
+                      //   otp5.current.focus();
+                      //   setfifthDigit('');
+                      // }
+                    }}
+                    maxLength={1}
+                    style={styles.textInput_otp}
+                    value={sixDigit}
+                    onKeyPress={({nativeEvent}) => {
+                      if (nativeEvent.key == 'Backspace') {
+                        otp5.current.focus();
+                        setfifthDigit('');
+                        setSixDigit('');
+                      }
+                    }}
+                    onSubmitEditing={verifyOTP}
+                  />
                 </View>
+              </View>
                 <TouchableOpacity
                   onPress={() => verifyOTP()}
                   style={{
@@ -365,12 +401,11 @@ const ForgetPassword = ({navigation}) => {
                 Remember your password?{' '}
               </Text>
               <TouchableOpacity onPress={() => navigation.navigate('Login')}>
-                <Text style={styles.sign_up}>Sign In</Text>
+                <Text style={styles.sign_up}>Log In</Text>
               </TouchableOpacity>
             </View>
           </View>
         </KeyboardAvoidingView>
-      </ScrollView>
     </SafeAreaView>
   );
 };
@@ -385,7 +420,7 @@ const styles = StyleSheet.create({
     width: mobileW,
   },
   mainDiv_forget_ur_pass: {
-    // marginTop: 35,
+    marginTop: 35,
     marginBottom: 20,
 
     // paddingVertical: 20,
@@ -439,13 +474,13 @@ const styles = StyleSheet.create({
   otp_box: {
     display: 'flex',
     flexDirection: 'row',
-    justifyContent: 'flex-start',
+    justifyContent: 'center',
     gap: 10,
     paddingTop: 15,
   },
   textInput_otp: {
-    width: 50,
-    height: Platform.OS === 'ios' ? 50 : 50,
+    width: 45,
+    height: 45,
     borderRadius: 15,
     backgroundColor: COLORS.BROWN,
     paddingHorizontal: 20,
