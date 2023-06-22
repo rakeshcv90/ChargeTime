@@ -42,6 +42,8 @@ const validationSchema = Yup.object().shape({
     const {navigation, route} = props;
   const {email} = route?.params;
   const [forLoading,setForLoading] = useState(false)
+  const [showPassword, setShowPassword] = useState(true);
+  const [confirmShow ,setConfirmShow] = useState(true)
   const handleResetPasswordSubmit = async values => {
     setForLoading(true)
     try{
@@ -123,7 +125,7 @@ setForLoading(false)
             <View style={styles.mainDiv_forget_ur_pass}>
               <Text style={styles.forget_password}>Reset Password?</Text>
               <View style={{marginTop:20}}>
-              <Input
+              {/* <Input
             IconLeft={null}
             
             errors={undefined}
@@ -132,10 +134,13 @@ setForLoading(false)
             onChangeText={handleChange('password')}
                     onBlur={handleBlur('password')}
             text="New Password"
-            IconRight={() => (
+            // IconRight={() => (
              
-              <StrongPass />
-            )}
+            //   <StrongPass />
+            // )}
+            pasButton={() => setShowPassword(!showPassword)}
+                    passwordInputIcon={showPassword}
+                    secureTextEntry={showPassword}
             mV={10}
             placeholder="Enter your new password..."
             
@@ -143,9 +148,29 @@ setForLoading(false)
             textWidth={'40%'}
             placeholderTextColor={COLORS.BLACK}
             autoCapitalize='none'
-            secureTextEntry={true}
+            autoFocus
             
-          />
+          /> */}
+          <Input
+                    IconLeft={null}
+                    errors={undefined}
+                    touched={false}
+                    autoFocus
+                    value={values.password}
+                    onChangeText={handleChange('password')}
+                    onBlur={handleBlur('password')}
+                    text="New Password"
+                    passwordInput={true}
+                    pasButton={() => setShowPassword(!showPassword)}
+                    passwordInputIcon={showPassword}
+                    // IconRight={() => <StrongPass />}
+                    mV={10}
+                    placeholder="Enter your new password..."
+                    bW={1}
+                    textWidth={'40%'}
+                    placeholderTextColor={COLORS.BLACK}
+                    secureTextEntry={showPassword}
+                  />
           {errors.password && touched.password && (
                     <Text style={{color: 'red'}}>{errors.password}</Text>
                   )}
@@ -158,11 +183,14 @@ setForLoading(false)
             onChangeText={handleChange('password_confirmation')}
                     onBlur={handleBlur('password_confirmation')}
             text="Re-enter Password"
-            IconRight={() => (
+            passwordInput={true}
+                    pasButton={() => setConfirmShow(!confirmShow)}
+                    passwordInputIcon={confirmShow}
+            // IconRight={() => (
              
-              <StrongPass />
-            )}
-            secureTextEntry={true}
+            //   <StrongPass />
+            // )}
+            secureTextEntry={confirmShow}
             mV={10}
             placeholder="Re-enter your new password.."
             

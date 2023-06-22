@@ -9,7 +9,6 @@ const Charging = () => {
   // const [isSliding, setIsSliding] = useState(false);
 
   useEffect(() => {
-    
     Animated.timing(slideAnimation, {
       toValue: 0,
       duration: 300,
@@ -17,9 +16,7 @@ const Charging = () => {
     }).start(() => {
       // setIsSliding(!isSliding);
     });
-
-    
-  },[]);
+  }, []);
 
   const slideButtonStyle = {
     transform: [
@@ -35,11 +32,11 @@ const Charging = () => {
   return (
     <View
       style={{
-         marginTop: 27,
+        marginTop: 27,
         marginLeft: 20,
         backgroundColor: COLORS.WHITE,
         height: 50,
-        width: DIMENSIONS.SCREEN_WIDTH * 0.65,
+        width: (DIMENSIONS.SCREEN_WIDTH * 60) / 100,
         borderRadius: 15,
         shadowColor: '#000',
         shadowOffset: {
@@ -61,7 +58,6 @@ const Charging = () => {
           // justifyContent: 'center',
           alignItems: 'center',
           flexDirection: 'row',
-          
         }}>
         <AnimatedLottieView
           source={{
@@ -72,6 +68,16 @@ const Charging = () => {
           style={{width: 50, height: 50}}
         />
       </LinearGradient>
+      <View
+        style={{
+          marginHorizontal: 10,
+          position: 'absolute',
+          top: (DIMENSIONS.SCREEN_HEIGHT * 2) / 100,
+
+          alignSelf: 'center',
+        }}>
+        <Text style={{textAlign:'center',color:COLORS.BLACK,fontSize:15,fontWeight:'500',lineHeight:17}}>charging ...</Text>
+      </View>
     </View>
   );
 };

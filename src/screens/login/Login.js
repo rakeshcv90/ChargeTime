@@ -293,7 +293,7 @@ export default function Login({navigation}) {
       <ScrollView
         showsVerticalScrollIndicator={false}
         keyboardShouldPersistTaps="handled">
-          {forLoading?<ActivityLoader /> :""}
+          
         <View style={styles.login_img}>
           <Image
             source={require('../../../assets/images/log.png')}
@@ -361,6 +361,7 @@ export default function Login({navigation}) {
 
               marginHorizontal: 20,
             }}>
+              {forLoading?<ActivityLoader /> :""}
             <TouchableOpacity
               onPress={loginFunction}
               style={{

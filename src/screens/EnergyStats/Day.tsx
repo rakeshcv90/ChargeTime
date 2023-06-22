@@ -11,7 +11,7 @@ import { useSelector } from 'react-redux';
 
 const Day = (props:any) => {
   const {getkwhData} =useSelector((state:any) => state)
-  const {getBoxTwoDataForDashboard,getUserID,getGraphData} = useSelector((state:any) => state)
+  const {getBoxTwoDataForDashboard,getUserID,getGraphData,getChargerStatus} = useSelector((state:any) => state)
   
   const [toggleState, setToggleState] = useState(false);
 
@@ -50,11 +50,13 @@ const Day = (props:any) => {
           <Graph dataOne={getGraphData} />
           <BoxTwo data={getBoxTwoDataForDashboard[0]} />
           </View>
+          <View style={{marginBottom:120}}>
           <PriceBox data={getBoxTwoDataForDashboard[0]} />
+          </View>
         </ScrollView>
       </View>
       {/* {showSlider && <ButtonSlider dataTwo={getUserID}  />} */}
-      <ButtonSlider onToggle={handleToggle}  />
+      {/* <ButtonSlider onToggle={handleToggle}  /> */}
     </>
   );
 };

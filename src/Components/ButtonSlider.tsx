@@ -352,6 +352,7 @@ navigationRef.dispatch(DrawerActions.closeDrawer())
                 setShowText(true)
                 dispatch(setChargerStatus(res?.data));
                 setIsLoading(false)
+                onToggle(isToggled);
               })
               .catch((err) => {
                 console.log(err);
@@ -364,6 +365,7 @@ navigationRef.dispatch(DrawerActions.closeDrawer())
                 setShowText(false)
                 dispatch(setChargerStatus(res?.data));
                 setIsLoading(false)
+                onToggle(!isToggled);
               })
               .catch((err) => {
                 console.log(err);
@@ -499,7 +501,7 @@ navigationRef.dispatch(DrawerActions.closeDrawer())
       </PanGestureHandler>
       <Animated.Text style={[styles.swipeText, AnimatedStyles.swipeText]}>
       
-        {showText ? 'Swipe left to stop charging' : 'Swipe right to start charging'}
+        {showText==true? 'Swipe left to stop charging' : 'Swipe right to start charging'}
       </Animated.Text>
       
     </Animated.View>
@@ -514,7 +516,7 @@ const styles = StyleSheet.create({
         // justifyContent: 'center',
         position: 'absolute',
         flex: 1,
-        bottom: 50,
+        bottom: 40,
         alignSelf: 'center',
         borderRadius: 50,
       },

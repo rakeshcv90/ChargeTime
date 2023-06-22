@@ -5,6 +5,7 @@ import {
     TouchableOpacity,
     Image,
     Dimensions,
+    Platform,
   } from 'react-native';
   import React, {useState} from 'react';
   import COLORS from '../constants/COLORS';
@@ -22,11 +23,11 @@ import {
           {
             width: DIMENSIONS.SCREEN_WIDTH * 0.9,
             alignSelf: 'center',
-            marginBottom: 50,
+            
           },
         ]}>
         <TouchableOpacity
-          onPress={() => setShowBox(!showBox)}
+          
           style={styles.install_touchable}>
           <Image
           // style={styles.img_width}
@@ -34,7 +35,7 @@ import {
         />
           <Text style={styles.installation_text}>Price & Validity</Text>
         </TouchableOpacity>
-        {showBox && (
+        
           <>
             <View style={styles.location_div}>
               <Text style={styles.installation_text2}>Installation Base:</Text>
@@ -77,7 +78,7 @@ import {
               style={{alignSelf: 'center', width: mobileW}}
             />
           </>
-        )}
+        
       </View>
     );
   };
@@ -89,10 +90,20 @@ import {
       paddingHorizontal: 20,
       // paddingVertical:15
     },
-    mainDiv_installation: {
-      overflow: 'hidden',
-      borderRadius: 10,
-      marginTop: 20,
+    
+      mainDiv_installation: {
+        overflow: 'hidden',
+        borderRadius: 10,
+        marginTop: Platform.OS === "ios"?10: 10,
+        shadowColor: '#000000',
+        shadowOffset: {
+          width: 4,
+          height: 6,
+        },
+        shadowOpacity: 0.2,
+        shadowRadius: 5.62,
+        elevation: 8,
+      
     },
     install_touchable: {
       flexDirection: 'row',
