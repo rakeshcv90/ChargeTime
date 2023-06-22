@@ -107,7 +107,6 @@ export default function Login({navigation}) {
             dispatch(setPackageStatus(data?.status == 'true' ? true : false));
             dispatch(setUserID(data?.user_id));
             dispatch(getLocationID(data?.locationid));
-            dispatch(setIsAuthorized(true));
             // else
             // if(getGraphData.length)
             // navigation.navigate('DrawerStack');
@@ -186,8 +185,9 @@ export default function Login({navigation}) {
         } else {
           remaingData = res.data?.kwh_unit_overusage;
         }
-
+console.log('first', res.data )
         dispatch(setRemainingData(remaingData));
+        dispatch(setIsAuthorized(true));
         navigation.navigate('DrawerStack');
         setForLoading(false);
       })
