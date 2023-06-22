@@ -11,7 +11,7 @@ const Splash = () => {
 
     useEffect(() => {
       const timer = setTimeout(() => {
-        SplashScreen.hide();
+        // SplashScreen.hide();
         checkFirstTime();
       }, 3000);
     
@@ -35,7 +35,7 @@ const Splash = () => {
     const checkFirstTime = async () => {
       try {
         const isFirstTime = await AsyncStorage.getItem('isFirstTime');
-        if (isFirstTime === null) {
+        if (isFirstTime === false) {
           // First time user, show intro
           await AsyncStorage.setItem('isFirstTime', 'true');
           navigationRef.navigate('Introduction');

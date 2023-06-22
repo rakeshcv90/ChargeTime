@@ -1,7 +1,7 @@
 import { Image, View, Text, StyleSheet, Dimensions, TouchableOpacity,SafeAreaView } from 'react-native';
 import React, { useState } from 'react';
 import { createDrawerNavigator } from '@react-navigation/drawer';
-import { NavigationContainer } from '@react-navigation/native';
+import { CommonActions, NavigationContainer } from '@react-navigation/native';
 import Picker from '@react-native-picker/picker'
 import logo from '../../../assets/images/logo.png';
 import COLORS from '../../constants/COLORS';
@@ -61,7 +61,25 @@ const Account = ({navigation}) => {
   const handleLogOut =async () => {
     AsyncStorage.clear();
     persistor.purge();
-    navigation.navigate('Login');
+    // navigation.popToTop();
+    // setTimeout(()=>{
+    //   navigation.navigate('AccountStack',{
+    //     routes:{name:"LoginStack"}
+    //   });
+    // },300)
+
+    navigation.dispatch(
+      CommonActions.reset({
+        index: 0,
+        routes: [
+          {
+            name: 'LoginStack',
+            params: {screen: 'Login'},
+          },
+        ],
+      }),
+    );
+    
     console.log('Log out successfully');
   }
 

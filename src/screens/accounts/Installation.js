@@ -237,7 +237,7 @@ const InstalltionUpdate = async () => {
                 placeholder={isFocus ? userRegisterData[0]?.location : selectedValue}
                 keyboardAvoiding
                 searchPlaceholder="Search..."
-                value={selectedValue}
+                value={selectedValue ? selectedValue: userRegisterData[0]?.location}
                 onFocus={() => setIsFocus(false)}
                 onBlur={() => setIsFocus(false)}
                 onChange={item => handleSelect(item.id, item)}

@@ -13,7 +13,9 @@ import {
 } from 'react-native';
 import COLORS from '../constants/COLORS';
 import {PLATFORM_IOS, DIMENSIONS} from '../constants/DIMENSIONS';
-import {Eye} from "../../assets/images/Eye"
+import {Eye} from "../../assets/images/Eye";
+import { mvs,ms } from 'react-native-size-matters';
+
 
 
 
