@@ -9,7 +9,7 @@ import SubBoxTwo from '../../Components/SubBoxTwo';
 import { PLATFORM_IOS } from '../../constants/DIMENSIONS';
 import WaveAnimation from '../../Components/WaveAnimation';
 import { DIMENSIONS } from '../../constants/DIMENSIONS';
-import PriceValidity from '../../Components/PriceValidity';
+import PriceValiditySubs from '../../Components/PriceValiditySubs';
 import { API } from '../../api/API';
 import { setBasePackage } from '../../redux/action';
 import { userSubsData } from '../../redux/action';
@@ -25,8 +25,9 @@ const mobileW = Math.round(Dimensions.get('screen').width);
   const dispatch =useDispatch();
   useEffect(() => {
     // console.log('data for this User:---------', getPlanSummary); 
+    console.log (getSubscription,"----------")
     userSubscription();
-    userSubsEnergy();
+    // userSubsEnergy();
  }, []);
 
  const user_id= getUserID;
@@ -34,10 +35,12 @@ const mobileW = Math.round(Dimensions.get('screen').width);
 
  const userSubscription = async () =>{
   try {
-    const response = await fetch(`${API}/subscriptionplan/${user_id}`);
+    // const response = await fetch(`${API}/subscriptionplan/${user_id}`);
+        const response = await fetch(`${API}/currentplan/${user_id}`);
+
     const result = await response.json();
  
-    if(result[0].message == "sucess")
+    if(result[0].id !== null)
     {
       setGetSubscription(result[0]);
   dispatch(setBasePackage(result)); 
@@ -49,30 +52,56 @@ const mobileW = Math.round(Dimensions.get('screen').width);
   }
 };
 
-const userSubsEnergy = async () => {
+// const userSubsEnergy = async () => {
 
-  try {
-    const response = await fetch(`${API}/subscription/15`);
-    const result = await response.json();
-    console.log("-----",result)
-    if(result !== null)
-    {
-    console.log(result, "----------------")
-    // dispatch(userSubsData(result));
-    setGetData(result)
-    }else{
-      console.log("iiiiiiiiiiii")
-    }
+//   try {
+//     const response = await fetch(`${API}/subscription/15`);
+//     const result = await response.json();
+//     console.log("-----",result)
+//     if(result !== null)
+//     {
+//     console.log(result, "----------------")
+//     // dispatch(userSubsData(result));
+//     setGetData(result)
+//     }else{
+//       console.log("iiiiiiiiiiii")
+//     }
  
-  } catch (error) {
-   console.log("get deleted", error)
-  }
-}  
+//   } catch (error) {
+//    console.log("get deleted", error)
+//   }
+// }  
 
+const PlanCancel = async () => {
+  try {
+    const response = await fetch(`${API}/plancancel/${user_id}`,{
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      }, 
+    })
+    const result = await response.json();
+console.log(result,'ttt');
+    if(result.message == 'Plan Cancelled Successfully'){
+      PLATFORM_IOS
+      ? Toast.show({
+          type: 'success',
+          text1: ' Your Subscription has been Cancelled.',
+        })
+      : ToastAndroid.show(
+          'Your Subscription has been Cancelled.',
+          ToastAndroid.SHORT,
+        );
+        
+    }
+  } catch (error) {
+    console.error(error);
+  }
+};
 
 
   return (
-    <ScrollView showsVerticalScrollIndicator={false} >
+    <ScrollView showsVerticalScrollIndicator={false} style={{backgroundColor: COLORS.CREAM, flex: 1}}>
   <View>
     <Header headerName="Subscription" editShow={false} />
     <HorizontalLine/>
@@ -85,8 +114,41 @@ const userSubsEnergy = async () => {
       <WaveAnimation />
       </View>
       <View style={styles.managing_width}>
-      <PriceValidity data={getSubscription} />
+      <PriceValiditySubs data={getSubscription} />
       </View>
+      <View
+          style={{
+            flexDirection: 'row',
+            justifyContent: 'center',
+            // width: '100%',
+            marginHorizontal: 20,
+            paddingBottom:30,
+          }}>
+          <TouchableOpacity
+            onPress={()=>{PlanCancel()}}
+            style={{
+              marginTop: 15,
+              // marginLeft: 200,
+              marginRight:170,
+              backgroundColor: '#F84E4E',
+              alignItems: 'center',
+              padding: 13,
+              borderRadius: 10,
+              width: '50%',
+            }}
+
+          >
+
+            <Text
+              style={{
+                color: COLORS.WHITE,
+                fontSize: 14,
+                fontWeight: '700',
+              }}>
+              Cancel Subscription
+            </Text>
+          </TouchableOpacity>
+        </View>
         </View>
         </ScrollView>
   );

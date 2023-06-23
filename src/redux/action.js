@@ -18,7 +18,13 @@ export const setKwhData = (data) => {
 export const setUserRegisterData = (data) => {
   return {type: types.GET_USER_DATA, payload: data};
 };
+export const userProfileData = (data) => {
+  return {type: types.GET_PROFILE_DATA, payload: data};
+};
+
+
 export const setBasePackage = (data) => {
+
   return {type:types.GET_BASE_PACKAGE,payload:data}
 }
 
@@ -81,6 +87,3 @@ export const setPurchaseData = (data) => {
 export const setDeviceId = (data) => {
   return {type:types.GET_DEVICE_ID,payload:data}
 } 
-
-    //dashboard boxtwo and price details data end
-

@@ -162,8 +162,6 @@ export default function HomeOne(route) {
   };
 
   function MyTabBar({state, descriptors, navigation, position}) {
-    
-
     useEffect(() => {
       setChangePage(state.index);
       
@@ -172,7 +170,6 @@ export default function HomeOne(route) {
   
   useEffect(() => {
     // Do something with the activeTabIndex
-   
   }, [activeTabIndex]);
     
 
@@ -255,7 +252,7 @@ export default function HomeOne(route) {
               position: 'absolute',
               right: PLATFORM_IOS ? mobileW*25/100 :mobileW*25/100,
               alignSelf: 'flex-end',
-              top: PLATFORM_IOS ? mobileH*0/100:mobileH*-5/100,
+              top: PLATFORM_IOS ? mobileH*-2/100:mobileH*-6/100,
              // marginVertical:PLATFORM_IOS ? -20: -40,
               zIndex: 5,
             }}>
@@ -267,7 +264,7 @@ export default function HomeOne(route) {
                 }} // Replace with your animation file
                 autoPlay
                 loop
-                style={{width: mobileW*23/100, height: mobileH*23/100}}
+                style={{width: mobileW*25/100, height: mobileH*25/100}}
               />
            
             

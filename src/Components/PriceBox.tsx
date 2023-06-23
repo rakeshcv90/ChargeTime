@@ -27,7 +27,7 @@ import {
           },
         ]}>
         <TouchableOpacity
-          onPress={() => setShowBox(!showBox)}
+          
           style={styles.install_touchable}>
           <Image
           // style={styles.img_width}
@@ -35,7 +35,7 @@ import {
         />
           <Text style={styles.installation_text}>Price & Validity</Text>
         </TouchableOpacity>
-        {showBox && (
+        
           <>
             <View style={styles.location_div}>
               <Text style={styles.installation_text2}>Installation Base:</Text>
@@ -78,7 +78,7 @@ import {
               style={{alignSelf: 'center', width: mobileW}}
             />
           </>
-        )}
+        
       </View>
     );
   };

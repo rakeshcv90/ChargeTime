@@ -15,6 +15,7 @@ import {API} from '../../api/API';
 import Toast from 'react-native-toast-message';
 import { PLATFORM_IOS } from '../../constants/DIMENSIONS';
 import { navigationRef } from '../../../App';
+import { ms } from 'react-native-size-matters';
 
 const PasswordRegex =
   /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
@@ -38,14 +39,18 @@ const userRegisterData = useSelector((state)=> state.userRegisterData)
 const [isEditable, setIsEditable] = useState(false);
 const [currentPassword, setCurrentPassword] = useState('');
 const [newPassword, setNewPassword] = useState('');
-const [showPassword, setShowPassword] = useState(false);
+const [showPassword, setShowPassword] = useState(true);
 const [showNew , setShowNew]=useState(false);
+const [showNew1 , setShowNew1]=useState(false);
 const [showReE , setShowReE]=useState(false);
 const [confirmPassword, setConfirmPassword] = useState('');
+const [hidePassword,setHidePassword] = useState(true);
+const [Password,setPassword] = useState(true);
+const [keyPressed,setKeyPressed] = useState(true);
 
 useEffect(() => {
   console.log("+++++++++++++++",userRegisterData)
-}, []);
+}, [userRegisterData]);
 const onPress = ()=>{
   // updatePersonalDetails();
   UpdatePassword();
@@ -105,7 +110,9 @@ const UpdatePassword= async () =>{
     }
   };
 
-
+  const keyPress=()=>{
+    setKeyPressed(!keyPressed)
+  }
 
 
   return (
@@ -120,55 +127,39 @@ const UpdatePassword= async () =>{
             editable={isEditable}
             placeholderTextColor={COLORS.BLACK}
             text=" Current Password"
-            passwordInput={true}
-            pasButton={() => setShowPassword(!showPassword)}
-            secureTextEntry={showPassword}
-            passwordInputIcon={showPassword}
+            // passwordInput={true}
+            // pasButton={() => setShowPassword(!showPassword)}
+            IconRight={() => <Key onPress={()=>keyPress()} />}
+            secureTextEntry={keyPressed}
+            passwordInputIcon={!showPassword}
             placeholder="*************"
             onChangeText={text => setCurrentPassword(text)}
             value={currentPassword}
             mV={15}
             bW={1}
             bR={3}
-            textWidth={'55%'}
+            textWidth={ms(120)}
+
             style={{
               color: COLORS.BLACK,
               fontFamily: 'Roboto',
               fontWeight: '200',
             }}
           />
-
-      {/* <Input
-        IconLeft={null}
-        autoFocus
-        bgColor={COLORS.CREAM}
-        editable={isEditable}
-        IconRight={() => <Key />}
-        bR={5}
-        bW={0.3}
-        bColor={COLORS.BLACK}
-        // secureTextEntry={true}
-        onChangeText={text => setCurrentPassword(text)}
-        value={currentPassword}
-        text="Current Password"
-        mV={7}
-        textWidth={'60%'}
-        placeholder="*************"
-        placeholderTextColor={COLORS.GREY}
-        style={{
-          color: COLORS.BLACK,
-          fontFamily: 'Roboto',
-          fontWeight: '200',
-        }}
-      /> */}
+ {/* {errors.password && touched.password && (
+                    <Text style={{color: 'red'}}>{errors.password}</Text>
+                  )} */}
+    
   <Input
             IconLeft={null}  
             bgColor={COLORS.CREAM}
             editable={isEditable}
             placeholderTextColor={COLORS.BLACK}
             passwordInput={true}
-            pasButton={() => setShowNew(!showNew)}
-            // secureTextEntry={showNew}
+            pasButton={() => {
+              setHidePassword(!hidePassword)
+              setShowNew(!showNew)}}
+            secureTextEntry={hidePassword}
             passwordInputIcon={showNew}
             placeholder=""
             onChangeText={text => setNewPassword(text)}
@@ -177,46 +168,30 @@ const UpdatePassword= async () =>{
             mV={5}
             bW={1}
             bR={3}
-            textWidth={'50%'}
+            textWidth={ms(100)}
             style={{
               color: COLORS.BLACK,
               fontFamily: 'Roboto',
               fontWeight: '200',
             }}
           />
-{/* 
-      <Input
-        IconLeft={null}
-        autoFocus
-        bgColor={COLORS.CREAM}
-        editable={isEditable}
-        IconRight={() => <Eye />}
-        bR={5}
-        bW={0.3}
-        bColor={COLORS.BLACK}
-        // secureTextEntry={true}
-        onChangeText={text => setNewPassword(text)}
-         value={newPassword}
-        text="New Password"
-        mV={15}
-        textWidth={'65%'}
-        placeholderTextColor={COLORS.GREY}
-        style={{
-          color: COLORS.BLACK,
-          fontFamily: 'Roboto',
-          fontWeight: '200',
-        }}
-      /> */}
+           {/* {errors.password && touched.password && (
+                    <Text style={{color: 'red'}}>{errors.password}</Text>
+                  )} */}
 
-<Input
+        <Input
             IconLeft={null}  
             bgColor={COLORS.CREAM}
             editable={isEditable}
             placeholderTextColor={COLORS.BLACK}
             passwordInput={true}
-            pasButton={() => setShowReE(!showReE)}
-            secureTextEntry={showReE}
-            passwordInputIcon={showReE}
+            pasButton={() => {
+              setPassword(!Password)
+              setShowNew1(!showNew1)
+           
+            }}
+            secureTextEntry={Password}
+            passwordInputIcon={showNew1}
             placeholder=""
             onChangeText={text => setConfirmPassword(text)}
             value={confirmPassword}
@@ -224,37 +199,18 @@ const UpdatePassword= async () =>{
             mV={15}
             bW={1}
             bR={3}
-            textWidth={'70%'}
+            textWidth={ms(145)}
             style={{
               color: COLORS.BLACK,
               fontFamily: 'Roboto',
               fontWeight: '200',
             }}
           />
+           {/* {errors.password && touched.password && (
+                    <Text style={{color: 'red'}}>{errors.password}</Text>
+                  )} */}
 
-      {/* <Input
-        IconLeft={null}
-        autoFocus
-        bgColor={COLORS.CREAM}
-        IconRight={() => <Eye />}
-        bR={5}
-        bW={0.3}
-        bColor={COLORS.BLACK}
-        editable={isEditable}
-        // secureTextEntry={true}
-        onChangeText={text => setConfirmPassword(text)}
-         value={confirmPassword}
-        text="Re-enter New Password"
-        mV={7}
-        textWidth={'63%'}
-        placeholderTextColor={COLORS.GREY}
-        style={{
-          color: COLORS.BLACK,
-          fontFamily: 'Roboto',
-          fontWeight: '200',
-        }}
-      /> */}
-
+      
 </View>
     </SafeAreaView>
   )
