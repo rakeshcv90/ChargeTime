@@ -119,70 +119,35 @@ const DrawerNavigation = () => {
             name="EnergyStats"
             component={EnergyStats}
           />
-          {getDeviceID !==
-          'Your Account is not currently linked with a TRO Charger. Please contact customer service if you believe this is an error.' ? (
-            <Drawer.Screen
-              options={{
-                drawerActiveBackgroundColor: '#fff',
-                drawerIcon: ({focused, color, size}) => {
-                  setFocusOne(focused);
-                  return (
-                    <Image
-                      source={
-                        !focused
-                          ? require('../../assets/images/testing.png')
-                          : require('../../assets/images/energy_green.png')
-                      }
-                      style={{width: 50, height: 40, padding: 0, margin: -10}}
-                    />
-                  );
-                },
-                drawerLabelStyle: {
-                  backgroundColor: focusOne
-                    ? 'rgba(177, 211, 79, 0.8)'
-                    : '#fff',
-                  paddingVertical: 10,
-                  paddingLeft: 10,
-                  width: '200%',
-                  marginLeft: -15,
-                },
-                drawerActiveTintColor: 'black',
-                title: 'Energy',
-              }}
-              name="EnergyOptions"
-              component={EnergyOptions}
-            />
-          ) : (
-            <Drawer.Screen
-              options={{
-                drawerActiveBackgroundColor: '#fff',
-                drawerIcon: ({focused, color, size}) => {
-                  setFocus(focused);
-                  return (
-                    <Image
-                      source={
-                        !focused
-                          ? require('../../assets/images/home_white.png')
-                          : require('../../assets/images/home_green.png')
-                      }
-                      style={{width: 50, height: 40, margin: -10}}
-                    />
-                  );
-                },
-                drawerLabelStyle: {
-                  backgroundColor: focus ? 'rgba(177, 211, 79, 0.8)' : '#fff',
-                  paddingVertical: 10,
-                  paddingLeft: 10,
-                  width: '200%',
-                  marginLeft: -15,
-                },
-                drawerActiveTintColor: 'black',
-                title: 'Energy',
-              }}
-              name="HomeStack"
-              component={HomeStack}
-            />
-          )}
+          <Drawer.Screen
+            options={{
+              drawerActiveBackgroundColor: '#fff',
+              drawerIcon: ({focused, color, size}) => {
+                setFocusOne(focused);
+                return (
+                  <Image
+                    source={
+                      !focused
+                        ? require('../../assets/images/testing.png')
+                        : require('../../assets/images/energy_green.png')
+                    }
+                    style={{width: 50, height: 40, padding: 0, margin: -10}}
+                  />
+                );
+              },
+              drawerLabelStyle: {
+                backgroundColor: focusOne ? 'rgba(177, 211, 79, 0.8)' : '#fff',
+                paddingVertical: 10,
+                paddingLeft: 10,
+                width: '200%',
+                marginLeft: -15,
+              },
+              drawerActiveTintColor: 'black',
+              title: 'Energy',
+            }}
+            name="EnergyOptions"
+            component={EnergyOptions}
+          />
         </>
       ) : (
         <Drawer.Screen

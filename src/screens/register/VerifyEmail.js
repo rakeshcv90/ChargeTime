@@ -167,20 +167,19 @@ export default function VerifyEmail(props) {
       console.log(email);
       let payload = new FormData();
       payload.append('pwa_email', email);
-      await fetch(`${API}/resetemail`, {
+    const res =  await axios(`${API}/resetemail`, {
         method: 'POST',
         headers: {
           'Content-Type': 'multipart/form-data',
         },
-        body: payload,
+        data: payload,
       })
-        .then(res => res.json())
-        .then(data => {
-          console.log('first', data);
-          if (data.message == 'Email sent successfully') {
+      console.log('first', res.data);
+        if(res.data) {
+          if (res.data.message == 'Email sent successfully') {
             setEmailCheck(true);
             setStatusCheck(true);
-            setTempID(data.id);
+            setTempID(res.data.id);
             PLATFORM_IOS
               ? Toast.show({
                   type: 'success',
@@ -199,7 +198,7 @@ export default function VerifyEmail(props) {
                 })
               : ToastAndroid.show('Invalid Email', ToastAndroid.SHORT);
           }
-        });
+        }
     } catch (error) {
       console.error(error);
       // Handle network errors or other exceptions
@@ -208,18 +207,17 @@ export default function VerifyEmail(props) {
 
   useEffect(() => {
     let stopTimer;
-    console.log('SIGN UPPPPPsad', userRegisterData);
+    console.log('SIGN UPPPPPsad', `${API}/emailverify/${tempID}`);
     const sendToAnotherPage = async () => {
       try {
-        const response = await fetch(`${API}/emailverify/${tempID}`, {
+        const response = await axios(`${API}/emailverify/${tempID}`, {
           method: 'GET',
           headers: {
             'Content-Type': 'application/json',
           },
         });
-        const data = await response.json();
-        console.log(data, 'vvv');
-        if (data.status.email_verified === '1') {
+        console.log(response.data, 'vvv');
+        if (response.data.status.email_verified === '1') {
           navigation.navigate('CompleteProfile', {
             email: email,
             user_id: user_id,
@@ -241,7 +239,7 @@ export default function VerifyEmail(props) {
     return () => {
       clearInterval(stopTimer);
     };
-  }, [emailCheck]);
+  }, [emailCheck,tempID]);
 
   return (
     <SafeAreaView style={{backgroundColor: COLORS.CREAM, flex: 1}}>

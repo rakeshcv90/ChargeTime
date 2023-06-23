@@ -22,8 +22,8 @@ const ActivityLoader = props => {
     <Modal visible={visible} transparent={true} animationType="fade">
       <View
         style={{
-          height: DIMENSIONS.SCREEN_WIDTH / 4,
-          width: DIMENSIONS.SCREEN_WIDTH / 4,
+          // height: DIMENSIONS.SCREEN_WIDTH / 4,
+          // width: DIMENSIONS.SCREEN_WIDTH / 4,
           // backgroundColor: COLORS.WHITE,
           alignItems: 'center',
           justifyContent: 'center',
@@ -31,14 +31,14 @@ const ActivityLoader = props => {
           borderRadius: 100,
           marginTop: 'auto',
           marginBottom: 'auto',
-          elevation: 10,
+          // elevation: 10,
         }}>
         {icon ? (
           <Image
             source={require('../../assets/images/logo_one.png')}
             style={{
-              height: DIMENSIONS.SCREEN_WIDTH / 5,
-              width: DIMENSIONS.SCREEN_WIDTH / 5,
+              height: DIMENSIONS.SCREEN_WIDTH / 6,
+              width: DIMENSIONS.SCREEN_WIDTH / 6,
               resizeMode: 'contain',
             }}
           />

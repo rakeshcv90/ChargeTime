@@ -225,40 +225,48 @@ export default function Home(route) {
         )}
       </View>
 
-      {isLoading || showPackage ? (
-        <View>
-          {!showPackage ? (
-            <ActivityLoader visible={!showPackage} />
-          ) : (
-            <Text>No Package</Text>
-          )}
-        </View>
+      {apiData?.length >= 1 ? (
+        <Tab.Navigator
+          screenOptions={{
+            activeTintColor: 'blue',
+            inactiveTintColor: 'gray',
+            labelStyle: {
+              fontSize: 16,
+              fontWeight: 'bold',
+            },
+          }}
+          tabBar={props => <MyTabBar {...props} />}>
+          {apiData.map((item, ind) => {
+            return (
+              <Tab.Screen
+                key={ind}
+                name={item?.package_name}
+                component={TabOne}
+                initialParams={{item}}
+              />
+            );
+          })}
+        </Tab.Navigator>
+      ) : apiData.length == 1 ? (
+        <Tab.Navigator
+          screenOptions={{
+            activeTintColor: 'blue',
+            inactiveTintColor: 'gray',
+            labelStyle: {
+              fontSize: 16,
+              fontWeight: 'bold',
+            },
+          }}
+          tabBar={props => <MyTabBar {...props} />}>
+          <Tab.Screen
+            // key={ind}
+            name={apiData[0]?.package_name}
+            component={TabOne}
+            initialParams={{item: apiData[0]}}
+          />
+        </Tab.Navigator>
       ) : (
-        <>
-          {apiData?.length >= 1 && (
-            <Tab.Navigator
-              screenOptions={{
-                activeTintColor: 'blue',
-                inactiveTintColor: 'gray',
-                labelStyle: {
-                  fontSize: 16,
-                  fontWeight: 'bold',
-                },
-              }}
-              tabBar={props => <MyTabBar {...props} />}>
-              {apiData.map((item, ind) => {
-                return (
-                  <Tab.Screen
-                    key={ind}
-                    name={item?.package_name}
-                    component={TabOne}
-                    initialParams={{item}}
-                  />
-                );
-              })}
-            </Tab.Navigator>
-          )}
-        </>
+        <Text>No Package available for you location</Text>
       )}
     </SafeAreaView>
   );
