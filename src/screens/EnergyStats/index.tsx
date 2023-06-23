@@ -31,6 +31,7 @@ import DayOne from './DayOne';
 import DrawerOpen from '../../Components/DrawerOpen';
 import {navigationRef} from '../../../App';
 import {DrawerActions} from '@react-navigation/native';
+import AnimatedLottieView from 'lottie-react-native';
 const mobileW = Math.round(Dimensions.get('screen').width);
 
 function MyTabBar({state, descriptors, navigation}) {
@@ -114,7 +115,7 @@ export default function EnergyStats() {
 
   const {getChargerStatus, getDeviceID} = useSelector((state: any) => state);
   const [toggleState, setToggleState] = useState(false);
-
+  console.log('firstDevice', getDeviceID);
   const handleToggle = (value: any) => {
     setToggleState(value);
     navigationRef.dispatch(DrawerActions.closeDrawer());
@@ -126,15 +127,97 @@ export default function EnergyStats() {
         <StatusBar backgroundColor={COLORS.CREAM2} barStyle={'dark-content'} />
 
         <DrawerOpen />
-        {getDeviceID == 'Account linked' ? (
+        {getDeviceID ==
+        'Your Account is not currently linked with a TRO Charger. Please contact customer service if you believe this is an error.' ? (
           <View
             style={{
               justifyContent: 'center',
               alignItems: 'center',
-              paddingHorizontal: 20,
               flex: 1,
             }}>
-            <Text>{getDeviceID}</Text>
+            <View
+              style={{
+                flexDirection: 'row',
+                justifyContent: 'center',
+                alignItems: 'center',
+              }}>
+              <AnimatedLottieView
+                source={{
+                  uri: 'https://assets5.lottiefiles.com/packages/lf20_v4UB4ch6dZ.json',
+                }} // Replace with your animation file
+                autoPlay
+                loop
+                style={{width: 150, height: 150}}
+              />
+              <AnimatedLottieView
+                source={{
+                  uri: 'https://assets7.lottiefiles.com/packages/lf20_qgq2nqsy.json',
+                }} // Replace with your animation file
+                autoPlay
+                loop
+                style={{width: 50, height: 50}}
+              />
+            </View>
+            <Text
+              style={{
+                fontSize: 14,
+                lineHeight: 25,
+                textAlign: 'center',
+                paddingHorizontal: 30,
+              }}>
+              {getDeviceID}
+            </Text>
+            <View
+              style={{
+                flexDirection: 'row',
+                justifyContent: 'center',
+                alignItems: 'center',
+              }}>
+              <TouchableOpacity
+                style={{
+                  width: mobileW * 0.3,
+                  borderRadius: 10,
+                  backgroundColor: COLORS.WHITE,
+                  padding: 10,
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  margin: 10,
+                  elevation: 10,
+                }}>
+                <Text
+                  style={{
+                    color: '#263238',
+                    fontWeight: '700',
+                    fontSize: 14,
+                    lineHeight: 17,
+                    textTransform: 'capitalize',
+                  }}>
+                  Refresh
+                </Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={{
+                  width: mobileW * 0.3,
+                  borderRadius: 10,
+                  backgroundColor: COLORS.GREEN,
+                  padding: 10,
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  margin: 10,
+                  elevation: 10,
+                }}>
+                <Text
+                  style={{
+                    color: '#263238',
+                    fontWeight: '700',
+                    fontSize: 14,
+                    lineHeight: 17,
+                    textTransform: 'capitalize',
+                  }}>
+                  Contact Us
+                </Text>
+              </TouchableOpacity>
+            </View>
           </View>
         ) : (
           <View>
@@ -229,15 +312,14 @@ export default function EnergyStats() {
           </View>
         )}
 
-        {getDeviceID == 'Account linked' ? (
+        {getDeviceID ==
+        'Your Account is not currently linked with a TRO Charger. Please contact customer service if you believe this is an error.' ? (
           <View
             style={{
               justifyContent: 'center',
               alignItems: 'center',
               paddingHorizontal: 20,
-            }}>
-            <Text>''</Text>
-          </View>
+            }}></View>
         ) : (
           <Tab.Navigator
             screenOptions={{
@@ -256,7 +338,8 @@ export default function EnergyStats() {
             <Tab.Screen name="Year" component={Year} />
           </Tab.Navigator>
         )}
-        {getDeviceID == 'Account linked' ? (
+        {getDeviceID ==
+        'Your Account is not currently linked with a TRO Charger. Please contact customer service if you believe this is an error.' ? (
           <View>
             <Text></Text>
           </View>

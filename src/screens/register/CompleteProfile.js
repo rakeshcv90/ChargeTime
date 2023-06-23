@@ -212,7 +212,7 @@ export default function CompleteProfile(props) {
               placeholder="Eg. Connauticut House"
               bW={1}
               textWidth={'45%'}
-              placeholderTextColor={COLORS.BLACK}
+              placeholderTextColor={COLORS.HALFBLACK}
             />
 
             <Input
@@ -227,7 +227,7 @@ export default function CompleteProfile(props) {
               placeholder="Appart Street Number-3,Block"
               bW={1}
               textWidth={'45%'}
-              placeholderTextColor={COLORS.BLACK}
+              placeholderTextColor={COLORS.HALFBLACK}
             />
             <View style={styles.mainDiv_state_ZIP}>
               <View style={styles.zip_state_view}>
@@ -245,7 +245,7 @@ export default function CompleteProfile(props) {
                   placeholder="1100000"
                   bW={1}
                   textWidth={'70%'}
-                  placeholderTextColor={COLORS.BLACK}
+                  placeholderTextColor={COLORS.HALFBLACK}
                   w="half"
                   editable={false}
                 />
@@ -265,7 +265,7 @@ export default function CompleteProfile(props) {
                   placeholder="CA"
                   bW={1}
                   textWidth={'50%'}
-                  placeholderTextColor={COLORS.BLACK}
+                  placeholderTextColor={COLORS.HALFBLACK}
                   w="half"
                   editable={false}
                 />
@@ -431,7 +431,7 @@ const styles = StyleSheet.create({
   },
   placeholderStyle: {
     fontSize: 14,
-    color: COLORS.LIGHT_GREY,
+    color: COLORS.HALFBLACK,
     marginHorizontal: 10
   },
 });
