@@ -81,7 +81,9 @@ const styles = StyleSheet.create({
     height: 30,
   },
   rightButton: {
-    width: 40,
+    width: 50,
+    height:20,
+    marginRight:15,
   },
 });
 

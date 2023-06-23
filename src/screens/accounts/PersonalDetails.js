@@ -22,26 +22,29 @@ import axios from 'axios';
 import { mvs, ms } from 'react-native-size-matters';
 
 
-// import { userRegisterData } from '../../redux/action';
+import { userProfileData } from '../../redux/action';
 
 
 
 const PersonalDetails = () => {
-  const userRegisterData = useSelector((state) => state.userRegisterData)
-  const getUserID = useSelector((state) => state.getUserID)
-  const [isEditable, setIsEditable] = useState(false);
-  const [name, setName] = useState(userRegisterData[0]?.name ?? '');
-  const [number, setNumber] = useState(userRegisterData[0]?.mobile ?? '');
-  const [error, setError] = useState('');
-  //  const [userData, setUserData] = useState([]);
-  const user_ID = getUserID;
-  const mobileW = Math.round(Dimensions.get('screen').width);
-  const dispatch = useDispatch();
-  useEffect(() => {
-    setName(userRegisterData[0]?.name)
-    setNumber(userRegisterData[0]?.mobile)
 
-  }, [userRegisterData]);
+  const userProfileData = useSelector((state)=> state.userProfileData)
+  const getUserID = useSelector((state)=> state.getUserID)
+  const [isEditable, setIsEditable] = useState(false);
+   const [name, setName]= useState(userProfileData[0]?.name ??'');
+   const [number, setNumber]=useState(userProfileData[0]?.mobile ?? '');
+   const [error, setError] = useState('');
+  //  const [userData, setUserData] = useState([]);
+   const user_ID = getUserID;
+
+   const dispatch =useDispatch();
+
+
+  useEffect(() => {
+   setName( userProfileData[0]?.name)
+   setNumber( userProfileData[0]?.mobile)
+  
+}, [userProfileData]);
 
 
   const theme = useColorScheme();
@@ -54,26 +57,8 @@ const PersonalDetails = () => {
     console.log("enable edit", isEditable)
     setIsEditable(true)
   }
-  const userDetails = async () => {
-    // const response = await fetch(`${API}/userexisting/${user_ID}`);
-    try {
-      const response = await fetch(`${API}/userexisting/${user_ID}`);
-      const result = await response.json();
-      if (result[0].message == "sucess") {
-        console.log('wwwwww', result);
-        //  setUserData(result);
-        dispatch(userRegisterData(result));
 
-      } else {
-        console.log("iiiiiiiiiiii")
-      }
-      // setLocationMap(result);
-    } catch (error) {
-      console.error(error);
-    }
-  };
-
-  const updatePersonalDetails = async () => {
+  const updatePersonalDetails = async () =>{
 
     console.log("data")
 
@@ -94,13 +79,24 @@ const PersonalDetails = () => {
       .then(res => res.json())
       .then(data => {
         if (data.msg == "Your profile has been succesfully updated") {
-
-          PLATFORM_IOS ?
-            Toast.show({
-              type: 'success',
-              text1: "Your Profile Updated Successfully",
-
-            }) : ToastAndroid.show("Your Profile Updated Successfully", ToastAndroid.SHORT);
+          const updatedData = [{
+            ...userProfileData[0],
+          pwa_name: name,
+            pwa_mobile: number,
+          }];
+          console.log(updatedData,"------")
+          // if (updatedData) {
+          //   dispatch(userProfileData(updatedData));
+          // } else {
+          //   console.log('updatedData is not defined or has an incorrect value');
+          // }
+          dispatch(userProfileData(updatedData));
+          PLATFORM_IOS?
+          Toast.show({
+            type: 'success',
+            text1: "Your Profile Updated Successfully",
+            
+          }):ToastAndroid.show("Your Profile Updated Successfully", ToastAndroid.SHORT);
           setIsEditable(false)
           // navigationRef.navigate('Account');
           // navigation.navigate('Home');
@@ -129,7 +125,11 @@ const PersonalDetails = () => {
     }
     // Limit the length of the input to 10 characters
     const limitedText = cleanedText.slice(0, 10);
-
+    // if (limitedText >= 10){
+    // setError('Mobile number should contain 10 digits only');
+    // }else {
+    //   setError('');
+    // }
     // Update the state with the validated input
     setNumber(limitedText);
   };
@@ -174,34 +174,37 @@ const PersonalDetails = () => {
             fontFamily: 'Roboto',
             fontWeight: '200',
           }}
-          onChangeText={text => setName(text)}
+          onChangeText={name => setName(name)}
           value={name}
         />
         <View>
-          <Input
-            IconLeft={null}
-            bgColor={COLORS.CREAM}
-            editable={isEditable}
-            IconRight={() => (
-              <Call />
-            )}
-            bR={3}
-            bW={0.4}
-            bColor={COLORS.BLACK}
-            text="Phone No."
-            mV={15}
-            textWidth={ms(70)}
-            placeholderTextColor={COLORS.BLACK}
-            style={{
-              color: COLORS.BLACK,
-              fontFamily: 'Roboto',
-              fontWeight: '200',
-            }}
-            onChangeText={handleInputChange}
-            value={number}
-          />
-          {error && <Text style={{ color: 'red' }}>{error}</Text>}
-        </View>
+        <Input
+          IconLeft={null}
+          bgColor={COLORS.CREAM}
+          editable={isEditable}
+          IconRight={() => (
+           <Call/>
+          )}
+          bR={3}
+          bW={0.4}
+          bColor={COLORS.BLACK}
+          text="Phone No."
+          mV={15}
+          textWidth={ms(70)}
+          placeholderTextColor={COLORS.BLACK}
+          style={{
+            color: COLORS.BLACK,
+            fontFamily: 'Roboto',
+            fontWeight: '200',
+          }}
+          onChangeText={(text)=>{handleInputChange(text);
+          setNumber(number)
+          }}
+         value={ number }
+       />
+         {error && <Text style={{ color: 'red' }}>{error}</Text>}
+         </View>
+
         <Input
           IconLeft={null}
           editable={false}
@@ -265,7 +268,7 @@ const styles = StyleSheet.create({
     marginTop: 400,
     marginLeft: 70,
     font: 14,
-    fontfamily: FONTS.MONTSERRAT_REGULAR,
+    // fontfamily: FONTS.MONTSERRAT_REGULAR,
     height: 25,
     color: COLORS.BLACK,
     flexDirection: 'row',

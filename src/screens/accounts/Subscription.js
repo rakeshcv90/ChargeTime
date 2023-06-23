@@ -27,74 +27,71 @@ const Subscription = () => {
     // console.log('data for this User:---------', getPlanSummary); 
     console.log(getSubscription, "----------")
     userSubscription();
-    // userSubsEnergy();
-  }, []);
 
-  const user_id = getUserID;
-  //  console.log("user_id", user_id)
+    userSubsEnergy();
+ }, []);
 
-  const userSubscription = async () => {
-    try {
-      // const response = await fetch(`${API}/subscriptionplan/${user_id}`);
-      const response = await fetch(`${API}/currentplan/${user_id}`);
+ const user_id= getUserID;
+//  console.log("user_id", user_id)
 
-      const result = await response.json();
+ const userSubscription = async () =>{
+  try {
+    // const response = await fetch(`${API}/subscriptionplan/${user_id}`);
+        const response = await fetch(`${API}/currentplan/${user_id}`);
 
-      if (result[0].id !== null) {
-        setGetSubscription(result[0]);
-        dispatch(setBasePackage(result));
-      } else {
-        console.log("iiiiiiiiiiii")
-      }
-    } catch (error) {
-      console.error(error);
+    const result = await response.json();
+ 
+    if(result[0].id !== null)
+    {
+      setGetSubscription(result[0]);
+  // dispatch(setBasePackage(result)); 
+    }else{
+      console.log("iiiiiiiiiiii")
     }
   };
 
-  // const userSubsEnergy = async () => {
 
-  //   try {
-  //     const response = await fetch(`${API}/subscription/15`);
-  //     const result = await response.json();
-  //     console.log("-----",result)
-  //     if(result !== null)
-  //     {
-  //     console.log(result, "----------------")
-  //     // dispatch(userSubsData(result));
-  //     setGetData(result)
-  //     }else{
-  //       console.log("iiiiiiiiiiii")
-  //     }
+const userSubsEnergy = async () => {
 
-  //   } catch (error) {
-  //    console.log("get deleted", error)
-  //   }
-  // }  
+  try {
+    const response = await fetch(`${API}/subscription/15`);
+    const result = await response.json();
+    console.log("-----",result)
+    if(result !== null)
+    {
+    console.log(result, "----------------")
+    // dispatch(userSubsData(result));
+    setGetData(result)
+    }else{
+      console.log("iiiiiiiiiiii")
+    }
+ 
+  } catch (error) {
+   console.log("get deleted", error)
+  }
+}  
 
-  const PlanCancel = async () => {
-    try {
-      const response = await fetch(`${API}/plancancel/${user_id}`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      })
-      const result = await response.json();
-      console.log(result, 'ttt');
-      if (result.message == 'Plan Cancelled Successfully') {
-        PLATFORM_IOS
-          ? Toast.show({
-            type: 'success',
-            text1: ' Your Subscription has been Cancelled.',
-          })
-          : ToastAndroid.show(
-            'Your Subscription has been Cancelled.',
-            ToastAndroid.SHORT,
-          );
-
-      }
-    } catch (error) {
-      console.error(error);
+const PlanCancel = async () => {
+  try {
+    const response = await fetch(`${API}/plancancel/${user_id}`,{
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      }, 
+    })
+    const result = await response.json();
+console.log(result,'ttt');
+    if(result.message == 'Plan Cancelled Successfully'){
+      PLATFORM_IOS
+      ? Toast.show({
+          type: 'success',
+          text1: ' Your Subscription has been Cancelled.',
+        })
+      : ToastAndroid.show(
+          'Your Subscription has been Cancelled.',
+          ToastAndroid.SHORT,
+        );
+        
     }
   };
 
@@ -115,14 +112,18 @@ const Subscription = () => {
           <SubBoxOne data={getSubscription} />
           <SubBoxTwo data={getSubscription} />
 
-        </View>
+          {/* <SubBoxOne/> */}
+          {/* <SubBoxTwo/> */}
+        
+        </View> 
         <View style={styles.mainDiv_installation}>
-          <WaveAnimation />
-        </View>
-        <View style={styles.managing_width}>
-          <PriceValiditySubs data={getSubscription} />
-        </View>
-        <View
+      <WaveAnimation />
+      </View>
+      <View style={styles.managing_width}>
+      <PriceValiditySubs data={getSubscription} />
+      {/* <PriceValiditySubs /> */}
+      </View>
+      <View
           style={{
             flexDirection: 'row',
             justifyContent: 'center',
