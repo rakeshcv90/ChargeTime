@@ -289,7 +289,7 @@
 
 
 import React from 'react';
-import {StyleSheet,View,Image, Text} from 'react-native';
+import {StyleSheet,View,Image, Text, Platform} from 'react-native';
 
 import LinearGradient from 'react-native-linear-gradient';
 
@@ -318,7 +318,7 @@ import ActivityLoader from './ActivityLoader';
 
 const BUTTON_WIDTH = 330;
 const BUTTON_HEIGHT = 60;
-const BUTTON_PADDING = 10;
+const BUTTON_PADDING =Platform.OS=='ios'?10:DIMENSIONS.SCREEN_WIDTH* 1.5/100
 const SWIPEABLE_DIMENSIONS = BUTTON_HEIGHT - 3 * BUTTON_PADDING;
 
 const H_WAVE_RANGE = SWIPEABLE_DIMENSIONS + 3 * BUTTON_PADDING;

@@ -138,7 +138,7 @@ export default function HomeOne(route) {
     const updatedNumArray = populateNumArray();
     setNumArray(updatedNumArray);
   }, [apiData, getPurchaseData]);
-  console.log(myTest,"myTest")
+
   
 
   const fetchData = async () => {
@@ -172,7 +172,7 @@ export default function HomeOne(route) {
   
   useEffect(() => {
     // Do something with the activeTabIndex
-    console.log('Active Tab Index:', activeTabIndex);
+   
   }, [activeTabIndex]);
     
 
@@ -214,16 +214,16 @@ export default function HomeOne(route) {
               style={{
                 flex: 1,
                 backgroundColor: isFocused ? '#B1D34F' : '#EEEEEE',
-                paddingHorizontal: 12,
+                //paddingHorizontal: 12,
                 paddingVertical: 13,
                 // borderRadius:10,
                 borderRadius: isFocused ? 10 : 0,
-                shadowColor: 'rgba(0, 0, 0, 1)',
-                shadowOffset: {
-                  width: isFocused ? 6 : 0,
-                  height: isFocused ? 4 : 0,
-                },
-                shadowOpacity: isFocused ? 1 : 0,
+                // shadowColor: 'rgba(0, 0, 0, 1)',
+                // shadowOffset: {
+                //   width: isFocused ? 6 : 0,
+                //   height: isFocused ? 4 : 0,
+                // },
+                //shadowOpacity: isFocused ? 1 : 0,
                 shadowRadius: isFocused ? 4 : 0,
                 elevation: Platform.OS === 'android' && isFocused ? 8 : 0,
               }}>

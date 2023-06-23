@@ -45,9 +45,12 @@ import DownGradeData from '../screens/downgrade/DownGradeData';
 import ContactUs from '../screens/drawerPart/ContactUs';
 import Privacy from '../screens/drawerPart/Privacy';
 import Terms from '../screens/drawerPart/Terms';
+import Charging from '../Components/Charging';
+import {OnlineCharge} from '../../assets/images/OnlineCharge';
+import {NoCharge} from '../../assets/images/NoCharge';
+import COLORS from '../constants/COLORS';
+import {DIMENSIONS} from '../constants/DIMENSIONS';
 import Contact from '../screens/accounts/Contact';
-
-// import Plan from '../screens/planSummary/Plan';
 
 const Drawer = createDrawerNavigator();
 const Stack = createNativeStackNavigator();
@@ -77,12 +80,20 @@ export const DrawerScreenPart = ({navigation}) => {
     </View>
   );
 };
-
+export const chargerStatus = () => {
+  const getChargerStatus = useSelector(state => state.getChargerStatus);
+  console.log(getChargerStatus, 'getChargerStatus');
+  return (
+    <View>
+      <Text></Text>
+    </View>
+  );
+};
 const DrawerNavigation = () => {
   const [focus, setFocus] = useState();
   const [focusOne, setFocusOne] = useState();
   const [focusTwo, setFocusTwo] = useState();
-  const {getPackageStatus,getDeviceID} = useSelector(state => state);
+  const {getPackageStatus, getChargerStatus} = useSelector(state => state);
 
   return (
     <Drawer.Navigator
@@ -269,6 +280,92 @@ const DrawerNavigation = () => {
         name="Terms & Conditions"
         component={Terms}
       />
+      <Drawer.Screen
+        options={{
+          drawerActiveBackgroundColor: '#fff',
+          gestureEnabled: false,
+
+          headerInteractionEnabled: false,
+          drawerIcon: ({focused, color, size}) => {
+            let iconComponent = null;
+
+            if (getChargerStatus?.message === 'Charging') {
+              iconComponent = (
+                <Charging
+                  style={{
+                    width: (DIMENSIONS.SCREEN_WIDTH * 10) / 100,
+                    height: (DIMENSIONS.SCREEN_HEIGHT * 5) / 100,
+                  }}
+                />
+              );
+            } else if (getChargerStatus?.message === 'Online') {
+              iconComponent = (
+                <OnlineCharge style={{marginTop: 10, marginLeft: 5}} />
+              );
+            } else if (getChargerStatus?.message === 'Offline') {
+              iconComponent = (
+              <NoCharge style={{marginTop: 10, marginLeft: 5}} />
+                
+              );
+            }
+
+            return getChargerStatus.message !== 'Charging' ? (
+              <View
+                style={{
+                  // margin: 20,
+                  backgroundColor: COLORS.WHITE,
+                  height: (DIMENSIONS.SCREEN_HEIGHT * 7) / 100,
+                  width: (DIMENSIONS.SCREEN_WIDTH * 16) / 100,
+
+                  borderRadius: 15,
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  alignContent: 'center',
+
+                  shadowColor: '#000',
+                  shadowOffset: {
+                    width: -5,
+                    height: 5,
+                  },
+                  shadowOpacity: 0.29,
+                  shadowRadius: 4.65,
+                  elevation: Platform.OS === 'android' ? 10 : 0,
+                }}>
+                {iconComponent}
+              </View>
+            ) : (
+              <View
+                style={{
+                  marginLeft: -25,
+                  shadowColor: '#000',
+                  shadowOffset: {
+                    width: -5,
+                    height: 3,
+                  },
+                  shadowOpacity: 0.29,
+                  shadowRadius: 4.65,
+                  elevation: 7,
+                }}>
+                {iconComponent}
+              </View>
+            );
+          },
+          drawerLabelStyle: {
+            backgroundColor: '#fff',
+          },
+          drawerActiveTintColor: 'black',
+        }}
+        name={
+          getChargerStatus?.message == 'Online'
+            ? `Charger Status\nOnline`
+            : getChargerStatus?.message == 'Offline'
+            ? `Charger Status\nOffline`
+            : 'Chargin'
+        }
+        component={chargerStatus}
+      />
+
+
     </Drawer.Navigator>
   );
 };
