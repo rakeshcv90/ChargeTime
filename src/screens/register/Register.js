@@ -209,21 +209,21 @@ export default function Register({navigation}) {
                   )}
                   {/* IconLeft={null}
             
-            errors={undefined}
-            touched={false}
-            placeholderTextColor={COLORS.BLACK}
-            text="Password"
-            
-            passwordInput={true}
-            pasButton={() => setShowPassword(!showPassword)}
-            secureTextEntry={showPassword}
-            passwordInputIcon={showPassword}
-            onChangeText={text => setPassword(text)}
-            value={password}
-            mV={5}
-            placeholder="Enter your password"
-            bW={1}
-            textWidth={'30%'} */}
+                errors={undefined}
+                touched={false}
+                placeholderTextColor={COLORS.BLACK}
+                text="Password"
+                
+                passwordInput={true}
+                pasButton={() => setShowPassword(!showPassword)}
+                secureTextEntry={showPassword}
+                passwordInputIcon={showPassword}
+                onChangeText={text => setPassword(text)}
+                value={password}
+                mV={5}
+                placeholder="Enter your password"
+                bW={1}
+                textWidth={'30%'} */}
                 </View>
 
                 <View
@@ -253,7 +253,7 @@ export default function Register({navigation}) {
                     </Text>
                   </TouchableOpacity>
                 </View>
-              </View>
+                </View>
             )}
           </Formik>
         </View>

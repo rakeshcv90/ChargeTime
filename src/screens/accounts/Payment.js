@@ -35,6 +35,7 @@ import {navigationRef} from '../../../App';
 import creditCardType,{types as CardType} from 'credit-card-type';
 import { FlatList } from 'react-native-gesture-handler';
 import { mvs,ms } from 'react-native-size-matters';
+import Carousel from "react-native-reanimated-carousel";
 
 const mobileW = Math.round(Dimensions.get('screen').width);
 const mobileH = Math.round(Dimensions.get('window').height);
@@ -48,7 +49,7 @@ export default function PaymentGateWay({navigation}) {
   const { getUserID} = useSelector(
     state => state,
   );
-
+  const [pagingEnabled, setPagingEnabled]=useState(true);
   const [getCard_Number, setGetCard_Number]=useState('');
   const [creditCard,setCreditCard] = useState('');
   const [cardDetails, setCardDetails] = useState({
@@ -232,6 +233,8 @@ const card_id = cardId;
 
   return (
     <SafeAreaView style={{backgroundColor: COLORS.CREAM, flex: 1}}>
+  <ScrollView showsVerticalScrollIndicator={false}>
+
        <Header headerName="Payment Methods" editShow={false} />
     <HorizontalLine />
         <View style={styles.mainDiv_container}>
@@ -250,6 +253,71 @@ const card_id = cardId;
                 touched,
               }) => (
                 <>
+                {/* {savedCard ?
+              <Carousel
+              style={{
+                width: "100%",
+                height: 240,
+                alignItems: "center",
+                justifyContent: "center",
+              }}
+              loop
+              width={"100%"}
+              height={200}
+              autoPlay={true}
+              data={savedCard}
+              scrollAnimationDuration={1000}
+              onSnapToItem={(index) => console.log('current index:', index)}
+              renderItem={(item,index)=>{
+                return(
+                  <View style={{}}>
+                     <ImageBackground
+                  source={cardTypeImage}
+                  style={{
+                    width: DIMENSIONS.SCREEN_WIDTH * 0.9,
+                    resizeMode: 'contain',
+                    height:mvs(190),
+                    // height:200,
+                    
+
+                  }}
+                >
+                   <View style={styles.cardNumber_position}>
+                  
+                  <Text
+                    style={{color: '#fff', fontWeight: '600', fontSize: ms(20) }}>
+                    { String(item.item.card_number).replace(/^(\d{12})(\d{4})$/, 'xxxx xxxx xxxx $2') }
+                  </Text>
+                  <View style={styles.text_div}>
+                  <View style={{gap:ms(5), width:ms(100)}}>
+                    <Text style={{color: 'gray', fontWeight: '600', fontSize: 8}}>Card Holder</Text>
+                  <Text
+                    style={{color: '#fff', fontWeight: '600', fontSize: 13}}>
+                    {String(item.item.cust_name )}
+                  </Text>
+                  </View>
+                  <View style={{gap:ms(5)}}>
+                  <Text style={{ fontWeight: '600', fontSize: 8,color:'gray'}}>Expires</Text>
+                  <Text
+                    style={{color: '#fff', fontWeight: '600', fontSize: 13}}>
+                    {String(item.item.card_exp_month+'/'+item.item.card_exp_year)}
+                  </Text>
+                  </View>
+                  <View style={{gap:5}}>
+                  <Text style={{fontWeight: '600', fontSize: 8,color:'gray'}}>CVV</Text>
+                  <Text
+                    style={{color: '#fff', fontWeight: '600', fontSize: 13}}>
+                    {String(item.item.card_cvc)}
+                  </Text>
+                  </View>
+                   </View>
+                </View>
+                  </ImageBackground>
+                  </View>
+                )
+              }}
+            />:null  
+              } */}
                {savedCard? <FlatList
                style={{height:mvs(200),flexGrow:0}}
                horizontal={true}
@@ -316,8 +384,8 @@ const card_id = cardId;
                     source={cardTypeImage}
                     style={{
                       width: DIMENSIONS.SCREEN_WIDTH * 0.9,
-                      resizeMode: 'contain',
-                      height:mvs(240),
+                      // resizeMode: 'contain',
+                      height:mvs(185),
 
                     }}
                   />
@@ -543,14 +611,18 @@ const card_id = cardId;
                         backgroundColor: COLORS.GREEN,
                         paddingHorizontal: 20,
                         paddingVertical: 10,
+                       
                         borderRadius: 12,
                         marginLeft:240,
+                        // marginRight:20,
                       }}>
                       <TouchableOpacity onPress={handleSubmit}>
                         <Text
                           style={{
                             fontSize: 14,
                             fontWeight: '700',
+                            alignContent:'center',
+                            justifyContent:'center',
                             color: COLORS.BLACK,
                           }}>
                           ADD CARD
@@ -561,6 +633,7 @@ const card_id = cardId;
               )}
             </Formik>
         </View>
+        </ScrollView>
     </SafeAreaView>
   );
 }

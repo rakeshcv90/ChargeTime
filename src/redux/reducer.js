@@ -22,7 +22,8 @@ const initialState = {
     getDataForPayment:[],
     userSubsData:[],
     getPurchaseData:[],
-    getDeviceID:''
+    getDeviceID:'',
+    userProfileData: [],
   };
   
   const rootReducer = (state = initialState, action) => {
@@ -39,6 +40,8 @@ const initialState = {
         return { ...state, getEmailDAta: action.payload };
       case types.GET_USER_DATA:
         return { ...state, userRegisterData: action.payload };
+      case types.GET_PROFILE_DATA:
+        return { ...state, userProfileData: action.payload };
       case types.GET_BASE_PACKAGE:
         return { ...state, getBasePackage: action.payload };
 

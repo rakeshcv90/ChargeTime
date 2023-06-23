@@ -62,13 +62,13 @@ export default function Login({navigation}) {
               
         // AsyncStorage.setItem('loginDataOne', JSON.stringify(data.locationid ));
        
-        if (data.message == 'Login Successfully') {
+        if (data.message == 'Login Successfull') {
          PLATFORM_IOS?
           Toast.show({
             type: 'success',
-            text1: 'Login Successful',
+            text1: 'Login Successfull',
             
-          }):ToastAndroid.show('Login Successfully', ToastAndroid.SHORT);
+          }):ToastAndroid.show('Login Successfull', ToastAndroid.SHORT);
           console.log(data.status,'qqq')
           // if(data.status == "true"){
             //   navigation.navigate('EnergyStats');

@@ -1,5 +1,5 @@
 import { Image, View, Text, StyleSheet, Dimensions, TouchableOpacity,SafeAreaView } from 'react-native';
-import React, { useState } from 'react';
+import React, { useState , useEffect } from 'react';
 import { createDrawerNavigator } from '@react-navigation/drawer';
 import { CommonActions, NavigationContainer } from '@react-navigation/native';
 import Picker from '@react-native-picker/picker'
@@ -12,12 +12,31 @@ import { FONTS } from '../../constants/FONTS';
 import { DIMENSIONS } from '../../constants/DIMENSIONS';
 import DrawerOpen from '../../Components/DrawerOpen';
 import {persistor} from '../../redux/store';
+import { useSelector } from 'react-redux';
+import { API } from '../../api/API';
+import { useDispatch } from 'react-redux';
+import { userRegisterData } from '../../redux/action';
+import { getBasePackage } from '../../redux/action';
 
 const mobileW = Math.round(Dimensions.get('screen').width);
 
 
 const Account = ({navigation}) => {
   const [selectedValue, setSelectedValue] = useState('');
+  const getUserID = useSelector((state)=> state.getUserID)
+  const user_ID = getUserID;
+  const dispatch =useDispatch();
+
+
+
+  useEffect(() => {
+     console.log('data for this User:---------', userRegisterData); 
+     console.log('iiiiddddddd',user_ID)
+     userDetails();
+     userSubscription();
+     userSubsEnergy();
+  }, []);
+
   const Screen = [
     {
       title: 'Personal Details',
@@ -83,7 +102,63 @@ const Account = ({navigation}) => {
     console.log('Log out successfully');
   }
 
+  const userDetails = async () =>{
+    // const response = await fetch(`${API}/userexisting/${user_ID}`);
+    try {
+      const response = await fetch(`${API}/userexisting/${user_ID}`);
+      const result = await response.json();
+      if(result[0].message == "sucess")
+      {
+ console.log('wwwwww',result);
+//  setUserData(result);
+ dispatch(userRegisterData(result)); 
+ console.log(result)
+      }else{
+        console.log("iiiiiiiiiiii")
+      }
+      // setLocationMap(result);
+    } catch (error) {
+      console.error(error);
+    }
+};
+
+ const userSubscription = async () =>{
+  try {
+    const response = await fetch(`${API}/subscriptionplan/${user_ID}`);
+    const result = await response.json();
  
+    if(result[0].message == "sucess")
+    {
+      // setGetSubscription(result[0]);
+  dispatch(getBasePackage(result)); 
+    }else{
+      console.log("iiiiiiiiiiii")
+    }
+  } catch (error) {
+    console.error(error);
+  }
+};
+
+const userSubsEnergy = async () => {
+
+  try {
+    const response = await fetch(`${API}/subscription/${user_ID}`);
+    const result = await response.json();
+    console.log("-----",result)
+    if(result !== null)
+    {
+    // console.log(result, "----------------")
+    dispatch(userSubsData(result));
+    // setGetData(result)
+    }else{
+      console.log("iiiiiiiiiiii")
+    }
+ 
+  } catch (error) {
+   console.log("get deleted", error)
+  }
+}  
+
 
   const handleLinkPress = (screen) => {
     navigation.navigate(screen);
@@ -176,11 +251,11 @@ height: DIMENSIONS.SCREEN_HEIGHT * 0.9,
     width: 132,
     height: 20,
     marginLeft:5, 
-    fontfamily: 'Roboto',
-    fontstyle: 'normal',
-    fontweight: 900,
-    fontsize: 14,
-    lineheight: 10,
+    fontFamily: 'Roboto',
+    fontStyle: 'normal',
+    // fontweight: 900,
+    fontSize: 14,
+    lineHeight: 15,
     marginBottom:20,
     marginTop:20,
     color: '#000000',
@@ -192,7 +267,7 @@ height: DIMENSIONS.SCREEN_HEIGHT * 0.9,
     paddingVertical: 7,
   },
   text: {
-    font: 'Roboto',
+    fontFamily: 'Roboto',
     fontSize: 14,
     marginLeft: 10,
     color: 'rgba(0, 0, 0, 1)',
@@ -210,7 +285,7 @@ height: DIMENSIONS.SCREEN_HEIGHT * 0.9,
     padding: 8,
     borderWidth: 1,
     borderColor: '#ccc',
-    marginLeft : 65,
+    left : 55,
     borderRadius: 5,
     // marginRight:10, 
   

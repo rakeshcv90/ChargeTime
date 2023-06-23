@@ -366,7 +366,8 @@ const DrawerNavigation = () => {
             ? `Charger Status\nOnline`
             : getChargerStatus?.message == 'Offline'
             ? `Charger Status\nOffline`
-            : ''
+            : 'charging...'
+          
         }
         component={chargerStatus}
       />

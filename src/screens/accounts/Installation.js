@@ -14,6 +14,7 @@ import { API } from '../../api/API'
 import axios from 'axios';
 import { FONTS } from '../../constants/FONTS'
 import { navigationRef } from '../../../App'
+import { ms } from 'react-native-size-matters';
 
 
 
@@ -25,27 +26,31 @@ const Installation = () => {
   const getUserID = useSelector((state)=> state.getUserID)
   const [isModalVisible, setModalVisible] = useState(false);
   const [isEditable, setIsEditable] = useState(false);
+  const [locationMap, setLocationMap] = useState([]);
+  const [selectedValue, setSelectedValue] = useState('');
+  const [newState, setState] = useState('');
+  const [newZipcode, setZipCode] = useState('');
+  const [addlineone, setAddLineOne] = useState();
+  const [addlinetwo, setAddLineTwo] = useState();
+  const [value, setValue] = useState(null);
+ //  const [location, setLocation] = useState();
+  const [locationId, setLocationId] = useState('');
+  const [isFocus, setIsFocus] = useState(false);
+  const [forLoading,setForLoading] = useState(false)
   
   useEffect(() => {
     console.log('data for this User:---------', userRegisterData); 
+    setAddLineTwo(userRegisterData[0]?.pwa_add2);
+    setAddLineOne(userRegisterData[0]?.pwa_add1);
     // console.log('userrrrrrrrr',getUserID)
     fetchOptions();
- }, []);
+ }, [userRegisterData]);
 const user_id= getUserID;
 //  const {navigation, route} = props;
 //  const { user_id} = route?.params;
 
 
- const [locationMap, setLocationMap] = useState([]);
- const [selectedValue, setSelectedValue] = useState('');
- const [newState, setState] = useState('');
- const [newZipcode, setZipCode] = useState('');
- const [addlineone, setAddLineOne] = useState('');
- const [addlinetwo, setAddLineTwo] = useState('');
- const [value, setValue] = useState(null);
- const [locationId, setLocationId] = useState('');
- const [isFocus, setIsFocus] = useState(false);
- const [forLoading,setForLoading] = useState(false)
+
  
  const fetchOptions = async () => {
    try {
@@ -230,16 +235,16 @@ const InstalltionUpdate = async () => {
                 iconStyle={styles.iconStyle}
                 data={locationMap}
                 search
-                maxHeight={500}
+                maxHeight={ms(500)}
                 labelField="location"
                 valueField="location"
                 // placeholder={!isFocus ? userRegisterData[0]?.location : selectedValue}
-                placeholder={isFocus ? userRegisterData[0]?.location : selectedValue}
+                // placeholder={isFocus ? userRegisterData[0]?.location : selectedValue}
                 keyboardAvoiding
                 searchPlaceholder="Search..."
                 value={selectedValue ? selectedValue: userRegisterData[0]?.location}
-                onFocus={() => setIsFocus(false)}
-                onBlur={() => setIsFocus(false)}
+                // onFocus={() => setIsFocus(false)}
+                // onBlur={() => setIsFocus(false)}
                 onChange={item => handleSelect(item.id, item)}
               />
             </View>
@@ -256,7 +261,7 @@ const InstalltionUpdate = async () => {
           bColor={COLORS.BLACK}
           text="Address Line"
           mV={15}
-          textWidth={'45%'}
+          textWidth={ms(85)}
           value={isEditable ? addlineone : userRegisterData[0]?.pwa_add1}
           onChangeText={values => setAddLineOne(values)}
           // placeholder={userRegisterData[0]?.pwa_add1}
@@ -281,7 +286,7 @@ const InstalltionUpdate = async () => {
           bColor={COLORS.LIGHT_GREY}
           text="Address Line 2"
           mV={10}
-          textWidth={'50%'}
+          textWidth={ms(95)}
           value={isEditable ? addlinetwo : userRegisterData[0]?.pwa_add2}
           onChangeText={values => setAddLineTwo(values)}
           // placeholder={userRegisterData[0]?.pwa_add2}
@@ -310,7 +315,7 @@ const InstalltionUpdate = async () => {
                   mV={15}
                   placeholder={userRegisterData[0]?.pwa_zip}
                   bW={0.3}
-                  textWidth={'60%'}
+                  textWidth={ms(68)}
                   // value={newZipcode}
                   placeholderTextColor={COLORS.BLACK}
                   w="half"
@@ -333,7 +338,7 @@ const InstalltionUpdate = async () => {
                   mV={15}
                   placeholder={userRegisterData[0]?.pwa_state}
                   bW={0.3}
-                  textWidth={'40%'}
+                  textWidth={ms(45)}
                   placeholderTextColor={COLORS.BLACK}
                   w="half"
                 />
