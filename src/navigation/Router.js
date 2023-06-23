@@ -89,6 +89,7 @@ export const chargerStatus = () => {
     </View>
   );
 };
+
 const DrawerNavigation = () => {
   const [focus, setFocus] = useState();
   const [focusOne, setFocusOne] = useState();
@@ -195,6 +196,35 @@ const DrawerNavigation = () => {
         options={{
           drawerActiveBackgroundColor: '#fff',
           drawerIcon: ({focused, color, size}) => {
+            setFocusOne(focused);
+            return (
+              <Image
+                source={
+                  !focused
+                    ? require('../../assets/images/testing.png')
+                    : require('../../assets/images/energy_green.png')
+                }
+                style={{width: 50, height: 40, padding: 0, margin: -10}}
+              />
+            );
+          },
+          drawerLabelStyle: {
+            backgroundColor: focusOne ? 'rgba(177, 211, 79, 0.8)' : '#fff',
+            paddingVertical: 10,
+            paddingLeft: 10,
+            width: '200%',
+            marginLeft: -15,
+          },
+          drawerActiveTintColor: 'black',
+          title: 'Energy',
+        }}
+        name="EnergyOptions"
+        component={EnergyOptions}
+      />
+      <Drawer.Screen
+        options={{
+          drawerActiveBackgroundColor: '#fff',
+          drawerIcon: ({focused, color, size}) => {
             setFocusTwo(focused);
             return (
               <Image
@@ -228,11 +258,12 @@ const DrawerNavigation = () => {
             return (
               <Image
                 source={require('../../assets/images/contact_us.png')}
-                style={{width: 30, height: 30, padding: 0}}
+                resizeMode="center"
+                style={{width: 35, height: 35, padding: 0}}
               />
             );
           },
-          drawerItemStyle: {marginTop: 100},
+          drawerItemStyle: {marginTop: (DIMENSIONS.SCREEN_HEIGHT * 10) / 100},
           drawerLabelStyle: {
             backgroundColor: '#fff',
           },
@@ -249,7 +280,8 @@ const DrawerNavigation = () => {
             return (
               <Image
                 source={require('../../assets/images/privacy.png')}
-                style={{width: 30, height: 30, padding: 0}}
+                resizeMode="center"
+                style={{width: 35, height: 35, padding: 0}}
               />
             );
           },
@@ -268,7 +300,8 @@ const DrawerNavigation = () => {
             return (
               <Image
                 source={require('../../assets/images/terms.png')}
-                style={{width: 30, height: 30, padding: 0}}
+                resizeMode="center"
+                style={{width: 35, height: 35, padding: 0}}
               />
             );
           },
@@ -415,16 +448,21 @@ const AccountStack = () => {
       <Stack.Screen name="Theme" component={Theme} />
       <Stack.Screen name="Contact" component={Contact}/>
       <Stack.Screen name="deleteAccount" component={deleteAccount} />
-      {/* <Stack.Screen name="Login" component={Login} /> */}
+      <Stack.Screen name="Login" component={Login} />
       <Stack.Screen name="LoginStack" component={LoginStack} />
+      <Stack.Screen name="DrawerStack" component={DrawerNavigation} />
+      <Stack.Screen name="HomeStack" component={HomeStack} />
     </Stack.Navigator>
   );
 };
 
 export default function Router() {
+  const [isAuthorized, setIsAuthorized] = useState(false);
   let loginDataString;
-  const {getLocationID, getPackageStatus, getUserID, isAuthorized} =
-    useSelector(state => state);
+  const getLocationID = useSelector(state => state.getLocationID);
+  const getPackageStatus = useSelector(state => state.getPackageStatus);
+  const getUserID = useSelector(state => state.getUserID);
+
   useEffect(() => {
     checkLogin();
   }, []);
@@ -433,6 +471,7 @@ export default function Router() {
     id = await AsyncStorage.getItem('locationID');
   };
 
+  // console.log(getLocationId,"getLocationId")
   // let locationId;
 
   // useEffect(() => {
@@ -455,7 +494,10 @@ export default function Router() {
 
   return (
     <Stack.Navigator screenOptions={screenOptions}>
-      {!isAuthorized ? (
+      <>
+        <Stack.Screen name="DrawerStack" component={DrawerNavigation} />
+      </>
+      {/* {id == null ? (
         <>
           <Stack.Screen name="LoginStack" component={LoginStack} />
         </>
@@ -463,7 +505,7 @@ export default function Router() {
         <>
           <Stack.Screen name="DrawerStack" component={DrawerNavigation} />
         </>
-      )}
+      )} */}
     </Stack.Navigator>
   );
 }
