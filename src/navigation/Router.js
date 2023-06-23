@@ -190,7 +190,7 @@ const DrawerNavigation = () => {
           component={HomeStack}
         />
       )}
-      <Drawer.Screen
+      {/* <Drawer.Screen
         options={{
           drawerActiveBackgroundColor: '#fff',
           drawerIcon: ({focused, color, size}) => {
@@ -218,7 +218,7 @@ const DrawerNavigation = () => {
         }}
         name="EnergyOptions"
         component={EnergyOptions}
-      />
+      /> */}
       <Drawer.Screen
         options={{
           drawerActiveBackgroundColor: '#fff',
@@ -490,10 +490,10 @@ export default function Router() {
 
   return (
     <Stack.Navigator screenOptions={screenOptions}>
-      <>
+      {/* <>
         <Stack.Screen name="DrawerStack" component={DrawerNavigation} />
-      </>
-      {/* {id == null ? (
+      </> */}
+      {!isAuthorized ? (
         <>
           <Stack.Screen name="LoginStack" component={LoginStack} />
         </>
@@ -501,7 +501,7 @@ export default function Router() {
         <>
           <Stack.Screen name="DrawerStack" component={DrawerNavigation} />
         </>
-      )} */}
+      )}
     </Stack.Navigator>
   );
 }

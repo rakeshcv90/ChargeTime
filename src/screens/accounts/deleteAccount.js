@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, TextInput, StyleSheet, Button, SafeAreaView, TouchableOpacity, Text, ToastAndroid } from 'react-native';
+import { View, TextInput, StyleSheet, Button, SafeAreaView, TouchableOpacity, Text, ToastAndroid, Image, Platform,Dimensions } from 'react-native';
 import Input from '../../Components/Input';
 import COLORS from '../../constants/COLORS';
 import { useSelector } from 'react-redux';
@@ -20,7 +20,7 @@ const DeleteAccountScreen = () => {
   const [password, setPassword] = useState('');
   const getUserID = useSelector((state) => state.getUserID)
   const user_ID = getUserID;
-
+  const mobileW = Math.round(Dimensions.get('screen').width);
 
   useEffect(() => {
     console.log('data for this User:---------', userRegisterData);
@@ -76,7 +76,13 @@ const DeleteAccountScreen = () => {
   return (
     <SafeAreaView style={{ backgroundColor: COLORS.CREAM, flex: 1 }}>
       <Header headerName="Account Delete Request" />
-      <HorizontalLine style={styles.line} />
+      {Platform.OS=='android'? <HorizontalLine style={styles.line} />:<View
+              style={{
+             
+             
+              }}>
+              <Image source={require('../../../assets/images/dotted.png')} style={{ width: mobileW * 0.97 ,top:Platform.OS=='ios'?-30:2}} />
+            </View> }
       <View style={styles.container}>
         {/* <TextInput
           style={{
