@@ -289,7 +289,7 @@
 
 
 import React from 'react';
-import {StyleSheet,View,Image} from 'react-native';
+import {StyleSheet,View,Image, Text} from 'react-native';
 
 import LinearGradient from 'react-native-linear-gradient';
 
@@ -499,10 +499,10 @@ navigationRef.dispatch(DrawerActions.closeDrawer())
               </Animated.View>
         </Animated.View>
       </PanGestureHandler>
-      <Animated.Text style={[styles.swipeText, AnimatedStyles.swipeText]}>
+      <Text style={[styles.swipeText]}>
       
-        {showText==true? 'Swipe left to stop charging' : 'Swipe right to start charging'}
-      </Animated.Text>
+        {showText ? 'Swipe left to stop charging' : 'Swipe right to start charging'}
+      </Text>
       
     </Animated.View>
     </LinearGradient>

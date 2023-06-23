@@ -151,7 +151,7 @@ export default function EnergyStats() {
         <StatusBar backgroundColor={COLORS.CREAM2} barStyle={'dark-content'} />
 
         <DrawerOpen />
-        {getDeviceID !== 'Account linked' ? (
+        {getDeviceID == 'Account linked' ? (
           <View
             style={{
               justifyContent: 'center',
@@ -254,7 +254,7 @@ export default function EnergyStats() {
           </View>
         )}
 
-        {getDeviceID !== 'Account linked' ? (
+        {getDeviceID == 'Account linked' ? (
           <View
             style={{
               justifyContent: 'center',
@@ -281,7 +281,7 @@ export default function EnergyStats() {
             <Tab.Screen name="Year" component={Year} />
           </Tab.Navigator>
         )}
-        {getDeviceID !== 'Account linked' ? (
+        {getDeviceID == 'Account linked' ? (
           <View>
             <Text></Text>
           </View>

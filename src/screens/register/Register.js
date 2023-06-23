@@ -9,23 +9,24 @@ import {
   ScrollView,
   Alert,
   ToastAndroid,
+  KeyboardAvoidingView,
 } from 'react-native';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {Formik} from 'formik';
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import COLORS from '../../constants/COLORS';
 import axios from 'axios';
 import * as Yup from 'yup';
 import {API} from '../../api/API';
 import Input from '../../Components/Input';
 import Toast from 'react-native-toast-message';
-import { PLATFORM_IOS } from '../../constants/DIMENSIONS';
-import { Admin } from '../../../assets/images/Admin';
-import { Message } from '../../../assets/images/Message';
-import { Call } from '../../../assets/images/Call';
-import { StrongPass } from '../../../assets/images/StrongPass';
-import { useDispatch } from 'react-redux';
-import { userRegisterData } from '../../redux/action';
+import {PLATFORM_IOS} from '../../constants/DIMENSIONS';
+import {Admin} from '../../../assets/images/Admin';
+import {Message} from '../../../assets/images/Message';
+import {Call} from '../../../assets/images/Call';
+import {StrongPass} from '../../../assets/images/StrongPass';
+import {useDispatch, useSelector} from 'react-redux';
+import {setUserRegisterData} from '../../redux/action';
 import ActivityLoader from '../../Components/ActivityLoader';
 const mobileH = Math.round(Dimensions.get('window').height);
 const mobileW = Math.round(Dimensions.get('screen').width);
@@ -43,71 +44,77 @@ const validationSchema = Yup.object().shape({
     .required('Password is required'),
 });
 export default function Register({navigation}) {
-  const [forLoading,setForLoading] = useState(false)
+  const [forLoading, setForLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(true);
-  const dispatch =useDispatch();
- 
+  const dispatch = useDispatch();
+  const {userRegisterData} = useSelector(state => state);
+
+
   const handleFormSubmit = async values => {
-    setForLoading(true)
+    setForLoading(true);
     try {
-      const response = await axios.post(`${API}/createuser`, values);
-      
-      
-      
-      if (response.data.message != "Your Email is already exist") {
-        PLATFORM_IOS?
-        Toast.show({
-          type: 'success',
-          text1: 'User registered successfully.',
-          
-        }):ToastAndroid.show('User registered successfully.', ToastAndroid.SHORT);
-        navigation.navigate('VerifyEmail', { email: values?.email,user_id:response.data?.user_id });
+      const response = await axios.post(`${API}/createuser`, {
+        name: values.name,
+        email: values.email,
+      });
+      console.log(response.data.error);
+      if (response.data.error != 1) {
+        PLATFORM_IOS
+          ? Toast.show({
+              type: 'success',
+              text1: 'Success!!! Please verify your email with OTP.',
+            })
+          : ToastAndroid.show(
+              'Success!!! Please verify your email with OTP.',
+              ToastAndroid.SHORT,
+            );
+        navigation.navigate('VerifyEmail', {
+          email: values?.email,
+          user_id: response.data?.user_id,
+        });
 
         //  const data=[{ email: values?.email },{ name: values?.name },{ mobile: values?.mobile },{ password: values?.password },{user_id:response.data?.user_id}]
         // const data = response.data
         //  console.log('------------------',data);
 
-         setForLoading(false)
+        setForLoading(false);
 
-        dispatch(userRegisterData(data)); 
-        
+        dispatch(setUserRegisterData(values));
       } else {
         PLATFORM_IOS
           ? Toast.show({
               type: 'error',
-              text1: 'Your Email is already exist.',
-              
+              text1: 'User not Found',
             })
           : ToastAndroid.show(
-              'Your Email is already exist.',
+              'User not Found',
               ToastAndroid.SHORT,
             );
-            setForLoading(false)
+        setForLoading(false);
       }
     } catch (error) {
       console.error(error);
-      setForLoading(false)
+      setForLoading(false);
     }
   };
   return (
     <SafeAreaView style={{backgroundColor: COLORS.CREAM, flex: 1}}>
       <ScrollView
+      // scrollEnabled={false}
         showsVerticalScrollIndicator={false}
         keyboardShouldPersistTaps="handled">
-          {forLoading?<ActivityLoader /> :""}
-          <View>
-        <Image
-          source={require('../../../assets/images/res.png')}
-          resizeMode="contain"
-          style={{width: mobileW,height:mobileH/5}}
-        />
-        </View>
-        <View>
+        <KeyboardAvoidingView behavior="position">
+          {forLoading ? <ActivityLoader /> : ''}
+          <Image
+            source={require('../../../assets/images/res.png')}
+            resizeMode="contain"
+            style={{width: mobileW, height: mobileH / 5, marginTop: 10}}
+          />
           <Formik
             initialValues={{
-              name: '',
-              email: '',
-              mobile: '',
+              name: userRegisterData.name,
+              email: userRegisterData.email,
+              mobile: userRegisterData.mobile,
               password: '',
             }}
             onSubmit={values => handleFormSubmit(values)}
@@ -123,12 +130,12 @@ export default function Register({navigation}) {
               <View>
                 <View style={styles.second_mainDiv_signup}>
                   <Text style={styles.signUp_text}>Sign Up</Text>
-                  
                   <Input
                     IconLeft={null}
-                    errors={undefined}
-                    touched={false}
+                    errors={errors.name}
+                    touched={touched.name}
                     value={values.name}
+                    autoFocus
                     onChangeText={handleChange('name')}
                     onBlur={handleBlur('name')}
                     text="Full Name"
@@ -139,14 +146,11 @@ export default function Register({navigation}) {
                     textWidth={'30%'}
                     placeholderTextColor={COLORS.BLACK}
                   />
-                  {errors.name && touched.name && (
-                    <Text style={{color: 'red'}}>{errors.name}</Text>
-                  )}
-                  
+
                   <Input
                     IconLeft={null}
-                    errors={undefined}
-                    touched={false}
+                    errors={errors.email}
+                    touched={touched.email}
                     value={values.email}
                     onChangeText={handleChange('email')}
                     onBlur={handleBlur('email')}
@@ -158,17 +162,15 @@ export default function Register({navigation}) {
                     textWidth={'30%'}
                     placeholderTextColor={COLORS.BLACK}
                     autoCapitalize="none"
+                    keyboardType='email-address'
                   />
-                  {errors.email && touched.email && (
-                    <Text style={{color: 'red'}}>{errors.email}</Text>
-                  )}
-                  
+
                   <Input
                     IconLeft={null}
-                    errors={undefined}
-                    touched={false}
+                    errors={errors.mobile}
+                    touched={touched.mobile}
                     value={values.mobile}
-                    keyboardType='numeric'
+                    keyboardType="numeric"
                     onChangeText={handleChange('mobile')}
                     maxLength={10}
                     onBlur={handleBlur('mobile')}
@@ -180,15 +182,11 @@ export default function Register({navigation}) {
                     textWidth={'30%'}
                     placeholderTextColor={COLORS.BLACK}
                   />
-                  {errors.mobile && touched.mobile && (
-                    <Text style={{color: 'red'}}>{errors.mobile}</Text>
-                  )}
-                 
+
                   <Input
                     IconLeft={null}
-                    errors={undefined}
-                    touched={false}
-                    autoFocus
+                    errors={errors.password}
+                    touched={touched.password}
                     value={values.password}
                     onChangeText={handleChange('password')}
                     onBlur={handleBlur('password')}
@@ -204,26 +202,23 @@ export default function Register({navigation}) {
                     placeholderTextColor={COLORS.BLACK}
                     secureTextEntry={showPassword}
                   />
-                  {errors.password && touched.password && (
-                    <Text style={{color: 'red'}}>{errors.password}</Text>
-                  )}
                   {/* IconLeft={null}
             
-                errors={undefined}
-                touched={false}
-                placeholderTextColor={COLORS.BLACK}
-                text="Password"
-                
-                passwordInput={true}
-                pasButton={() => setShowPassword(!showPassword)}
-                secureTextEntry={showPassword}
-                passwordInputIcon={showPassword}
-                onChangeText={text => setPassword(text)}
-                value={password}
-                mV={5}
-                placeholder="Enter your password"
-                bW={1}
-                textWidth={'30%'} */}
+            errors={errors.name}
+            touched={touched.name}
+            placeholderTextColor={COLORS.BLACK}
+            text="Password"
+            
+            passwordInput={true}
+            pasButton={() => setShowPassword(!showPassword)}
+            secureTextEntry={showPassword}
+            passwordInputIcon={showPassword}
+            onChangeText={text => setPassword(text)}
+            value={password}
+            mV={5}
+            placeholder="Enter your password"
+            bW={1}
+            textWidth={'30%'} */}
                 </View>
 
                 <View
@@ -236,7 +231,7 @@ export default function Register({navigation}) {
                   <TouchableOpacity
                     onPress={handleSubmit}
                     style={{
-                      marginTop: 15,
+                      // marginTop: 15,
                       backgroundColor: '#B1D34F',
                       alignItems: 'center',
                       padding: 13,
@@ -253,10 +248,10 @@ export default function Register({navigation}) {
                     </Text>
                   </TouchableOpacity>
                 </View>
-                </View>
+              </View>
             )}
           </Formik>
-        </View>
+        </KeyboardAvoidingView>
         <View style={styles.mainDiv_Already_account}>
           <Text style={styles.dont_have_text}>Already have an account? </Text>
           <TouchableOpacity onPress={() => navigation.navigate('Login')}>
@@ -310,7 +305,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
-    paddingTop: 10,
+    marginTop: 30,
     paddingBottom: 15,
   },
   dont_have_text: {

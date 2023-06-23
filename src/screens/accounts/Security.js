@@ -139,6 +139,7 @@ const UpdatePassword= async () =>{
             bW={1}
             bR={3}
             textWidth={ms(120)}
+
             style={{
               color: COLORS.BLACK,
               fontFamily: 'Roboto',

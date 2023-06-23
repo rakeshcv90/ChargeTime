@@ -1,6 +1,7 @@
 export default COLORS = {
   WHITE: '#fff',
   BLACK:'#000000',
+  BLACK2:'#263238',
   GREEN: "#B1D34F",
   CREAM: "#F7FBED",
   GRAY:'#F5F5F5',

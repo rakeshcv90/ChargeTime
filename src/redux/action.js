@@ -15,13 +15,16 @@ export const setEmailData = (data) => {
 export const setKwhData = (data) => {
   return {type:types.GET_KWH_DATA,payload:data}
 }
-export const userRegisterData = (data) => {
+export const setUserRegisterData = (data) => {
   return {type: types.GET_USER_DATA, payload: data};
 };
 export const userProfileData = (data) => {
   return {type: types.GET_PROFILE_DATA, payload: data};
 };
-export const getBasePackage = (data) => {
+
+
+export const setBasePackage = (data) => {
+
   return {type:types.GET_BASE_PACKAGE,payload:data}
 }
 
@@ -58,6 +61,9 @@ export const setQuarterGraphData = (data) => {
 export const setYearGraphData = (data) => {
   return {type:types.GET_YEAR_DATA,payload:data}
 }
+export const setIsAuthorized = (data) => {
+  return {type:types.SET_IS_AUTHORIZED,payload:data}
+}
 
 // week action end
 //dashboard boxtwo and price details data start
@@ -81,6 +87,3 @@ export const setPurchaseData = (data) => {
 export const setDeviceId = (data) => {
   return {type:types.GET_DEVICE_ID,payload:data}
 } 
-
-    //dashboard boxtwo and price details data end
-

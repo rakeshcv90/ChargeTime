@@ -11,7 +11,7 @@ import WaveAnimation from '../../Components/WaveAnimation';
 import { DIMENSIONS } from '../../constants/DIMENSIONS';
 import PriceValiditySubs from '../../Components/PriceValiditySubs';
 import { API } from '../../api/API';
-import { getBasePackage } from '../../redux/action';
+import { setBasePackage } from '../../redux/action';
 import { userSubsData } from '../../redux/action';
 
 
@@ -43,7 +43,7 @@ const mobileW = Math.round(Dimensions.get('screen').width);
     if(result[0].id !== null)
     {
       setGetSubscription(result[0]);
-  dispatch(getBasePackage(result)); 
+  dispatch(setBasePackage(result)); 
     }else{
       console.log("iiiiiiiiiiii")
     }
