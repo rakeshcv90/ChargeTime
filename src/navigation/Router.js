@@ -50,7 +50,6 @@ import {OnlineCharge} from '../../assets/images/OnlineCharge';
 import {NoCharge} from '../../assets/images/NoCharge';
 import COLORS from '../constants/COLORS';
 import {DIMENSIONS} from '../constants/DIMENSIONS';
-// import Plan from '../screens/planSummary/Plan';
 
 const Drawer = createDrawerNavigator();
 const Stack = createNativeStackNavigator();
@@ -89,50 +88,77 @@ export const chargerStatus = () => {
     </View>
   );
 };
-
 const DrawerNavigation = () => {
   const [focus, setFocus] = useState();
   const [focusOne, setFocusOne] = useState();
   const [focusTwo, setFocusTwo] = useState();
   const {getPackageStatus, getChargerStatus} = useSelector(state => state);
-  console.log(getPackageStatus, 'getPackageStatus');
-  console.log(getChargerStatus, 'getChargerStatus');
 
   return (
     <Drawer.Navigator
       screenOptions={{headerShown: false}}
       drawerContent={CustomDrawerContent}>
       {getPackageStatus ? (
-        <Drawer.Screen
-          options={{
-            drawerActiveBackgroundColor: '#fff',
-            swipeEnabled: false,
-            drawerIcon: ({focused, color, size}) => {
-              setFocus(focused);
-              return (
-                <Image
-                  source={
-                    !focused
-                      ? require('../../assets/images/home_white.png')
-                      : require('../../assets/images/home_green.png')
-                  }
-                  style={{width: 50, height: 40, padding: 0, margin: -10}}
-                />
-              );
-            },
-            drawerLabelStyle: {
-              backgroundColor: focus ? 'rgba(177, 211, 79, 0.8)' : '#fff',
-              paddingVertical: 10,
-              paddingLeft: 10,
-              width: '200%',
-              marginLeft: -15,
-            },
-            drawerActiveTintColor: 'black',
-            title: 'Home',
-          }}
-          name="EnergyStats"
-          component={EnergyStats}
-        />
+        <>
+          <Drawer.Screen
+            options={{
+              drawerActiveBackgroundColor: '#fff',
+              drawerIcon: ({focused, color, size}) => {
+                setFocus(focused);
+                return (
+                  <Image
+                    source={
+                      !focused
+                        ? require('../../assets/images/home_white.png')
+                        : require('../../assets/images/home_green.png')
+                    }
+                    style={{width: 50, height: 40, padding: 0, margin: -10}}
+                  />
+                );
+              },
+              drawerLabelStyle: {
+                backgroundColor: focus ? 'rgba(177, 211, 79, 0.8)' : '#fff',
+                paddingVertical: 10,
+                paddingLeft: 10,
+                width: '200%',
+                marginLeft: -15,
+              },
+              drawerActiveTintColor: 'black',
+              title: 'Home',
+            }}
+            name="EnergyStats"
+            component={EnergyStats}
+          />
+          <Drawer.Screen
+            options={{
+              drawerActiveBackgroundColor: '#fff',
+              drawerIcon: ({focused, color, size}) => {
+                setFocusOne(focused);
+                return (
+                  <Image
+                    source={
+                      !focused
+                        ? require('../../assets/images/testing.png')
+                        : require('../../assets/images/energy_green.png')
+                    }
+                    style={{width: 50, height: 40, padding: 0, margin: -10}}
+                  />
+                );
+              },
+              drawerLabelStyle: {
+                backgroundColor: focusOne ? 'rgba(177, 211, 79, 0.8)' : '#fff',
+                paddingVertical: 10,
+                paddingLeft: 10,
+                width: '200%',
+                marginLeft: -15,
+              },
+              drawerActiveTintColor: 'black',
+              title: 'Energy',
+            }}
+            name="EnergyOptions"
+            component={EnergyOptions}
+          />
+        </>
       ) : (
         <Drawer.Screen
           options={{
@@ -365,10 +391,11 @@ const DrawerNavigation = () => {
             ? `Charger Status\nOnline`
             : getChargerStatus?.message == 'Offline'
             ? `Charger Status\nOffline`
-            : ''
+            : 'Chargin'
         }
         component={chargerStatus}
       />
+
     </Drawer.Navigator>
   );
 };

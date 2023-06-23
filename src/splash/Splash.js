@@ -44,7 +44,7 @@ const Splash = () => {
       } catch (error) {
         console.log('Error checking first time:', error);
         // In case of error, show login as fallback
-        // navigationRef.navigate('Login');
+        navigationRef.navigate('Login');
       }
     };
 
