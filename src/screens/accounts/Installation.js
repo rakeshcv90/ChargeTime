@@ -21,7 +21,7 @@ import { ms } from 'react-native-size-matters';
 
 const Installation = () => {
   // const getCompleteData = useSelector((state)=> state.getCompleteData)
-    const userRegisterData = useSelector((state)=> state.userRegisterData)
+    const userProfileData = useSelector((state)=> state.userProfileData)
 
   const getUserID = useSelector((state)=> state.getUserID)
   const [isModalVisible, setModalVisible] = useState(false);
@@ -39,12 +39,12 @@ const Installation = () => {
   const [forLoading,setForLoading] = useState(false)
   
   useEffect(() => {
-    console.log('data for this User:---------', userRegisterData); 
-    setAddLineTwo(userRegisterData[0]?.pwa_add2);
-    setAddLineOne(userRegisterData[0]?.pwa_add1);
+    console.log('data for this User:---------', userProfileData); 
+    setAddLineTwo(userProfileData[0]?.pwa_add2);
+    setAddLineOne(userProfileData[0]?.pwa_add1);
     // console.log('userrrrrrrrr',getUserID)
     fetchOptions();
- }, [userRegisterData]);
+ }, [userProfileData]);
 const user_id= getUserID;
 //  const {navigation, route} = props;
 //  const { user_id} = route?.params;
@@ -56,7 +56,7 @@ const user_id= getUserID;
    try {
      const response = await fetch(`${API}/locations`);
      const result = await response.json();
-console.log(result,'ttt');
+// console.log(result,'ttt');
      setLocationMap(result);
    } catch (error) {
      console.error(error);
@@ -96,10 +96,10 @@ console.log(result,'ttt');
       PLATFORM_IOS
       ? Toast.show({
           type: 'success',
-          text1: ' Your Current Plan Cancelled.',
+          text1: ' Your current plan has been cancelled.',
         })
       : ToastAndroid.show(
-          'Plan Cancelled Successfully.',
+          'Your current plan has been cancelled.',
           ToastAndroid.SHORT,
         );
 
@@ -139,10 +139,10 @@ const InstalltionUpdate = async () => {
           PLATFORM_IOS
             ? Toast.show({
                 type: 'success',
-                text1: 'Profile Updated successfully.',
+                text1: 'Profile has benn updated successfully.',
               })
             : ToastAndroid.show(
-                'Profile Updated successfully.',
+                'Profile has benn updated successfully.',
                 ToastAndroid.SHORT,
               );
           navigationRef.navigate('Account');
@@ -242,7 +242,7 @@ const InstalltionUpdate = async () => {
                 // placeholder={isFocus ? userRegisterData[0]?.location : selectedValue}
                 keyboardAvoiding
                 searchPlaceholder="Search..."
-                value={selectedValue ? selectedValue: userRegisterData[0]?.location}
+                value={selectedValue ? selectedValue: userProfileData[0]?.location}
                 // onFocus={() => setIsFocus(false)}
                 // onBlur={() => setIsFocus(false)}
                 onChange={item => handleSelect(item.id, item)}
@@ -262,13 +262,13 @@ const InstalltionUpdate = async () => {
           text="Address Line"
           mV={15}
           textWidth={ms(85)}
-          value={isEditable ? addlineone : userRegisterData[0]?.pwa_add1}
+          value={isEditable ? addlineone : userProfileData[0]?.pwa_add1}
           onChangeText={values => setAddLineOne(values)}
           // placeholder={userRegisterData[0]?.pwa_add1}
           placeholderTextColor={COLORS.BLACK}
           style={{
             color: COLORS.BLACK,
-            fontFamily: FONTS.ROBOTO_REGULAR,
+            // fontFamily: FONTS.ROBOTO_REGULAR,
             fontWeight: '200',
             fontSize:14,
           }}
@@ -287,7 +287,7 @@ const InstalltionUpdate = async () => {
           text="Address Line 2"
           mV={10}
           textWidth={ms(95)}
-          value={isEditable ? addlinetwo : userRegisterData[0]?.pwa_add2}
+          value={isEditable ? addlinetwo : userProfileData[0]?.pwa_add2}
           onChangeText={values => setAddLineTwo(values)}
           // placeholder={userRegisterData[0]?.pwa_add2}
           placeholderTextColor={COLORS.BLACK}
@@ -313,7 +313,7 @@ const InstalltionUpdate = async () => {
                   text="ZIP Code"
                   IconRight={null}
                   mV={15}
-                  placeholder={userRegisterData[0]?.pwa_zip}
+                  placeholder={userProfileData[0]?.pwa_zip}
                   bW={0.3}
                   textWidth={ms(68)}
                   // value={newZipcode}
@@ -336,7 +336,7 @@ const InstalltionUpdate = async () => {
                   text="State"
                   IconRight={null}
                   mV={15}
-                  placeholder={userRegisterData[0]?.pwa_state}
+                  placeholder={userProfileData[0]?.pwa_state}
                   bW={0.3}
                   textWidth={ms(45)}
                   placeholderTextColor={COLORS.BLACK}

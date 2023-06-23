@@ -45,6 +45,8 @@ import DownGradeData from '../screens/downgrade/DownGradeData';
 import ContactUs from '../screens/drawerPart/ContactUs';
 import Privacy from '../screens/drawerPart/Privacy';
 import Terms from '../screens/drawerPart/Terms';
+import Contact from '../screens/accounts/Contact';
+
 // import Plan from '../screens/planSummary/Plan';
 
 const Drawer = createDrawerNavigator();
@@ -349,6 +351,7 @@ const AccountStack = () => {
       <Stack.Screen name="Payment" component={Payment} />
       <Stack.Screen name="Subscription" component={Subscription} />
       <Stack.Screen name="Theme" component={Theme} />
+      <Stack.Screen name="Contact" component={Contact}/>
       <Stack.Screen name="deleteAccount" component={deleteAccount} />
       {/* <Stack.Screen name="Login" component={Login} /> */}
       <Stack.Screen name="LoginStack" component={LoginStack} />

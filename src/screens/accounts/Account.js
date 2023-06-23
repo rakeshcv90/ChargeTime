@@ -15,26 +15,30 @@ import {persistor} from '../../redux/store';
 import { useSelector } from 'react-redux';
 import { API } from '../../api/API';
 import { useDispatch } from 'react-redux';
-import { userRegisterData } from '../../redux/action';
+import { userProfileData } from '../../redux/action';
 import { getBasePackage } from '../../redux/action';
+import SubBoxOne from '../../Components/SubBoxOne';
 
 const mobileW = Math.round(Dimensions.get('screen').width);
 
 
 const Account = ({navigation}) => {
   const [selectedValue, setSelectedValue] = useState('');
-  const getUserID = useSelector((state)=> state.getUserID)
+  const getUserID = useSelector((state)=> state.getUserID);
+  const [getSubscription, setGetSubscription] = useState([]);
+  const [getData, setGetData] = useState([]);
+
   const user_ID = getUserID;
   const dispatch =useDispatch();
 
 
 
   useEffect(() => {
-     console.log('data for this User:---------', userRegisterData); 
+    //  console.log('data for this User:---------', userRegisterData); 
      console.log('iiiiddddddd',user_ID)
      userDetails();
      userSubscription();
-     userSubsEnergy();
+    //  userSubsEnergy();
   }, []);
 
   const Screen = [
@@ -111,7 +115,7 @@ const Account = ({navigation}) => {
       {
  console.log('wwwwww',result);
 //  setUserData(result);
- dispatch(userRegisterData(result)); 
+ dispatch(userProfileData(result)); 
  console.log(result)
       }else{
         console.log("iiiiiiiiiiii")
@@ -124,13 +128,14 @@ const Account = ({navigation}) => {
 
  const userSubscription = async () =>{
   try {
-    const response = await fetch(`${API}/subscriptionplan/${user_ID}`);
+    const response = await fetch(`${API}/currentplan/${user_ID}`);
     const result = await response.json();
  
-    if(result[0].message == "sucess")
+    if(result[0].id !== null)
     {
-      // setGetSubscription(result[0]);
-  dispatch(getBasePackage(result)); 
+      setGetSubscription(result[0]);
+      console.log(result[0], "-------");
+  // dispatch(getBasePackage(result)); 
     }else{
       console.log("iiiiiiiiiiii")
     }
@@ -148,8 +153,8 @@ const userSubsEnergy = async () => {
     if(result !== null)
     {
     // console.log(result, "----------------")
-    dispatch(userSubsData(result));
-    // setGetData(result)
+    // dispatch(userSubsData(result));
+    setGetData(result)
     }else{
       console.log("iiiiiiiiiiii")
     }
@@ -212,7 +217,9 @@ const userSubsEnergy = async () => {
         <Text style={styles.bullet}>•</Text>
         <Text style={styles.text}>Rate Us</Text>
       </TouchableOpacity>
-      <TouchableOpacity style={styles.listItem}>
+      <TouchableOpacity 
+      onPress={()=>{navigation.navigate('Contact')}}
+      style={styles.listItem}  >
         <Text style={styles.bullet}>•</Text>
         <Text style={styles.text}>Contact Us</Text>
       </TouchableOpacity>
@@ -224,7 +231,7 @@ const userSubsEnergy = async () => {
                 <Text style={styles.logoutbuttonText}>LOG OUT</Text>
               </TouchableOpacity>
               </View>
-            </View>
+                        </View>
        </SafeAreaView>
   );
 };
@@ -237,7 +244,7 @@ height: DIMENSIONS.SCREEN_HEIGHT * 0.9,
   },
   heading: {
     color: COLORS.BLACK,
-    fontStyle: FONTS.MONTSERRAT_REGULAR,
+    // fontStyle: FONTS.MONTSERRAT_REGULAR,
     fontSize: 26,
     fontWeight: 'bold',
     marginBottom: 40,
@@ -285,7 +292,7 @@ height: DIMENSIONS.SCREEN_HEIGHT * 0.9,
     padding: 8,
     borderWidth: 1,
     borderColor: '#ccc',
-    left : 55,
+    left : 53,
     borderRadius: 5,
     // marginRight:10, 
   
@@ -306,9 +313,10 @@ height: DIMENSIONS.SCREEN_HEIGHT * 0.9,
   },
   icon: {
     width: 20,
-    height: 20,
+    height: 22,
     marginLeft: 20,
     marginRight:5,
+    marginBottom:5,
   },
   sideImageContainer: {
     flex: 1,

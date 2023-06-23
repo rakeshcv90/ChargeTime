@@ -22,26 +22,28 @@ import axios from 'axios';
 import { mvs,ms } from 'react-native-size-matters';
 
 
-// import { userRegisterData } from '../../redux/action';
+import { userProfileData } from '../../redux/action';
 
 
 
 const PersonalDetails = () => {
-  const userRegisterData = useSelector((state)=> state.userRegisterData)
+  const userProfileData = useSelector((state)=> state.userProfileData)
   const getUserID = useSelector((state)=> state.getUserID)
   const [isEditable, setIsEditable] = useState(false);
-   const [name, setName]= useState(userRegisterData[0]?.name ??'');
-   const [number, setNumber]=useState(userRegisterData[0]?.mobile ?? '');
+   const [name, setName]= useState(userProfileData[0]?.name ??'');
+   const [number, setNumber]=useState(userProfileData[0]?.mobile ?? '');
    const [error, setError] = useState('');
   //  const [userData, setUserData] = useState([]);
    const user_ID = getUserID;
 
    const dispatch =useDispatch();
+
+
   useEffect(() => {
-   setName( userRegisterData[0]?.name)
-   setNumber( userRegisterData[0]?.mobile)
+   setName( userProfileData[0]?.name)
+   setNumber( userProfileData[0]?.mobile)
   
-}, [userRegisterData]);
+}, [userProfileData]);
 
 
   const theme = useColorScheme();
@@ -54,25 +56,7 @@ const PersonalDetails = () => {
     console.log("enable edit",isEditable)
     setIsEditable(true)
   }
-  const userDetails = async () =>{
-    // const response = await fetch(`${API}/userexisting/${user_ID}`);
-    try {
-      const response = await fetch(`${API}/userexisting/${user_ID}`);
-      const result = await response.json();
-      if(result[0].message == "sucess")
-      {
- console.log('wwwwww',result);
-//  setUserData(result);
- dispatch(userRegisterData(result)); 
 
-      }else{
-        console.log("iiiiiiiiiiii")
-      }
-      // setLocationMap(result);
-    } catch (error) {
-      console.error(error);
-    }
-};
  
   const updatePersonalDetails = async () =>{
 
@@ -95,7 +79,18 @@ const PersonalDetails = () => {
       .then(res => res.json())
       .then(data => {
         if (data.msg == "Your profile has been succesfully updated") {
-       
+          const updatedData = [{
+            ...userProfileData[0],
+          pwa_name: name,
+            pwa_mobile: number,
+          }];
+          console.log(updatedData,"------")
+          // if (updatedData) {
+          //   dispatch(userProfileData(updatedData));
+          // } else {
+          //   console.log('updatedData is not defined or has an incorrect value');
+          // }
+          dispatch(userProfileData(updatedData));
           PLATFORM_IOS?
           Toast.show({
             type: 'success',
@@ -130,7 +125,11 @@ const PersonalDetails = () => {
     }
     // Limit the length of the input to 10 characters
     const limitedText = cleanedText.slice(0, 10);
-
+    // if (limitedText >= 10){
+    // setError('Mobile number should contain 10 digits only');
+    // }else {
+    //   setError('');
+    // }
     // Update the state with the validated input
     setNumber(limitedText);
   };
@@ -162,8 +161,8 @@ const PersonalDetails = () => {
             fontFamily: 'Roboto',
             fontWeight: '200',
           }}
-          onChangeText={text => setName(text)}
-          value={ name}
+          onChangeText={name => setName(name)}
+          value={name}
         />
         <View>
         <Input
@@ -185,7 +184,9 @@ const PersonalDetails = () => {
             fontFamily: 'Roboto',
             fontWeight: '200',
           }}
-          onChangeText={handleInputChange}
+          onChangeText={(text)=>{handleInputChange(text);
+          setNumber(number)
+          }}
          value={ number }
        />
          {error && <Text style={{ color: 'red' }}>{error}</Text>}
@@ -203,7 +204,7 @@ const PersonalDetails = () => {
           text="Email"
           mV={55}
           textWidth={ms(50)}
-          value={ userRegisterData[0]?.email}
+          value={ userProfileData[0]?.email}
           placeholderTextColor={COLORS.BLACK}
           style={{
             color: COLORS.BLACK,
@@ -252,7 +253,7 @@ const styles = StyleSheet.create({
     marginTop: 400,
     marginLeft: 70,
     font: 14,
-    fontfamily: FONTS.MONTSERRAT_REGULAR,
+    // fontfamily: FONTS.MONTSERRAT_REGULAR,
     height: 25,
     color: COLORS.BLACK,
     flexDirection: 'row',

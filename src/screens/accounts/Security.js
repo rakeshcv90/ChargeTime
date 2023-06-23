@@ -125,7 +125,7 @@ const UpdatePassword= async () =>{
             IconLeft={null}  
             bgColor={COLORS.CREAM}
             editable={isEditable}
-            placeholderTextColor={COLORS.BLACK}
+            placeholderTextColor={COLORS.LIGHT_GREY}
             text=" Current Password"
             // passwordInput={true}
             // pasButton={() => setShowPassword(!showPassword)}

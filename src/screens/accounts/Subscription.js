@@ -27,7 +27,7 @@ const mobileW = Math.round(Dimensions.get('screen').width);
     // console.log('data for this User:---------', getPlanSummary); 
     console.log (getSubscription,"----------")
     userSubscription();
-    // userSubsEnergy();
+    userSubsEnergy();
  }, []);
 
  const user_id= getUserID;
@@ -43,7 +43,7 @@ const mobileW = Math.round(Dimensions.get('screen').width);
     if(result[0].id !== null)
     {
       setGetSubscription(result[0]);
-  dispatch(setBasePackage(result)); 
+  // dispatch(setBasePackage(result)); 
     }else{
       console.log("iiiiiiiiiiii")
     }
@@ -52,25 +52,25 @@ const mobileW = Math.round(Dimensions.get('screen').width);
   }
 };
 
-// const userSubsEnergy = async () => {
+const userSubsEnergy = async () => {
 
-//   try {
-//     const response = await fetch(`${API}/subscription/15`);
-//     const result = await response.json();
-//     console.log("-----",result)
-//     if(result !== null)
-//     {
-//     console.log(result, "----------------")
-//     // dispatch(userSubsData(result));
-//     setGetData(result)
-//     }else{
-//       console.log("iiiiiiiiiiii")
-//     }
+  try {
+    const response = await fetch(`${API}/subscription/15`);
+    const result = await response.json();
+    console.log("-----",result)
+    if(result !== null)
+    {
+    console.log(result, "----------------")
+    // dispatch(userSubsData(result));
+    setGetData(result)
+    }else{
+      console.log("iiiiiiiiiiii")
+    }
  
-//   } catch (error) {
-//    console.log("get deleted", error)
-//   }
-// }  
+  } catch (error) {
+   console.log("get deleted", error)
+  }
+}  
 
 const PlanCancel = async () => {
   try {
@@ -108,6 +108,8 @@ console.log(result,'ttt');
     <View style={styles. managing_width}>
           <SubBoxOne data={getSubscription} />
           <SubBoxTwo data={getSubscription} />
+          {/* <SubBoxOne/> */}
+          {/* <SubBoxTwo/> */}
         
         </View> 
         <View style={styles.mainDiv_installation}>
@@ -115,6 +117,7 @@ console.log(result,'ttt');
       </View>
       <View style={styles.managing_width}>
       <PriceValiditySubs data={getSubscription} />
+      {/* <PriceValiditySubs /> */}
       </View>
       <View
           style={{
