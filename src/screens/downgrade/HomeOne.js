@@ -162,8 +162,6 @@ export default function HomeOne(route) {
   };
 
   function MyTabBar({state, descriptors, navigation, position}) {
-    const [selectedTab, setSelectedTab] = useState('');
-    console.log(selectedTab,'selectedTab')
     useEffect(() => {
       setChangePage(state.index);
       
@@ -172,7 +170,6 @@ export default function HomeOne(route) {
   
   useEffect(() => {
     // Do something with the activeTabIndex
-   
   }, [activeTabIndex]);
     
 

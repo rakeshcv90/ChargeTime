@@ -117,6 +117,7 @@ export default function EnergyStats() {
 
   const {getChargerStatus, getDeviceID} = useSelector((state: any) => state);
   const [toggleState, setToggleState] = useState(false);
+
   useEffect(() => {
     const backAction = () => {
       Alert.alert(
@@ -138,8 +139,6 @@ export default function EnergyStats() {
 
     return () => backHandler.remove();
   }, []);
-
-
 
   const handleToggle = (value: any) => {
     setToggleState(value);

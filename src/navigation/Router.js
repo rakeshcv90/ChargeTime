@@ -89,7 +89,6 @@ export const chargerStatus = () => {
     </View>
   );
 };
-
 const DrawerNavigation = () => {
   const [focus, setFocus] = useState();
   const [focusOne, setFocusOne] = useState();
@@ -397,8 +396,6 @@ const DrawerNavigation = () => {
         }
         component={chargerStatus}
       />
-
-
     </Drawer.Navigator>
   );
 };
