@@ -4,10 +4,15 @@ import { Connecticut } from '../../assets/images/Connecticut';
 import { Charge } from '../../assets/svgs/Charge';
 import COLORS from '../constants/COLORS';
 import { useSelector } from 'react-redux';
-const mobileW = Math.round(Dimensions.get('screen').width);
+import { ms } from 'react-native-size-matters';
+
+// const mobileW = Math.round(Dimensions.get('screen').width*2);
 
 const PriceValidity = ({data}) => {
-  const setBasePackage = useSelector((state)=> state.setBasePackage)
+//   const getBasePackage = useSelector((state)=> state.getBasePackage)
+
+
+
   
   return (
     <View style={[styles.mainDiv_installation]}>
@@ -23,13 +28,23 @@ const PriceValidity = ({data}) => {
       </View>
       <Image
           // style={styles.img_width}
-          source={require('../../assets/images/straight.png')}
-          resizeMode='stretch' style={{alignSelf: 'center', width: mobileW,}}
+          source={require('../../assets/images/straight2.png')}
+          resizeMode='stretch' style={{alignSelf: 'center', width: ms(500),}}
         />
         <View style={styles.location_div}>
         <Text style={styles.force_base_b}>Price :</Text>
         <Text style={styles.force_base}>${data?.energy_price}</Text>
         </View>
+        <Image
+          // style={styles.img_width}
+          source={require('../../assets/images/straight2.png')}
+          resizeMode='stretch' style={{alignSelf: 'center', width:ms(500),}}
+        />
+        <View style={styles.location_div}>
+        <Text style={styles.force_base_b}>Valid Till :</Text>
+        <Text style={styles.force_base}>{data?.End_validity}</Text>
+        </View>
+
     </View>
 
   );

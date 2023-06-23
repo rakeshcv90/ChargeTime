@@ -1,25 +1,48 @@
-import {StyleSheet, Text, View, Modal, ActivityIndicator} from 'react-native';
-import React from 'react';
+import {
+  StyleSheet,
+  Text,
+  View,
+  Modal,
+  ActivityIndicator,
+  Image,
+} from 'react-native';
+import React, {useEffect, useState} from 'react';
 import COLORS from '../constants/COLORS';
-import { DIMENSIONS } from '../constants/DIMENSIONS';
+import {DIMENSIONS} from '../constants/DIMENSIONS';
 
-
-const ActivityLoader = (props) => {
-    const {visible} = props
+const ActivityLoader = props => {
+  const [icon, showIcon] = useState(false);
+  useEffect(() => {
+    setTimeout(() => {
+      showIcon(!icon);
+    }, 100);
+  }, [icon]);
+  const {visible} = props;
   return (
     <Modal visible={visible} transparent={true} animationType="fade">
       <View
         style={{
-          height: 100,
-          width: 100,
-          backgroundColor: COLORS.BLACK,
+          height: DIMENSIONS.SCREEN_WIDTH / 4,
+          width: DIMENSIONS.SCREEN_WIDTH / 4,
+          // backgroundColor: COLORS.WHITE,
           alignItems: 'center',
-          alignContent:'center',
-          alignSelf:'center',
-         justifyContent: 'center',
-          opacity: 0.8
+          justifyContent: 'center',
+          alignSelf: 'center',
+          borderRadius: 100,
+          marginTop: 'auto',
+          marginBottom: 'auto',
+          elevation: 10,
         }}>
-        <ActivityIndicator size={'large'} color={COLORS.GREEN} />
+        {icon ? (
+          <Image
+            source={require('../../assets/images/logo_one.png')}
+            style={{
+              height: DIMENSIONS.SCREEN_WIDTH / 5,
+              width: DIMENSIONS.SCREEN_WIDTH / 5,
+              resizeMode: 'contain',
+            }}
+          />
+        ) : null}
       </View>
     </Modal>
   );

@@ -7,9 +7,6 @@ import Router from './src/navigation/Router';
 export const navigationRef = createNavigationContainerRef();
 
 export default function App() {
-  useEffect(() => {
-
-  }, []);
 
   return (
     <>

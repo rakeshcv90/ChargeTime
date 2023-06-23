@@ -3,6 +3,7 @@ import types from './constants';
 
 const initialState = {
     userRegisterData: [],
+    isAuthorized: false,
 
     getCompleteData:[],
     getPlanPurchage:[],
@@ -22,13 +23,16 @@ const initialState = {
     getDataForPayment:[],
     userSubsData:[],
     getPurchaseData:[],
-    getDeviceID:''
+    getDeviceID:'',
+    userProfileData: [],
   };
   
   const rootReducer = (state = initialState, action) => {
     switch (action.type) {
       case types.GET_LOCATION_ID:
         return { ...state, getLocationID: action.payload };
+      case types.SET_IS_AUTHORIZED:
+        return { ...state, isAuthorized: action.payload };
         case types.GET_PACKAGE_STATUS:
         return { ...state, getPackageStatus: action.payload };
         case types.GET_KWH_DATA:
@@ -39,6 +43,8 @@ const initialState = {
         return { ...state, getEmailDAta: action.payload };
       case types.GET_USER_DATA:
         return { ...state, userRegisterData: action.payload };
+      case types.GET_PROFILE_DATA:
+        return { ...state, userProfileData: action.payload };
       case types.GET_BASE_PACKAGE:
         return { ...state, getBasePackage: action.payload };
 

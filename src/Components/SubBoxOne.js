@@ -25,7 +25,7 @@ const SubBoxOne = ({data}) => {
           {/* <Text style={styles.force_base}>{data?.location?data?.location}</Text> */}
               <Text style={styles.force_base}>{data?.location}</Text>
           {/* <Text style={styles.force_base}>{data?.location}</Text> */}
-              {/* <Text style={styles.force_base}>{getBasePackage[0].location}</Text> */}
+              {/* <Text style={styles.force_base}>{setBasePackage[0].location}</Text> */}
         </View>
         <Image
           // style={styles.img_width}
@@ -41,7 +41,7 @@ const SubBoxOne = ({data}) => {
           /> */}
             <Connecticut style={styles.img_width} />
             <Text style={styles.force_base}>{data?.pwa_state}</Text>
-            {/* <Text style={styles.force_base}>{getBasePackage[0].state}</Text> */}
+            {/* <Text style={styles.force_base}>{setBasePackage[0].state}</Text> */}
           </View>
           <View style={styles.state_div}>
             <Image
@@ -50,7 +50,7 @@ const SubBoxOne = ({data}) => {
               style={{width: 20, height: 20}}
             />
             <Text style={styles.force_base}>{data?.pwa_zip}</Text>
-            {/* <Text style={styles.force_base}>{getBasePackage[0].ZIP_code}</Text> */}
+            {/* <Text style={styles.force_base}>{setBasePackage[0].ZIP_code}</Text> */}
 
           </View>
         </View>

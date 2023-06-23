@@ -18,28 +18,31 @@ import { API } from '../../api/API';
 import { navigationRef } from '../../../App';
 import { FONTS } from '../../constants/FONTS';
 import { useDispatch } from 'react-redux';
-import { userRegisterData } from '../../redux/action';
 import axios from 'axios';
+import { mvs,ms } from 'react-native-size-matters';
+
 
 // import { userRegisterData } from '../../redux/action';
 
 
 
 const PersonalDetails = () => {
-  // const userRegisterData = useSelector((state)=> state.userRegisterData)
+  const userRegisterData = useSelector((state)=> state.userRegisterData)
   const getUserID = useSelector((state)=> state.getUserID)
   const [isEditable, setIsEditable] = useState(false);
-   const [name, setName]= useState('');
-   const [number, setNumber]=useState();
-   const [userData, setUserData] = useState([]);
-   const dispatch =useDispatch();
+   const [name, setName]= useState(userRegisterData[0]?.name ??'');
+   const [number, setNumber]=useState(userRegisterData[0]?.mobile ?? '');
+   const [error, setError] = useState('');
+  //  const [userData, setUserData] = useState([]);
    const user_ID = getUserID;
 
+   const dispatch =useDispatch();
   useEffect(() => {
-  //  console.log('data for this User:---------', userRegisterData); 
-   console.log('iiiiddddddd',user_ID)
-   userDetails()
-}, []);
+   setName( userRegisterData[0]?.name)
+   setNumber( userRegisterData[0]?.mobile)
+  
+}, [userRegisterData]);
+
 
   const theme = useColorScheme();
   const isDark = theme === 'dark';
@@ -52,30 +55,32 @@ const PersonalDetails = () => {
     setIsEditable(true)
   }
   const userDetails = async () =>{
-        // const response = await fetch(`${API}/userexisting/${user_ID}`);
-        try {
-          const response = await fetch(`${API}/userexisting/${user_ID}`);
-          const result = await response.json();
-          if(result[0].message == "sucess")
-          {
-     console.log('wwwwww',result);
-     setUserData(result);
-     dispatch(userRegisterData(result)); 
-     console.log(userData)
-          }else{
-            console.log("iiiiiiiiiiii")
-          }
-          // setLocationMap(result);
-        } catch (error) {
-          console.error(error);
-        }
-    };
+    // const response = await fetch(`${API}/userexisting/${user_ID}`);
+    try {
+      const response = await fetch(`${API}/userexisting/${user_ID}`);
+      const result = await response.json();
+      if(result[0].message == "sucess")
+      {
+ console.log('wwwwww',result);
+//  setUserData(result);
+ dispatch(userRegisterData(result)); 
+
+      }else{
+        console.log("iiiiiiiiiiii")
+      }
+      // setLocationMap(result);
+    } catch (error) {
+      console.error(error);
+    }
+};
+ 
   const updatePersonalDetails = async () =>{
 
     console.log("data")
 
-    // console.log(name, "--------");
-    // console.log(number, "------------")
+    console.log(name, "--------");
+    console.log(number, "------------")
+    console.log(user_ID, "------------")
     // setIsEditable(true);
     await fetch(`${API}/personalInfo/${user_ID}`, {
       method: 'PUT',
@@ -89,7 +94,8 @@ const PersonalDetails = () => {
     })
       .then(res => res.json())
       .then(data => {
-        if (data.msg == "Your Profile Update") {
+        if (data.msg == "Your profile has been succesfully updated") {
+       
           PLATFORM_IOS?
           Toast.show({
             type: 'success',
@@ -97,7 +103,7 @@ const PersonalDetails = () => {
             
           }):ToastAndroid.show("Your Profile Updated Successfully", ToastAndroid.SHORT);
           setIsEditable(false)
-          navigationRef.navigate('Account');
+          // navigationRef.navigate('Account');
           // navigation.navigate('Home');
         } else {
           PLATFORM_IOS?
@@ -113,6 +119,20 @@ const PersonalDetails = () => {
       .catch(error => {
         console.error(error);
       })
+  };
+  const handleInputChange = (text) => {
+    // Remove any non-digit characters from the input
+    const cleanedText = text.replace(/\D/g, '');
+    if (cleanedText !== text) {
+      setError('Mobile number should contain digits only');
+    } else {
+      setError('');
+    }
+    // Limit the length of the input to 10 characters
+    const limitedText = cleanedText.slice(0, 10);
+
+    // Update the state with the validated input
+    setNumber(limitedText);
   };
 
 
@@ -135,8 +155,7 @@ const PersonalDetails = () => {
           bColor={COLORS.BLACK}
           text="Name"
           mV={5}
-          textWidth={'25%'}
-          placeholder= {userData[0]?.name}
+          textWidth={ms(50)}
           placeholderTextColor={COLORS.BLACK}
           style={{
             color: COLORS.BLACK,
@@ -144,8 +163,9 @@ const PersonalDetails = () => {
             fontWeight: '200',
           }}
           onChangeText={text => setName(text)}
-          value={name}
+          value={ name}
         />
+        <View>
         <Input
           IconLeft={null}
           bgColor={COLORS.CREAM}
@@ -158,17 +178,18 @@ const PersonalDetails = () => {
           bColor={COLORS.BLACK}
           text="Phone No."
           mV={15}
-          textWidth={'35%'}
-          placeholder={userData[0]?.mobile}
+          textWidth={ms(70)}
           placeholderTextColor={COLORS.BLACK}
           style={{
             color: COLORS.BLACK,
             fontFamily: 'Roboto',
             fontWeight: '200',
           }}
-          onChangeText={text => setNumber(text)}
-         value={number}
-        />
+          onChangeText={handleInputChange}
+         value={ number }
+       />
+         {error && <Text style={{ color: 'red' }}>{error}</Text>}
+         </View>
         <Input
           IconLeft={null}
           editable={false}
@@ -181,8 +202,8 @@ const PersonalDetails = () => {
           bColor={COLORS.BLACK}
           text="Email"
           mV={55}
-          textWidth={'23%'}
-          placeholder={userData[0]?.email}
+          textWidth={ms(50)}
+          value={ userRegisterData[0]?.email}
           placeholderTextColor={COLORS.BLACK}
           style={{
             color: COLORS.BLACK,
@@ -245,7 +266,7 @@ const styles = StyleSheet.create({
     marginTop: 20,
     marginBottom:40,
     width: DIMENSIONS.SCREEN_WIDTH * 0.9,
-     height:DIMENSIONS.SCREEN_HEIGHT * 1,
+     height:DIMENSIONS.SCREEN_HEIGHT * 0.9,
   // fontfamily: "Roboto",
   // color: "#000000",
   // fontSize: 24,
