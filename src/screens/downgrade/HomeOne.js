@@ -26,7 +26,7 @@ import {setBasePackage} from '../../redux/action';
 import {useSelector} from 'react-redux';
 import SliderOne from './SliderOne';
 import AnimatedLottieView from 'lottie-react-native';
-import { PLATFORM_IOS } from '../../constants/DIMENSIONS';
+import {PLATFORM_IOS} from '../../constants/DIMENSIONS';
 
 const mobileW = Math.round(Dimensions.get('screen').width);
 const mobileH = Math.round(Dimensions.get('window').height);
@@ -103,14 +103,43 @@ export default function HomeOne(route) {
   const [changePage, setChangePage] = useState('');
   const Tab = createMaterialTopTabNavigator();
   // const [purChaseButton,setPurchaseButton] = use
-
+  const [activeTab, setActiveTab] = useState('');
   const [apiData, setApiData] = useState([]);
+  const [myTest, setMyTest] = useState('');
   const {getLocationID, getPurchaseData} = useSelector(state => state);
-  let purchageData;
-  console.log(purchageData,"purchageData")
+  const [showLottieView, setShowLottieView] = useState(false);
+  
+  
   useEffect(() => {
     fetchData();
   }, []);
+  
+  
+  
+  
+  const populateNumArray = () => {
+    const numArray = [];
+  
+    if (apiData?.length >= 1 && apiData) {
+      apiData.forEach((item) => {
+        const num = item.package_name.toLowerCase() === getPurchaseData[0].energy_plan.toLowerCase();
+        numArray.push(num);
+      });
+    }
+  
+    return numArray;
+  };
+  
+  // State to hold the numArray value
+  const [numArray, setNumArray] = useState([]);
+  
+  // Update the numArray when apiData or getPurchaseData changes
+  useEffect(() => {
+    const updatedNumArray = populateNumArray();
+    setNumArray(updatedNumArray);
+  }, [apiData, getPurchaseData]);
+
+  
 
   const fetchData = async () => {
     //  loginData = await AsyncStorage.getItem('loginDataOne');
@@ -133,9 +162,19 @@ export default function HomeOne(route) {
   };
 
   function MyTabBar({state, descriptors, navigation, position}) {
+    
+
     useEffect(() => {
       setChangePage(state.index);
+      
     }, []);
+    let activeTabIndex = state.routes.map((item) => item.name);
+  
+  useEffect(() => {
+    // Do something with the activeTabIndex
+   
+  }, [activeTabIndex]);
+    
 
     return (
       <View style={[styles.tabbar_part, styles.shadowProp]}>
@@ -149,7 +188,12 @@ export default function HomeOne(route) {
               : route.name;
 
           const isFocused = state.index === index;
-
+           
+           if(isFocused){
+            setMyTest(label)
+            
+           }
+          
           const onPress = () => {
             const event = navigation.emit({
               type: 'tabPress',
@@ -158,6 +202,7 @@ export default function HomeOne(route) {
             });
 
             if (!isFocused && !event.defaultPrevented) {
+              
               navigation.navigate({name: route.name, merge: true});
             }
           };
@@ -169,16 +214,16 @@ export default function HomeOne(route) {
               style={{
                 flex: 1,
                 backgroundColor: isFocused ? '#B1D34F' : '#EEEEEE',
-                paddingHorizontal: 12,
+                //paddingHorizontal: 12,
                 paddingVertical: 13,
                 // borderRadius:10,
                 borderRadius: isFocused ? 10 : 0,
-                shadowColor: 'rgba(0, 0, 0, 1)',
-                shadowOffset: {
-                  width: isFocused ? 6 : 0,
-                  height: isFocused ? 4 : 0,
-                },
-                shadowOpacity: isFocused ? 1 : 0,
+                // shadowColor: 'rgba(0, 0, 0, 1)',
+                // shadowOffset: {
+                //   width: isFocused ? 6 : 0,
+                //   height: isFocused ? 4 : 0,
+                // },
+                //shadowOpacity: isFocused ? 1 : 0,
                 shadowRadius: isFocused ? 4 : 0,
                 elevation: Platform.OS === 'android' && isFocused ? 8 : 0,
               }}>
@@ -201,26 +246,37 @@ export default function HomeOne(route) {
 
   return (
     <SafeAreaView style={{backgroundColor: COLORS.CREAM, flex: 1}}>
-      {getPurchaseData[0].energy_plan.toLowerCase() ? <View style={{position:  'absolute',
-        right: PLATFORM_IOS?75:70,
-        alignSelf: 'flex-end',
-        top: PLATFORM_IOS?40:-15,
-        zIndex: 5,
+      
+       
+      {getPurchaseData[0].energy_plan.toLowerCase() === myTest.toLowerCase()  && 
+           <View
+           
+            style={{
+              position: 'absolute',
+              right: PLATFORM_IOS ? mobileW*25/100 :mobileW*25/100,
+              alignSelf: 'flex-end',
+              top: PLATFORM_IOS ? mobileH*0/100:mobileH*-5/100,
+             // marginVertical:PLATFORM_IOS ? -20: -40,
+              zIndex: 5,
+            }}>
+          
+           
+              <AnimatedLottieView
+                source={{
+                  uri: 'https://assets3.lottiefiles.com/packages/lf20_OrMyddm62t.json',
+                }} // Replace with your animation file
+                autoPlay
+                loop
+                style={{width: mobileW*23/100, height: mobileH*23/100}}
+              />
+           
+            
+          </View>
+}
         
-        }}>
-        <AnimatedLottieView
-                  source={{
-                    uri: 'https://assets3.lottiefiles.com/packages/lf20_OrMyddm62t.json',
-                  }} // Replace with your animation file
-                  autoPlay
-                  loop
-                  style={{width: 120, height:110}}
-                />
-      </View> :'' }
       <DrawerOpen />
       <View style={[styles.charging_imag_style]}>
-        {changePage == 0  ? (
-          
+        {changePage == 0 ? (
           <Image
             source={require('../../../assets/images/bp_one.png')}
             resizeMode="cover"
@@ -246,7 +302,10 @@ export default function HomeOne(route) {
           {!showPackage ? (
             <ActivityLoader visible={!showPackage} />
           ) : (
+            <View>
             <Text>No Package</Text>
+            
+            </View>
           )}
         </View>
       ) : (
@@ -263,8 +322,11 @@ export default function HomeOne(route) {
           {apiData?.length >= 1 &&
             apiData &&
             apiData.map((item, ind) => {
-               purchageData =
+
+            let  purchageData =
                 item.kwh > getPurchaseData[0].kwh ? 'UPGRADE' : 'DOWNGRADE';
+                let num = item.package_name.toLowerCase() === getPurchaseData[0].energy_plan.toLowerCase();
+                
 
               return (
                 <Tab.Screen
@@ -272,11 +334,17 @@ export default function HomeOne(route) {
                   name={item?.package_name}
                   component={SliderOne}
                   initialParams={{item: item, purchageData: purchageData}}
+                  
                 />
               );
+              
             })}
+            
+             
         </Tab.Navigator>
+        
       )}
+     
     </SafeAreaView>
   );
 }

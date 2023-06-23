@@ -188,9 +188,9 @@ export default function Login({navigation}) {
           PLATFORM_IOS
             ? Toast.show({
                 type: 'error',
-                text1: 'Login Failed',
+                text1: 'Username or Password is incorrect',
               })
-            : ToastAndroid.show('Login Failed', ToastAndroid.SHORT);
+            : ToastAndroid.show('Username or Password is incorrect', ToastAndroid.SHORT);
           setForLoading(false);
         }
       }
