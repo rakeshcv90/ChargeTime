@@ -235,14 +235,17 @@ export default function PaymentGateWay({ navigation }) {
     try {
       const response = await fetch(`${API}/defaultcard`, {
         method: 'POST',
-        data:{
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
           id:  values,
-          user_id : user_ID
-        }
+          user_id : user_ID,
+        }),
       });
       // console.log("999999999999",response)
       const result = await response.json();
-      console.log("---------------",result)
+      // console.log("---------------",result)
       if (result.msg === "sucessfull") {
         console.log("Default card set successfully");
         PLATFORM_IOS
