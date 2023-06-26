@@ -10,7 +10,9 @@ import {
   Modal,
   Pressable,
   Alert,
-  ImageBackground
+  ImageBackground,
+  Platform,
+  
 } from 'react-native';
 import React, { useState, useRef, useEffect } from 'react';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -281,12 +283,26 @@ const dispatch = useDispatch();
   const cardTypeImage = getCardType(getCard_Number);
 
   return (
-    <SafeAreaView style={{ backgroundColor: COLORS.CREAM, flex: 1 }}>
+// <<<<<<< HEAD
+//     <SafeAreaView style={{ backgroundColor: COLORS.CREAM, flex: 1 }}>
 
-        <Header headerName="Payment Methods" editShow={false} />
-        <HorizontalLine />
+//         <Header headerName="Payment Methods" editShow={false} />
+//         <HorizontalLine />
       
-        <ScrollView showsVerticalScrollIndicator={false} style={{flexGrow:1,flex:1}} >
+//         <ScrollView showsVerticalScrollIndicator={false} style={{flexGrow:1,flex:1}} >
+// =======
+    <SafeAreaView style={{backgroundColor: COLORS.CREAM, flex: 1}}>
+      
+  <ScrollView showsVerticalScrollIndicator={false}>
+
+       <Header headerName="Payment Methods" editShow={false} />
+       {Platform.OS=='android'? <HorizontalLine style={styles.line} />:<View
+              style={{
+             
+             
+              }}>
+              <Image source={require('../../../assets/images/dotted.png')} style={{ width: mobileW * 0.97 ,top:Platform.OS=='ios'?-30:2}} />
+            </View> }
         <View style={styles.mainDiv_container}>
           <Formik
             initialValues={initialValues}

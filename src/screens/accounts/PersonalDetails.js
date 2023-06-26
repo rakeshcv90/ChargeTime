@@ -1,24 +1,25 @@
-import { View, Text, StyleSheet, SafeAreaView,ToastAndroid, TextInput, useColorScheme } from 'react-native'
+import { View, Text, StyleSheet, SafeAreaView, ToastAndroid, TextInput, useColorScheme, Dimensions ,Image, Platform} from 'react-native'
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import React, {useState, useEffect} from 'react'
+import React, { useState, useEffect } from 'react'
 import { useSelector } from 'react-redux';
 import HorizontalLine from '../../Components/HorizontalLine';
 import { PLATFORM_IOS } from '../../constants/DIMENSIONS';
 import Header from '../../Components/Header';
 import { State, TouchableOpacity } from 'react-native-gesture-handler';
 import Toast from 'react-native-toast-message';
-import { Image } from 'react-native-svg';
+
 import Input from '../../Components/Input';
 import COLORS from '../../constants/COLORS';
 import { DIMENSIONS } from '../../constants/DIMENSIONS';
 import { Call } from '../../../assets/svgs/Call';
 import { Message } from '../../../assets/svgs/Message';
-import {Name} from '../../../assets/svgs/Name';
+import { Name } from '../../../assets/svgs/Name';
 import { API } from '../../api/API';
 import { navigationRef } from '../../../App';
 import { FONTS } from '../../constants/FONTS';
 import { useDispatch } from 'react-redux';
-import { mvs,ms } from 'react-native-size-matters';
+import axios from 'axios';
+import { mvs, ms } from 'react-native-size-matters';
 
 
 import { userProfileData as updatePersionalDetail } from '../../redux/action';
@@ -26,6 +27,7 @@ import { userProfileData as updatePersionalDetail } from '../../redux/action';
 
 
 const PersonalDetails = () => {
+
   const userProfileData = useSelector((state)=> state.userProfileData)
   const getUserID = useSelector((state)=> state.getUserID)
   const [isEditable, setIsEditable] = useState(false);
@@ -48,15 +50,14 @@ const PersonalDetails = () => {
   const theme = useColorScheme();
   const isDark = theme === 'dark';
 
-  const onPress = ()=>{
+  const onPress = () => {
     updatePersonalDetails();
   }
-  const enableEdit =()=>{
-    console.log("enable edit",isEditable)
+  const enableEdit = () => {
+    console.log("enable edit", isEditable)
     setIsEditable(true)
   }
 
- 
   const updatePersonalDetails = async () =>{
 
     console.log("data")
@@ -71,8 +72,8 @@ const PersonalDetails = () => {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        pwa_name : name,
-        pwa_mobile : number,
+        pwa_name: name,
+        pwa_mobile: number,
       }),
     })
       .then(res => res.json())
@@ -100,12 +101,12 @@ const PersonalDetails = () => {
           // navigationRef.navigate('Account');
           // navigation.navigate('Home');
         } else {
-          PLATFORM_IOS?
-          Toast.show({
-            type: 'error',
-            text1: "Your Profile Not Updated",
-            
-          }):ToastAndroid.show("Your Profile Not Updated", ToastAndroid.SHORT);
+          PLATFORM_IOS ?
+            Toast.show({
+              type: 'error',
+              text1: "Your Profile Not Updated",
+
+            }) : ToastAndroid.show("Your Profile Not Updated", ToastAndroid.SHORT);
 
         }
 
@@ -136,17 +137,30 @@ const PersonalDetails = () => {
 
   return (
     <SafeAreaView style={{ backgroundColor: COLORS.CREAM, flex: 1 }}>
-     <Header headerName="Personal Details" editShow={true} onPress={onPress} enableEdit ={enableEdit} editButton={isEditable} />
-      
-      <HorizontalLine style={styles.line} />
+      <Header headerName="Personal Details" editShow={true} onPress={onPress} enableEdit={enableEdit} editButton={isEditable} />
+      {/* <HorizontalLine style={styles.line} /> */}
+     {Platform.OS=='android'? <HorizontalLine style={styles.line} />:<View
+              style={{
+             
+             
+              }}>
+              <Image source={require('../../../assets/images/dotted.png')} style={{ width: mobileW * 0.97 ,top:Platform.OS=='ios'?-30:2}} />
+            </View> }
+      {/* <View
+              style={{
+             
+             
+              }}>
+              <Image source={require('../../../assets/images/dotted.png')} style={{ width: mobileW * 0.97 ,top:Platform.OS=='ios'?-30:2}} />
+            </View> */}
       <View style={[styles.mainDiv_container]}>
-   
+
         <Input
           IconLeft={null}
-           editable={isEditable}
+          editable={isEditable}
           bgColor={COLORS.CREAM}
           IconRight={() => (
-           <Name/>
+            <Name />
           )}
           bR={3}
           bW={0.4}
@@ -190,12 +204,13 @@ const PersonalDetails = () => {
        />
          {error && <Text style={{ color: 'red' }}>{error}</Text>}
          </View>
+
         <Input
           IconLeft={null}
           editable={false}
           bgColor={COLORS.CREAM}
           IconRight={() => (
-           <Message/>
+            <Message />
           )}
           bR={3}
           bW={0.4}
@@ -203,7 +218,7 @@ const PersonalDetails = () => {
           text="Email"
           mV={55}
           textWidth={ms(50)}
-          value={ userProfileData[0]?.email}
+          value={userRegisterData[0]?.email}
           placeholderTextColor={COLORS.BLACK}
           style={{
             color: COLORS.BLACK,
@@ -229,18 +244,19 @@ const PersonalDetails = () => {
               placeholder="Eg. johndoe@xyz.com"
               placeholderTextColor={{color: 'black'}}
             />  */}
-            
+
       </View>
+     
       <View style={styles.bottom}>
         <Text>Want to delete account?{' '}</Text>
-        
-        <TouchableOpacity onPress={()=>navigationRef.navigate('deleteAccount')}>
-          <Text 
-          style={{
-            fontWeight: 'bold',
-            font: 14,
-            height: 25,
-          }}
+
+        <TouchableOpacity onPress={() => navigationRef.navigate('deleteAccount')}>
+          <Text
+            style={{
+              fontWeight: 'bold',
+              font: 14,
+              height: 25,
+            }}
           >Request here.</Text>
         </TouchableOpacity>
       </View>
@@ -264,17 +280,17 @@ const styles = StyleSheet.create({
     marginLeft: 20,
     // marginRight: 30,
     marginTop: 20,
-    marginBottom:40,
+    marginBottom: 40,
     width: DIMENSIONS.SCREEN_WIDTH * 0.9,
-     height:DIMENSIONS.SCREEN_HEIGHT * 0.9,
-  // fontfamily: "Roboto",
-  // color: "#000000",
-  // fontSize: 24,
-  // fontWeight: 700,
-  // width: 300,
-  // lineHeight: 26,
-  // letterspacing: 0.5,
-  height: 30,
+    height: DIMENSIONS.SCREEN_HEIGHT * 0.9,
+    // fontfamily: "Roboto",
+    // color: "#000000",
+    // fontSize: 24,
+    // fontWeight: 700,
+    // width: 300,
+    // lineHeight: 26,
+    // letterspacing: 0.5,
+    height: 30,
   },
   textdata: {
     fontWeight: 'bold',
@@ -307,13 +323,20 @@ const styles = StyleSheet.create({
     marginTop: 20,
     marginBottom: 10,
     marginHorizontal: 2,
-    paddingBottom:20,
+    paddingBottom: 20,
   },
   icon: {
     width: 15,
     height: 15,
     marginRight: 20,
-  }
+  },
+  dottedLine: {
+    flex: 1,
+    borderStyle: 'dotted',
+    borderWidth: 1.5,
+    //borderRadius: 1,
+    borderColor: '#000000',
+  },
 });
 
 

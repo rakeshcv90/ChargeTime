@@ -59,7 +59,7 @@ export default function Login({navigation}) {
   const [forLoading, setForLoading] = useState(false);
   // const [graphData,setGraphData] = useState([])
   const dispatch = useDispatch();
-  const {getUserID, getGraphData} = useSelector(state => state);
+  const {getDeviceID, getGraphData} = useSelector(state => state);
   // console.log(getUserID,"object")
   useEffect(() => {
     // const backAction = () => {
@@ -78,7 +78,9 @@ export default function Login({navigation}) {
     //   );
     //   return true;
     // };
-    BackHandler.addEventListener('hardwareBackPress', () => BackHandler.exitApp());
+    BackHandler.addEventListener('hardwareBackPress', () =>
+      BackHandler.exitApp(),
+    );
 
     // return () => backHandler.remove();
   }, []);
@@ -118,9 +120,9 @@ export default function Login({navigation}) {
       });
       if (res.data) {
         console.log(res.data, 'ttww');
-        
+
         // AsyncStorage.setItem('loginDataOne', JSON.stringify(data.locationid ));
-        
+
         if (res.data.message == 'Login Successfull') {
           AsyncStorage.setItem(
             'locationID',
@@ -133,23 +135,46 @@ export default function Login({navigation}) {
               })
             : ToastAndroid.show('Login Successfull', ToastAndroid.SHORT);
           console.log(res.data, 'Loginnnnnnnnnn');
+          console.log('firstSTATUS', res.data.status);
+
           // if(data.status == "true"){
           //   navigation.navigate('EnergyStats');
           // }else if(data.status == "false"){
 
           // }
-          if (res.data.status == 'true') {
-            getDeviceIDData(res.data);
+          if (res.data.status == 'All details available') {
             dispatch(setEmailData(res.data?.email));
             dispatch(setPackageStatus(true));
             dispatch(setUserID(res.data?.user_id));
             dispatch(getLocationID(res.data?.locationid));
-          } else {
-            packagePlans(res.data?.locationid);
+            fetchGraphData(res.data?.user_id);
+            fetchWeekGraphData(res.data?.user_id);
+            fetchMonthGraphData(res.data?.user_id);
+            fetchQuarterGraphData(res.data.user_id);
+            fetchYearGraphData(res.data?.user_id);
+            fetchBoxTwoDashboardData(res.data?.user_id);
+            fetchStatusdata(res.data?.user_id);
+            getPlanCurrent(res.data?.user_id);
+            dispatch(setDeviceId(''));
+          } else if (
+            res.data.status ==
+            'Your Account is not currently linked with a TRO Charger. Please contact customer service if you believe this is an error.'
+          ) {
+            // getDeviceIDData(res.data);
             dispatch(setEmailData(res.data?.email));
-            dispatch(setPackageStatus(false));
+            dispatch(setPackageStatus(true));
             dispatch(setUserID(res.data?.user_id));
             dispatch(getLocationID(res.data?.locationid));
+            getPlanCurrent(res.data?.user_id);
+            dispatch(
+              setDeviceId(
+                'Your Account is not currently linked with a TRO Charger. Please contact customer service if you believe this is an error.',
+              ),
+            );
+          } else {
+            dispatch(setPackageStatus(false));
+            dispatch(setDeviceId(res.data.message));
+            packagePlans(res.data?.locationid);
           }
           // fetchPriceDetailsDashboardData(data?.user_id)
           // else
@@ -163,9 +188,9 @@ export default function Login({navigation}) {
           PLATFORM_IOS
             ? Toast.show({
                 type: 'error',
-                text1: 'Login Failed',
+                text1: 'Username or Password is incorrect',
               })
-            : ToastAndroid.show('Login Failed', ToastAndroid.SHORT);
+            : ToastAndroid.show('Username or Password is incorrect', ToastAndroid.SHORT);
           setForLoading(false);
         }
       }
@@ -180,19 +205,20 @@ export default function Login({navigation}) {
       .get(`${API}/devicecheck/${prevData?.user_id}}`)
       .then(res => {
         console.log(res.data, 'tt');
-        if (res.data.status == 'False') {
+        if (res.data.status == 'True') {
           dispatch(setDeviceId(res.data.message));
           getPlanCurrent(prevData?.user_id);
         } else {
-          dispatch(setDeviceId(''));
-          fetchGraphData(prevData?.user_id);
-          fetchWeekGraphData(prevData?.user_id);
-          fetchMonthGraphData(prevData?.user_id);
-          fetchQuarterGraphData(prevData.user_id);
-          fetchYearGraphData(prevData?.user_id);
-          fetchBoxTwoDashboardData(prevData?.user_id);
-          fetchStatusdata(prevData?.user_id);
-          getPlanCurrent(prevData?.user_id);
+          dispatch(setDeviceId(res.data.message));
+          packagePlans(res.data?.locationid);
+          // fetchGraphData(res.data?.user_id);
+          // fetchWeekGraphData(res.data?.user_id);
+          // fetchMonthGraphData(res.data?.user_id);
+          // fetchQuarterGraphData(res.data.user_id);
+          // fetchYearGraphData(res.data?.user_id);
+          // fetchBoxTwoDashboardData(res.data?.user_id);
+          // fetchStatusdata(res.data?.user_id);
+          // getPlanCurrent(res.data?.user_id);
         }
       })
       .catch(err => {

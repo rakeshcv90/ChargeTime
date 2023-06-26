@@ -12,7 +12,7 @@ const HorizontalLine = (props) => {
         marginVertical: props.mV ? props.mV : -10,
         borderTopWidth: 1,
         borderColor: COLORS.GREEN,
-        borderStyle: 'dashed',
+        borderStyle: 'dotted',
         paddingBottom:25,
       }}
     ></View>

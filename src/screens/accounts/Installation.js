@@ -1,4 +1,4 @@
-import { View, Text,SafeAreaView, ToastAndroid,Button, TextInput,StyleSheet, Modal,TouchableOpacity } from 'react-native'
+import { View, Text,SafeAreaView, ToastAndroid,Button, TextInput,StyleSheet, Modal,TouchableOpacity, Platform, Image,Dimensions } from 'react-native'
 import React, { useState, useEffect } from 'react'
 import Header from '../../Components/Header'
 import HorizontalLine from '../../Components/HorizontalLine'
@@ -38,7 +38,7 @@ const Installation = () => {
   const [locationId, setLocationId] = useState('');
   const [isFocus, setIsFocus] = useState(false);
   const [forLoading,setForLoading] = useState(false)
-  
+  const mobileW = Math.round(Dimensions.get('screen').width);
   useEffect(() => {
     console.log('data for this User:---------', userProfileData); 
     setAddLineTwo(userProfileData[0]?.pwa_add2);
@@ -230,7 +230,13 @@ const InstalltionUpdate = async () => {
   return (
     <SafeAreaView style={{backgroundColor: COLORS.CREAM, flex: 1}}>
      <Header headerName="Installation" editShow={true} onPress={onPress} enableEdit ={enableEdit} editButton={isEditable} />
-    <HorizontalLine style={styles.line}/>
+     {Platform.OS=='android'? <HorizontalLine style={styles.line} />:<View
+              style={{
+             
+             
+              }}>
+              <Image source={require('../../../assets/images/dotted.png')} style={{ width: mobileW * 0.97 ,top:Platform.OS=='ios'?-30:2}} />
+            </View> }
      <View style={styles.mainDiv_container}>
      <View style={styles.postCodeContainer}>
               {renderLabel()}
