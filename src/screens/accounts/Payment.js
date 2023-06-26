@@ -35,7 +35,7 @@ import { navigationRef } from '../../../App';
 import creditCardType, { types as CardType } from 'credit-card-type';
 import { FlatList } from 'react-native-gesture-handler';
 import { mvs, ms } from 'react-native-size-matters';
-import Carousel from "react-native-reanimated-carousel";
+import Carousel from 'react-native-snap-carousel';
 
 const mobileW = Math.round(Dimensions.get('screen').width);
 const mobileH = Math.round(Dimensions.get('window').height);
@@ -63,6 +63,7 @@ export default function PaymentGateWay({ navigation }) {
   });
   const [cardId, setCardId] = useState('');
   const [savedCard, setSavedCard] = useState('');
+  const [currentCard, setCurrentCard] = useState('');
 
   const initialValues = {
     cardHolderName: '',
@@ -97,7 +98,7 @@ export default function PaymentGateWay({ navigation }) {
 
     // console.log("Credit card...",creditCardType(creditCard))
     getCardType(cardDetails?.card_number ?? "")
-
+    handleGetCard()
   }, [creditCard, cardDetails, cardId])
 
   const handleAddCard = async (values, cb) => {
@@ -187,11 +188,12 @@ export default function PaymentGateWay({ navigation }) {
 
   const handleDeleteCard = async () => {
     try {
-      const response = await fetch(`${API}/deletecard/${savedCard?.id}`, {
+      const response = await fetch(`${API}/deletecard/${currentCard?.id}`, {
         method: 'DELETE',
       });
       const result = await response.json();
       if (result.success === "Your card is deleted") {
+        handleGetCard()
         setCardDetails({
           cardHolderName: '',
           card_number: '',
@@ -227,14 +229,59 @@ export default function PaymentGateWay({ navigation }) {
   };
 
 
+  const handleMakeDefaultCard = async (values) => {
+    console.log("-----------",values);
+    console.log("===========",user_ID)
+    try {
+      const response = await fetch(`${API}/defaultcard`, {
+        method: 'POST',
+        data:{
+          id:  values,
+          user_id : user_ID
+        }
+      });
+      // console.log("999999999999",response)
+      const result = await response.json();
+      console.log("---------------",result)
+      if (result.msg === "sucessfull") {
+        console.log("Default card set successfully");
+        PLATFORM_IOS
+          ? Toast.show({
+            type: 'success',
+            text1: ' Default card set successfully',
+          })
+          : ToastAndroid.show(
+            'Default card set successfully',
+            ToastAndroid.SHORT,
+          );
+      } else {
+        // console.log("Error deleting card");
+        PLATFORM_IOS
+          ? Toast.show({
+            type: 'success',
+            text1: "Default card  not set",
+          })
+          : ToastAndroid.show(
+            "Default card not set",
+            ToastAndroid.SHORT,
+          );
+      }
+    } catch (error) {
+      console.error("Error Making default card", error);
+    }
+  };
+
+
+
   const cardTypeImage = getCardType(getCard_Number);
 
   return (
     <SafeAreaView style={{ backgroundColor: COLORS.CREAM, flex: 1 }}>
-      <ScrollView showsVerticalScrollIndicator={false}>
 
         <Header headerName="Payment Methods" editShow={false} />
         <HorizontalLine />
+      
+        <ScrollView showsVerticalScrollIndicator={false} style={{flexGrow:1,flex:1}} >
         <View style={styles.mainDiv_container}>
           <Formik
             initialValues={initialValues}
@@ -252,177 +299,110 @@ export default function PaymentGateWay({ navigation }) {
               touched,
             }) => (
               <>
-                {/* {savedCard ?
-              <Carousel
-              style={{
-                width: "100%",
-                height: 240,
-                alignItems: "center",
-                justifyContent: "center",
-              }}
-              loop
-              width={"100%"}
-              height={200}
-              autoPlay={true}
-              data={savedCard}
-              scrollAnimationDuration={1000}
-              onSnapToItem={(index) => console.log('current index:', index)}
-              renderItem={(item,index)=>{
-                return(
-                  <View style={{}}>
-                     <ImageBackground
-                  source={cardTypeImage}
-                  style={{
-                    width: DIMENSIONS.SCREEN_WIDTH * 0.9,
-                    resizeMode: 'contain',
-                    height:mvs(190),
-                    // height:200,
-                    
-
-                  }}
-                >
-                   <View style={styles.cardNumber_position}>
-                  
-                  <Text
-                    style={{color: '#fff', fontWeight: '600', fontSize: ms(20) }}>
-                    { String(item.item.card_number).replace(/^(\d{12})(\d{4})$/, 'xxxx xxxx xxxx $2') }
-                  </Text>
-                  <View style={styles.text_div}>
-                  <View style={{gap:ms(5), width:ms(100)}}>
-                    <Text style={{color: 'gray', fontWeight: '600', fontSize: 8}}>Card Holder</Text>
-                  <Text
-                    style={{color: '#fff', fontWeight: '600', fontSize: 13}}>
-                    {String(item.item.cust_name )}
-                  </Text>
-                  </View>
-                  <View style={{gap:ms(5)}}>
-                  <Text style={{ fontWeight: '600', fontSize: 8,color:'gray'}}>Expires</Text>
-                  <Text
-                    style={{color: '#fff', fontWeight: '600', fontSize: 13}}>
-                    {String(item.item.card_exp_month+'/'+item.item.card_exp_year)}
-                  </Text>
-                  </View>
-                  <View style={{gap:5}}>
-                  <Text style={{fontWeight: '600', fontSize: 8,color:'gray'}}>CVV</Text>
-                  <Text
-                    style={{color: '#fff', fontWeight: '600', fontSize: 13}}>
-                    {String(item.item.card_cvc)}
-                  </Text>
-                  </View>
-                   </View>
-                </View>
-                  </ImageBackground>
-                  </View>
-                )
-              }}
-            />:null  
-              } */}
-                {savedCard ? <FlatList
-                  style={{ height: mvs(200), flexGrow: 0 }}
-                  horizontal={true}
-                  snapToAlignment='center'
-                  pagingEnabled={true}
-                  showsHorizontalScrollIndicator={false}
-                  data={savedCard}
-                  renderItem={(item, index) => {
-                    return (
-                      <View style={{}}>
+               
+                {savedCard ?
+                   <Carousel
+                    //ref={(c) => { this._carousel = c; }}
+                    data={savedCard}
+                    renderItem={({item,index})=>{
+                      return (
+                        <View style={{}}>
                         <ImageBackground
-                          source={cardTypeImage}
-                          style={{
-                            width: DIMENSIONS.SCREEN_WIDTH * 0.9,
-                            resizeMode: 'contain',
-                            height: mvs(190),
-                            // height:200,
-
-
-                          }}
-                        >
-                          <View style={styles.cardNumber_position}>
-
-                            <Text
-                              style={{ color: '#fff', fontWeight: '600', fontSize: ms(20) }}>
-                              {String(item.item.card_number).replace(/^(\d{12})(\d{4})$/, 'xxxx xxxx xxxx $2')}
-                            </Text>
-                            <View style={styles.text_div}>
-                              <View style={{ gap: ms(5), width: ms(100) }}>
-                                <Text style={{ color: 'gray', fontWeight: '600', fontSize: 8 }}>Card Holder</Text>
-                                <Text
-                                  style={{ color: '#fff', fontWeight: '600', fontSize: 13 }}>
-                                  {String(item.item.cust_name)}
-                                </Text>
-                              </View>
-                              <View style={{ gap: ms(5) }}>
-                                <Text style={{ fontWeight: '600', fontSize: 8, color: 'gray' }}>Expires</Text>
-                                <Text
-                                  style={{ color: '#fff', fontWeight: '600', fontSize: 13 }}>
-                                  {String(item.item.card_exp_month + '/' + item.item.card_exp_year)}
-                                </Text>
-                              </View>
-                              <View style={{ gap: 5 }}>
-                                <Text style={{ fontWeight: '600', fontSize: 8, color: 'gray' }}>CVV</Text>
-                                <Text
-                                  style={{ color: '#fff', fontWeight: '600', fontSize: 13 }}>
-                                  {String(item.item.card_cvc)}
-                                  {/* {cardDetails ? '*'.repeat(String(cardDetails.card_cvc).length) : values.cvv} */}
-                                </Text>
-                              </View>
-                            </View>
-                          </View>
-                        </ImageBackground>
+                     source={cardTypeImage}
+                     style={{
+                       width: DIMENSIONS.SCREEN_WIDTH * 0.9,
+                       resizeMode: 'contain',
+                       height:mvs(190),
+                       // height:200,
+                       
+      
+                     }}
+                   >
+                      <View style={styles.cardNumber_position}>
+                     
+                     <Text
+                       style={{color: '#fff', fontWeight: '600', fontSize: ms(20) }}>
+                       { String(item.card_number).replace(/^(\d{12})(\d{4})$/, 'xxxx xxxx xxxx $2') }
+                     </Text>
+                     <View style={styles.text_div}>
+                     <View style={{gap:ms(5), width:ms(100)}}>
+                       <Text style={{color: 'gray', fontWeight: '600', fontSize: 8}}>Card Holder</Text>
+                     <Text
+                       style={{color: '#fff', fontWeight: '600', fontSize: 13}}>
+                       {String(item.cust_name )}
+                     </Text>
+                     </View>
+                     <View style={{gap:ms(5)}}>
+                     <Text style={{ fontWeight: '600', fontSize: 8,color:'gray'}}>Expires</Text>
+                     <Text
+                       style={{color: '#fff', fontWeight: '600', fontSize: 13}}>
+                       {String(item.card_exp_month+'/'+item.card_exp_year)}
+                     </Text>
+                     </View>
+                     <View style={{gap:5}}>
+                     <Text style={{fontWeight: '600', fontSize: 8,color:'gray'}}>CVV</Text>
+                     <Text
+                       style={{color: '#fff', fontWeight: '600', fontSize: 13}}>
+                       {String(item.card_cvc)}
+                     </Text>
+                     </View>
                       </View>
-                    )
-                  }}
-                  keyExtractor={item => item.id}
-                >
+                   </View>
+                     </ImageBackground>
+                     </View>
+                      )
+                    }}
+                    sliderWidth={400}
+                    itemWidth={400}
+                    loop={false}
+                    onSnapToItem={(index)=>{
+                      setCurrentCard(savedCard[index])
+                    }}
+                  />:<View>
+                  <Image
+                    source={cardTypeImage}
+                    style={{
+                      width: DIMENSIONS.SCREEN_WIDTH * 0.9,
+                      // resizeMode: 'contain',
+                      height: mvs(185),
 
-                </FlatList> : null}
-                {!savedCard ?
-                  <View>
-                    <Image
-                      source={cardTypeImage}
-                      style={{
-                        width: DIMENSIONS.SCREEN_WIDTH * 0.9,
-                        // resizeMode: 'contain',
-                        height: mvs(185),
+                    }}
+                  />
+                  <View style={styles.cardNumber_position}>
 
-                      }}
-                    />
-                    <View style={styles.cardNumber_position}>
+                    <Text
+                      style={{ color: '#fff', fontWeight: '600', fontSize: 20 }}>
 
-                      <Text
-                        style={{ color: '#fff', fontWeight: '600', fontSize: 20 }}>
-
-                        {String(cardDetails.card_number).replace(/^(\d{12})(\d{4})$/, 'xxxx xxxx xxxx $2')}
-                      </Text>
-                      <View style={styles.text_div}>
-                        <View style={{ gap: 5, width: 100 }}>
-                          <Text style={{ color: 'gray', fontWeight: '600', fontSize: 8 }}>Card Holder</Text>
-                          <Text
-                            style={{ color: '#fff', fontWeight: '600', fontSize: 13 }}>
-                            {String(cardDetails.cardHolderName)}
-                          </Text>
-                        </View>
-                        <View style={{ gap: 5 }}>
-                          <Text style={{ fontWeight: '600', fontSize: 8, color: 'gray' }}>Expires</Text>
-                          <Text
-                            style={{ color: '#fff', fontWeight: '600', fontSize: 13 }}>
-                            {/* {cardDetails.card_exp_month?String(cardDetails.card_exp_month+'/'+cardDetails.card_exp_year):null} */}
-                            {cardDetails.validTill}
-                          </Text>
-                        </View>
-                        <View style={{ gap: 5 }}>
-                          <Text style={{ fontWeight: '600', fontSize: 8, color: 'gray' }}>CVV</Text>
-                          <Text
-                            style={{ color: '#fff', fontWeight: '600', fontSize: 13 }}>
-                            {String(cardDetails.card_cvv)}
-                            {/* {cardDetails ? '*'.repeat(String(cardDetails.card_cvc).length) : values.cvv} */}
-                          </Text>
-                        </View>
+                      {String(cardDetails.card_number).replace(/^(\d{12})(\d{4})$/, 'xxxx xxxx xxxx $2')}
+                    </Text>
+                    <View style={styles.text_div}>
+                      <View style={{ gap: 5, width: 100 }}>
+                        <Text style={{ color: 'gray', fontWeight: '600', fontSize: 8 }}>Card Holder</Text>
+                        <Text
+                          style={{ color: '#fff', fontWeight: '600', fontSize: 13 }}>
+                          {String(cardDetails.cardHolderName)}
+                        </Text>
+                      </View>
+                      <View style={{ gap: 5 }}>
+                        <Text style={{ fontWeight: '600', fontSize: 8, color: 'gray' }}>Expires</Text>
+                        <Text
+                          style={{ color: '#fff', fontWeight: '600', fontSize: 13 }}>
+                          {/* {cardDetails.card_exp_month?String(cardDetails.card_exp_month+'/'+cardDetails.card_exp_year):null} */}
+                          {cardDetails.validTill}
+                        </Text>
+                      </View>
+                      <View style={{ gap: 5 }}>
+                        <Text style={{ fontWeight: '600', fontSize: 8, color: 'gray' }}>CVV</Text>
+                        <Text
+                          style={{ color: '#fff', fontWeight: '600', fontSize: 13 }}>
+                          {String(cardDetails.card_cvv)}
+                          {/* {cardDetails ? '*'.repeat(String(cardDetails.card_cvc).length) : values.cvv} */}
+                        </Text>
                       </View>
                     </View>
-                  </View> : null
-                }
+                  </View>
+                </View> }
+               
 
                 <View
                   style={{
@@ -434,7 +414,15 @@ export default function PaymentGateWay({ navigation }) {
                     marginBottom: 35,
                   }}>
                   <TouchableOpacity
-                    onPress={() => handleGetCard()}
+                    onPress={() => {
+                      if(currentCard.status === 0){
+                        // call api to make new card as default and id will be currentCard.id
+                        handleMakeDefaultCard(currentCard?.id)
+                    }else if(currentCard.status ===1){
+
+                    }else{
+
+                    }}}
                     style={{
                       // marginTop: 200,
                       marginLeft: 95,
@@ -451,11 +439,18 @@ export default function PaymentGateWay({ navigation }) {
                         fontSize: 12,
                         fontWeight: '400',
                       }}>
-                      Make Default
+                        {currentCard.status === 1 ? "Default Payment Method":"Make Default"}
+                     
                     </Text>
                   </TouchableOpacity>
                   <TouchableOpacity
-                    onPress={() => handleDeleteCard()}
+                    onPress={() =>{
+                      if(currentCard.status ===1 || currentCard.status===0){
+                      
+                      handleDeleteCard()
+                    }else{
+
+                    }}}
                     style={{
 
                       marginLeft: 35,
@@ -676,7 +671,7 @@ const styles = StyleSheet.create({
   mainDiv_container: {
     paddingHorizontal: 20,
     width: mobileW,
-    height: mobileH,
+    //height: mobileH,
     // paddingTop: 30,
   },
   mainDiv_state_ZIP: {

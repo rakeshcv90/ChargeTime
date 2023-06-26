@@ -18,11 +18,10 @@ import { API } from '../../api/API';
 import { navigationRef } from '../../../App';
 import { FONTS } from '../../constants/FONTS';
 import { useDispatch } from 'react-redux';
-import axios from 'axios';
 import { mvs,ms } from 'react-native-size-matters';
 
 
-import { userProfileData } from '../../redux/action';
+import { userProfileData as updatePersionalDetail } from '../../redux/action';
 
 
 
@@ -81,8 +80,8 @@ const PersonalDetails = () => {
         if (data.msg == "Your profile has been succesfully updated") {
           const updatedData = [{
             ...userProfileData[0],
-          pwa_name: name,
-            pwa_mobile: number,
+          name: name,
+            mobile: number,
           }];
           console.log(updatedData,"------")
           // if (updatedData) {
@@ -90,7 +89,7 @@ const PersonalDetails = () => {
           // } else {
           //   console.log('updatedData is not defined or has an incorrect value');
           // }
-          dispatch(userProfileData(updatedData));
+          dispatch(updatePersionalDetail(updatedData));
           PLATFORM_IOS?
           Toast.show({
             type: 'success',

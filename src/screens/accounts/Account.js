@@ -106,7 +106,7 @@ const Account = ({navigation}) => {
     console.log('Log out successfully');
   }
 
-  const userDetails = async () =>{
+ const userDetails = async () =>{
     // const response = await fetch(`${API}/userexisting/${user_ID}`);
     try {
       const response = await fetch(`${API}/userexisting/${user_ID}`);

@@ -15,6 +15,7 @@ import axios from 'axios';
 import { FONTS } from '../../constants/FONTS'
 import { navigationRef } from '../../../App'
 import { ms } from 'react-native-size-matters';
+import { userProfileData as updatePersionalDetail } from '../../redux/action';
 
 
 
@@ -135,7 +136,13 @@ const InstalltionUpdate = async () => {
         console.log(data, 'fff');
 
         if (data) {
-          
+          const updatedData = [{
+            ...userProfileData[0],
+          name: name,
+            mobile: number,
+          }];
+          console.log(updatedData,"------")
+          dispatch(updatePersionalDetail(updatedData));
           PLATFORM_IOS
             ? Toast.show({
                 type: 'success',

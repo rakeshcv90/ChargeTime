@@ -81,6 +81,7 @@ const DeleteAccountScreen = () => {
       <Header headerName="Account Delete Request" />
       <HorizontalLine style={styles.line} />
       <View style={styles.container}>
+        <View style={{backgroundColor:COLORS.CREAM,width:70,position:'absolute',zIndex:99,top:23,left:32,alignItems:'center'}}><Text style={{}}>Reason</Text></View>
       <TextInput
     style={{
       // flex: 1,
