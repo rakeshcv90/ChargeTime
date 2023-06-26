@@ -10,31 +10,33 @@ import {
   Modal,
   Pressable,
   Alert,
-  ImageBackground
+  ImageBackground,
+  Platform,
+  
 } from 'react-native';
-import React, {useState, useRef, useEffect} from 'react';
-import {SafeAreaView} from 'react-native-safe-area-context';
+import React, { useState, useRef, useEffect } from 'react';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import Input from '../../Components/Input';
 import COLORS from '../../constants/COLORS';
-import {Card} from '../../../assets/svgs/Card';
-import {Name} from '../../../assets/svgs/Name';
-import {DIMENSIONS} from '../../constants/DIMENSIONS';
-import {LeftIcon} from '../../../assets/images/LeftIcon';
-import {Formik} from 'formik';
+import { Card } from '../../../assets/svgs/Card';
+import { Name } from '../../../assets/svgs/Name';
+import { DIMENSIONS } from '../../constants/DIMENSIONS';
+import { LeftIcon } from '../../../assets/images/LeftIcon';
+import { Formik } from 'formik';
 import * as Yup from 'yup';
-import {Admin} from '../../../assets/images/Admin';
-import {Message} from '../../../assets/images/Message';
-import {useSelector} from 'react-redux';
+import { Admin } from '../../../assets/images/Admin';
+import { Message } from '../../../assets/images/Message';
+import { useSelector } from 'react-redux';
 import axios from 'axios';
 import Header from '../../Components/Header'
 import HorizontalLine from '../../Components/HorizontalLine'
-import {API} from '../../api/API';
+import { API } from '../../api/API';
 import { Delete } from '../../../assets/svgs/Delete'
 import { PLATFORM_IOS } from '../../constants/DIMENSIONS';
-import {navigationRef} from '../../../App';
-import creditCardType,{types as CardType} from 'credit-card-type';
+import { navigationRef } from '../../../App';
+import creditCardType, { types as CardType } from 'credit-card-type';
 import { FlatList } from 'react-native-gesture-handler';
-import { mvs,ms } from 'react-native-size-matters';
+import { mvs, ms } from 'react-native-size-matters';
 import Carousel from "react-native-reanimated-carousel";
 
 const mobileW = Math.round(Dimensions.get('screen').width);
@@ -45,18 +47,20 @@ const validationSchema = Yup.object().shape({
   validTill: Yup.string().required('expiry date required'),
   cvv: Yup.string().required('cvv is required'),
 });
-export default function PaymentGateWay({navigation}) {
-  const { getUserID} = useSelector(
+export default function PaymentGateWay({ navigation }) {
+  const { getUserID } = useSelector(
     state => state,
   );
-  const [pagingEnabled, setPagingEnabled]=useState(true);
-  const [getCard_Number, setGetCard_Number]=useState('');
-  const [creditCard,setCreditCard] = useState('');
+  const [pagingEnabled, setPagingEnabled] = useState(true);
+  const [getCard_Number, setGetCard_Number] = useState('');
+  const [creditCard, setCreditCard] = useState('');
+  const [error, setError] = useState('');
+  const [error1, setError1] = useState('');
   const [cardDetails, setCardDetails] = useState({
-    cardHolderName:'',
-    card_number:'',
-    card_cvv:'',
-    validTill:'',
+    cardHolderName: '',
+    card_number: '',
+    card_cvv: '',
+    validTill: '',
     // card_exp_year:'',
   });
   const [cardId, setCardId] = useState('');
@@ -68,80 +72,81 @@ export default function PaymentGateWay({navigation}) {
     validTill: '',
     cvv: '',
   }
-  
-const user_ID =getUserID;
+
+  const user_ID = getUserID;
 
   const getCardType = (cardNumber) => {
 
-    const cardType = creditCardType(cardNumber?cardNumber :creditCard)[0]?.type;
+    const cardType = creditCardType(cardNumber ? cardNumber : creditCard)[0]?.type;
 
     // console.log("Card ...", cardType)
 
     if (cardType === 'visa') {
-      return require('../../../assets/images/Visa.png'); 
+      return require('../../../assets/images/Visa.png');
     } else if (cardType === 'master') {
-      return require('../../../assets/images/Master.png'); 
-    } else if (cardType==='american-express') {
-      return require('../../../assets/images/Amex.png'); 
+      return require('../../../assets/images/Master.png');
+    } else if (cardType === 'american-express') {
+      return require('../../../assets/images/Amex.png');
     } else if (cardType === 'discover') {
-      return require('../../../assets/images/Discover.png'); 
+      return require('../../../assets/images/Discover.png');
     } else {
       return require('../../../assets/images/visaCard.png');
     }
   }
 
 
-  useEffect(()=>{
+  useEffect(() => {
 
     // console.log("Credit card...",creditCardType(creditCard))
-  getCardType(cardDetails?.card_number ?? "")   
+    getCardType(cardDetails?.card_number ?? "")
 
-  },[creditCard,cardDetails,cardId])
+  }, [creditCard, cardDetails, cardId])
 
-  const handleAddCard = async (values,cb) => {
+  const handleAddCard = async (values, cb) => {
     let exp_month = values?.validTill?.split('/')[0];
     let exp_year = values?.validTill?.split('/')[1];
-    let cust_number= values?.cardNumber.split(" ").join("");
+    let cust_number = values?.cardNumber.split(" ").join("");
     setGetCard_Number(values?.cardNumber)
-    console.log('month is',getUserID);
     try {
- 
+
       const response = await axios.post(`${API}/addcarddetail`, {
+
         "user_id": getUserID,
-          "cust_name":values?.cardHolderName,
-          "card_number":cust_number,
-          "card_cvc":values?.cvv,
-          "card_exp_month":exp_month,
-          "card_exp_year":exp_year ,
-      })
-      if(response.data.msg === 'Your Card Detail Save'){
+        "cust_name": values?.cardHolderName,
+        "card_number": cust_number,
+        "card_cvc": values?.cvv,
+        "card_exp_month": exp_month,
+        "card_exp_year": exp_year,
+      });
+      if (response.data.message === 'Your Card Detail Save') {
         cb();
+
         console.log("card add success")
         setCardDetails({
-          cardHolderName:'',
-          card_number:'',
-          card_cvv:'',
-          validTill:'',
+          cardHolderName: '',
+          card_number: '',
+          card_cvv: '',
+          validTill: '',
           // card_exp_year:'',
         });
         PLATFORM_IOS
-        ? Toast.show({
+          ? Toast.show({
             type: 'success',
             text1: ' Your Card Detail Save.',
           })
-        : ToastAndroid.show(
+          : ToastAndroid.show(
             'Your Card Detail Save.',
             ToastAndroid.SHORT,
           );
       }
-      else{
+      else {
         // cb();
         PLATFORM_IOS
-        ? Toast.show({
+          ? Toast.show({
             type: 'success',
             text1: ' Your Card Detail Not Save.',
           })
-        : ToastAndroid.show(
+          : ToastAndroid.show(
             'Your Card Detail Not Save.',
             ToastAndroid.SHORT,
           );
@@ -149,7 +154,7 @@ const user_ID =getUserID;
     } catch (error) {
       console.error(error);
     }
-   
+
   };
 
   const handleGetCard = async () => {
@@ -157,35 +162,30 @@ const user_ID =getUserID;
     try {
       const response = await fetch(`${API}/getcarddetails/${user_ID}`);
       const result = await response.json();
-       console.log("Result",result[0])
-      // const defaultCard = result[0].filter(item =>{ return item.status === 1})    
-      //  console.log("-----",defaultCard)
-    //  setCardId(defaultCard[0].id);
-
-      if(result[0]?.length > 0)
-      {
+      console.log("Result", result[0])
+      if (result[0]?.length > 0) {
         // console.log("defaultCard",defaultCard[0])
-        setSavedCard(result[0]) 
-        
-      //  console.log(defaultCard[0].id,"--------")
+        setSavedCard(result[0])
 
-      }else{
+        //  console.log(defaultCard[0].id,"--------")
+
+      } else {
         console.log("iiiiiiiiiiii")
       }
-   
+
     } catch (error) {
       PLATFORM_IOS
-      ? Toast.show({
+        ? Toast.show({
           type: 'success',
           text1: ' Your card details not saved.',
         })
-      : ToastAndroid.show(
-        ' Your card details not saved.',
+        : ToastAndroid.show(
+          ' Your card details not saved.',
           ToastAndroid.SHORT,
         );
     }
-  }  
-const card_id = cardId;
+  }
+  const card_id = cardId;
 
   const handleDeleteCard = async () => {
     try {
@@ -195,31 +195,31 @@ const card_id = cardId;
       const result = await response.json();
       if (result.success === "Your card is deleted") {
         setCardDetails({
-          cardHolderName:'',
-          card_number:'',
-          card_cvv:'',
-          validTill:'',
+          cardHolderName: '',
+          card_number: '',
+          card_cvv: '',
+          validTill: '',
           // card_exp_year:'',
         })
         console.log("Card deleted successfully");
         PLATFORM_IOS
-        ? Toast.show({
+          ? Toast.show({
             type: 'success',
             text1: ' Your Card Deleted Successfully.',
           })
-        : ToastAndroid.show(
+          : ToastAndroid.show(
             'Your Card Deleted Successfully.',
             ToastAndroid.SHORT,
           );
       } else {
         // console.log("Error deleting card");
         PLATFORM_IOS
-        ? Toast.show({
+          ? Toast.show({
             type: 'success',
             text1: "Your card is not exist",
           })
-        : ToastAndroid.show(
-          "Your card is not exist",
+          : ToastAndroid.show(
+            "Your card is not exist",
             ToastAndroid.SHORT,
           );
       }
@@ -227,32 +227,40 @@ const card_id = cardId;
       console.error("Error deleting card", error);
     }
   };
-  
+
 
   const cardTypeImage = getCardType(getCard_Number);
 
   return (
     <SafeAreaView style={{backgroundColor: COLORS.CREAM, flex: 1}}>
+      
   <ScrollView showsVerticalScrollIndicator={false}>
 
        <Header headerName="Payment Methods" editShow={false} />
-    <HorizontalLine />
+       {Platform.OS=='android'? <HorizontalLine style={styles.line} />:<View
+              style={{
+             
+             
+              }}>
+              <Image source={require('../../../assets/images/dotted.png')} style={{ width: mobileW * 0.97 ,top:Platform.OS=='ios'?-30:2}} />
+            </View> }
         <View style={styles.mainDiv_container}>
-            <Formik
-              initialValues={initialValues}
-              onSubmit={(values,{resetForm}) =>{ handleAddCard(values,()=>resetForm({values:initialValues}))
-              
-              }}
-              validationSchema={validationSchema}>
-              {({
-                values,
-                handleChange,
-                handleSubmit,
-                handleBlur,
-                errors,
-                touched,
-              }) => (
-                <>
+          <Formik
+            initialValues={initialValues}
+            onSubmit={(values, { resetForm }) => {
+              handleAddCard(values, () => resetForm({ values: initialValues }))
+
+            }}
+            validationSchema={validationSchema}>
+            {({
+              values,
+              handleChange,
+              handleSubmit,
+              handleBlur,
+              errors,
+              touched,
+            }) => (
+              <>
                 {/* {savedCard ?
               <Carousel
               style={{
@@ -318,128 +326,128 @@ const card_id = cardId;
               }}
             />:null  
               } */}
-               {savedCard? <FlatList
-               style={{height:mvs(200),flexGrow:0}}
-               horizontal={true}
-               snapToAlignment='center'
-               pagingEnabled={true}
-               showsHorizontalScrollIndicator={false}
-                data ={savedCard}
-                renderItem={(item,index)=>{
-                  return(
-                    <View style={{}}>
-                       <ImageBackground
-                    source={cardTypeImage}
-                    style={{
-                      width: DIMENSIONS.SCREEN_WIDTH * 0.9,
-                      resizeMode: 'contain',
-                      height:mvs(190),
-                      // height:200,
-                      
+                {savedCard ? <FlatList
+                  style={{ height: mvs(200), flexGrow: 0 }}
+                  horizontal={true}
+                  snapToAlignment='center'
+                  pagingEnabled={true}
+                  showsHorizontalScrollIndicator={false}
+                  data={savedCard}
+                  renderItem={(item, index) => {
+                    return (
+                      <View style={{}}>
+                        <ImageBackground
+                          source={cardTypeImage}
+                          style={{
+                            width: DIMENSIONS.SCREEN_WIDTH * 0.9,
+                            resizeMode: 'contain',
+                            height: mvs(190),
+                            // height:200,
 
-                    }}
-                  >
-                     <View style={styles.cardNumber_position}>
-                    
-                    <Text
-                      style={{color: '#fff', fontWeight: '600', fontSize: ms(20) }}>
-                      { String(item.item.card_number).replace(/^(\d{12})(\d{4})$/, 'xxxx xxxx xxxx $2') }
-                    </Text>
-                    <View style={styles.text_div}>
-                    <View style={{gap:ms(5), width:ms(100)}}>
-                      <Text style={{color: 'gray', fontWeight: '600', fontSize: 8}}>Card Holder</Text>
-                    <Text
-                      style={{color: '#fff', fontWeight: '600', fontSize: 13}}>
-                      {String(item.item.cust_name )}
-                    </Text>
-                    </View>
-                    <View style={{gap:ms(5)}}>
-                    <Text style={{ fontWeight: '600', fontSize: 8,color:'gray'}}>Expires</Text>
-                    <Text
-                      style={{color: '#fff', fontWeight: '600', fontSize: 13}}>
-                      {String(item.item.card_exp_month+'/'+item.item.card_exp_year)}
-                    </Text>
-                    </View>
-                    <View style={{gap:5}}>
-                    <Text style={{fontWeight: '600', fontSize: 8,color:'gray'}}>CVV</Text>
-                    <Text
-                      style={{color: '#fff', fontWeight: '600', fontSize: 13}}>
-                      {String(item.item.card_cvc)}
-                      {/* {cardDetails ? '*'.repeat(String(cardDetails.card_cvc).length) : values.cvv} */}
-                    </Text>
-                    </View>
-                     </View>
-                  </View>
-                    </ImageBackground>
-                    </View>
-                  )
-                }}
-                keyExtractor={item=>item.id}
+
+                          }}
+                        >
+                          <View style={styles.cardNumber_position}>
+
+                            <Text
+                              style={{ color: '#fff', fontWeight: '600', fontSize: ms(20) }}>
+                              {String(item.item.card_number).replace(/^(\d{12})(\d{4})$/, 'xxxx xxxx xxxx $2')}
+                            </Text>
+                            <View style={styles.text_div}>
+                              <View style={{ gap: ms(5), width: ms(100) }}>
+                                <Text style={{ color: 'gray', fontWeight: '600', fontSize: 8 }}>Card Holder</Text>
+                                <Text
+                                  style={{ color: '#fff', fontWeight: '600', fontSize: 13 }}>
+                                  {String(item.item.cust_name)}
+                                </Text>
+                              </View>
+                              <View style={{ gap: ms(5) }}>
+                                <Text style={{ fontWeight: '600', fontSize: 8, color: 'gray' }}>Expires</Text>
+                                <Text
+                                  style={{ color: '#fff', fontWeight: '600', fontSize: 13 }}>
+                                  {String(item.item.card_exp_month + '/' + item.item.card_exp_year)}
+                                </Text>
+                              </View>
+                              <View style={{ gap: 5 }}>
+                                <Text style={{ fontWeight: '600', fontSize: 8, color: 'gray' }}>CVV</Text>
+                                <Text
+                                  style={{ color: '#fff', fontWeight: '600', fontSize: 13 }}>
+                                  {String(item.item.card_cvc)}
+                                  {/* {cardDetails ? '*'.repeat(String(cardDetails.card_cvc).length) : values.cvv} */}
+                                </Text>
+                              </View>
+                            </View>
+                          </View>
+                        </ImageBackground>
+                      </View>
+                    )
+                  }}
+                  keyExtractor={item => item.id}
                 >
-                 
-                </FlatList>:null}
-               {!savedCard ?
-                <View> 
-                 <Image
-                    source={cardTypeImage}
-                    style={{
-                      width: DIMENSIONS.SCREEN_WIDTH * 0.9,
-                      // resizeMode: 'contain',
-                      height:mvs(185),
 
-                    }}
-                  />
-                   <View style={styles.cardNumber_position}>
-                    
-                    <Text
-                      style={{color: '#fff', fontWeight: '600', fontSize: 20 }}>
+                </FlatList> : null}
+                {!savedCard ?
+                  <View>
+                    <Image
+                      source={cardTypeImage}
+                      style={{
+                        width: DIMENSIONS.SCREEN_WIDTH * 0.9,
+                        // resizeMode: 'contain',
+                        height: mvs(185),
 
-                      { String(cardDetails.card_number).replace(/^(\d{12})(\d{4})$/, 'xxxx xxxx xxxx $2')}
-                    </Text>
-                    <View style={styles.text_div}>
-                    <View style={{gap:5, width:100}}>
-                      <Text style={{color: 'gray', fontWeight: '600', fontSize: 8}}>Card Holder</Text>
-                    <Text
-                      style={{color: '#fff', fontWeight: '600', fontSize: 13}}>
-                      {String(cardDetails.cardHolderName)}
-                    </Text>
-                    </View>
-                    <View style={{gap:5}}>
-                    <Text style={{ fontWeight: '600', fontSize: 8,color:'gray'}}>Expires</Text>
-                    <Text
-                      style={{color: '#fff', fontWeight: '600', fontSize: 13}}>
-                      {/* {cardDetails.card_exp_month?String(cardDetails.card_exp_month+'/'+cardDetails.card_exp_year):null} */}
-                      {cardDetails.validTill}
-                    </Text>
-                    </View>
-                    <View style={{gap:5}}>
-                    <Text style={{fontWeight: '600', fontSize: 8,color:'gray'}}>CVV</Text>
-                    <Text
-                      style={{color: '#fff', fontWeight: '600', fontSize: 13}}>
-                      {String(cardDetails.card_cvv)}
-                      {/* {cardDetails ? '*'.repeat(String(cardDetails.card_cvc).length) : values.cvv} */}
-                    </Text>
-                    </View>
-                     </View>
-                  </View>
-                  </View>:null
-                   }
+                      }}
+                    />
+                    <View style={styles.cardNumber_position}>
 
-                  <View
+                      <Text
+                        style={{ color: '#fff', fontWeight: '600', fontSize: 20 }}>
+
+                        {String(cardDetails.card_number).replace(/^(\d{12})(\d{4})$/, 'xxxx xxxx xxxx $2')}
+                      </Text>
+                      <View style={styles.text_div}>
+                        <View style={{ gap: 5, width: 100 }}>
+                          <Text style={{ color: 'gray', fontWeight: '600', fontSize: 8 }}>Card Holder</Text>
+                          <Text
+                            style={{ color: '#fff', fontWeight: '600', fontSize: 13 }}>
+                            {String(cardDetails.cardHolderName)}
+                          </Text>
+                        </View>
+                        <View style={{ gap: 5 }}>
+                          <Text style={{ fontWeight: '600', fontSize: 8, color: 'gray' }}>Expires</Text>
+                          <Text
+                            style={{ color: '#fff', fontWeight: '600', fontSize: 13 }}>
+                            {/* {cardDetails.card_exp_month?String(cardDetails.card_exp_month+'/'+cardDetails.card_exp_year):null} */}
+                            {cardDetails.validTill}
+                          </Text>
+                        </View>
+                        <View style={{ gap: 5 }}>
+                          <Text style={{ fontWeight: '600', fontSize: 8, color: 'gray' }}>CVV</Text>
+                          <Text
+                            style={{ color: '#fff', fontWeight: '600', fontSize: 13 }}>
+                            {String(cardDetails.card_cvv)}
+                            {/* {cardDetails ? '*'.repeat(String(cardDetails.card_cvc).length) : values.cvv} */}
+                          </Text>
+                        </View>
+                      </View>
+                    </View>
+                  </View> : null
+                }
+
+                <View
                   style={{
                     flexDirection: 'row',
                     justifyContent: 'center',
                     // width: '100%',
                     marginHorizontal: 30,
-                    marginTop:30,
-                    marginBottom:35,
+                    marginTop: 30,
+                    marginBottom: 35,
                   }}>
                   <TouchableOpacity
-                  onPress={()=> handleGetCard()}
+                    onPress={() => handleGetCard()}
                     style={{
                       // marginTop: 200,
-                      marginLeft:95,
-                      marginRight:50,
+                      marginLeft: 95,
+                      marginRight: 50,
                       backgroundColor: '#CCCCCC',
                       alignItems: 'center',
                       padding: 10,
@@ -456,184 +464,213 @@ const card_id = cardId;
                     </Text>
                   </TouchableOpacity>
                   <TouchableOpacity
-                  onPress={()=> handleDeleteCard()}
+                    onPress={() => handleDeleteCard()}
                     style={{
-                      
-                      marginLeft:35,
-                      marginRight:100,
+
+                      marginLeft: 35,
+                      marginRight: 100,
                       backgroundColor: '#CCCCCC',
                       alignItems: 'center',
                       padding: 13,
                       borderRadius: 150,
                       width: '15%',
                     }}>
-                    <Delete/>
-                    </TouchableOpacity>
-                  </View>
-                
-                 
-                  <HorizontalLine />
-                  <Input
-                    IconLeft={null}
-                    errors={undefined}
-                    touched={false}
-                    value={values.cardHolderName}
-                    onChangeText={(text) => {handleChange('cardHolderName')(text);
+                    <Delete />
+                  </TouchableOpacity>
+                </View>
+
+
+                <HorizontalLine />
+                <Input
+                  IconLeft={null}
+                  errors={undefined}
+                  touched={false}
+                  value={values.cardHolderName}
+                  onChangeText={(text) => {
+                    handleChange('cardHolderName')(text);
                     setSavedCard('')
-                    setCardDetails({...cardDetails,['cardHolderName']:text})
+                    setCardDetails({ ...cardDetails, ['cardHolderName']: text })
                   }}
-                    onBlur={handleBlur('cardHolderName')}
-                    text="Card Holder Name"
-                    IconRight={() => <Admin />}
-                    mV={15}
-                    placeholder="John Doe"
-                    bW={1}
-                    textWidth={ms(110)}
-                    placeholderTextColor={COLORS.BLACK}
-                      />
+                  onBlur={handleBlur('cardHolderName')}
+                  text="Card Holder Name"
+                  IconRight={() => <Admin />}
+                  mV={15}
+                  placeholder="John Doe"
+                  bW={1}
+                  textWidth={ms(110)}
+                  placeholderTextColor={COLORS.LIGHT_GREY}
+                />
 
-                  {errors.cardHolderName && touched.cardHolderName && (
-                    <Text style={{color: 'red'}}>{errors.cardHolderName}</Text>
-                  )}
-                  <Input
-                    IconLeft={null}
-                    errors={undefined}
-                    touched={false}
-                    value={values.cardNumber}
-                    onChangeText={text => {
+                {errors.cardHolderName && touched.cardHolderName && (
+                  <Text style={{ color: 'red' }}>{errors.cardHolderName}</Text>
+                )}
+                <Input
+                  IconLeft={null}
+                  errors={undefined}
+                  touched={false}
+                  value={values.cardNumber}
+                  onChangeText={text => {
 
 
-                      setSavedCard('')
-                    setCardDetails({...cardDetails,['card_number']:text})
-                      // setCardDetails('');
-                      // Remove non-digit characters from the input
-                      const cardNumber = text.replace(/\D/g, '');
-                      // Insert a space after every fourth digit
-                      let formattedCardNumber = '';
-                      for (let i = 0; i < cardNumber.length; i += 4) {
-                        formattedCardNumber += cardNumber.substr(i, 4) + ' ';
-                      }
+                    setSavedCard('')
+                    setCardDetails({ ...cardDetails, ['card_number']: text })
+                    // setCardDetails('');
+                    // Remove non-digit characters from the input
+                    const cardNumber = text.replace(/\D/g, '');
+                    // Insert a space after every fourth digit
+                    let formattedCardNumber = '';
+                    for (let i = 0; i < cardNumber.length; i += 4) {
+                      formattedCardNumber += cardNumber.substr(i, 4) + ' ';
+                    }
 
-                      // Remove any trailing space
-                      formattedCardNumber = formattedCardNumber.trim();
-                      setCreditCard(text)
-                      // Update the card number value
-                      handleChange('cardNumber')(formattedCardNumber);
-                    }}
-                    onBlur={handleBlur('cardNumber')}
-                    maxLength={19}
-                    text="Card Number"
-                    IconRight={() => <Message />}
-                    mV={15}
-                    placeholder="1234  5678  xxxx  xxxx"
-                    bW={1}
-                    textWidth={ms(85)}
-                    placeholderTextColor={COLORS.BLACK}
-                    keyboardType="numeric"
-                  />
-                  {errors.cardNumber && touched.cardNumber && (
-                    <Text style={{color: 'red'}}>{errors.cardNumber}</Text>
-                  )}
-                  <View style={styles.mainDiv_state_ZIP}>
-                    <View style={styles.zip_state_view}>
-                      <Input
-                        IconLeft={null}
-                        errors={undefined}
-                        touched={false}
-                        value={values.validTill}
-                        //
-                        onChangeText={text => {
-                          // setCardDetails('');
-                          // Remove non-digit characters from the input
-                          const validTill = text.replace(/\D/g, '');
-                          
-                      setSavedCard('')
-                      // setCardDetails({...cardDetails,['card_number']:text})
-                          // Insert a slash after the second character
-                          let formattedValidTill = validTill;
-                          if (validTill.length > 2) {
-                            formattedValidTill =
-                              validTill.slice(0, 2) + '/' + validTill.slice(2);
-                              // setCardDetails({...cardDetails,['card_exp_year']:formattedValidTill})
-                          } 
-                          setCardDetails({...cardDetails,['validTill']:formattedValidTill})
+                    // Remove any trailing space
+                    formattedCardNumber = formattedCardNumber.trim();
+                    setCreditCard(text)
+                    // Update the card number value
+                    handleChange('cardNumber')(formattedCardNumber);
+                  }}
+                  onBlur={handleBlur('cardNumber')}
+                  maxLength={19}
+                  text="Card Number"
+                  IconRight={() => <Message />}
+                  mV={15}
+                  placeholder="1234  5678  xxxx  xxxx"
+                  bW={1}
+                  textWidth={ms(85)}
+                  placeholderTextColor={COLORS.LIGHT_GREY}
+                  keyboardType="numeric"
+                />
+                {errors.cardNumber && touched.cardNumber && (
+                  <Text style={{ color: 'red' }}>{errors.cardNumber}</Text>
+                )}
+                <View style={styles.mainDiv_state_ZIP}>
+                  <View style={styles.zip_state_view}>
+                    <Input
+                      IconLeft={null}
+                      errors={undefined}
+                      touched={false}
+                      value={values.validTill}
+                      //
+                      onChangeText={text => {
+                        const validTill = text.replace(/\D/g, '');
 
-                          // Update the valid till value
-                          handleChange('validTill')(formattedValidTill);
-                        }}
-                        onBlur={handleBlur('validTill')}
-                        text="Valid Till"
-                        IconRight={null}
-                        mV={15}
-                        placeholder="07/23"
-                        bW={1}
-                        textWidth={ms(62)}
-                        placeholderTextColor={COLORS.BLACK}
-                        w="half"
-                        keyboardType="numeric"
-                        maxLength={5}
-                      />
-                      {errors.validTill && touched.validTill && (
+                        // Extract the month and year values
+                        const month = validTill.slice(0, 2);
+                        const year = validTill.slice(2);
+
+                        // Validate the month and year values
+                        let formattedValidTill = '';
+                        const currentYear = new Date().getFullYear();
+
+                        if (month >= 1 && month <= 12) {
+                          formattedValidTill += month;
+                        } else {
+                          setError("Please enter valid month")
+
+                        }
+
+                        // if (year.length === 2) {
+                        //   const formattedYear = currentYear.toString().substr(0, 2) + year;
+                        //   const maxValidYear = currentYear + 2; // Allowing a maximum validity of 2 years into the future
+                        //   if (formattedYear >= currentYear.toString().substr(0, 2) && formattedYear <= maxValidYear.toString().substr(0, 2)) {
+                        //     formattedValidTill += '/';
+                        //     formattedValidTill += formattedYear;
+                        //   } else {
+                        //     setError1("Please enter valid month");
+                        //   }
+                        // }
+                        if (year.length > 0) {
+                          formattedValidTill += '/';
+                          formattedValidTill += year;
+                        }
+                      
+                        
+                        // Update the state with the formatted valid till value
+                        setCardDetails({ ...cardDetails, validTill: formattedValidTill });
+
+                        // Update the valid till value in the formik field
+                        handleChange('validTill')(formattedValidTill);
+
+                      }}
+                      onBlur={handleBlur('validTill')}
+                      text="Valid Till"
+                      IconRight={null}
+                      mV={15}
+                      placeholder="07/23"
+                      bW={1}
+                      textWidth={ms(62)}
+                      placeholderTextColor={COLORS.LIGHT_GREY}
+                      w="half"
+                      keyboardType="numeric"
+                      maxLength={5}
+                    />
+                    {/* {errors.validTill && touched.validTill && (
                         <Text style={{color: 'red'}}>{errors.validTill}</Text>
-                      )}
-                    </View>
-                    <View style={styles.zip_state_view}>
-                      <Input
-                        IconLeft={null}
-                        errors={undefined}
-                        touched={false}
-                        value={ values.cvv}
-                        onChangeText={(text)=>{handleChange('cvv')(text),
+                      )} */}
+
+                    {error && <Text style={{ color: 'red' }}>{error}</Text>}
+                    {error1 && <Text style={{ color: 'red' }}>{error1}</Text>}
+
+                  </View>
+
+                  <View style={styles.zip_state_view}>
+                    <Input
+                      IconLeft={null}
+                      errors={undefined}
+                      touched={false}
+                      value={values.cvv}
+                      onChangeText={(text) => {
+                        handleChange('cvv')(text),
                         // setCardDetails('');
                         setSavedCard('')
-                        setCardDetails({...cardDetails,['card_cvv']:text})
+                        setCardDetails({ ...cardDetails, ['card_cvv']: text })
                       }}
-                        onBlur={handleBlur('cvv')}
-                        text="CVV"
-                        IconRight={null}
-                        mV={15}
-                        placeholder="***"
-                        bW={1}
-                        textWidth={ms(38)}
-                        placeholderTextColor={COLORS.BLACK}
-                        w="half"
-                        secureTextEntry={true}
-                        maxLength={3}
-                        keyboardType="numeric"
-                      />
-                      {errors.cvv && touched.cvv && (
-                        <Text style={{color: 'red'}}>{errors.cvv}</Text>
-                      )}
-                    </View>
+                      onBlur={handleBlur('cvv')}
+                      text="CVV"
+                      IconRight={null}
+                      mV={15}
+                      placeholder="***"
+                      bW={1}
+                      textWidth={ms(38)}
+                      placeholderTextColor={COLORS.LIGHT_GREY}
+                      w="half"
+                      secureTextEntry={true}
+                      maxLength={3}
+                      keyboardType="numeric"
+                    />
+                    {errors.cvv && touched.cvv && (
+                      <Text style={{ color: 'red' }}>{errors.cvv}</Text>
+                    )}
                   </View>
-                    <View
+                </View>
+                <View
+                  style={{
+                    backgroundColor: COLORS.GREEN,
+                    paddingHorizontal: 20,
+                    paddingVertical: 10,
+
+                    borderRadius: 12,
+                    marginLeft: 240,
+                    // marginRight:20,
+                  }}>
+                  <TouchableOpacity onPress={handleSubmit}>
+                    <Text
                       style={{
-                        backgroundColor: COLORS.GREEN,
-                        paddingHorizontal: 20,
-                        paddingVertical: 10,
-                       
-                        borderRadius: 12,
-                        marginLeft:240,
-                        // marginRight:20,
+                        fontSize: 14,
+                        fontWeight: '700',
+                        alignContent: 'center',
+                        justifyContent: 'center',
+                        color: COLORS.BLACK,
                       }}>
-                      <TouchableOpacity onPress={handleSubmit}>
-                        <Text
-                          style={{
-                            fontSize: 14,
-                            fontWeight: '700',
-                            alignContent:'center',
-                            justifyContent:'center',
-                            color: COLORS.BLACK,
-                          }}>
-                          ADD CARD
-                        </Text>
-                      </TouchableOpacity>
-                    </View>
-                  </>
-              )}
-            </Formik>
+                      ADD CARD
+                    </Text>
+                  </TouchableOpacity>
+                </View>
+              </>
+            )}
+          </Formik>
         </View>
-        </ScrollView>
+      </ScrollView>
     </SafeAreaView>
   );
 }
@@ -647,8 +684,8 @@ const styles = StyleSheet.create({
   },
   mainDiv_container: {
     paddingHorizontal: 20,
-  width:mobileW,
-  height:mobileH,
+    width: mobileW,
+    height: mobileH,
     // paddingTop: 30,
   },
   mainDiv_state_ZIP: {
@@ -670,12 +707,12 @@ const styles = StyleSheet.create({
     top: mvs(90),
     left: ms(25),
   },
-  text_div:{
+  text_div: {
     position: 'relative',
     top: 35,
     left: 10,
-    flexDirection:'row',
-    gap:25
+    flexDirection: 'row',
+    gap: 25
   },
   centeredView: {
     flex: 1,
@@ -702,14 +739,14 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     padding: 10,
     elevation: 2,
-    
+
   },
   button_one: {
-   marginLeft:80,
-   marginTop:40,
-    alignItems:"flex-end",
-    justifyContent:'flex-end',
-    
+    marginLeft: 80,
+    marginTop: 40,
+    alignItems: "flex-end",
+    justifyContent: 'flex-end',
+
   },
   button: {
     borderRadius: 20,
@@ -721,20 +758,20 @@ const styles = StyleSheet.create({
     backgroundColor: '#F194FF',
   },
   buttonClose: {
-     backgroundColor: COLORS.GREEN,
+    backgroundColor: COLORS.GREEN,
   },
   textStyle: {
     color: 'black',
     fontWeight: 'bold',
     textAlign: 'center',
-    paddingVertical:5,
-    paddingHorizontal:20
+    paddingVertical: 5,
+    paddingHorizontal: 20
   },
   modalText: {
     marginBottom: 15,
     textAlign: 'center',
-    fontWeight:"400",
-    fontSize:24,
-    color:"#000000"
+    fontWeight: "400",
+    fontSize: 24,
+    color: "#000000"
   }
 });

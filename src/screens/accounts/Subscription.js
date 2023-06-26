@@ -1,7 +1,7 @@
-import {View, Text, StyleSheet, TouchableOpacity, SafeAreaView, ScrollView, Image,Dimensions, Platform} from 'react-native';
-import React, {useEffect, useState}from 'react';
+import { View, Text, StyleSheet, TouchableOpacity, SafeAreaView, ScrollView, Image, Dimensions, Platform } from 'react-native';
+import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import HorizontalLine from  '../../Components/HorizontalLine'
+import HorizontalLine from '../../Components/HorizontalLine'
 import Header from '../../Components/Header'
 import COLORS from '../../constants/COLORS';
 import SubBoxOne from '../../Components/SubBoxOne';
@@ -16,18 +16,19 @@ import { userSubsData } from '../../redux/action';
 
 
 const mobileW = Math.round(Dimensions.get('screen').width);
- const Subscription = () => {
- 
+const Subscription = () => {
+
   // const getPlanSummary = useSelector((state)=> state.getPlanSummary)
-  const getUserID = useSelector((state)=> state.getUserID)
+  const getUserID = useSelector((state) => state.getUserID)
   const [getSubscription, setGetSubscription] = useState([]);
   const [getData, setGetData] = useState([]);
-  const dispatch =useDispatch();
+  const dispatch = useDispatch();
   useEffect(() => {
     // console.log('data for this User:---------', getPlanSummary); 
-    console.log (getSubscription,"----------")
+    console.log(getSubscription, "----------")
     userSubscription();
-    // userSubsEnergy();
+
+    userSubsEnergy();
  }, []);
 
  const user_id= getUserID;
@@ -43,34 +44,32 @@ const mobileW = Math.round(Dimensions.get('screen').width);
     if(result[0].id !== null)
     {
       setGetSubscription(result[0]);
-  dispatch(setBasePackage(result)); 
+  // dispatch(setBasePackage(result)); 
     }else{
       console.log("iiiiiiiiiiii")
     }
-  } catch (error) {
-    console.error(error);
-  }
-};
+  };
 
-// const userSubsEnergy = async () => {
 
-//   try {
-//     const response = await fetch(`${API}/subscription/15`);
-//     const result = await response.json();
-//     console.log("-----",result)
-//     if(result !== null)
-//     {
-//     console.log(result, "----------------")
-//     // dispatch(userSubsData(result));
-//     setGetData(result)
-//     }else{
-//       console.log("iiiiiiiiiiii")
-//     }
+const userSubsEnergy = async () => {
+
+  try {
+    const response = await fetch(`${API}/subscription/15`);
+    const result = await response.json();
+    console.log("-----",result)
+    if(result !== null)
+    {
+    console.log(result, "----------------")
+    // dispatch(userSubsData(result));
+    setGetData(result)
+    }else{
+      console.log("iiiiiiiiiiii")
+    }
  
-//   } catch (error) {
-//    console.log("get deleted", error)
-//   }
-// }  
+  } catch (error) {
+   console.log("get deleted", error)
+  }
+}  
 
 const PlanCancel = async () => {
   try {
@@ -94,20 +93,27 @@ console.log(result,'ttt');
         );
         
     }
-  } catch (error) {
-    console.error(error);
-  }
-};
+  };
 
 
   return (
-    <ScrollView showsVerticalScrollIndicator={false} style={{backgroundColor: COLORS.CREAM, flex: 1}}>
-  <View>
-    <Header headerName="Subscription" editShow={false} />
-    <HorizontalLine/>
-    <View style={styles. managing_width}>
+    <ScrollView showsVerticalScrollIndicator={false} style={{ backgroundColor: COLORS.CREAM, flex: 1 }}>
+      <View>
+        <Header headerName="Subscription" />
+        {Platform.OS == 'android' ? <HorizontalLine style={styles.line} /> : <View
+          style={{
+
+
+          }}>
+          <Image source={require('../../../assets/images/dotted.png')} style={{ width: mobileW * 0.97, top: Platform.OS == 'ios' ? -30 : 2 }} />
+        </View>}
+        <HorizontalLine />
+        <View style={styles.managing_width}>
           <SubBoxOne data={getSubscription} />
           <SubBoxTwo data={getSubscription} />
+
+          {/* <SubBoxOne/> */}
+          {/* <SubBoxTwo/> */}
         
         </View> 
         <View style={styles.mainDiv_installation}>
@@ -115,6 +121,7 @@ console.log(result,'ttt');
       </View>
       <View style={styles.managing_width}>
       <PriceValiditySubs data={getSubscription} />
+      {/* <PriceValiditySubs /> */}
       </View>
       <View
           style={{
@@ -122,14 +129,14 @@ console.log(result,'ttt');
             justifyContent: 'center',
             // width: '100%',
             marginHorizontal: 20,
-            paddingBottom:30,
+            paddingBottom: 30,
           }}>
           <TouchableOpacity
-            onPress={()=>{PlanCancel()}}
+            onPress={() => { PlanCancel() }}
             style={{
               marginTop: 15,
               // marginLeft: 200,
-              marginRight:170,
+              marginRight: 170,
               backgroundColor: '#F84E4E',
               alignItems: 'center',
               padding: 13,
@@ -149,8 +156,8 @@ console.log(result,'ttt');
             </Text>
           </TouchableOpacity>
         </View>
-        </View>
-        </ScrollView>
+      </View>
+    </ScrollView>
   );
 };
 
@@ -159,14 +166,14 @@ export default Subscription;
 const styles = StyleSheet.create({
   managing_width: {
     paddingHorizontal: 10,
-    border:15,
-    marginLeft:10,
-    marginRight:10,
+    border: 15,
+    marginLeft: 10,
+    marginRight: 10,
     //  flex: 1,
-    paddingVertical: PLATFORM_IOS? 20:10,
+    paddingVertical: PLATFORM_IOS ? 20 : 10,
   },
   mainDiv_installation: {
-    marginLeft:20,
+    marginLeft: 20,
     backgroundColor: '#F5F5F5',
     width: DIMENSIONS.SCREEN_WIDTH * 0.9,
     height: DIMENSIONS.SCREEN_WIDTH * 0.35,
@@ -184,5 +191,5 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     overflow: 'hidden',
   },
- 
+
 });

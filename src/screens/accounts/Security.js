@@ -1,4 +1,4 @@
-import { View, Text, SafeAreaView,StyleSheet,TextInput, TouchableOpacity,ToastAndroid,} from 'react-native'
+import { View, Text, SafeAreaView,StyleSheet,TextInput, TouchableOpacity,ToastAndroid, Image,Platform,Dimensions} from 'react-native'
 import React, { useEffect } from 'react'
 import * as Yup from 'yup';
 import COLORS from '../../constants/COLORS'
@@ -47,7 +47,7 @@ const [confirmPassword, setConfirmPassword] = useState('');
 const [hidePassword,setHidePassword] = useState(true);
 const [Password,setPassword] = useState(true);
 const [keyPressed,setKeyPressed] = useState(true);
-
+const mobileW = Math.round(Dimensions.get('screen').width);
 useEffect(() => {
   console.log("+++++++++++++++",userRegisterData)
 }, [userRegisterData]);
@@ -119,13 +119,19 @@ const UpdatePassword= async () =>{
     <SafeAreaView style={{ backgroundColor: COLORS.CREAM, flex: 1}}>
      <Header headerName="Security" editShow={true} onPress={onPress} enableEdit ={enableEdit} editButton={isEditable} />
       
-     <HorizontalLine style={styles.line} />
+     {Platform.OS=='android'? <HorizontalLine style={styles.line} />:<View
+              style={{
+             
+             
+              }}>
+              <Image source={require('../../../assets/images/dotted.png')} style={{ width: mobileW * 0.97 ,top:Platform.OS=='ios'?-30:2}} />
+            </View> }
      <View style={[styles.mainDiv_container]}>
      <Input
             IconLeft={null}  
             bgColor={COLORS.CREAM}
             editable={isEditable}
-            placeholderTextColor={COLORS.BLACK}
+            placeholderTextColor={COLORS.LIGHT_GREY}
             text=" Current Password"
             // passwordInput={true}
             // pasButton={() => setShowPassword(!showPassword)}

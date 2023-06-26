@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, TextInput, StyleSheet, Button, SafeAreaView, TouchableOpacity, Text, ToastAndroid } from 'react-native';
+import { View, TextInput, StyleSheet, Button, SafeAreaView, TouchableOpacity, Text, ToastAndroid, Image, Platform,Dimensions } from 'react-native';
 import Input from '../../Components/Input';
 import COLORS from '../../constants/COLORS';
 import { useSelector } from 'react-redux';
@@ -18,9 +18,12 @@ const DeleteAccountScreen = () => {
   const userRegisterData = useSelector((state) => state.userRegisterData)
   const [reason, setReason] = useState('');
   const [password, setPassword] = useState('');
-  const getUserID = useSelector((state) => state.getUserID)
-  const user_ID = getUserID;
+  const getUserID = useSelector((state) => state.getUserID);
+  const [hidePassword,setHidePassword] = useState(true);
+  const [showNew , setShowNew]=useState(false);
 
+  const user_ID = getUserID;
+  const mobileW = Math.round(Dimensions.get('screen').width);
 
   useEffect(() => {
     console.log('data for this User:---------', userRegisterData);
@@ -76,30 +79,41 @@ const DeleteAccountScreen = () => {
   return (
     <SafeAreaView style={{ backgroundColor: COLORS.CREAM, flex: 1 }}>
       <Header headerName="Account Delete Request" />
-      <HorizontalLine style={styles.line} />
+      {Platform.OS=='android'? <HorizontalLine style={styles.line} />:<View
+              style={{
+             
+             
+              }}>
+              <Image source={require('../../../assets/images/dotted.png')} style={{ width: mobileW * 0.97 ,top:Platform.OS=='ios'?-30:2}} />
+            </View> }
       <View style={styles.container}>
-        {/* <TextInput
-          style={{
-            ...styles.input,
-            backgroundColor: COLORS.CREAM,
-            borderRadius: 5,
-            borderWidth: 0.3,
-            borderColor: COLORS.BLACK,
-            marginVertical: 19,
-            width: '30%',
-            color: COLORS.BLACK,
-            fontFamily: 'Roboto',
-            fontWeight: '100',
-            height: 100, // Adjust the height value as needed
-          }}
-          aria-label='Reason'
-          placeholder="Enter Password"
-          value={password}
-          onChangeText={text => setPassword(text)}
-          secureTextEntry={true}
-        /> */}
+      <TextInput
+    style={{
+      // flex: 1,
+      backgroundColor: COLORS.CREAM,
+      borderRadius: 5,
+      borderWidth: 0.5,
+      borderColor: COLORS.BLACK,
+      marginVertical: 19,
+      width: ms(340),
+      height: ms(150),
+      color: COLORS.BLACK,
+      fontFamily: 'Roboto',
+      fontWeight: '100',
+      paddingLeft: 10, 
+      paddingTop: 10,
+      textAlignVertical: 'top',
+       
+    }}
+    multiline
+    maxLength={550}
+    placeholder="Please let us know the reason for the account closure request."
+    placeholderTextColor={COLORS.LIGHT_GREY}
+    onChangeText={text => setReason(text)}
+    value={reason}
+  />
 
-        <Input
+        {/* <Input
           IconLeft={null}
           //  editable={isEditable}
           bgColor={COLORS.CREAM}
@@ -113,7 +127,7 @@ const DeleteAccountScreen = () => {
           maxLength={550}
           inputHeight={200}
           placeholder="Please let us know the reason for the account closure request."
-          placeholderTextColor={COLORS.BLACK}
+          placeholderTextColor={COLORS.LIGHT_GREY}
           style={{
             color: COLORS.BLACK,
             fontFamily: 'Roboto',
@@ -122,31 +136,33 @@ const DeleteAccountScreen = () => {
           }}
           onChangeText={text => setReason(text)}
           value={reason}
-        />
-        <Input
-          IconLeft={null}
-          autoFocus
-          bgColor={COLORS.CREAM}
-          IconRight={() => (
-            <Eye />
-          )}
-          bR={5}
-          bW={0.3}
-          bColor={COLORS.BLACK}
-          text="Password"
-          mV={19}
-          textWidth={ms(70)}
-          placeholder="Enter password to verify..."
-          placeholderTextColor={COLORS.BLACK}
-          onChangeText={text => setPassword(text)}
-          value={password}
-          style={{
-            color: COLORS.BLACK,
-            fontFamily: 'Roboto',
-            fontWeight: '200',
-
-          }}
-        />
+        /> */}
+        
+       <Input
+            IconLeft={null}  
+            bgColor={COLORS.CREAM}
+            // editable={isEditable}
+            placeholderTextColor={COLORS.LIGHT_GREY}
+            passwordInput={true}
+            pasButton={() => {
+              setHidePassword(!hidePassword)
+              setShowNew(!showNew)}}
+            secureTextEntry={hidePassword}
+            passwordInputIcon={showNew}
+            placeholder="Enter password to verify..."
+            onChangeText={text => setPassword(text)}
+            value={password}
+            text="Password"
+            mV={5}
+            bW={1}
+            bR={3}
+            textWidth={ms(70)}
+            style={{
+              color: COLORS.BLACK,
+              fontFamily: 'Roboto',
+              fontWeight: '200',
+            }}
+          />
 
         <View
           style={{
@@ -159,7 +175,7 @@ const DeleteAccountScreen = () => {
             onPress={handleDelete}
             style={{
               marginTop: 15,
-              marginLeft: 200,
+              marginLeft: 190,
               backgroundColor: '#F84E4E',
               alignItems: 'center',
               padding: 13,
@@ -197,7 +213,13 @@ const styles = StyleSheet.create({
   },
   button: {
     backgroundColor: COLORS.RED,
-  }
+  },
+label: {
+    position: "absolute",
+    top:' -15px',
+    left: "23px",
+    padding:" 2px",
+}
 });
 
 export default DeleteAccountScreen;

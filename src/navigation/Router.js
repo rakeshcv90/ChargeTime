@@ -50,6 +50,7 @@ import {OnlineCharge} from '../../assets/images/OnlineCharge';
 import {NoCharge} from '../../assets/images/NoCharge';
 import COLORS from '../constants/COLORS';
 import {DIMENSIONS} from '../constants/DIMENSIONS';
+import Contact from '../screens/accounts/Contact';
 
 const Drawer = createDrawerNavigator();
 const Stack = createNativeStackNavigator();
@@ -190,7 +191,7 @@ const DrawerNavigation = () => {
           component={HomeStack}
         />
       )}
-      <Drawer.Screen
+      {/* <Drawer.Screen
         options={{
           drawerActiveBackgroundColor: '#fff',
           drawerIcon: ({focused, color, size}) => {
@@ -218,7 +219,7 @@ const DrawerNavigation = () => {
         }}
         name="EnergyOptions"
         component={EnergyOptions}
-      />
+      /> */}
       <Drawer.Screen
         options={{
           drawerActiveBackgroundColor: '#fff',
@@ -395,7 +396,6 @@ const DrawerNavigation = () => {
         }
         component={chargerStatus}
       />
-
     </Drawer.Navigator>
   );
 };
@@ -443,6 +443,7 @@ const AccountStack = () => {
       <Stack.Screen name="Payment" component={Payment} />
       <Stack.Screen name="Subscription" component={Subscription} />
       <Stack.Screen name="Theme" component={Theme} />
+      <Stack.Screen name="Contact" component={Contact}/>
       <Stack.Screen name="deleteAccount" component={deleteAccount} />
       <Stack.Screen name="Login" component={Login} />
       <Stack.Screen name="LoginStack" component={LoginStack} />
@@ -490,10 +491,10 @@ export default function Router() {
 
   return (
     <Stack.Navigator screenOptions={screenOptions}>
-      <>
+      {/* <>
         <Stack.Screen name="DrawerStack" component={DrawerNavigation} />
-      </>
-      {/* {id == null ? (
+      </> */}
+      {!isAuthorized ? (
         <>
           <Stack.Screen name="LoginStack" component={LoginStack} />
         </>
@@ -501,7 +502,7 @@ export default function Router() {
         <>
           <Stack.Screen name="DrawerStack" component={DrawerNavigation} />
         </>
-      )} */}
+      )}
     </Stack.Navigator>
   );
 }
