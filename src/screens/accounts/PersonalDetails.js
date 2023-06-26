@@ -190,14 +190,15 @@ const PersonalDetails = () => {
           bColor={COLORS.BLACK}
           text="Phone No."
           mV={15}
+          maxLength={10}
           textWidth={ms(70)}
-          placeholderTextColor={COLORS.BLACK}
+          placeholderTextColor={COLORS.HALFBLACK}
           style={{
             color: COLORS.BLACK,
             fontFamily: 'Roboto',
             fontWeight: '200',
           }}
-          onChangeText={(text)=>{handleInputChange(text);
+          onChangeText={(number)=>{handleInputChange(number);
           setNumber(number)
           }}
          value={ number }
@@ -218,8 +219,8 @@ const PersonalDetails = () => {
           text="Email"
           mV={55}
           textWidth={ms(50)}
-          value={userRegisterData[0]?.email}
-          placeholderTextColor={COLORS.BLACK}
+          value={userProfileData[0]?.email}
+          placeholderTextColor={COLORS.HALFBLACK}
           style={{
             color: COLORS.BLACK,
             fontFamily: 'Roboto',

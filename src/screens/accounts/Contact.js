@@ -63,9 +63,16 @@ const Contact = () => {
   return (
     <SafeAreaView style={{ backgroundColor: COLORS.CREAM, flex: 1 }}>
       <Header headerName="Contact Us" />
-      <HorizontalLine style={styles.line} />
+      {Platform.OS == 'android' ? <HorizontalLine style={styles.line} /> : <View
+          style={{
+
+
+          }}>
+          <Image source={require('../../../assets/images/dotted.png')} style={{ width: mobileW * 0.97, top: Platform.OS == 'ios' ? -30 : 2 }} />
+        </View>}
+      {/* <HorizontalLine style={styles.line} /> */}
       <View style={styles.container}>
-      <View style={{backgroundColor:COLORS.CREAM,width:70,position:'absolute',zIndex:99,top:23,left:32,alignItems:'center'}}><Text style={{}}>Message</Text></View>
+      <View style={{backgroundColor:COLORS.CREAM,width:110,position:'absolute',zIndex:99,top:23,left:32,alignItems:'center'}}><Text style={{color: 'black'}}>Your Message</Text></View>
       <TextInput
     style={{
       // flex: 1,
@@ -88,7 +95,7 @@ const Contact = () => {
     multiline
     maxLength={550}
     placeholder="Please describe your query / issue in detail. "
-    placeholderTextColor={COLORS.LIGHT_GREY}
+    placeholderTextColor={COLORS.HALFBLACK}
     onChangeText={text => setMessage(text)}
     value={message}
   />

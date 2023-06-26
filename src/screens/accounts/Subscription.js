@@ -20,35 +20,46 @@ const Subscription = () => {
 
   // const getPlanSummary = useSelector((state)=> state.getPlanSummary)
   const getUserID = useSelector((state) => state.getUserID)
+  const getCurrentPlan = useSelector((state)=> state.getCurrentPlan)
+
   const [getSubscription, setGetSubscription] = useState([]);
   const [getData, setGetData] = useState([]);
+  const [packageExists, setPackageExists] = useState(getCurrentPlan[0]);
+  // const packageExists = getCurrentPlan
+
+  // console.log("----------",packageExists);
+  
   const dispatch = useDispatch();
   useEffect(() => {
     // console.log('data for this User:---------', getPlanSummary); 
-    console.log(getSubscription, "----------")
-    userSubscription();
-
-    userSubsEnergy();
+    // console.log(getSubscription, "----------")
+    // userSubscription();
+    console.log("----------",packageExists);
+    // userSubsEnergy();
  }, []);
 
  const user_id= getUserID;
 //  console.log("user_id", user_id)
 
- const userSubscription = async () =>{
-  try {
-    // const response = await fetch(`${API}/subscriptionplan/${user_id}`);
-        const response = await fetch(`${API}/currentplan/${user_id}`);
+//  const userSubscription = async () =>{
+//   try {
+//     // const response = await fetch(`${API}/subscriptionplan/${user_id}`);
+//         const response = await fetch(`${API}/currentplan/${user_id}`);
 
-    const result = await response.json();
+//     const result = await response.json();
  
-    if(result[0].id !== null)
-    {
-      setGetSubscription(result[0]);
-  // dispatch(setBasePackage(result)); 
-    }else{
-      console.log("iiiiiiiiiiii")
-    }
-  };
+//     if(result[0].id !== null)
+//     {
+//       setGetSubscription(result[0]);
+//   // dispatch(setBasePackage(result)); 
+//     }else{
+//       console.log("iiiiiiiiiiii")
+//     }
+//   }catch (error) {
+//     console.error(error);
+//   }
+// };
+
 
 
 const userSubsEnergy = async () => {
@@ -80,7 +91,7 @@ const PlanCancel = async () => {
       }, 
     })
     const result = await response.json();
-console.log(result,'ttt');
+    console.log(result,'ttt');
     if(result.message == 'Plan Cancelled Successfully'){
       PLATFORM_IOS
       ? Toast.show({
@@ -93,59 +104,59 @@ console.log(result,'ttt');
         );
         
     }
-  };
+  }catch (error) {
+    console.error(error);
+  }
+}
+
 
 
   return (
-    <ScrollView showsVerticalScrollIndicator={false} style={{ backgroundColor: COLORS.CREAM, flex: 1 }}>
+    <SafeAreaView style={{ backgroundColor: COLORS.CREAM, flex: 1 }}>
+  <Header headerName="Subscription" />
+  {Platform.OS == 'android' ? (
+    <HorizontalLine style={styles.line} />
+  ) : (
+    <View>
+      <Image
+        source={require('../../../assets/images/dotted.png')}
+        style={{ width: mobileW * 0.97, top: Platform.OS == 'ios' ? -30 : 2 }}
+      />
+    </View>
+  )}
+  <ScrollView showsVerticalScrollIndicator={false}>
+    {packageExists ? (
       <View>
-        <Header headerName="Subscription" />
-        {Platform.OS == 'android' ? <HorizontalLine style={styles.line} /> : <View
-          style={{
-
-
-          }}>
-          <Image source={require('../../../assets/images/dotted.png')} style={{ width: mobileW * 0.97, top: Platform.OS == 'ios' ? -30 : 2 }} />
-        </View>}
-        <HorizontalLine />
         <View style={styles.managing_width}>
-          <SubBoxOne data={getSubscription} />
-          <SubBoxTwo data={getSubscription} />
-
-          {/* <SubBoxOne/> */}
-          {/* <SubBoxTwo/> */}
-        
-        </View> 
+          <SubBoxOne />
+          <SubBoxTwo />
+        </View>
         <View style={styles.mainDiv_installation}>
-      <WaveAnimation />
-      </View>
-      <View style={styles.managing_width}>
-      <PriceValiditySubs data={getSubscription} />
-      {/* <PriceValiditySubs /> */}
-      </View>
-      <View
+          <WaveAnimation />
+        </View>
+        <View style={styles.managing_width}>
+          <PriceValiditySubs />
+        </View>
+        <View
           style={{
             flexDirection: 'row',
             justifyContent: 'center',
-            // width: '100%',
             marginHorizontal: 20,
             paddingBottom: 30,
           }}>
           <TouchableOpacity
-            onPress={() => { PlanCancel() }}
+            onPress={() => {
+              // PlanCancel();
+            }}
             style={{
               marginTop: 15,
-              // marginLeft: 200,
               marginRight: 170,
               backgroundColor: '#F84E4E',
               alignItems: 'center',
               padding: 13,
               borderRadius: 10,
               width: '50%',
-            }}
-
-          >
-
+            }}>
             <Text
               style={{
                 color: COLORS.WHITE,
@@ -157,7 +168,14 @@ console.log(result,'ttt');
           </TouchableOpacity>
         </View>
       </View>
-    </ScrollView>
+    ) : (
+      <View>
+        <Text>No subscription available.</Text>
+      </View>
+    )}
+  </ScrollView>
+</SafeAreaView>
+
   );
 };
 

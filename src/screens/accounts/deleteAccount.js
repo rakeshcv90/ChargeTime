@@ -87,7 +87,7 @@ const DeleteAccountScreen = () => {
               <Image source={require('../../../assets/images/dotted.png')} style={{ width: mobileW * 0.97 ,top:Platform.OS=='ios'?-30:2}} />
             </View> }
       <View style={styles.container}>
-        <View style={{backgroundColor:COLORS.CREAM,width:70,position:'absolute',zIndex:99,top:23,left:32,alignItems:'center'}}><Text style={{}}>Reason</Text></View>
+        <View style={{backgroundColor:COLORS.CREAM,width:70,position:'absolute',zIndex:99,top:23,left:32,alignItems:'center'}}><Text style={{color: 'black'}}>Reason</Text></View>
       <TextInput
     style={{
       // flex: 1,
@@ -109,7 +109,7 @@ const DeleteAccountScreen = () => {
     multiline
     maxLength={550}
     placeholder="Please let us know the reason for the account closure request."
-    placeholderTextColor={COLORS.LIGHT_GREY}
+    placeholderTextColor={COLORS.HALFBLACK}
     onChangeText={text => setReason(text)}
     value={reason}
   />
@@ -143,7 +143,7 @@ const DeleteAccountScreen = () => {
             IconLeft={null}  
             bgColor={COLORS.CREAM}
             // editable={isEditable}
-            placeholderTextColor={COLORS.LIGHT_GREY}
+            placeholderTextColor={COLORS.HALFBLACK}
             passwordInput={true}
             pasButton={() => {
               setHidePassword(!hidePassword)

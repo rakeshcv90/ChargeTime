@@ -283,19 +283,10 @@ const dispatch = useDispatch();
   const cardTypeImage = getCardType(getCard_Number);
 
   return (
-// <<<<<<< HEAD
-//     <SafeAreaView style={{ backgroundColor: COLORS.CREAM, flex: 1 }}>
 
-//         <Header headerName="Payment Methods" editShow={false} />
-//         <HorizontalLine />
-      
-//         <ScrollView showsVerticalScrollIndicator={false} style={{flexGrow:1,flex:1}} >
-// =======
-    <SafeAreaView style={{backgroundColor: COLORS.CREAM, flex: 1}}>
-      
-  <ScrollView showsVerticalScrollIndicator={false}>
+    <SafeAreaView style={{ backgroundColor: COLORS.CREAM, flex: 1 }}>
 
-       <Header headerName="Payment Methods" editShow={false} />
+  <Header headerName="Payment Methods" editShow={false} />
        {Platform.OS=='android'? <HorizontalLine style={styles.line} />:<View
               style={{
              
@@ -303,6 +294,8 @@ const dispatch = useDispatch();
               }}>
               <Image source={require('../../../assets/images/dotted.png')} style={{ width: mobileW * 0.97 ,top:Platform.OS=='ios'?-30:2}} />
             </View> }
+      
+        <ScrollView showsVerticalScrollIndicator={false} style={{flexGrow:1,flex:1}} >
         <View style={styles.mainDiv_container}>
           <Formik
             initialValues={initialValues}
@@ -436,15 +429,21 @@ const dispatch = useDispatch();
                   }}>
                   <TouchableOpacity
                     onPress={() => {
-                      if(currentCard.status === 0){
+                    
+                      if(currentCard.status == 0){
+                        console.log("TEst123456789")
                         // call api to make new card as default and id will be currentCard.id
-                        handleMakeDefaultCard(currentCard?.id)
-                    }else if(currentCard.status ===1){
-                      dispatch(getCardDetails(currentCard))
-                      navigation.navigate('PaymentGateWay');
+                       handleMakeDefaultCard(currentCard?.id)
+                    }else if(currentCard.status ==1){
+                      
+                     
+                     dispatch(getCardDetails(currentCard))
+                     
+                     navigationRef.navigate('PaymentGateWay');
                     }else{
-
-                    }}}
+                      console.log("TEst123456789wwwww")
+                    }
+                  }}
                     style={{
                       // marginTop: 200,
                       marginLeft: 95,
@@ -506,7 +505,7 @@ const dispatch = useDispatch();
                   placeholder="John Doe"
                   bW={1}
                   textWidth={ms(110)}
-                  placeholderTextColor={COLORS.LIGHT_GREY}
+                  placeholderTextColor={COLORS.HALFBLACK}
                 />
 
                 {errors.cardHolderName && touched.cardHolderName && (
@@ -545,7 +544,7 @@ const dispatch = useDispatch();
                   placeholder="1234  5678  xxxx  xxxx"
                   bW={1}
                   textWidth={ms(85)}
-                  placeholderTextColor={COLORS.LIGHT_GREY}
+                  placeholderTextColor={COLORS.HALFBLACK}
                   keyboardType="numeric"
                 />
                 {errors.cardNumber && touched.cardNumber && (
@@ -607,7 +606,7 @@ const dispatch = useDispatch();
                       placeholder="07/23"
                       bW={1}
                       textWidth={ms(62)}
-                      placeholderTextColor={COLORS.LIGHT_GREY}
+                      placeholderTextColor={COLORS.HALFBLACK}
                       w="half"
                       keyboardType="numeric"
                       maxLength={5}
@@ -640,7 +639,7 @@ const dispatch = useDispatch();
                       placeholder="***"
                       bW={1}
                       textWidth={ms(38)}
-                      placeholderTextColor={COLORS.LIGHT_GREY}
+                      placeholderTextColor={COLORS.HALFBLACK}
                       w="half"
                       secureTextEntry={true}
                       maxLength={3}

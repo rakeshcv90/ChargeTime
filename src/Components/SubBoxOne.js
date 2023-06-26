@@ -1,20 +1,27 @@
-import {View, Text, StyleSheet, TouchableOpacity, Image,Dimensions, Platform, SafeAreaView} from 'react-native';
-import React,{useEffect} from 'react';
+import { View, Text, StyleSheet, TouchableOpacity, Image, Dimensions, Platform, SafeAreaView } from 'react-native';
+import React, { useEffect } from 'react';
 // import { Address } from '../../assets/images/Address';
-import {InstallBase} from '../../assets/svgs/InstallBase';
+import { InstallBase } from '../../assets/svgs/InstallBase';
 import { Vanderberg } from '../../assets/images/Vanderberg';
 import { Connecticut } from '../../assets/images/Connecticut';
 import COLORS from '../constants/COLORS';
+import { useSelector } from 'react-redux';
 
 
 const mobileW = Math.round(Dimensions.get('screen').width);
-const SubBoxOne = ({data}) => {
+const SubBoxOne = () => {
   // const {navigation, route} = props;
 
+  const getCurrentPlan = useSelector((state) => state.getCurrentPlan);
+
+  //   useEffect(() => {
+  //     // console.log('data for this User:---------', getPlanSummary); 
+  //     console.log(getCurrentPlan, "----------")
+  //  }, []);
   return (
     <View style={[styles.mainDiv_installation]}>
       <TouchableOpacity style={styles.install_touchable}>
-        
+
         {/* <Address style={styles.img_width} /> */}
         <InstallBase style={styles.img_width} />
         <Text style={styles.installation_text}>Installation Base</Text>
@@ -23,15 +30,15 @@ const SubBoxOne = ({data}) => {
         <View style={styles.location_div}>
           <Vanderberg style={styles.img_width} />
           {/* <Text style={styles.force_base}>{data?.location?data?.location}</Text> */}
-              <Text style={styles.force_base}>{data?.location}</Text>
+          <Text style={styles.force_base}>{getCurrentPlan[0]?.location}</Text>
           {/* <Text style={styles.force_base}>{data?.location}</Text> */}
-              {/* <Text style={styles.force_base}>{setBasePackage[0].location}</Text> */}
+          {/* <Text style={styles.force_base}>{setBasePackage[0].location}</Text> */}
         </View>
         <Image
           // style={styles.img_width}
           source={require('../../assets/images/dotted.png')}
           resizeMode="stretch"
-          style={{alignSelf: 'center', width: mobileW}}
+          style={{ alignSelf: 'center', width: mobileW }}
         />
         <View style={styles.mainDiv_state_zip}>
           <View style={styles.state_div}>
@@ -40,16 +47,16 @@ const SubBoxOne = ({data}) => {
             source={require('../../assets/images/connecticut.png')}
           /> */}
             <Connecticut style={styles.img_width} />
-            <Text style={styles.force_base}>{data?.pwa_state}</Text>
+            <Text style={styles.force_base}>{getCurrentPlan[0]?.pwa_state}</Text>
             {/* <Text style={styles.force_base}>{setBasePackage[0].state}</Text> */}
           </View>
           <View style={styles.state_div}>
             <Image
               //style={styles.img_width}
               source={require('../../assets/images/zip_code.png')}
-              style={{width: 20, height: 20}}
+              style={{ width: 20, height: 20 }}
             />
-            <Text style={styles.force_base}>{data?.pwa_zip}</Text>
+            <Text style={styles.force_base}>{getCurrentPlan[0]?.pwa_zip}</Text>
             {/* <Text style={styles.force_base}>{setBasePackage[0].ZIP_code}</Text> */}
 
           </View>
@@ -70,7 +77,7 @@ const styles = StyleSheet.create({
   mainDiv_installation: {
     overflow: 'hidden',
     borderRadius: 10,
-    marginTop: Platform.OS === "ios"?10: 10,
+    marginTop: Platform.OS === "ios" ? 10 : 10,
     shadowColor: '#000000',
     shadowOffset: {
       width: 4,
@@ -93,7 +100,7 @@ const styles = StyleSheet.create({
     fontWeight: "700",
     fontSize: 12,
     paddingLeft: 10,
-    color:COLORS.BLACK
+    color: COLORS.BLACK
   },
   location_div: {
     flexDirection: 'row',
@@ -118,8 +125,8 @@ const styles = StyleSheet.create({
     fontWeight: "400",
     fontSize: 14,
     paddingLeft: 10,
-    paddingRight:70,
-    color:COLORS.BLACK
+    paddingRight: 70,
+    color: COLORS.BLACK
   },
   mainDiv_state_zip: {
     flexDirection: 'row',

@@ -1,4 +1,4 @@
-import { Image, View, Text, StyleSheet, Dimensions, TouchableOpacity, SafeAreaView } from 'react-native';
+import { Image, View, Text, StyleSheet, Dimensions, TouchableOpacity, SafeAreaView, ScrollView } from 'react-native';
 import React, { useState, useEffect } from 'react';
 import { createDrawerNavigator } from '@react-navigation/drawer';
 import { CommonActions, NavigationContainer } from '@react-navigation/native';
@@ -16,7 +16,7 @@ import { useSelector } from 'react-redux';
 import { API } from '../../api/API';
 import { useDispatch } from 'react-redux';
 import { userProfileData } from '../../redux/action';
-import { getBasePackage } from '../../redux/action';
+import { getCurrentPlan } from '../../redux/action';
 import SubBoxOne from '../../Components/SubBoxOne';
 
 const mobileW = Math.round(Dimensions.get('screen').width);
@@ -25,7 +25,7 @@ const mobileW = Math.round(Dimensions.get('screen').width);
 const Account = ({ navigation }) => {
   const [selectedValue, setSelectedValue] = useState('');
 
-  const getUserID = useSelector((state)=> state.getUserID);
+  const getUserID = useSelector((state) => state.getUserID);
   const [getSubscription, setGetSubscription] = useState([]);
   const [getData, setGetData] = useState([]);
   const user_ID = getUserID;
@@ -35,9 +35,9 @@ const Account = ({ navigation }) => {
 
   useEffect(() => {
     //  console.log('data for this User:---------', userRegisterData); 
-     console.log('iiiiddddddd',user_ID)
-     userDetails();
-     userSubscription();
+    console.log('iiiiddddddd', getUserID)
+    userDetails();
+    userSubscription();
     //  userSubsEnergy();
   }, []);
 
@@ -112,13 +112,12 @@ const Account = ({ navigation }) => {
     try {
       const response = await fetch(`${API}/userexisting/${user_ID}`);
       const result = await response.json();
-      if(result[0].message == "sucess")
-      {
- console.log('wwwwww',result);
-//  setUserData(result);
- dispatch(userProfileData(result)); 
- console.log(result)
-      }else{
+      if (result[0].message == "sucess") {
+        console.log('wwwwww', result);
+        //  setUserData(result);
+        dispatch(userProfileData(result));
+        //  console.log(result)
+      } else {
         console.log("iiiiiiiiiiii")
       }
       // setLocationMap(result);
@@ -128,40 +127,41 @@ const Account = ({ navigation }) => {
   };
 
 
- const userSubscription = async () =>{
-  try {
-    const response = await fetch(`${API}/currentplan/${user_ID}`);
-    const result = await response.json();
- 
-    if(result[0].id !== null)
-    {
-      setGetSubscription(result[0]);
-      console.log(result[0], "-------");
-  // dispatch(getBasePackage(result)); 
-    }else{
-      console.log("iiiiiiiiiiii")
-    } catch (error) {
-      console.error(error);
-    }
-  };
+  const userSubscription = async () => {
+    try {
+      const response = await fetch(`${API}/currentplan/${user_ID}`);
+      const result = await response.json();
 
-  const userSubsEnergy = async () => {
-
-  try {
-    const response = await fetch(`${API}/subscription/${user_ID}`);
-    const result = await response.json();
-    console.log("-----",result)
-    if(result !== null)
-    {
-    // console.log(result, "----------------")
-    // dispatch(userSubsData(result));
-    setGetData(result)
-    }else{
-      console.log("iiiiiiiiiiii")
+      if (result[0].id !== null) {
+        // setGetSubscription(result[0]);
+        console.log("======ytytytytyyt=====", result[0]);
+        // dispatch(getCurrentPlan(result)); 
+      } else {
+        console.log("iiiiiiiiiiii")
+      }
     } catch (error) {
       console.error(error);
     }
   }
+
+  //   const userSubsEnergy = async () => {
+
+  //   try {
+  //     const response = await fetch(`${API}/subscription/${user_ID}`);
+  //     const result = await response.json();
+  //     console.log("-----",result)
+  //     if(result !== null)
+  //     {
+  //     // console.log(result, "----------------")
+  //     // dispatch(userSubsData(result));
+  //     setGetData(result)
+  //     }else{
+  //       console.log("iiiiiiiiiiii")
+  //     } 
+  //   }catch (error) {
+  //     console.error(error);
+  //   }
+  // }
 
 
   const handleLinkPress = (screen) => {
@@ -169,69 +169,72 @@ const Account = ({ navigation }) => {
   };
 
   return (
-    <SafeAreaView style={{backgroundColor: COLORS.CREAM, flex: 1}}>
-            <View style={styles.main_div}>
-              <View style={styles.row}>
-                <Text style={styles.heading}>Account</Text>
-                <DrawerOpen />
-              </View>
-              {Screen.map((item, index) => (
-                <TouchableOpacity
-                  key={index}
-                  style={styles.itemContainer}
-                  onPress={() => handleLinkPress(item.link)}
-                >
-                  <View style={styles.row}>
-                    <Image source={item.image} style={styles.icon} />
-                    <Text style={styles.title}>{item.title} </Text>
-                    <View style={styles.sideImageContainer}>
-                     <Image source={item.side_image} style={styles.side_icon} />
-                      </View>
-                  </View>
-                  <View
-            style={{
-              flexDirection: 'row',
-              alignItems: 'center',
-              justifyContent: 'center',
-              width: mobileW,
-            }}>
-            <Image source={require('../../../assets/images/dotted.png')} style={{width: mobileW * 0.97 }} />
+    <SafeAreaView style={{ backgroundColor: COLORS.CREAM, flex: 1 }}>
+      <ScrollView>
+        <View style={styles.main_div}>
+          <View style={styles.row}>
+            <Text style={styles.heading}>Account</Text>
+            <DrawerOpen />
           </View>
-                  
-                </TouchableOpacity>
-              ))}
+
+          {Screen.map((item, index) => (
+            <TouchableOpacity
+              key={index}
+              style={styles.itemContainer}
+              onPress={() => handleLinkPress(item.link)}
+            >
               <View style={styles.row}>
-              <Image source={require('../../../assets/images/Theme.png')} style={styles.icon} />
-              <Text style={styles.title}>Theme</Text>
-              <TouchableOpacity style={styles.button} >
-        <Text style={styles.buttonText}>Follow System</Text>
-                 </TouchableOpacity>
+                <Image source={item.image} style={styles.icon} />
+                <Text style={styles.title}>{item.title} </Text>
+                <View style={styles.sideImageContainer}>
+                  <Image source={item.side_image} style={styles.side_icon} />
+                </View>
               </View>
-              <View style={styles.addContainer}>
-      <TouchableOpacity style={styles.listItem}>
-        <Text style={styles.bullet}>•</Text>
-        <Text style={styles.text}>Privacy Policy</Text>
-      </TouchableOpacity>
-      <TouchableOpacity style={styles.listItem} >
-        <Text style={styles.bullet}>•</Text>
-        <Text style={styles.text}>Rate Us</Text>
-      </TouchableOpacity>
-      <TouchableOpacity 
-      onPress={()=>{navigation.navigate('Contact')}}
-      style={styles.listItem}  >
-        <Text style={styles.bullet}>•</Text>
-        <Text style={styles.text}>Contact Us</Text>
-      </TouchableOpacity>
-    </View>
-    <View style={styles.ButtonsContainer}>
-              <TouchableOpacity
-                style={styles.logoutButton}
-                onPress={() => handleLogOut()}>
-                <Text style={styles.logoutbuttonText}>LOG OUT</Text>
-              </TouchableOpacity>
+              <View
+                style={{
+                  flexDirection: 'row',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  width: mobileW,
+                }}>
+                <Image source={require('../../../assets/images/dotted.png')} style={{ width: mobileW * 0.97 }} />
               </View>
-                        </View>
-       </SafeAreaView>
+
+            </TouchableOpacity>
+          ))}
+          <View style={styles.row}>
+            <Image source={require('../../../assets/images/Theme.png')} style={styles.icon} />
+            <Text style={styles.title}>Theme</Text>
+            <TouchableOpacity style={styles.button} >
+              <Text style={styles.buttonText}>Follow System</Text>
+            </TouchableOpacity>
+          </View>
+          <View style={styles.addContainer}>
+            <TouchableOpacity style={styles.listItem}>
+              <Text style={styles.bullet}>•</Text>
+              <Text style={styles.text}>Privacy Policy</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.listItem} >
+              <Text style={styles.bullet}>•</Text>
+              <Text style={styles.text}>Rate Us</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              onPress={() => { navigation.navigate('Contact') }}
+              style={styles.listItem}  >
+              <Text style={styles.bullet}>•</Text>
+              <Text style={styles.text}>Contact Us</Text>
+            </TouchableOpacity>
+          </View>
+          <View style={styles.ButtonsContainer}>
+            <TouchableOpacity
+              style={styles.logoutButton}
+              onPress={() => handleLogOut()}>
+              <Text style={styles.logoutbuttonText}>LOG OUT</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </ScrollView>
+    </SafeAreaView>
   );
 };
 
@@ -313,8 +316,8 @@ const styles = StyleSheet.create({
     width: 20,
     height: 22,
     marginLeft: 20,
-    marginRight:5,
-    marginBottom:5,
+    marginRight: 5,
+    marginBottom: 5,
   },
   sideImageContainer: {
     flex: 1,

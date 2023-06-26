@@ -35,7 +35,7 @@ const ValidateSchema = Yup.object().shape({
 
 
 const Security = () => {
-const userRegisterData = useSelector((state)=> state.userRegisterData)
+const userProfileData = useSelector((state)=> state.userProfileData)
 const [isEditable, setIsEditable] = useState(false);
 const [currentPassword, setCurrentPassword] = useState('');
 const [newPassword, setNewPassword] = useState('');
@@ -49,14 +49,23 @@ const [Password,setPassword] = useState(true);
 const [keyPressed,setKeyPressed] = useState(true);
 const mobileW = Math.round(Dimensions.get('screen').width);
 useEffect(() => {
-  console.log("+++++++++++++++",userRegisterData)
-}, [userRegisterData]);
-const onPress = ()=>{
+  console.log("+++++++++++++++",userProfileData)
+}, []);
+const onPress = async ()=>{
   // updatePersonalDetails();
-  UpdatePassword();
+  // UpdatePassword();
+  ValidateSchema.validate(values, { abortEarly: false })
+      .then(() => {
+        // Validation successful, call the API
+        UpdatePassword();
+      })
+      .catch((error) => {
+        const errorMessage = error.errors.join('\n');
+        ToastAndroid.show(errorMessage, ToastAndroid.SHORT);
+      });
 }
 
-const mail = userRegisterData[0]?.email;
+const mail = userProfileData[0]?.email;
 const enableEdit =()=>{
   console.log("enable edit",isEditable)
   setIsEditable(true)
@@ -119,13 +128,7 @@ const UpdatePassword= async () =>{
     <SafeAreaView style={{ backgroundColor: COLORS.CREAM, flex: 1}}>
      <Header headerName="Security" editShow={true} onPress={onPress} enableEdit ={enableEdit} editButton={isEditable} />
       
-     {Platform.OS=='android'? <HorizontalLine style={styles.line} />:<View
-              style={{
-             
-             
-              }}>
-              <Image source={require('../../../assets/images/dotted.png')} style={{ width: mobileW * 0.97 ,top:Platform.OS=='ios'?-30:2}} />
-            </View> }
+     <HorizontalLine style={styles.line} />
      <View style={[styles.mainDiv_container]}>
      <Input
             IconLeft={null}  
@@ -189,7 +192,7 @@ const UpdatePassword= async () =>{
             IconLeft={null}  
             bgColor={COLORS.CREAM}
             editable={isEditable}
-            placeholderTextColor={COLORS.BLACK}
+            placeholderTextColor={COLORS.HALFBLACK}
             passwordInput={true}
             pasButton={() => {
               setPassword(!Password)
