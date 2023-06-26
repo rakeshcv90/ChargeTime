@@ -25,6 +25,7 @@ const initialState = {
     getPurchaseData:[],
     getDeviceID:'',
     userProfileData: [],
+    getCardDetails:[],
   };
   
   const rootReducer = (state = initialState, action) => {
@@ -85,6 +86,8 @@ const initialState = {
           case types.GET_DEVICE_ID:
           return { ...state, getDeviceID: action.payload }
         //dashboard boxtwo and price details data end
+        case types.GET_CARD_DETAILS:
+          return { ...state, getCardDetails: action.payload }
 
       default:
         return state;

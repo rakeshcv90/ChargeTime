@@ -36,6 +36,8 @@ import creditCardType, { types as CardType } from 'credit-card-type';
 import { FlatList } from 'react-native-gesture-handler';
 import { mvs, ms } from 'react-native-size-matters';
 import Carousel from 'react-native-snap-carousel';
+import {getCardDetails} from '../../redux/action';
+import { useDispatch } from 'react-redux';
 
 const mobileW = Math.round(Dimensions.get('screen').width);
 const mobileH = Math.round(Dimensions.get('window').height);
@@ -73,7 +75,7 @@ export default function PaymentGateWay({ navigation }) {
   }
 
   const user_ID = getUserID;
-
+const dispatch = useDispatch();
   const getCardType = (cardNumber) => {
 
     const cardType = creditCardType(cardNumber ? cardNumber : creditCard)[0]?.type;
@@ -422,7 +424,8 @@ export default function PaymentGateWay({ navigation }) {
                         // call api to make new card as default and id will be currentCard.id
                         handleMakeDefaultCard(currentCard?.id)
                     }else if(currentCard.status ===1){
-
+                      dispatch(getCardDetails(currentCard))
+                      navigation.navigate('PaymentGateWay');
                     }else{
 
                     }}}

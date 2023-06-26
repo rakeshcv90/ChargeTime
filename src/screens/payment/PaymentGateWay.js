@@ -11,7 +11,7 @@ import {
   Alert,
 } from 'react-native';
 import AnimatedLottieView from 'lottie-react-native';
-import React, {useState, useRef} from 'react';
+import React, {useState, useRef, useEffect} from 'react';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import Input from '../../Components/Input';
 import COLORS from '../../constants/COLORS';
@@ -28,6 +28,7 @@ import axios from 'axios';
 import {API} from '../../api/API';
 import {navigationRef} from '../../../App';
 import ActivityLoader from '../../Components/ActivityLoader';
+
 const mobileW = Math.round(Dimensions.get('screen').width);
 const mobileH = Math.round(Dimensions.get('window').height);
 const validationSchema = Yup.object().shape({
@@ -37,8 +38,7 @@ const validationSchema = Yup.object().shape({
   cvv: Yup.string().required('cvv is required'),
 });
 export default function PaymentGateWay({navigation, route}) {
-  
-
+  const getCardDetails = useSelector((state)=> state.getCardDetails);
   const {getDataForPayment, getUserID, getEmailDAta} = useSelector(
     state => state,
   );
@@ -46,6 +46,10 @@ export default function PaymentGateWay({navigation, route}) {
   const [loader,setLoader] = useState(false)
   const inputRef = useRef(null);
   
+  useEffect(() => {
+     console.log('data for this User:---------', getCardDetails); 
+  }, []);
+
   const handlePaymentSubmit = async values => {
     setLoader(true)
     let payload = new FormData();

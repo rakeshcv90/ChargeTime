@@ -87,3 +87,8 @@ export const setPurchaseData = (data) => {
 export const setDeviceId = (data) => {
   return {type:types.GET_DEVICE_ID,payload:data}
 } 
+
+export const getCardDetails = (data) => {
+  return {type:types.GET_CARD_DETAILS,payload:data}
+} 
+
