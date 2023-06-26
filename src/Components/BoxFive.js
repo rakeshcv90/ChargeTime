@@ -1,40 +1,67 @@
-import {View, Text, StyleSheet, TouchableOpacity, Image, Alert} from 'react-native';
+import {
+  View,
+  Text,
+  StyleSheet,
+  TouchableOpacity,
+  Image,
+  Alert,
+} from 'react-native';
 import React from 'react';
-import { Dolllar } from '../../assets/images/Dollar';
-import { navigationRef } from '../../App';
+import {Dolllar} from '../../assets/images/Dollar';
+import {navigationRef} from '../../App';
 import COLORS from '../constants/COLORS';
 import axios from 'axios';
-import { API } from '../api/API';
+import {API} from '../api/API';
+import {useSelector} from 'react-redux';
 
-const BoxFive = ({data,purchageData}) => {
-
-  let payload = new FormData()
-  const forDownUpgrade = async() => {
-    payload.append("energy_price",data.totalSalexTax)
-    payload.append("selectedEnergyPlan",data.package_name)
-    try{
-  const response =  await axios.get(`${API}/upgrade_downgrade/31`,payload,{
-    headers: {
-      'Content-Type': 'multipart/form-data',
-    },})
-    if(response.data.status !=="No"){
-          navigationRef.navigate("DownGradeData", {data: data, purchageData:purchageData})
-
+const BoxFive = ({data, purchageData}) => {
+  const {getUserID} = useSelector(state => state);
+  let payload = new FormData();
+  const forDownUpgrade = async () => {
+    payload.append('energy_price', data.totalSalexTax);
+    payload.append('selectedEnergyPlan', data.package_name);
+    try {
+      const response = await axios.get(
+        `${API}/upgrade_downgrade/${getUserID}`,
+        payload,
+        {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+          },
+        },
+      );
+      console.log('IPDOWSDJa', response.data.status);
+      if (response.data.status !== 'No') {
+        navigationRef.navigate('DownGradeData', {
+          data: data,
+          purchageData: purchageData,
+          message: response.data.message
+        });
+      } else {
+        Alert.alert(response.data.message);
+      }
+    } catch (err) {
+      console.log(err);
     }
-    else{
-      Alert.alert(response.data.message)
-    }
+  };
 
-    }catch(err)  {
-      console.log(err)
-    }
-  }
-  
   return (
-    <View style={[styles.mainDiv_purchage_dollar,styles.shadowProp]}>
-      
+    <View
+      style={[
+        styles.mainDiv_purchage_dollar,
+        styles.shadowProp,
+        {flexDirection: purchageData == 'UPGRADE' ? 'row-reverse' : 'row'},
+      ]}>
       <View>
-        <TouchableOpacity style={styles.btn_purchage} onPress={() => forDownUpgrade()}>
+        <TouchableOpacity
+          style={[
+            styles.btn_purchage,
+            {
+              backgroundColor:
+                purchageData == 'UPGRADE' ? COLORS.GREEN : COLORS.RED,
+            },
+          ]}
+          onPress={() => forDownUpgrade()}>
           <Text style={styles.purchage_text}>{purchageData}</Text>
         </TouchableOpacity>
       </View>
@@ -55,13 +82,13 @@ const styles = StyleSheet.create({
   },
   shadowProp: {
     backgroundColor: 'white',
-    shadowColor: 'rgba(0, 0, 0, 1)', 
+    shadowColor: 'rgba(0, 0, 0, 1)',
     shadowOffset: {
-      width: 6, 
-      height: 4, 
+      width: 6,
+      height: 4,
     },
-    shadowOpacity: 1, 
-    shadowRadius: 4, 
+    shadowOpacity: 1,
+    shadowRadius: 4,
     elevation: Platform.OS === 'android' ? 8 : 0,
   },
   mainDiv_installation: {
@@ -164,10 +191,9 @@ const styles = StyleSheet.create({
     backgroundColor: COLORS.RED,
     alignItems: 'center',
     borderRadius: 12,
-
   },
   purchage_text: {
-    fontWeight: "700",
+    fontWeight: '700',
     fontSize: 14,
     color: COLORS.WHITE,
   },

@@ -49,7 +49,6 @@ export default function Register({navigation}) {
   const dispatch = useDispatch();
   const {userRegisterData} = useSelector(state => state);
 
-
   const handleFormSubmit = async values => {
     setForLoading(true);
     try {
@@ -58,17 +57,21 @@ export default function Register({navigation}) {
         email: values.email,
       });
       console.log(response.data.error);
-      if (response.data.error != 1) {
+      if (response.data.status == 'true') {
         PLATFORM_IOS
           ? Toast.show({
               type: 'success',
-              text1: 'Success!!! Please verify your email with OTP.',
+              text1: 'Please Complete your Profile',
             })
           : ToastAndroid.show(
-              'Success!!! Please verify your email with OTP.',
+              'Please Complete your Profile',
               ToastAndroid.SHORT,
             );
-        navigation.navigate('VerifyEmail', {
+
+        setForLoading(false);
+
+        dispatch(setUserRegisterData(values));
+        navigation.navigate('CompleteProfile', {
           email: values?.email,
           user_id: response.data?.user_id,
         });
@@ -76,21 +79,41 @@ export default function Register({navigation}) {
         //  const data=[{ email: values?.email },{ name: values?.name },{ mobile: values?.mobile },{ password: values?.password },{user_id:response.data?.user_id}]
         // const data = response.data
         //  console.log('------------------',data);
-
-        setForLoading(false);
-
-        dispatch(setUserRegisterData(values));
       } else {
-        PLATFORM_IOS
-          ? Toast.show({
-              type: 'error',
-              text1: 'User not Found',
-            })
-          : ToastAndroid.show(
-              'User not Found',
-              ToastAndroid.SHORT,
-            );
-        setForLoading(false);
+        if (response.data.error != 1) {
+          PLATFORM_IOS
+            ? Toast.show({
+                type: 'success',
+                text1: 'Success!!! Please verify your email with OTP.',
+              })
+            : ToastAndroid.show(
+                'Success!!! Please verify your email with OTP.',
+                ToastAndroid.SHORT,
+              );
+          navigation.navigate('VerifyEmail', {
+            email: values?.email,
+            user_id: response.data?.user_id,
+          });
+
+          //  const data=[{ email: values?.email },{ name: values?.name },{ mobile: values?.mobile },{ password: values?.password },{user_id:response.data?.user_id}]
+          // const data = response.data
+          //  console.log('------------------',data);
+
+          setForLoading(false);
+
+          dispatch(setUserRegisterData(values));
+        } else {
+          PLATFORM_IOS
+            ? Toast.show({
+                type: 'error',
+                text1: 'This Email already exists!',
+              })
+            : ToastAndroid.show(
+                'This Email already exists!',
+                ToastAndroid.SHORT,
+              );
+          setForLoading(false);
+        }
       }
     } catch (error) {
       console.error(error);
@@ -100,7 +123,7 @@ export default function Register({navigation}) {
   return (
     <SafeAreaView style={{backgroundColor: COLORS.CREAM, flex: 1}}>
       <ScrollView
-      // scrollEnabled={false}
+        // scrollEnabled={false}
         showsVerticalScrollIndicator={false}
         keyboardShouldPersistTaps="handled">
         <KeyboardAvoidingView behavior="position">
@@ -162,7 +185,7 @@ export default function Register({navigation}) {
                     textWidth={'30%'}
                     placeholderTextColor={COLORS.BLACK}
                     autoCapitalize="none"
-                    keyboardType='email-address'
+                    keyboardType="email-address"
                   />
 
                   <Input
@@ -171,7 +194,12 @@ export default function Register({navigation}) {
                     touched={touched.mobile}
                     value={values.mobile}
                     keyboardType="numeric"
-                    onChangeText={handleChange('mobile')}
+                    onChangeText={text => {
+                      var num = /[^0-9]/g;
+                      const cardNumbers = text.replace(/\s/g, ''); // Remove spaces from card number
+                      const cardNumber = cardNumbers.replace(num, '');
+                      handleChange('mobile')(cardNumber);
+                    }}
                     maxLength={10}
                     onBlur={handleBlur('mobile')}
                     text="Phone No."

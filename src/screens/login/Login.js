@@ -93,10 +93,11 @@ export default function Login({navigation}) {
       if (response?.data?.locations.length == 0) {
         setForLoading(true);
         setShowPackage(true);
+        dispatch(setBasePackage([]));
       } else {
-        console.log(response.data);
+        console.log(response.data, 'Packaagessssss');
         dispatch(setBasePackage(response.data.locations));
-        dispatch(setIsAuthorized(true));
+        // dispatch(setIsAuthorized(true));
         setForLoading(false);
         navigation.navigate('DrawerStack');
       }
@@ -147,6 +148,7 @@ export default function Login({navigation}) {
             dispatch(setPackageStatus(true));
             dispatch(setUserID(res.data?.user_id));
             dispatch(getLocationID(res.data?.locationid));
+            // dispatch(setIsAuthorized(true));
             fetchGraphData(res.data?.user_id);
             fetchWeekGraphData(res.data?.user_id);
             fetchMonthGraphData(res.data?.user_id);
@@ -165,6 +167,7 @@ export default function Login({navigation}) {
             dispatch(setPackageStatus(true));
             dispatch(setUserID(res.data?.user_id));
             dispatch(getLocationID(res.data?.locationid));
+            // dispatch(setIsAuthorized(true));
             getPlanCurrent(res.data?.user_id);
             dispatch(
               setDeviceId(
@@ -174,6 +177,10 @@ export default function Login({navigation}) {
           } else {
             dispatch(setPackageStatus(false));
             dispatch(setDeviceId(res.data.message));
+            // dispatch(setIsAuthorized(true));
+            dispatch(setEmailData(res.data?.email));
+            dispatch(setUserID(res.data?.user_id));
+            dispatch(getLocationID(res.data?.locationid));
             packagePlans(res.data?.locationid);
           }
           // fetchPriceDetailsDashboardData(data?.user_id)

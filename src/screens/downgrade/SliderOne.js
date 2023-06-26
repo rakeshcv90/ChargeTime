@@ -10,9 +10,9 @@ import {
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {Charging} from '../../../assets/images/Charging';
 import COLORS from '../../constants/COLORS';
-import BoxOne from '../../Components/BoxOne';
+import InstallationBase from '../../Components/InstallationBase';
 import BoxTwo from '../../Components/BoxTwo';
-import BoxThree from '../../Components/BoxThree';
+// import PurchseButton from '../../Components/PurchseButton';
 import {PLATFORM_IOS} from '../../constants/DIMENSIONS';
 import BoxFive from '../../Components/BoxFive';
 import Remaining from '../../Components/Remaining';
@@ -73,7 +73,7 @@ export default function SliderOne(props) {
                   ? 20
                   : null,
             }}>
-            <BoxOne data={props.route.params.item} />
+            <InstallationBase data={props.route.params.item} />
           </View>
 
           {getPurchaseData[0].energy_plan.toLowerCase() !==

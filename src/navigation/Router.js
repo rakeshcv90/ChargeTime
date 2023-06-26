@@ -80,7 +80,7 @@ export const DrawerScreenPart = ({navigation}) => {
     </View>
   );
 };
-export const chargerStatus = () => {
+export const ChargerStatus = () => {
   const getChargerStatus = useSelector(state => state.getChargerStatus);
   console.log(getChargerStatus, 'getChargerStatus');
   return (
@@ -394,7 +394,7 @@ const DrawerNavigation = () => {
             ? `Charger Status\nOffline`
             : 'Chargin'
         }
-        component={chargerStatus}
+        component={ChargerStatus}
       />
     </Drawer.Navigator>
   );
@@ -454,11 +454,11 @@ const AccountStack = () => {
 };
 
 export default function Router() {
-  const [isAuthorized, setIsAuthorized] = useState(false);
+  // const [isAuthorized, setIsAuthorized] = useState(false);
   let loginDataString;
   const getLocationID = useSelector(state => state.getLocationID);
   const getPackageStatus = useSelector(state => state.getPackageStatus);
-  const getUserID = useSelector(state => state.getUserID);
+  const isAuthorized = useSelector(state => state.isAuthorized);
 
   useEffect(() => {
     checkLogin();
@@ -468,7 +468,7 @@ export default function Router() {
     id = await AsyncStorage.getItem('locationID');
   };
 
-  // console.log(getLocationId,"getLocationId")
+  console.log(isAuthorized,"getLocationId")
   // let locationId;
 
   // useEffect(() => {

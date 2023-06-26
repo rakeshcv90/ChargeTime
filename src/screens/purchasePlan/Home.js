@@ -108,8 +108,8 @@ export default function Home(route) {
 
   useEffect(() => {
     fetchData();
-    console.log('PACKAGES', apiData);
-    console.log('PACKAGES APIII', getBasePackage);
+    // console.log('PACKAGES', apiData);
+    console.log('PACKAGES APIII', getBasePackage.length);
     getBasePackage.length == 0 ? setShowPackage(true) : setShowPackage(false)
   }, []);
 
@@ -174,14 +174,14 @@ export default function Home(route) {
                 paddingVertical: 13,
                 // borderRadius:10,
                 borderRadius: isFocused ? 10 : 0,
-                shadowColor: 'rgba(0, 0, 0, 1)',
-                shadowOffset: {
-                  width: isFocused ? 6 : 0,
-                  height: isFocused ? 4 : 0,
-                },
-                shadowOpacity: isFocused ? 1 : 0,
-                shadowRadius: isFocused ? 4 : 0,
-                elevation: Platform.OS === 'android' && isFocused ? 8 : 0,
+                // shadowColor: 'rgba(0, 0, 0, 1)',
+                // shadowOffset: {
+                //   width: isFocused ? 6 : 0,
+                //   height: isFocused ? 4 : 0,
+                // },
+                // shadowOpacity: isFocused ? 1 : 0,
+                // shadowRadius: isFocused ? 4 : 0,
+                // elevation: Platform.OS === 'android' && isFocused ? 8 : 0,
               }}>
               <Text
                 style={{
@@ -225,7 +225,7 @@ export default function Home(route) {
         )}
       </View>
 
-      {apiData?.length >= 1 ? (
+      {getBasePackage?.length > 1 ? (
         <Tab.Navigator
           screenOptions={{
             activeTintColor: 'blue',
@@ -236,7 +236,7 @@ export default function Home(route) {
             },
           }}
           tabBar={props => <MyTabBar {...props} />}>
-          {apiData.map((item, ind) => {
+          {getBasePackage.map((item, ind) => {
             return (
               <Tab.Screen
                 key={ind}
@@ -247,27 +247,12 @@ export default function Home(route) {
             );
           })}
         </Tab.Navigator>
-      ) : apiData.length == 1 ? (
-        <Tab.Navigator
-          screenOptions={{
-            activeTintColor: 'blue',
-            inactiveTintColor: 'gray',
-            labelStyle: {
-              fontSize: 16,
-              fontWeight: 'bold',
-            },
-          }}
-          tabBar={props => <MyTabBar {...props} />}>
-          <Tab.Screen
-            // key={ind}
-            name={apiData[0]?.package_name}
-            component={TabOne}
-            initialParams={{item: apiData[0]}}
-          />
-        </Tab.Navigator>
-      ) : (
-        <Text>No Package available for you location</Text>
-      )}
+      ) : getBasePackage.length == 1 ? (
+        <TabOne item={getBasePackage[0]}/>
+          ) : (
+            <Text>No Package available for you location</Text>
+            )}
+            {/* </Tab.Navigator> */}
     </SafeAreaView>
   );
 }
@@ -276,7 +261,7 @@ const styles = StyleSheet.create({
   charging_imag_style: {
     justifyContent: 'center',
     alignItems: 'center',
-    marginBottom: 30,
+    marginBottom: 10,
   },
   managing_width: {
     paddingHorizontal: 20,

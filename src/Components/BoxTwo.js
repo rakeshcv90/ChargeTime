@@ -6,8 +6,8 @@ import {Mieq} from '../../assets/images/Mieq';
 
 const BoxTwo = ({data}) => {
   return (
-    <View style={styles.mainDiv_installation}>
-      <TouchableOpacity style={styles.install_touchable}>
+    <View style={[styles.mainDiv_installation, styles.shadowProp]}>
+      <TouchableOpacity style={styles.install_touchable} activeOpacity={1} >
         <Image
           style={styles.img_width}
           source={require('../../assets/images/details.png')}
@@ -64,17 +64,18 @@ const styles = StyleSheet.create({
     shadowRadius: 5.62,
     elevation: Platform.OS === 'android' ? 8 : 0,
   },
-  // shadowProp: {
-  //   //backgroundColor: 'white',
-  //   shadowColor: '#000000', 
-  //   shadowOffset: {
-  //     width: 4, 
-  //     height: 6, 
-  //   },
-  //   shadowOpacity: 1, 
-  //   shadowRadius:  4, 
-  //   elevation: Platform.OS === 'android' ? 8 : 0,
-  // },
+  shadowProp: {
+    //backgroundColor: 'white',
+    shadowColor: '#000000', 
+    shadowOffset: {
+      width: 4, 
+      height: 6, 
+    },
+    shadowOpacity: 1, 
+    shadowRadius:  4, 
+    elevation: 8,
+    // elevation: Platform.OS === 'android' ? 8 : 0,
+  },
   install_touchable: {
     flexDirection: 'row',
     backgroundColor: COLORS.GREEN,

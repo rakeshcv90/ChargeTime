@@ -48,7 +48,10 @@ const Subscription = () => {
     }else{
       console.log("iiiiiiiiiiii")
     }
-  };
+  }
+  catch(err){
+    
+  }}
 
 
 const userSubsEnergy = async () => {
@@ -93,7 +96,11 @@ console.log(result,'ttt');
         );
         
     }
-  };
+  }
+  catch(err){
+    
+  }
+  }
 
 
   return (

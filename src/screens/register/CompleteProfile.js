@@ -183,13 +183,13 @@ export default function CompleteProfile(props) {
                 inputSearchStyle={styles.inputSearchStyle}
                 iconStyle={styles.iconStyle}
                 data={locationMap}
-                search
+                // search
                 maxHeight={300}
                 labelField="location"
                 valueField="location"
                 placeholder='Installation' 
                 keyboardAvoiding
-                searchPlaceholder="Search..."
+                // searchPlaceholder="Search..."
                 value={selectedValue}
                 onFocus={() => setIsFocus(true)}
                 onBlur={() => setIsFocus(false)}
@@ -408,10 +408,10 @@ const styles = StyleSheet.create({
     paddingHorizontal: 8,
     fontSize: 12,
     color: COLORS.BLACK,
-    marginLeft: 35,
+    marginLeft: 15,
     lineHeight: 16,
-    fontWeight: '400',
-    letterSpacing: 0.4
+    fontWeight: '700',
+    // letterSpacing: 0.4
   },
   selectedTextStyle: {
     fontSize: 16,
@@ -428,6 +428,7 @@ const styles = StyleSheet.create({
   },
   dropdownContainer: {
     backgroundColor: COLORS.CREAM, // Set your desired background color here
+    borderColor: COLORS.GREEN, // Set your desired background color here
   },
   placeholderStyle: {
     fontSize: 14,

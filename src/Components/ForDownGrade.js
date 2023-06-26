@@ -8,10 +8,11 @@ import {PlanPricing} from '../../assets/images/PlanPricing';
 import {useDispatch, useSelector} from 'react-redux';
 import {navigationRef} from '../../App';
 import axios from 'axios';
+import { API } from '../api/API';
 
-export default function ForDownGrade({dataOne, purchageData, navigation}) {
-  const {getPurchaseData} = useSelector(state => state);
-  console.log(purchageData, 'getPurchaseData', dataOne);
+export default function ForDownGrade({dataOne, purchageData,messsage, navigation}) {
+  const {getPurchaseData, getUserID} = useSelector(state => state);
+  console.log(purchageData, 'getPurchaseData', messsage);
   const [tax, setTax] = useState('');
   const [totalSalexTax, setTotalSalextax] = useState('');
 
@@ -28,13 +29,13 @@ export default function ForDownGrade({dataOne, purchageData, navigation}) {
   //   }, []);
 
   const forDowngradeFunction = () => {
-    axios.post(`${API}/upgrade_downgrade/31`)
+    axios.get(`${API}/upgrade_downgrade/${getUserID}`)
     .then((res) => {
-      
+      console.log("DOWNGRADE", res.data)
       navigationRef.navigate('PaymentGateWay',{data:dataOne})
     })
     .catch((err) => {
-      console.log(err)
+      console.log(err.response.data.messsage)
     })
   }
  
@@ -74,8 +75,7 @@ export default function ForDownGrade({dataOne, purchageData, navigation}) {
             : 'UPGRADE Package'}
         </Text>
         <Text style={{fontWeight: '600', fontSize: 16}}>
-          Downgrade Package? You have purchased downgraded package!! If you want
-          to buy this package then the scheduled package will be canceled.
+          {messsage}
         </Text>
       </View>
       <View style={styles.mainDiv_installation}>
@@ -248,7 +248,7 @@ export default function ForDownGrade({dataOne, purchageData, navigation}) {
           </Text>
         </TouchableOpacity>
         <TouchableOpacity
-          onPress={() => forDowngradeFunction}
+          onPress={() => forDowngradeFunction()}
           style={{
             backgroundColor:
               purchageData == 'DOWNGRADE' ? '#F84E4E' : COLORS.GREEN,

@@ -1,43 +1,48 @@
-import { Image, View, Text, StyleSheet, Dimensions, TouchableOpacity, SafeAreaView } from 'react-native';
-import React, { useState, useEffect } from 'react';
-import { createDrawerNavigator } from '@react-navigation/drawer';
-import { CommonActions, NavigationContainer } from '@react-navigation/native';
-import Picker from '@react-native-picker/picker'
+import {
+  Image,
+  View,
+  Text,
+  StyleSheet,
+  Dimensions,
+  TouchableOpacity,
+  SafeAreaView,
+} from 'react-native';
+import React, {useState, useEffect} from 'react';
+import {createDrawerNavigator} from '@react-navigation/drawer';
+import {CommonActions, NavigationContainer} from '@react-navigation/native';
+import Picker from '@react-native-picker/picker';
 import logo from '../../../assets/images/logo.png';
 import COLORS from '../../constants/COLORS';
 import HorizontalLine from '../../Components/HorizontalLine';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { navigationRef } from '../../../App';
-import { FONTS } from '../../constants/FONTS';
-import { DIMENSIONS } from '../../constants/DIMENSIONS';
+import {navigationRef} from '../../../App';
+import {FONTS} from '../../constants/FONTS';
+import {DIMENSIONS} from '../../constants/DIMENSIONS';
 import DrawerOpen from '../../Components/DrawerOpen';
-import { persistor } from '../../redux/store';
-import { useSelector } from 'react-redux';
-import { API } from '../../api/API';
-import { useDispatch } from 'react-redux';
-import { userProfileData } from '../../redux/action';
-import { getBasePackage } from '../../redux/action';
+import {persistor} from '../../redux/store';
+import {useSelector} from 'react-redux';
+import {API} from '../../api/API';
+import {useDispatch} from 'react-redux';
+import {userProfileData} from '../../redux/action';
+import {getBasePackage} from '../../redux/action';
 import SubBoxOne from '../../Components/SubBoxOne';
 
 const mobileW = Math.round(Dimensions.get('screen').width);
 
-
-const Account = ({ navigation }) => {
+const Account = ({navigation}) => {
   const [selectedValue, setSelectedValue] = useState('');
 
-  const getUserID = useSelector((state)=> state.getUserID);
+  const getUserID = useSelector(state => state.getUserID);
   const [getSubscription, setGetSubscription] = useState([]);
   const [getData, setGetData] = useState([]);
   const user_ID = getUserID;
   const dispatch = useDispatch();
 
-
-
   useEffect(() => {
-    //  console.log('data for this User:---------', userRegisterData); 
-     console.log('iiiiddddddd',user_ID)
-     userDetails();
-     userSubscription();
+    //  console.log('data for this User:---------', userRegisterData);
+    console.log('iiiiddddddd', user_ID);
+    userDetails();
+    userSubscription();
     //  userSubsEnergy();
   }, []);
 
@@ -48,7 +53,6 @@ const Account = ({ navigation }) => {
       link: 'PersonalDetails',
       side_image: require('../../../assets/images/side.png'),
       // style={styles.side_icon}
-
     },
     {
       title: 'Security',
@@ -97,28 +101,27 @@ const Account = ({ navigation }) => {
         routes: [
           {
             name: 'LoginStack',
-            params: { screen: 'Login' },
+            params: {screen: 'Login'},
           },
         ],
       }),
     );
 
     console.log('Log out successfully');
-  }
+  };
 
   const userDetails = async () => {
     // const response = await fetch(`${API}/userexisting/${user_ID}`);
     try {
       const response = await fetch(`${API}/userexisting/${user_ID}`);
       const result = await response.json();
-      if(result[0].message == "sucess")
-      {
- console.log('wwwwww',result);
-//  setUserData(result);
- dispatch(userProfileData(result)); 
- console.log(result)
-      }else{
-        console.log("iiiiiiiiiiii")
+      if (result[0].message == 'sucess') {
+        console.log('wwwwww', result);
+        //  setUserData(result);
+        dispatch(userProfileData(result));
+        console.log(result);
+      } else {
+        console.log('iiiiiiiiiiii');
       }
       // setLocationMap(result);
     } catch (error) {
@@ -126,112 +129,119 @@ const Account = ({ navigation }) => {
     }
   };
 
+  const userSubscription = async () => {
+    try {
+      const response = await fetch(`${API}/currentplan/${user_ID}`);
+      const result = await response.json();
 
- const userSubscription = async () =>{
-  try {
-    const response = await fetch(`${API}/currentplan/${user_ID}`);
-    const result = await response.json();
- 
-    if(result[0].id !== null)
-    {
-      setGetSubscription(result[0]);
-      console.log(result[0], "-------");
-  // dispatch(getBasePackage(result)); 
-    }else{
-      console.log("iiiiiiiiiiii")
-    }
+      if (result[0].id !== null) {
+        setGetSubscription(result[0]);
+        console.log(result[0], '-------');
+        // dispatch(getBasePackage(result));
+      } else {
+        console.log('iiiiiiiiiiii');
+      }
+    } catch (err) {}
   };
 
   const userSubsEnergy = async () => {
+    try {
+      const response = await fetch(`${API}/subscription/${user_ID}`);
+      const result = await response.json();
+      console.log('-----', result);
+      if (result !== null) {
+        // console.log(result, "----------------")
+        // dispatch(userSubsData(result));
+        setGetData(result);
+      } else {
+        console.log('iiiiiiiiiiii');
+      }
+    } catch (err) {}
+  };
 
-  try {
-    const response = await fetch(`${API}/subscription/${user_ID}`);
-    const result = await response.json();
-    console.log("-----",result)
-    if(result !== null)
-    {
-    // console.log(result, "----------------")
-    // dispatch(userSubsData(result));
-    setGetData(result)
-    }else{
-      console.log("iiiiiiiiiiii")
-    }
-  }
-
-
-  const handleLinkPress = (screen) => {
+  const handleLinkPress = screen => {
     navigation.navigate(screen);
   };
 
   return (
     <SafeAreaView style={{backgroundColor: COLORS.CREAM, flex: 1}}>
-            <View style={styles.main_div}>
-              <View style={styles.row}>
-                <Text style={styles.heading}>Account</Text>
-                <DrawerOpen />
+      <View style={styles.main_div}>
+        <View style={styles.row}>
+          <Text style={styles.heading}>Account</Text>
+          <DrawerOpen />
+        </View>
+        {Screen.map((item, index) => (
+          <TouchableOpacity
+            key={index}
+            style={styles.itemContainer}
+            onPress={() => handleLinkPress(item.link)}>
+            <View style={styles.row}>
+              <Image source={item.image} style={styles.icon} />
+              <Text style={styles.title}>{item.title} </Text>
+              <View style={styles.sideImageContainer}>
+                <Image source={item.side_image} style={styles.side_icon} />
               </View>
-              {Screen.map((item, index) => (
-                <TouchableOpacity
-                  key={index}
-                  style={styles.itemContainer}
-                  onPress={() => handleLinkPress(item.link)}
-                >
-                  <View style={styles.row}>
-                    <Image source={item.image} style={styles.icon} />
-                    <Text style={styles.title}>{item.title} </Text>
-                    <View style={styles.sideImageContainer}>
-                     <Image source={item.side_image} style={styles.side_icon} />
-                      </View>
-                  </View>
-                  <View
-            style={{
-              flexDirection: 'row',
-              alignItems: 'center',
-              justifyContent: 'center',
-              width: mobileW,
-            }}>
-            <Image source={require('../../../assets/images/dotted.png')} style={{width: mobileW * 0.97 }} />
-          </View>
-                  
-                </TouchableOpacity>
-              ))}
-              <View style={styles.row}>
-              <Image source={require('../../../assets/images/Theme.png')} style={styles.icon} />
-              <Text style={styles.title}>Theme</Text>
-              <TouchableOpacity style={styles.button} >
-        <Text style={styles.buttonText}>Follow System</Text>
-                 </TouchableOpacity>
-              </View>
-              <View style={styles.addContainer}>
-      <TouchableOpacity style={styles.listItem}>
-        <Text style={styles.bullet}>•</Text>
-        <Text style={styles.text}>Privacy Policy</Text>
-      </TouchableOpacity>
-      <TouchableOpacity style={styles.listItem} >
-        <Text style={styles.bullet}>•</Text>
-        <Text style={styles.text}>Rate Us</Text>
-      </TouchableOpacity>
-      <TouchableOpacity 
-      onPress={()=>{navigation.navigate('Contact')}}
-      style={styles.listItem}  >
-        <Text style={styles.bullet}>•</Text>
-        <Text style={styles.text}>Contact Us</Text>
-      </TouchableOpacity>
-    </View>
-    <View style={styles.ButtonsContainer}>
-              <TouchableOpacity
-                style={styles.logoutButton}
-                onPress={() => handleLogOut()}>
-                <Text style={styles.logoutbuttonText}>LOG OUT</Text>
-              </TouchableOpacity>
-              </View>
-                        </View>
-       </SafeAreaView>
+            </View>
+            <View
+              style={{
+                flexDirection: 'row',
+                alignItems: 'center',
+                justifyContent: 'center',
+                width: mobileW,
+              }}>
+              <Image
+                source={require('../../../assets/images/dotted.png')}
+                style={{width: mobileW * 0.97}}
+              />
+            </View>
+          </TouchableOpacity>
+        ))}
+        <View style={styles.row}>
+          <Image
+            source={require('../../../assets/images/Theme.png')}
+            style={styles.icon}
+          />
+          <Text style={styles.title}>Theme</Text>
+          <TouchableOpacity style={styles.button}>
+            <Text style={styles.buttonText}>Follow System</Text>
+          </TouchableOpacity>
+        </View>
+        <View style={styles.addContainer}>
+          <TouchableOpacity style={styles.listItem}>
+            <Text style={styles.bullet}>•</Text>
+            <Text style={styles.text}>Privacy Policy</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.listItem}>
+            <Text style={styles.bullet}>•</Text>
+            <Text style={styles.text}>Rate Us</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            onPress={() => {
+              navigation.navigate('Contact');
+            }}
+            style={styles.listItem}>
+            <Text style={styles.bullet}>•</Text>
+            <Text style={styles.text}>Contact Us</Text>
+          </TouchableOpacity>
+        </View>
+        <View style={styles.ButtonsContainer}>
+          <TouchableOpacity
+            style={styles.logoutButton}
+            onPress={() => handleLogOut()}>
+            <Text style={styles.logoutbuttonText}>LOG OUT</Text>
+          </TouchableOpacity>
+        </View>
+      </View>
+    </SafeAreaView>
   );
 };
 
 const styles = StyleSheet.create({
-  row: { width: DIMENSIONS.SCREEN_WIDTH * 0.95, flexDirection: 'row', alignItems: 'center' },
+  row: {
+    width: DIMENSIONS.SCREEN_WIDTH * 0.95,
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
   main_div: {
     width: DIMENSIONS.SCREEN_WIDTH * 0.95,
     height: DIMENSIONS.SCREEN_HEIGHT * 0.9,
@@ -259,7 +269,6 @@ const styles = StyleSheet.create({
     marginBottom: 20,
     marginTop: 20,
     color: '#000000',
-
   },
   listItem: {
     flexDirection: 'row',
@@ -287,8 +296,7 @@ const styles = StyleSheet.create({
     borderColor: '#ccc',
     left: 55,
     borderRadius: 5,
-    // marginRight:10, 
-
+    // marginRight:10,
   },
   buttonText: {
     fontSize: 15,
@@ -308,8 +316,8 @@ const styles = StyleSheet.create({
     width: 20,
     height: 22,
     marginLeft: 20,
-    marginRight:5,
-    marginBottom:5,
+    marginRight: 5,
+    marginBottom: 5,
   },
   sideImageContainer: {
     flex: 1,
@@ -320,7 +328,6 @@ const styles = StyleSheet.create({
     width: 8,
     height: 8,
     marginLeft: 120,
-
   },
   dropdown: {
     flex: 1,
@@ -346,7 +353,6 @@ const styles = StyleSheet.create({
     fontWeight: '500',
     paddingLeft: 10,
     paddingRight: 10,
-
   },
 });
 

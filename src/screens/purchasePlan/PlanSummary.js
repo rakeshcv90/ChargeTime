@@ -16,33 +16,29 @@ import {TabActions} from '@react-navigation/native';
 import {PlanPricing} from '../../../assets/images/PlanPricing';
 import {LeftIcon} from '../../../assets/images/LeftIcon';
 import {PLATFORM_IOS} from '../../constants/DIMENSIONS';
-import BoxOne from '../../Components/BoxOne';
+import InstallationBase from '../../Components/InstallationBase';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import BoxFour from '../../Components/BoxFour';
 import axios from 'axios';
 import {API} from '../../api/API';
 import {navigationRef} from '../../../App';
 
-
-
 import ActivityLoader from '../../Components/ActivityLoader';
-import { useDispatch } from 'react-redux';
-import { setDataForPayment } from '../../redux/action';
+import {useDispatch} from 'react-redux';
+import {setDataForPayment} from '../../redux/action';
 
 const mobileW = Math.round(Dimensions.get('screen').width);
 
 export default function PlanSummary({route, navigation}) {
-  console.log(route.params.data,'jj')
+  console.log(route.params.data, 'jj');
   const [tax, setTax] = useState('');
-  const [totalSalexTax,setTotalSalextax] = useState('')
+  const [totalSalexTax, setTotalSalextax] = useState('');
 
   //const [data,setData] = useState('');
-  const dispatch =useDispatch();
+  const dispatch = useDispatch();
 
-  const [data,setData] = useState('')
-  const [forLoading,setForLoading] = useState(false)
-  
-
+  const [data, setData] = useState('');
+  const [forLoading, setForLoading] = useState(false);
 
   const {id, package_name, total_price, salestax} = route.params?.data;
 
@@ -51,20 +47,19 @@ export default function PlanSummary({route, navigation}) {
   }, []);
 
   const getPlanSummary = () => {
-    setForLoading(true)
+    setForLoading(true);
     axios
       .get(`${API}/planPurchase/${id}/${package_name}`)
       .then(res => {
-        
-        setForLoading(false)
-        setData(res.data.locations)
-         dispatch(setDataForPayment(res.data?.locations[0]))
+        console.log(`${API}/planPurchase/${id}/${package_name}`);
+        setForLoading(false);
+        setData(res.data.locations);
+        dispatch(setDataForPayment(res.data?.locations[0]));
         setTax(res.data.locations[0].salestax);
-        setTotalSalextax(res.data.locations[0].totalSalexTax)
-        
+        setTotalSalextax(res.data.locations[0].totalSalexTax);
       })
       .catch(err => {
-        setForLoading(false)
+        setForLoading(false);
         console.log(err);
       });
   };
@@ -73,10 +68,10 @@ export default function PlanSummary({route, navigation}) {
       <ScrollView
         showsVerticalScrollIndicator={false}
         keyboardShouldPersistTaps="handled">
-          {forLoading?<ActivityLoader />:''}
+        {forLoading ? <ActivityLoader /> : ''}
         <View>
           <View
-            style={{paddingHorizontal: 20, marginTop: 30, marginBottom: 20}}>
+            style={{paddingHorizontal: 20, marginTop: 20, marginBottom: 20}}>
             <Text
               style={{fontSize: 24, fontWeight: '800', color: COLORS.BLACK}}>
               Plan Summary
@@ -84,19 +79,27 @@ export default function PlanSummary({route, navigation}) {
           </View>
           <View style={{marginHorizontal: 20}}>
             <View style={{marginBottom: 10}}>
-              <BoxOne data={route.params.data} />
+              <InstallationBase data={route.params.data} />
             </View>
             <View style={{marginBottom: 10}}>
               <BoxFour data={data} />
             </View>
           </View>
-   
+
           <View style={styles.plan_pricing_div}>
             <View>
               <View>
                 <TouchableOpacity style={styles.install_touchable}>
                   <PlanPricing style={styles.img_width} />
-                  <Text style={styles.installation_text}>Plan Pricing </Text>
+                  <Text
+                    style={{
+                      fontWeight: '700',
+                      fontSize: 12,
+                      marginLeft: -10,
+                      color: COLORS.BLACK,
+                    }}>
+                    Plan Pricing
+                  </Text>
                 </TouchableOpacity>
               </View>
               <View
@@ -114,11 +117,17 @@ export default function PlanSummary({route, navigation}) {
                       fontSize: 12,
                       fontWeight: '400',
                       paddingVertical: 5,
+                      color: COLORS.BLACK,
                     }}>
                     Price (excl.taxes):
                   </Text>
                   <Text
-                    style={{fontSize: 12, fontWeight: '400', paddingBottom: 5}}>
+                    style={{
+                      fontSize: 12,
+                      fontWeight: '400',
+                      paddingBottom: 5,
+                      color: COLORS.BLACK,
+                    }}>
                     Taxes:
                   </Text>
                   <Text
@@ -136,11 +145,13 @@ export default function PlanSummary({route, navigation}) {
                       fontSize: 12,
                       fontWeight: '400',
                       paddingVertical: 5,
+                      color: COLORS.BLACK,
                     }}>
                     ${total_price}
                   </Text>
                   <Text
-                    style={{fontSize: 12, fontWeight: '400', paddingBottom: 5}}>
+                    style={{fontSize: 12, fontWeight: '400', paddingBottom: 5,
+                    color: COLORS.BLACK,}}>
                     ${tax}
                   </Text>
                   <Text
@@ -154,26 +165,31 @@ export default function PlanSummary({route, navigation}) {
                 </View>
               </View>
             </View>
-           
           </View>
           <View style={styles.bottom_tab}>
-             
-                <TouchableOpacity
-                  onPress={() => navigationRef.navigate('Home')}
-                  style={{padding: 20, backgroundColor: COLORS.GRAY,borderRadius:25}}>
-                  <LeftIcon />
-                </TouchableOpacity>
-              
-              <View
-                style={{
-                  backgroundColor: COLORS.GREEN,
-                  paddingHorizontal: 20,
-                  paddingVertical: 10,
-                  borderRadius: 12,
-                }}>
+            <TouchableOpacity
+              onPress={() => navigationRef.navigate('Home')}
+              style={{
+                padding: 20,
+                backgroundColor: COLORS.GRAY,
+                borderRadius: 25,
+              }}>
+              <LeftIcon />
+            </TouchableOpacity>
 
-                  <TouchableOpacity onPress={() => navigation.navigate("PaymentGateWay",{data:route.params.data})}>
-
+            <View
+              style={{
+                backgroundColor: COLORS.GREEN,
+                paddingHorizontal: 20,
+                paddingVertical: 10,
+                borderRadius: 12,
+              }}>
+              <TouchableOpacity
+                onPress={() =>
+                  navigation.navigate('PaymentGateWay', {
+                    data: route.params.data,
+                  })
+                }>
                 <Text
                   style={{
                     fontSize: 14,
@@ -182,9 +198,9 @@ export default function PlanSummary({route, navigation}) {
                   }}>
                   CHECKOUT
                 </Text>
-                </TouchableOpacity>
-              </View>
+              </TouchableOpacity>
             </View>
+          </View>
         </View>
       </ScrollView>
     </SafeAreaView>
@@ -199,10 +215,10 @@ const styles = StyleSheet.create({
   //   marginHorizontal: 20,
   // },
   plan_pricing_div: {
-     marginHorizontal: 20,
+    marginHorizontal: 20,
     overflow: 'hidden',
     borderRadius: 10,
-    marginTop: Platform.OS === "ios"?10: 10,
+    marginTop: Platform.OS === 'ios' ? 10 : 10,
     shadowColor: '#000000',
     shadowOffset: {
       width: 4,
@@ -211,7 +227,6 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.2,
     shadowRadius: 5.62,
     elevation: 8,
-  
   },
   bottom_tab: {
     paddingHorizontal: 20,
@@ -233,7 +248,7 @@ const styles = StyleSheet.create({
     overflow: 'hidden',
   },
   installation_text: {
-    fontWeight: 700,
+    fontWeight: '700',
     fontSize: 12,
     paddingLeft: 10,
     color: COLORS.BLACK,
