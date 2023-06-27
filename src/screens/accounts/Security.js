@@ -73,9 +73,9 @@ const enableEdit =()=>{
 const UpdatePassword= async () =>{
     // console.log(values);
     try {
-      const values = { password: newPassword, confirmPassword };
+      // const values = { password: newPassword, confirmPassword };
 
-      await ValidateSchema.validate(values, { abortEarly: false });
+      // await ValidateSchema.validate(values, { abortEarly: false });
       await fetch(`${API}/changePassword `,{
         method: 'POST',
         headers: {
