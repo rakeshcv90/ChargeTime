@@ -9,18 +9,18 @@ import {
   import {SafeAreaView} from 'react-native-safe-area-context';
   import {Charging} from '../../../assets/images/Charging';
   import COLORS from '../../constants/COLORS';
-  import BoxOne from '../../Components/BoxOne';
+  import InstallationBase from '../../Components/InstallationBase';
   import BoxTwo from '../../Components/BoxTwo';
-  import BoxThree from '../../Components/BoxThree';
+  import PurchseButton from '../../Components/PurchseButton';
   
   export default function TabThree() {
     return (
       <SafeAreaView style={{backgroundColor: COLORS.CREAM, flex: 1}}>
         <ScrollView showsVerticalScrollIndicator={false} >
           <View style={styles.managing_width}>
-            <BoxOne />
+            <InstallationBase />
             <BoxTwo />
-            <BoxThree />
+            <PurchseButton />
           </View>
         </ScrollView>
       </SafeAreaView>

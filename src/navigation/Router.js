@@ -52,6 +52,7 @@ import { NoCharge } from '../../assets/images/NoCharge';
 import COLORS from '../constants/COLORS';
 import { DIMENSIONS } from '../constants/DIMENSIONS';
 import Contact from '../screens/accounts/Contact';
+import ForDownGrade from '../Components/ForDownGrade';
 
 const Drawer = createDrawerNavigator();
 const Stack = createNativeStackNavigator();
@@ -81,7 +82,7 @@ export const DrawerScreenPart = ({ navigation }) => {
     </View>
   );
 };
-export const chargerStatus = () => {
+export const ChargerStatus = () => {
   const getChargerStatus = useSelector(state => state.getChargerStatus);
   console.log(getChargerStatus, 'getChargerStatus');
   return (
@@ -401,7 +402,7 @@ const DrawerNavigation = () => {
             ? `Online`
             : `Offline`
         }
-        component={chargerStatus}
+        component={ChargerStatus}
       />
     </Drawer.Navigator>
   );
@@ -435,7 +436,7 @@ const EnergyOptions = () => {
   return (
     <Stack.Navigator screenOptions={screenOptions}>
       <Stack.Screen name="HomeOne" component={HomeOne} />
-      <Stack.Screen name="DownGradeData" component={DownGradeData} />
+      <Stack.Screen name="DownGradeData" component={ForDownGrade} />
       <Stack.Screen name="PaymentGateWay" component={PaymentGateWay} />
     </Stack.Navigator>
   );
@@ -461,11 +462,11 @@ const AccountStack = () => {
 };
 
 export default function Router() {
-  const [isAuthorized, setIsAuthorized] = useState(false);
+  // const [isAuthorized, setIsAuthorized] = useState(false);
   let loginDataString;
   const getLocationID = useSelector(state => state.getLocationID);
   const getPackageStatus = useSelector(state => state.getPackageStatus);
-  const getUserID = useSelector(state => state.getUserID);
+  const isAuthorized = useSelector(state => state.isAuthorized);
 
   useEffect(() => {
     checkLogin();
@@ -475,7 +476,7 @@ export default function Router() {
     id = await AsyncStorage.getItem('locationID');
   };
 
-  // console.log(getLocationId,"getLocationId")
+  console.log(isAuthorized,"getLocationId")
   // let locationId;
 
   // useEffect(() => {

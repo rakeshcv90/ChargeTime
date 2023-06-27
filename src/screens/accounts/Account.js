@@ -1,22 +1,30 @@
-import { Image, View, Text, StyleSheet, Dimensions, TouchableOpacity, SafeAreaView } from 'react-native';
-import React, { useState, useEffect } from 'react';
-import { createDrawerNavigator } from '@react-navigation/drawer';
-import { CommonActions, NavigationContainer } from '@react-navigation/native';
-import Picker from '@react-native-picker/picker'
+import {
+  Image,
+  View,
+  Text,
+  StyleSheet,
+  Dimensions,
+  TouchableOpacity,
+  SafeAreaView,
+} from 'react-native';
+import React, {useState, useEffect} from 'react';
+import {createDrawerNavigator} from '@react-navigation/drawer';
+import {CommonActions, NavigationContainer} from '@react-navigation/native';
+import Picker from '@react-native-picker/picker';
 import logo from '../../../assets/images/logo.png';
 import COLORS from '../../constants/COLORS';
 import HorizontalLine from '../../Components/HorizontalLine';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { navigationRef } from '../../../App';
-import { FONTS } from '../../constants/FONTS';
-import { DIMENSIONS } from '../../constants/DIMENSIONS';
+import {navigationRef} from '../../../App';
+import {FONTS} from '../../constants/FONTS';
+import {DIMENSIONS} from '../../constants/DIMENSIONS';
 import DrawerOpen from '../../Components/DrawerOpen';
-import { persistor } from '../../redux/store';
-import { useSelector } from 'react-redux';
-import { API } from '../../api/API';
-import { useDispatch } from 'react-redux';
-import { userProfileData } from '../../redux/action';
-import { getBasePackage } from '../../redux/action';
+import {persistor} from '../../redux/store';
+import {useSelector} from 'react-redux';
+import {API} from '../../api/API';
+import {useDispatch} from 'react-redux';
+import {userProfileData} from '../../redux/action';
+import {getBasePackage} from '../../redux/action';
 import SubBoxOne from '../../Components/SubBoxOne';
 const mobileW = Math.round(Dimensions.get('screen').width);
 const mobileH = Math.round(Dimensions.get('screen').height);
@@ -33,8 +41,6 @@ const Account = ({ navigation }) => {
   const user_ID = getUserID;
   const dispatch = useDispatch();
 
-
-
   useEffect(() => {
     //  console.log('data for this User:---------', userRegisterData); 
     console.log('iiiiddddddd', user_ID)
@@ -50,7 +56,6 @@ const Account = ({ navigation }) => {
       link: 'PersonalDetails',
       side_image: require('../../../assets/images/side.png'),
       // style={styles.side_icon}
-
     },
     {
       title: 'Security',
@@ -99,14 +104,14 @@ const Account = ({ navigation }) => {
         routes: [
           {
             name: 'LoginStack',
-            params: { screen: 'Login' },
+            params: {screen: 'Login'},
           },
         ],
       }),
     );
 
     console.log('Log out successfully');
-  }
+  };
 
   const userDetails = async () => {
     // const response = await fetch(`${API}/userexisting/${user_ID}`);
@@ -237,7 +242,11 @@ const Account = ({ navigation }) => {
 };
 
 const styles = StyleSheet.create({
-  row: { width: DIMENSIONS.SCREEN_WIDTH * 0.95, flexDirection: 'row', alignItems: 'center' },
+  row: {
+    width: DIMENSIONS.SCREEN_WIDTH * 0.95,
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
   main_div: {
     width: DIMENSIONS.SCREEN_WIDTH * 0.95,
     height: DIMENSIONS.SCREEN_HEIGHT * 0.9,
@@ -265,7 +274,6 @@ const styles = StyleSheet.create({
     marginBottom: 20,
     marginTop: 20,
     color: '#000000',
-
   },
   listItem: {
     flexDirection: 'row',
@@ -293,8 +301,7 @@ const styles = StyleSheet.create({
     borderColor: '#ccc',
     left: 55,
     borderRadius: 5,
-    // marginRight:10, 
-
+    // marginRight:10,
   },
   buttonText: {
     fontSize: 15,
@@ -326,7 +333,6 @@ const styles = StyleSheet.create({
     width: 8,
     height: 8,
     marginLeft: 120,
-
   },
   dropdown: {
     flex: 1,
@@ -364,7 +370,6 @@ const styles = StyleSheet.create({
     fontWeight: '500',
     paddingLeft: 10,
     paddingRight: 10,
-
   },
 });
 

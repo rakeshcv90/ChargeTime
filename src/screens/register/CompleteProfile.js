@@ -25,7 +25,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import {useSafeAreaFrame} from 'react-native-safe-area-context';
 import {Toast} from 'react-native-toast-message/lib/src/Toast';
 
-import { getCompleteData } from '../../redux/action';
+import { getCompleteData, setUserRegisterData } from '../../redux/action';
 
 import ActivityLoader from '../../Components/ActivityLoader';
 
@@ -90,32 +90,47 @@ export default function CompleteProfile(props) {
       newZipcode&&
       newState){
     try {
-      await fetch(`${API}/completeProfile`, {
+      const payload = new FormData()
+      payload.append('locationId',locationId)
+      payload.append('addlineone',addlineone)
+      payload.append('addlinetwo',addlinetwo)
+      payload.append('newZipcode',newZipcode)
+      payload.append('newState',newState)
+      payload.append('pwa_email',userRegisterData.email)
+      payload.append('pwa_mobile',userRegisterData.mobile)
+      payload.append('pwa_password',userRegisterData.password)
+      payload.append('pwa_name',userRegisterData.name)
+      console.log(payload)
+      const res = await axios( {
+        url:`${API}/completeProfile`,
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json',
+          'Content-Type': 'multipart/form-data',
         },
-        body: JSON.stringify({
-          locationId: locationId,
-          addlineone: addlineone,
-          addlinetwo: addlinetwo,
-          newZipcode: newZipcode,
-          newState: newState,
-          pwa_email: userRegisterData.email,
-          pwa_mobile: userRegisterData.mobile,
-          pwa_password: userRegisterData.password,
-          pwa_name: userRegisterData.name,
-        }),
+        data: payload
+        // data: JSON.stringify({
+        //   locationId: locationId,
+        //   addlineone: addlineone,
+        //   addlinetwo: addlinetwo,
+        //   newZipcode: newZipcode,
+        //   newState: newState,
+        //   pwa_email: userRegisterData.email,
+        //   pwa_mobile: userRegisterData.mobile,
+        //   pwa_password: userRegisterData.password,
+        //   pwa_name: userRegisterData.name,
+        // }),
       })
-        .then(res => res.json())
-        .then(data => {
+      console.log(res)
+        // .then(res => res.json())
+        if(res.data) {
 
           
-          dispatch(getCompleteData(data));
+          dispatch(getCompleteData(res.data));
+          dispatch(setUserRegisterData([]))
 
           
 
-          if (data.success !== false) {
+          if (res.data.success !== false) {
             
             PLATFORM_IOS
               ? Toast.show({
@@ -138,9 +153,9 @@ export default function CompleteProfile(props) {
               : ToastAndroid.show('Profile already in use', ToastAndroid.SHORT);
               setForLoading(false)
           }
-        });
+        }
     } catch (err) {
-      console.log(err);
+      console.log(err.response.data);
       setForLoading(false)
     }}else{
       PLATFORM_IOS
@@ -183,13 +198,13 @@ export default function CompleteProfile(props) {
                 inputSearchStyle={styles.inputSearchStyle}
                 iconStyle={styles.iconStyle}
                 data={locationMap}
-                search
+                // search
                 maxHeight={300}
                 labelField="location"
                 valueField="location"
                 placeholder='Installation' 
                 keyboardAvoiding
-                searchPlaceholder="Search..."
+                // searchPlaceholder="Search..."
                 value={selectedValue}
                 onFocus={() => setIsFocus(true)}
                 onBlur={() => setIsFocus(false)}
@@ -408,10 +423,10 @@ const styles = StyleSheet.create({
     paddingHorizontal: 8,
     fontSize: 12,
     color: COLORS.BLACK,
-    marginLeft: 35,
+    marginLeft: 15,
     lineHeight: 16,
-    fontWeight: '400',
-    letterSpacing: 0.4
+    fontWeight: '700',
+    // letterSpacing: 0.4
   },
   selectedTextStyle: {
     fontSize: 16,
@@ -428,6 +443,7 @@ const styles = StyleSheet.create({
   },
   dropdownContainer: {
     backgroundColor: COLORS.CREAM, // Set your desired background color here
+    borderColor: COLORS.GREEN, // Set your desired background color here
   },
   placeholderStyle: {
     fontSize: 14,

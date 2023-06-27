@@ -9,7 +9,7 @@ import ButtonSlider from '../../Components/ButtonSlider';
 import PriceBox from '../../Components/PriceBox';
 import { useDispatch, useSelector } from 'react-redux';
 import axios from 'axios';
-import { setRemainingData } from '../../redux/action';
+import { setOverUsage, setRemainingData } from '../../redux/action';
 import { API } from '../../api/API';
 
 const Day = (props: any) => {
@@ -26,7 +26,16 @@ const Day = (props: any) => {
 
   useEffect(() => {
     setShowSlider(true);
+    console.log(getkwhData)
   }, []);
+
+  const handleRefresh = () => {
+    setRefresh(true);
+    setTimeout(() => {
+      setRefresh(false);
+    }, 2000);
+    remainigUsuageData()
+  };
 
   const remainigUsuageData = () => {
     let remaingData;
@@ -36,24 +45,18 @@ const Day = (props: any) => {
       .then(res => {
         if (res.data?.kwh_unit_remaining >= 0) {
           remaingData = res.data?.kwh_unit_remaining;
+          dispatch(setOverUsage(false));
         } else {
           remaingData = res.data?.kwh_unit_overusage;
+          dispatch(setOverUsage(true));
         }
-        console.log('first', res.data);
+        console.log(res.data)
         dispatch(setRemainingData(remaingData));
       })
       .catch(err => {
         console.log(err);
       });
   };
-  const handleRefresh = () => {
-    setRefresh(true);
-    setTimeout(() => {
-      setRefresh(false);
-    }, 2000);
-    remainigUsuageData();
-  };
-
   return (
     <>
       <View style={{ flex: 1, backgroundColor: COLORS.CREAM }}>
@@ -78,8 +81,8 @@ const Day = (props: any) => {
               marginHorizontal: 20,
               marginTop: 10,
             }}>
-
-            <Remaining RemainingFill={getRemainingData / 10} KWH={400} data={"home"} />
+             
+            <Remaining RemainingFill={10} KWH={400} data={"home"} />
             <TotalUsage data={getkwhData.Totalusedkwhs} />
           </View>
 

@@ -10,7 +10,7 @@ import {navigationRef} from '../../App';
 import {PLATFORM_IOS} from '../constants/DIMENSIONS';
 import COLORS from '../constants/COLORS';
 
-export default function DrawerOpen({navigation}) {
+export default function DrawerOpen() {
   const [changeImage, setChangeImage] = useState(false);
   setTimeout(() => {
     setChangeImage(true);
@@ -22,7 +22,7 @@ export default function DrawerOpen({navigation}) {
         position: 'absolute',
         right: PLATFORM_IOS ? 25 : 20,
         alignSelf: 'flex-end',
-        top: PLATFORM_IOS ? 40 : 25,
+        top: PLATFORM_IOS ? 80 : 40,
         zIndex: 5,
         backgroundColor: COLORS.WHITE,
         borderRadius: 35,
