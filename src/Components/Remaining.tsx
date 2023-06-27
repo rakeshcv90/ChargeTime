@@ -1,33 +1,31 @@
-import {Dimensions, StyleSheet, Text, View} from 'react-native';
+import { Dimensions, Platform, StyleSheet, Text, View } from 'react-native';
 import React, { useEffect } from 'react';
 import COLORS from '../constants/COLORS';
 import LinearGradient from 'react-native-linear-gradient';
-import {DIMENSIONS} from '../constants/DIMENSIONS';
+import { DIMENSIONS } from '../constants/DIMENSIONS';
 import { useSelector } from 'react-redux';
 
-const Remaining = ({...props}) => {
-  
-  const {getRemainingData} =useSelector((state:any) => state)
-  
+const Remaining = ({ ...props }) => {
+
+  const { getRemainingData } = useSelector((state: any) => state)
+
   return (
     <View
       style={{
         backgroundColor: '#F5F5F5',
-        width: props?.data !=="energy" ? DIMENSIONS.SCREEN_WIDTH * 0.4:DIMENSIONS.SCREEN_WIDTH * 0.9,
+        width: props?.data !== "energy" ? DIMENSIONS.SCREEN_WIDTH * 0.4 : DIMENSIONS.SCREEN_WIDTH * 0.9,
         height: DIMENSIONS.SCREEN_WIDTH * 0.35,
-        marginVertical: 20,
+        marginVertical: DIMENSIONS.SCREEN_HEIGHT * 0.03,
         flexDirection: 'column-reverse',
+     
         shadowColor: '#000000',
-        shadowOffset: {
-          width: 0,
-          height: 6,
-        },
-        shadowOpacity: 0.2,
-        shadowRadius: 5.62,
-        elevation: 8,
+        shadowOffset: { width: 0, height: 1 },
+        shadowOpacity: 0.8,
+        shadowRadius: 5,
+        elevation: 5,
         borderWidth: 0,
         borderRadius: 10,
-        overflow: 'hidden',
+       // overflow: 'hidden',
       }}>
       <Text
         style={{
@@ -45,16 +43,17 @@ const Remaining = ({...props}) => {
       </Text>
       <LinearGradient
         colors={[
-            'rgba(177, 211, 79, 0.7) 0%,', 
-            'rgb(177, 211, 79) 0%,', ]}
-        start={{x: 0, y: 0}}
-        end={{x: 0, y: 1}}
+          'rgba(177, 211, 79, 0.7) 0%,',
+          'rgb(177, 211, 79) 0%,',]}
+        start={{ x: 0, y: 0 }}
+        end={{ x: 0, y: 1 }}
         style={{
           width: '100%',
-          height: props.RemainingFill ? `${props.RemainingFill}%` : '1%',
+          borderRadius:10,
+          height: getRemainingData >= 1000 ? '100%' : getRemainingData < 1000 ?`${getRemainingData / 10}%` : '1%',
           flexDirection: 'column-reverse',
         }}>
-        <View style={{marginBottom: 30, marginLeft: 30}}>
+        <View style={{ marginBottom: 30, marginLeft: 30 }}>
           <Text
             style={{
               fontWeight: '800',

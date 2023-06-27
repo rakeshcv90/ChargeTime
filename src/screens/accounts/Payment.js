@@ -12,7 +12,7 @@ import {
   Alert,
   ImageBackground,
   Platform,
-  
+
 } from 'react-native';
 import React, { useState, useRef, useEffect } from 'react';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -232,18 +232,17 @@ export default function PaymentGateWay({ navigation }) {
   const cardTypeImage = getCardType(getCard_Number);
 
   return (
-    <SafeAreaView style={{backgroundColor: COLORS.CREAM, flex: 1}}>
-      
-  <ScrollView showsVerticalScrollIndicator={false}>
+    <SafeAreaView style={{ backgroundColor: COLORS.CREAM, flex: 1 }}>
 
-       <Header headerName="Payment Methods" editShow={false} />
-       {Platform.OS=='android'? <HorizontalLine style={styles.line} />:<View
-              style={{
-             
-             
-              }}>
-              <Image source={require('../../../assets/images/dotted.png')} style={{ width: mobileW * 0.97 ,top:Platform.OS=='ios'?-30:2}} />
-            </View> }
+      <ScrollView showsVerticalScrollIndicator={false}>
+
+        <Header headerName="Payment Methods" editShow={false} />
+        {Platform.OS == 'android' ? <HorizontalLine style={styles.line} /> : <View
+
+
+        >
+          <Image source={require('../../../assets/images/dotted.png')} style={{ width: mobileW * 0.97 }} />
+        </View>}
         <View style={styles.mainDiv_container}>
           <Formik
             initialValues={initialValues}
@@ -583,8 +582,8 @@ export default function PaymentGateWay({ navigation }) {
                           formattedValidTill += '/';
                           formattedValidTill += year;
                         }
-                      
-                        
+
+
                         // Update the state with the formatted valid till value
                         setCardDetails({ ...cardDetails, validTill: formattedValidTill });
 
@@ -621,8 +620,8 @@ export default function PaymentGateWay({ navigation }) {
                       value={values.cvv}
                       onChangeText={(text) => {
                         handleChange('cvv')(text),
-                        // setCardDetails('');
-                        setSavedCard('')
+                          // setCardDetails('');
+                          setSavedCard('')
                         setCardDetails({ ...cardDetails, ['card_cvv']: text })
                       }}
                       onBlur={handleBlur('cvv')}
@@ -646,20 +645,41 @@ export default function PaymentGateWay({ navigation }) {
                 <View
                   style={{
                     backgroundColor: COLORS.GREEN,
-                    paddingHorizontal: 20,
-                    paddingVertical: 10,
-
+                    width: DIMENSIONS.SCREEN_WIDTH * 0.4,
+                    height: '7%',
                     borderRadius: 12,
-                    marginLeft: 240,
-                    // marginRight:20,
+                    paddingVertical: Platform.OS == 'ios' ? DIMENSIONS.SCREEN_WIDTH * 5 / 100 : DIMENSIONS.SCREEN_WIDTH * 4 / 100,
+                    paddingHorizontal: 24,
+
+
+                    alignSelf: 'flex-end',
+                    top: DIMENSIONS.SCREEN_WIDTH * 0.1,
+                    ...Platform.select({
+                      ios: {
+                        shadowColor: '#000000',
+                        shadowOffset: { width: 0, height: 2 },
+                        shadowOpacity: 0.3,
+                        shadowRadius: 4,
+                      },
+                      android: {
+                        elevation: 4,
+                      },
+                    }),
+
+
                   }}>
-                  <TouchableOpacity onPress={handleSubmit}>
+                  <TouchableOpacity onPress={handleSubmit} style={{
+
+                  }}>
                     <Text
                       style={{
                         fontSize: 14,
                         fontWeight: '700',
-                        alignContent: 'center',
-                        justifyContent: 'center',
+                        fontSize: 16,
+                        fontWeight: 'bold',
+                        textAlign: 'center',
+                        alignSelf: 'center',
+
                         color: COLORS.BLACK,
                       }}>
                       ADD CARD
@@ -686,6 +706,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     width: mobileW,
     height: mobileH,
+    marginVertical: '10%'
     // paddingTop: 30,
   },
   mainDiv_state_ZIP: {

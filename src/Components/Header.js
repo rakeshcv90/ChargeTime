@@ -10,48 +10,48 @@ import {
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import COLORS from '../constants/COLORS';
-import  DIMENSIONS  from '../constants/DIMENSIONS';
+import DIMENSIONS from '../constants/DIMENSIONS';
 import { navigationRef } from '../../App';
 import { Image } from 'react-native-svg';
 import { BackButton } from '../../assets/svgs/BackButton';
 import { Edit } from '../../assets/svgs/Edit';
 import { Save } from '../../assets/svgs/Save';
 
-const Header = ({ headerName, showRightButton, onPress, enableEdit ,editButton, editShow }) => {
-// const [RightButton, setRightButton] =useState()
-const [pressed, setPressed]=useState(true)
-const [rightButton, setRightButton] = useState(null);
+const Header = ({ headerName, showRightButton, onPress, enableEdit, editButton, editShow }) => {
+  // const [RightButton, setRightButton] =useState()
+  const [pressed, setPressed] = useState(true)
+  const [rightButton, setRightButton] = useState(null);
 
-useEffect(()=>{
-  if(!editButton){
-    setRightButton(false)
-  }
-},[editButton])
+  useEffect(() => {
+    if (!editButton) {
+      setRightButton(false)
+    }
+  }, [editButton])
 
   return (
-    <SafeAreaView style={styles.container}>
-      <View style={styles.innerContainer}>
-        <TouchableOpacity style={styles.backButton} onPress={() => navigationRef.current?.goBack()}>
-          {/* Replace with your BackButton component */}
-          <BackButton />
-        </TouchableOpacity>
-        <Text style={styles.headerText}>{headerName}</Text>
-        {editShow ? <TouchableOpacity style={styles.rightButton} onPress={()=>{
-          if(!rightButton){
-            enableEdit();
-            setRightButton(true)
-          }else{
-            onPress();
-            
-          }
-          }}>
-        {rightButton  ? <Save /> :<Edit />}
-          {/* {showRightButton && <Edit />} */}
-          {/* {renderIcon()} */}
-        </TouchableOpacity>:null}
-        
-      </View>
-    </SafeAreaView>
+
+    <View style={styles.innerContainer}>
+      <TouchableOpacity style={styles.backButton} onPress={() => navigationRef.current?.goBack()}>
+        {/* Replace with your BackButton component */}
+        <BackButton />
+      </TouchableOpacity>
+      <Text style={styles.headerText}>{headerName}</Text>
+      {editShow ? <TouchableOpacity style={styles.rightButton} onPress={() => {
+        if (!rightButton) {
+          enableEdit();
+          setRightButton(true)
+        } else {
+          onPress();
+
+        }
+      }}>
+        {rightButton ? <Save /> : <Edit />}
+        {/* {showRightButton && <Edit />} */}
+        {/* {renderIcon()} */}
+      </TouchableOpacity> : null}
+
+    </View>
+
   );
 };
 
@@ -71,7 +71,7 @@ const styles = StyleSheet.create({
     width: 30,
   },
   headerText: {
-    
+
     color: COLORS.BLACK,
     fontSize: 20,
     fontWeight: '700',
@@ -82,8 +82,8 @@ const styles = StyleSheet.create({
   },
   rightButton: {
     width: 50,
-    height:20,
-    marginRight:15,
+    height: 20,
+    marginRight: 15,
   },
 });
 

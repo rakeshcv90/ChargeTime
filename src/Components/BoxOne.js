@@ -7,7 +7,7 @@ import { Connecticut } from '../../assets/images/Connecticut';
 import COLORS from '../constants/COLORS';
 import { useSelector } from 'react-redux';
 
-
+import { DIMENSIONS } from '../constants/DIMENSIONS';
 const mobileW = Math.round(Dimensions.get('screen').width);
 const BoxOne = ({data}) => {
   // const {navigation, route} = props;
@@ -16,7 +16,7 @@ const BoxOne = ({data}) => {
 
 
   return (
-    <View style={[styles.mainDiv_installation]}>
+    <View style={ Platform.OS == 'android' ? styles.mainDiv_installation : styles.mainDiv_installation1}>
       <TouchableOpacity style={styles.install_touchable}>
         
         {/* <Address style={styles.img_width} /> */}
@@ -88,6 +88,8 @@ const styles = StyleSheet.create({
     backgroundColor: COLORS.GREEN,
     alignItems: 'center',
     paddingVertical: 15,
+    borderTopLeftRadius:10,
+    borderTopRightRadius:10,
   },
   img_width: {
     marginLeft: 20,
@@ -115,7 +117,10 @@ const styles = StyleSheet.create({
     },
     shadowOpacity: 1,
     shadowRadius: 4,
-    elevation: Platform.OS === 'android' ? 8 : 0,
+   // elevation: Platform.OS === 'android' ? 8 : 0,
+   // borderBottomLeftRadius:10,
+   borderRadius:10
+    
   },
   force_base: {
     fontWeight: "400",
@@ -131,6 +136,9 @@ const styles = StyleSheet.create({
     paddingRight: 10,
     paddingVertical: 10,
     backgroundColor: COLORS.GRAY,
+    borderBottomLeftRadius:10,
+    //borderTopRightRadius:10,
+    
   },
   state_div: {
     flexDirection: 'row',
@@ -197,5 +205,15 @@ const styles = StyleSheet.create({
     fontWeight: 700,
     fontSize: 14,
     color: COLORS.WHITE,
+  },
+  mainDiv_installation1: {
+
+    marginTop: DIMENSIONS.SCREEN_HEIGHT * 0.03,
+    marginBottom: DIMENSIONS.SCREEN_HEIGHT * 0.03,
+    shadowColor: '#000000',
+    shadowOffset: { width: 0, height: 6 },
+    shadowOpacity: 0.2,
+    shadowRadius: 5.62,
+    elevation: 8,
   },
 });

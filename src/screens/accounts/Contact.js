@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, TextInput, StyleSheet, Button, SafeAreaView, TouchableOpacity, Text, ToastAndroid } from 'react-native';
+import { View, TextInput, StyleSheet, Button, SafeAreaView, TouchableOpacity, Text, ToastAndroid, Dimensions } from 'react-native';
 import Input from '../../Components/Input';
 import COLORS from '../../constants/COLORS';
 import { useSelector } from 'react-redux';
@@ -10,48 +10,54 @@ import { Eye } from '../../../assets/svgs/Eye';
 import { API } from '../../api/API';
 import { navigationRef } from '../../../App';
 import { ms } from 'react-native-size-matters';
-import {PLATFORM_IOS} from '../../constants/DIMENSIONS';
+import { PLATFORM_IOS } from '../../constants/DIMENSIONS';
+import { Image } from 'react-native';
 
 // import Button from '../../Components/Button';
 
 const Contact = () => {
-    const getUserID = useSelector((state) => state.getUserID);
-    const [message, setMessage] = useState('');
-
+  const getUserID = useSelector((state) => state.getUserID);
+  const [message, setMessage] = useState('');
   const user_ID = getUserID;
-
+  const mobileW = Math.round(Dimensions.get('screen').width);
 
   return (
     <SafeAreaView style={{ backgroundColor: COLORS.CREAM, flex: 1 }}>
       <Header headerName="Contact Us" />
-      <HorizontalLine style={styles.line} />
+      {Platform.OS == 'android' ? <HorizontalLine style={styles.line} /> : <View
+        style={{
+
+
+        }}>
+        <Image source={require('../../../assets/images/dotted.png')} style={{ width: mobileW * 0.97 }} />
+      </View>}
       <View style={styles.container}>
-      <TextInput
-    style={{
-      // flex: 1,
-      backgroundColor: COLORS.CREAM,
-      borderRadius: 5,
-      borderWidth: 0.7,
-      borderColor: COLORS.BLACK,
-      marginVertical: 19,
-      width: ms(340),
-      height: ms(150),
-      color: COLORS.BLACK,
-      fontSize:14,
-      fontFamily: 'Roboto',
-      fontWeight: '100',
-      paddingLeft: 10, 
-      paddingTop: 10,
-      textAlignVertical: 'top',
-       
-    }}
-    multiline
-    maxLength={550}
-    placeholder="Please describe your query / issue in detail. "
-    placeholderTextColor={COLORS.LIGHT_GREY}
-    onChangeText={text => setMessage(text)}
-    value={message}
-  />
+        <TextInput
+          style={{
+            // flex: 1,
+            backgroundColor: COLORS.CREAM,
+            borderRadius: 5,
+            borderWidth: 0.7,
+            borderColor: COLORS.BLACK,
+            marginVertical: 19,
+            width: ms(340),
+            height: ms(150),
+            color: COLORS.BLACK,
+            fontSize: 14,
+            fontFamily: 'Roboto',
+            fontWeight: '100',
+            paddingLeft: 10,
+            paddingTop: 10,
+            textAlignVertical: 'top',
+
+          }}
+          multiline
+          maxLength={550}
+          placeholder="Please describe your query / issue in detail. "
+          placeholderTextColor={COLORS.LIGHT_GREY}
+          onChangeText={text => setMessage(text)}
+          value={message}
+        />
         <View
           style={{
             flexDirection: 'row',
@@ -68,6 +74,17 @@ const Contact = () => {
               padding: 13,
               borderRadius: 10,
               width: '50%',
+              ...Platform.select({
+                ios: {
+                  shadowColor: '#000000',
+                  shadowOffset: { width: 0, height: 2 },
+                  shadowOpacity: 0.3,
+                  shadowRadius: 4,
+                },
+                android: {
+                  elevation: 4,
+                },
+              }),
             }}
 
           >
@@ -78,7 +95,7 @@ const Contact = () => {
                 fontSize: 14,
                 fontWeight: '700',
               }}>
-            SEND MESSAGE
+              SEND MESSAGE
             </Text>
           </TouchableOpacity>
         </View>
@@ -101,12 +118,12 @@ const styles = StyleSheet.create({
   button: {
     backgroundColor: COLORS.RED,
   },
-label: {
+  label: {
     position: "absolute",
-    top:' -15px',
+    top: ' -15px',
     left: "23px",
-    padding:" 2px",
-}
+    padding: " 2px",
+  }
 });
 
 export default Contact;

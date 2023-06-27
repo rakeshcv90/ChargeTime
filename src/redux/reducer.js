@@ -25,6 +25,7 @@ const initialState = {
     getPurchaseData:[],
     getDeviceID:'',
     userProfileData: [],
+    getMonthData:[]
   };
   
   const rootReducer = (state = initialState, action) => {

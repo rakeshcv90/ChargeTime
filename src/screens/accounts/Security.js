@@ -124,7 +124,7 @@ const UpdatePassword= async () =>{
              
              
               }}>
-              <Image source={require('../../../assets/images/dotted.png')} style={{ width: mobileW * 0.97 ,top:Platform.OS=='ios'?-30:2}} />
+              <Image source={require('../../../assets/images/dotted.png')} style={{ width: mobileW * 0.97 ,}} />
             </View> }
      <View style={[styles.mainDiv_container]}>
      <Input

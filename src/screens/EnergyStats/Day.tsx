@@ -1,9 +1,9 @@
-import {View, Text, StyleSheet, ScrollView, RefreshControl} from 'react-native';
-import React, {useEffect, useRef, useState} from 'react';
+import { View, Text, StyleSheet, ScrollView, RefreshControl } from 'react-native';
+import React, { useEffect, useRef, useState } from 'react';
 import COLORS from '../../constants/COLORS';
 import Remaining from '../../Components/Remaining';
 import TotalUsage from '../../Components/TotalUsuage';
- import Graph from '../../Components/Graph';
+import Graph from '../../Components/Graph';
 import BoxTwo from '../../Components/BoxTwo';
 import ButtonSlider from '../../Components/ButtonSlider';
 import PriceBox from '../../Components/PriceBox';
@@ -12,18 +12,18 @@ import axios from 'axios';
 import { setRemainingData } from '../../redux/action';
 import { API } from '../../api/API';
 
-const Day = (props:any) => {
-  const {getkwhData} =useSelector((state:any) => state)
-  const {getBoxTwoDataForDashboard,getUserID,getGraphData,getChargerStatus,getRemainingData} = useSelector((state:any) => state)
-  
+const Day = (props: any) => {
+  const { getkwhData } = useSelector((state: any) => state)
+  const { getBoxTwoDataForDashboard, getUserID, getGraphData, getChargerStatus, getRemainingData } = useSelector((state: any) => state)
+
   const [toggleState, setToggleState] = useState(false);
 
-  const handleToggle = (value:any) => setToggleState(value);
+  const handleToggle = (value: any) => setToggleState(value);
   const dispatch = useDispatch()
   const [showSlider, setShowSlider] = useState(true);
   const [refresh, setRefresh] = useState(false);
   const ScrollRef = useRef(null);
-  
+
   useEffect(() => {
     setShowSlider(true);
   }, []);
@@ -56,20 +56,20 @@ const Day = (props:any) => {
 
   return (
     <>
-      <View style={{flex: 1, backgroundColor: COLORS.CREAM}}>
+      <View style={{ flex: 1, backgroundColor: COLORS.CREAM }}>
         <ScrollView
           ref={ScrollRef}
           showsVerticalScrollIndicator={false}
           keyboardShouldPersistTaps="handled"
           onScrollBeginDrag={() => setShowSlider(false)}
-        //   onScrollToTop={() => setShowSlider(true)}
-        refreshControl={
-          <RefreshControl
-            refreshing={refresh}
-            colors={[COLORS.GREEN]}
-            onRefresh={handleRefresh}
-          />
-        }
+          //   onScrollToTop={() => setShowSlider(true)}
+          refreshControl={
+            <RefreshControl
+              refreshing={refresh}
+              colors={[COLORS.GREEN]}
+              onRefresh={handleRefresh}
+            />
+          }
           onScrollEndDrag={() => setShowSlider(true)}>
           <View
             style={{
@@ -78,17 +78,17 @@ const Day = (props:any) => {
               marginHorizontal: 20,
               marginTop: 10,
             }}>
-             
+
             <Remaining RemainingFill={getRemainingData / 10} KWH={400} data={"home"} />
             <TotalUsage data={getkwhData.Totalusedkwhs} />
           </View>
-          
-          <View style={{marginHorizontal: 20,}}>
-          <Graph dataOne={getGraphData} />
-          <BoxTwo data={getBoxTwoDataForDashboard[0]} />
+
+          <View style={{ marginHorizontal: 20, }}>
+            <Graph dataOne={getGraphData} />
+            <BoxTwo data={getBoxTwoDataForDashboard[0]} />
           </View>
-          <View style={{marginBottom:120}}>
-          <PriceBox data={getBoxTwoDataForDashboard[0]} />
+          <View style={{ marginBottom: 120 }}>
+            <PriceBox data={getBoxTwoDataForDashboard[0]} />
           </View>
         </ScrollView>
       </View>

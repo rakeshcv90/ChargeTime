@@ -22,7 +22,6 @@ export const userProfileData = (data) => {
   return {type: types.GET_PROFILE_DATA, payload: data};
 };
 
-
 export const setBasePackage = (data) => {
 
   return {type:types.GET_BASE_PACKAGE,payload:data}

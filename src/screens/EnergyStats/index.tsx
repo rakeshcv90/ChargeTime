@@ -10,7 +10,8 @@ import {
   Dimensions,
   StatusBar,
   BackHandler,
-  Alert
+  Alert,
+  Platform
 } from 'react-native';
 import {useSelector} from 'react-redux';
 import {SafeAreaView} from 'react-native-safe-area-context';
@@ -44,11 +45,23 @@ function MyTabBar({state, descriptors, navigation}) {
         marginHorizontal: 20,
         backgroundColor: '#EEEEEE',
         borderRadius: 20,
-        overflow: 'hidden',
-        elevation: 1,
+       // overflow: 'hidden',
+        ...Platform.select({
+          ios: {
+            shadowColor: '#000000',
+            shadowOffset: { width: 0, height: 2 },
+            shadowOpacity: 0.3,
+            shadowRadius: 4,
+          },
+          android: {
+            elevation: 4,
+          },
+        }),
         borderWidth: 1,
         borderColor: '#EEEEEE',
         zIndex: 1,
+        
+    
       }}>
       {state.routes.map((route, index) => {
         const {options} = descriptors[route.key];

@@ -1,14 +1,16 @@
-import React, {useEffect, useState, useRef} from 'react';
-import {View, Image, StyleSheet, Animated} from 'react-native';
+import React, { useEffect, useState, useRef } from 'react';
+import { View, Image, StyleSheet, Animated } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import App, {navigationRef} from '../../App';
-import {DIMENSIONS} from '../constants/DIMENSIONS';
+import App, { navigationRef } from '../../App';
+import { DIMENSIONS } from '../constants/DIMENSIONS';
 import Introduction from './Introduction';
-import {BackHandler} from 'react-native';
+import { BackHandler } from 'react-native';
 import COLORS from '../constants/COLORS';
+import { useSelector } from 'react-redux';
 
 const Splash = () => {
   const backHandler = useRef(null);
+  const isAuthorized = useSelector(state => state.isAuthorized);
 
   useEffect(() => {
     const handleBackButton = () => {
@@ -39,7 +41,20 @@ const Splash = () => {
           navigationRef.navigate('Introduction');
         } else {
           // Not first time user, show login
-          navigationRef.navigate('Login');
+          {
+            !isAuthorized ? (
+
+              navigationRef.navigate('Login')
+
+            ) : (
+
+
+            navigationRef.navigate('DrawerStack')
+
+          )
+          }
+
+
         }
       } catch (error) {
         console.log('Error checking first time:', error);
@@ -109,7 +124,7 @@ const Splash = () => {
           style={[
             styles.splash_image,
             {
-              transform: [{scale: scaleValue}],
+              transform: [{ scale: scaleValue }],
             },
           ]}
         />
