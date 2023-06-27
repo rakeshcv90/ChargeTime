@@ -100,6 +100,7 @@ const styles = StyleSheet.create({
     fontWeight: 700,
     fontSize: 14,
     paddingLeft: 20,
+    paddingTop:5,
     color: COLORS.BLACK
     // paddingRight:250,
   },
@@ -108,6 +109,7 @@ const styles = StyleSheet.create({
     color: COLORS.BLACK,
     fontSize: 14,
     paddingLeft: 20,
+    paddingTop:5,
     // marginRight:200,
   },
 });

@@ -35,7 +35,7 @@ const Account = ({ navigation }) => {
 
   useEffect(() => {
     //  console.log('data for this User:---------', userRegisterData); 
-    console.log('iiiiddddddd', getUserID)
+    // console.log('iiiiddddddd', getUserID)
     userDetails();
     userSubscription();
     //  userSubsEnergy();
@@ -113,7 +113,7 @@ const Account = ({ navigation }) => {
       const response = await fetch(`${API}/userexisting/${user_ID}`);
       const result = await response.json();
       if (result[0].message == "sucess") {
-        console.log('wwwwww', result);
+        // console.log('wwwwww', result);
         //  setUserData(result);
         dispatch(userProfileData(result));
         //  console.log(result)
@@ -134,8 +134,8 @@ const Account = ({ navigation }) => {
 
       if (result[0].id !== null) {
         // setGetSubscription(result[0]);
-        console.log("======ytytytytyyt=====", result[0]);
-        // dispatch(getCurrentPlan(result)); 
+        // console.log("======ytytytytyyt=====", result[0]);
+        dispatch(getCurrentPlan(result)); 
       } else {
         console.log("iiiiiiiiiiii")
       }

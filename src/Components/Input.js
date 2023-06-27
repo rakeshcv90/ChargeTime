@@ -36,6 +36,7 @@ export type Props = TextInputProps & {
   passwordInputIcon?: boolean | false;
   textWidth?: any;
   w?: 'half' | 'full';
+
   
 };
 const Input: FC<Props> = ({...Props}) => {
@@ -123,7 +124,7 @@ const Input: FC<Props> = ({...Props}) => {
               )}
             </TouchableOpacity>
           )}
-          
+
         </View>
       </View>
       {Props.errors && Props.touched && (

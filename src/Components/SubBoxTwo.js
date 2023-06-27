@@ -9,10 +9,10 @@ import { useSelector } from 'react-redux';
 const SubBoxTwo = () => {
   const getCurrentPlan = useSelector((state) => state.getCurrentPlan);
 
-  useEffect(() => {
-    // console.log('data for this User:---------', getPlanSummary); 
-    console.log(getCurrentPlan, "----------")
-  }, []);
+  // useEffect(() => {
+  //   // console.log('data for this User:---------', getPlanSummary); 
+  //   // console.log(getCurrentPlan, "----------")
+  // }, []);
   return (
     <View style={styles.mainDiv_installation}>
       <TouchableOpacity style={styles.install_touchable}>

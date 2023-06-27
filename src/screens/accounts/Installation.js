@@ -40,7 +40,7 @@ const Installation = () => {
   const [forLoading,setForLoading] = useState(false)
   const mobileW = Math.round(Dimensions.get('screen').width);
   useEffect(() => {
-    console.log('data for this User:---------', userProfileData); 
+    // console.log('data for this User:---------', userProfileData); 
     setAddLineTwo(userProfileData[0]?.pwa_add2);
     setAddLineOne(userProfileData[0]?.pwa_add1);
     // console.log('userrrrrrrrr',getUserID)

@@ -59,12 +59,6 @@ const PersonalDetails = () => {
   }
 
   const updatePersonalDetails = async () =>{
-
-    console.log("data")
-
-    console.log(name, "--------");
-    console.log(number, "------------")
-    console.log(user_ID, "------------")
     // setIsEditable(true);
     await fetch(`${API}/personalInfo/${user_ID}`, {
       method: 'PUT',
@@ -84,12 +78,8 @@ const PersonalDetails = () => {
           name: name,
             mobile: number,
           }];
-          console.log(updatedData,"------")
-          // if (updatedData) {
-          //   dispatch(userProfileData(updatedData));
-          // } else {
-          //   console.log('updatedData is not defined or has an incorrect value');
-          // }
+          // console.log(updatedData,"------")
+        
           dispatch(updatePersionalDetail(updatedData));
           PLATFORM_IOS?
           Toast.show({
@@ -125,11 +115,6 @@ const PersonalDetails = () => {
     }
     // Limit the length of the input to 10 characters
     const limitedText = cleanedText.slice(0, 10);
-    // if (limitedText >= 10){
-    // setError('Mobile number should contain 10 digits only');
-    // }else {
-    //   setError('');
-    // }
     // Update the state with the validated input
     setNumber(limitedText);
   };
@@ -227,36 +212,19 @@ const PersonalDetails = () => {
             fontWeight: '200',
           }}
         />
-        {/* <Text style={[styles.textdata,styles.forPaddingTOP]}>Phone No.</Text>
-            <TextInput
-              style={[
-                styles.textinput,
-                {color: isDark ? COLORS.BLACK : COLORS.BLACK},
-              ]}
-              placeholder="Eg. +123 (456) 789"
-              placeholderTextColor={{color: 'black'}}
-            />
-             <Text style={[styles.textdata,styles.forPaddingTOP]}>Email</Text>
-            <TextInput
-              style={[
-                styles.textinput,
-                {color: isDark ? COLORS.BLACK : COLORS.BLACK},
-              ]}
-              placeholder="Eg. johndoe@xyz.com"
-              placeholderTextColor={{color: 'black'}}
-            />  */}
 
       </View>
      
       <View style={styles.bottom}>
-        <Text>Want to delete account?{' '}</Text>
+        <Text style={{fontSize: 14, color: COLORS.BLACK}}>Want to delete account?{' '}</Text>
 
         <TouchableOpacity onPress={() => navigationRef.navigate('deleteAccount')}>
           <Text
             style={{
               fontWeight: 'bold',
-              font: 14,
+              fontSize: 14,
               height: 25,
+              color:COLORS.BLACK,
             }}
           >Request here.</Text>
         </TouchableOpacity>
@@ -268,7 +236,7 @@ const styles = StyleSheet.create({
   bottom: {
     marginTop: 400,
     marginLeft: 70,
-    font: 14,
+    fontSize: 14,
     // fontfamily: FONTS.MONTSERRAT_REGULAR,
     height: 25,
     color: COLORS.BLACK,
