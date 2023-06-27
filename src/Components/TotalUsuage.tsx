@@ -15,19 +15,16 @@ const TotalUsage = ({data}) => {
         backgroundColor: '#F5F5F5',
         width: DIMENSIONS.SCREEN_WIDTH * 0.4,
         height: DIMENSIONS.SCREEN_WIDTH * 0.35,
-        marginVertical: 20,
+        marginVertical: DIMENSIONS.SCREEN_HEIGHT * 0.03,
         flexDirection: 'column-reverse',
         shadowColor: '#000000',
-        shadowOffset: {
-          width: 0,
-          height: 6,
-        },
-        shadowOpacity: 0.2,
-        shadowRadius: 5.62,
-        elevation: 8,
+     
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.8,
+        shadowRadius: 5,
+        elevation: 5,
         borderWidth: 0,
         borderRadius: 10,
-        overflow: 'hidden',
       }}>
       <Text
         style={{

@@ -1,7 +1,7 @@
-import {StyleSheet, Text, View, Animated} from 'react-native';
-import React, {useEffect, useRef, useState} from 'react';
+import { StyleSheet, Text, View, Animated } from 'react-native';
+import React, { useEffect, useRef, useState } from 'react';
 import COLORS from '../constants/COLORS';
-import {DIMENSIONS} from '../constants/DIMENSIONS';
+import { DIMENSIONS } from '../constants/DIMENSIONS';
 import AnimatedLottieView from 'lottie-react-native';
 import LinearGradient from 'react-native-linear-gradient';
 const Charging = () => {
@@ -36,7 +36,7 @@ const Charging = () => {
         marginLeft: 20,
         backgroundColor: COLORS.WHITE,
         height: 50,
-        width: (DIMENSIONS.SCREEN_WIDTH * 60) / 100,
+        width: (DIMENSIONS.SCREEN_WIDTH * 40) / 100,
         borderRadius: 15,
         shadowColor: '#000',
         shadowOffset: {
@@ -50,8 +50,8 @@ const Charging = () => {
       }}>
       <LinearGradient
         colors={['rgba(34, 147, 111, 1), 10%', 'rgba(157, 196, 47, 1), 15%']}
-        start={{x: 0, y: 0}}
-        end={{x: 1, y: 0}}
+        start={{ x: 0, y: 0 }}
+        end={{ x: 1, y: 0 }}
         style={{
           height: '100%',
           width: '50%',
@@ -65,18 +65,17 @@ const Charging = () => {
           }} // Replace with your animation file
           autoPlay
           loop
-          style={{width: 50, height: 50}}
+          style={{ width: 50, height: 50 }}
         />
       </LinearGradient>
       <View
         style={{
-          marginHorizontal: 10,
+          marginHorizontal: 20,
           position: 'absolute',
           top: (DIMENSIONS.SCREEN_HEIGHT * 2) / 100,
-
           alignSelf: 'center',
         }}>
-        <Text style={{textAlign:'center',color:COLORS.BLACK,fontSize:15,fontWeight:'500',lineHeight:17}}>charging ...</Text>
+        <Text style={{ textAlign: 'center', color: COLORS.BLACK, fontSize: 15, fontWeight: '500', lineHeight: 17 }}>charging...</Text>
       </View>
     </View>
   );

@@ -45,7 +45,7 @@ import {
   setDeviceId,
   setIsAuthorized,
   setBasePackage,
-  getUserID,
+  setOverUsage,
 } from '../../redux/action';
 import axios from 'axios';
 import {navigationRef} from '../../../App';
@@ -94,10 +94,11 @@ export default function Login({navigation}) {
       if (response?.data?.locations.length == 0) {
         setForLoading(true);
         setShowPackage(true);
+        dispatch(setBasePackage([]));
       } else {
-        console.log(response.data);
+        console.log(response.data, 'Packaagessssss');
         dispatch(setBasePackage(response.data.locations));
-        dispatch(setIsAuthorized(true));
+        // dispatch(setIsAuthorized(true));
         setForLoading(false);
         navigation.navigate('DrawerStack');
       }
@@ -134,9 +135,9 @@ export default function Login({navigation}) {
           PLATFORM_IOS
             ? Toast.show({
                 type: 'success',
-                text1: 'Login SuccessfulL',
+                text1: 'Login Successful',
               })
-            : ToastAndroid.show('Login Successfull', ToastAndroid.SHORT);
+            : ToastAndroid.show('Login Successful', ToastAndroid.SHORT);
           console.log(res.data, 'Loginnnnnnnnnn');
           console.log('firstSTATUS', res.data.status);
 
@@ -150,6 +151,7 @@ export default function Login({navigation}) {
             dispatch(setPackageStatus(true));
             // dispatch(setUserID(res.data?.user_id));
             dispatch(getLocationID(res.data?.locationid));
+            // dispatch(setIsAuthorized(true));
             fetchGraphData(res.data?.user_id);
             fetchWeekGraphData(res.data?.user_id);
             fetchMonthGraphData(res.data?.user_id);
@@ -168,6 +170,7 @@ export default function Login({navigation}) {
             dispatch(setPackageStatus(true));
             dispatch(setUserID(res.data?.user_id));
             dispatch(getLocationID(res.data?.locationid));
+            // dispatch(setIsAuthorized(true));
             getPlanCurrent(res.data?.user_id);
             dispatch(
               setDeviceId(
@@ -177,6 +180,10 @@ export default function Login({navigation}) {
           } else {
             dispatch(setPackageStatus(false));
             dispatch(setDeviceId(res.data.message));
+            // dispatch(setIsAuthorized(true));
+            dispatch(setEmailData(res.data?.email));
+            dispatch(setUserID(res.data?.user_id));
+            dispatch(getLocationID(res.data?.locationid));
             packagePlans(res.data?.locationid);
           }
           // fetchPriceDetailsDashboardData(data?.user_id)
@@ -235,6 +242,7 @@ export default function Login({navigation}) {
     axios
       .get(`${API}/dailyusagegraph/${userID}`)
       .then(res => {
+        console.log("DAY GRAPH", res.data)
         dispatch(setGraphData(res?.data));
 
         dailyUsuagekwh(userID);
@@ -266,8 +274,10 @@ export default function Login({navigation}) {
       .then(res => {
         if (res.data?.kwh_unit_remaining >= 0) {
           remaingData = res.data?.kwh_unit_remaining;
+          dispatch(setOverUsage(false));
         } else {
           remaingData = res.data?.kwh_unit_overusage;
+          dispatch(setOverUsage(true));
         }
         console.log('first', res.data);
         dispatch(setRemainingData(remaingData));
@@ -285,6 +295,7 @@ export default function Login({navigation}) {
       .get(`${API}/weeklyusage/${userID}`)
       .then(res => {
         if (res?.data) {
+          console.log("WEEKGRAPHDATA", res.data)
           dispatch(setWeekGraphData(res?.data));
         }
       })
@@ -297,6 +308,7 @@ export default function Login({navigation}) {
       .get(`${API}/monthlyusage/${userID}`)
       .then(res => {
         if (res?.data) {
+          console.log("MONTH GRAPH", res.data)
           dispatch(setMonthGraphData(res?.data));
         }
       })
@@ -309,6 +321,7 @@ export default function Login({navigation}) {
       .get(`${API}/threemonthusage/${userID}`)
       .then(res => {
         if (res?.data) {
+          console.log("QUARTER GRAPH", res.data)
           dispatch(setQuarterGraphData(res?.data));
         }
       })
@@ -321,6 +334,7 @@ export default function Login({navigation}) {
       .get(`${API}/yearlyusage/${userID}`)
       .then(res => {
         if (res?.data) {
+          console.log("Year GRAPH", res.data)
           dispatch(setYearGraphData(res?.data));
         }
       })
@@ -357,7 +371,7 @@ export default function Login({navigation}) {
         setForLoading(false);
 
         dispatch(setPurchaseData(res?.data));
-        dispatch(setIsAuthorized(true));
+        // dispatch(setIsAuthorized(true));
         navigation.navigate('DrawerStack');
       })
       .catch(err => {

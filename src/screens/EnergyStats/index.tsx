@@ -10,9 +10,10 @@ import {
   Dimensions,
   StatusBar,
   BackHandler,
-  Alert
+  Alert,
+  Platform
 } from 'react-native';
-import {useSelector} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {createMaterialTopTabNavigator} from '@react-navigation/material-top-tabs';
 import COLORS from '../../constants/COLORS';
@@ -34,6 +35,7 @@ import DrawerOpen from '../../Components/DrawerOpen';
 import {navigationRef} from '../../../App';
 import {DrawerActions} from '@react-navigation/native';
 import AnimatedLottieView from 'lottie-react-native';
+import { setBoxTwoDataForDashboard, setChargerStatus, setDeviceId, setGraphData, setIsAuthorized, setKwhData, setMonthGraphData, setOverUsage, setQuarterGraphData, setRemainingData, setWeekGraphData, setYearGraphData } from '../../redux/action';
 const mobileW = Math.round(Dimensions.get('screen').width);
 
 function MyTabBar({state, descriptors, navigation}) {
@@ -44,11 +46,23 @@ function MyTabBar({state, descriptors, navigation}) {
         marginHorizontal: 20,
         backgroundColor: '#EEEEEE',
         borderRadius: 20,
-        overflow: 'hidden',
-        elevation: 1,
+       // overflow: 'hidden',
+        ...Platform.select({
+          ios: {
+            shadowColor: '#000000',
+            shadowOffset: { width: 0, height: 2 },
+            shadowOpacity: 0.3,
+            shadowRadius: 4,
+          },
+          android: {
+            elevation: 4,
+          },
+        }),
         borderWidth: 1,
         borderColor: '#EEEEEE',
         zIndex: 1,
+        
+    
       }}>
       {state.routes.map((route, index) => {
         const {options} = descriptors[route.key];
@@ -110,15 +124,16 @@ export default function EnergyStats() {
   const [showCar, setShowCar] = useState(true);
   const [offline, setOffline] = useState(true);
   const [charging, setCharging] = useState(true);
-  const [deviceId, setDeviceId] = useState('');
+  // const [deviceId, setDeviceId] = useState('');
 
   const [isLoading, setIsLoading] = useState(true);
   const {getGraphData} = useSelector((state: any) => state);
 
-  const {getChargerStatus, getDeviceID} = useSelector((state: any) => state);
+  const {getChargerStatus, getDeviceID,getUserID} = useSelector((state: any) => state);
   const [toggleState, setToggleState] = useState(false);
-
+const dispatch = useDispatch()
   useEffect(() => {
+    dispatch(setIsAuthorized(true))
     const backAction = () => {
       Alert.alert(
         'Exit App',
@@ -143,6 +158,153 @@ export default function EnergyStats() {
   const handleToggle = (value: any) => {
     setToggleState(value);
     navigationRef.dispatch(DrawerActions.closeDrawer());
+  };
+
+  const getDeviceIDData = () => {
+    axios
+      .get(`${API}/devicecheck/${getUserID}}`)
+      .then(res => {
+        console.log(res.data, 'tt');
+        if (res.data.status == 'True') {
+          dispatch(setDeviceId(res.data.message));
+          fetchGraphData(res.data?.user_id);
+          fetchWeekGraphData(res.data?.user_id);
+          fetchMonthGraphData(res.data?.user_id);
+          fetchQuarterGraphData(res.data.user_id);
+          fetchYearGraphData(res.data?.user_id);
+          fetchBoxTwoDashboardData(res.data?.user_id);
+          fetchStatusdata(res.data?.user_id);
+        } else {
+
+          // getPlanCurrent(res.data?.user_id);
+        }
+      })
+      .catch(err => {
+        console.log(err);
+      });
+  };
+
+
+  //day data start
+  const fetchGraphData = (userID: string) => {
+    console.log(userID, 'object');
+    axios
+      .get(`${API}/dailyusagegraph/${userID}`)
+      .then(res => {
+        dispatch(setGraphData(res?.data));
+
+        dailyUsuagekwh(userID);
+        // navigation.navigate('DrawerStack');
+      })
+      .catch(err => {
+        console.log(err);
+      });
+  };
+  const dailyUsuagekwh = (userId: string) => {
+    axios
+      .get(`${API}/dailyusage/${userId}`)
+      .then(res => {
+        if (res?.data) {
+          dispatch(setKwhData(res?.data));
+        }
+
+        remainigUsuageData(userId);
+      })
+      .catch(err => {
+        console.log(err);
+      });
+  };
+  const remainigUsuageData = (userId: string) => {
+    let remaingData;
+
+    axios
+      .get(`${API}/remainingusage/${userId}`)
+      .then(res => {
+        if (res.data?.kwh_unit_remaining >= 0) {
+          remaingData = res.data?.kwh_unit_remaining;
+          dispatch(setOverUsage(false));
+        } else {
+          remaingData = res.data?.kwh_unit_overusage;
+          dispatch(setOverUsage(true));
+        }
+        console.log('first', res.data);
+        dispatch(setRemainingData(remaingData));
+      })
+      .catch(err => {
+        console.log(err);
+      });
+  };
+  //day data end
+
+  //week data start
+  const fetchWeekGraphData = (userID: string) => {
+    axios
+      .get(`${API}/weeklyusage/${userID}`)
+      .then(res => {
+        if (res?.data) {
+          dispatch(setWeekGraphData(res?.data));
+        }
+      })
+      .catch(err => {
+        console.log(err);
+      });
+  };
+  const fetchMonthGraphData = (userID: string) => {
+    axios
+      .get(`${API}/monthlyusage/${userID}`)
+      .then(res => {
+        if (res?.data) {
+          dispatch(setMonthGraphData(res?.data));
+        }
+      })
+      .catch(err => {
+        console.log(err);
+      });
+  };
+  const fetchQuarterGraphData = (userID: string) => {
+    axios
+      .get(`${API}/threemonthusage/${userID}`)
+      .then(res => {
+        if (res?.data) {
+          dispatch(setQuarterGraphData(res?.data));
+        }
+      })
+      .catch(err => {
+        console.log(err);
+      });
+  };
+  const fetchYearGraphData = (userID: string) => {
+    axios
+      .get(`${API}/yearlyusage/${userID}`)
+      .then(res => {
+        if (res?.data) {
+          dispatch(setYearGraphData(res?.data));
+        }
+      })
+      .catch(err => {
+        console.log(err);
+      });
+  };
+
+  const fetchBoxTwoDashboardData = (userId: string) => {
+    axios
+      .get(`${API}/currentplan/${userId}`)
+      .then(res => {
+        dispatch(setBoxTwoDataForDashboard(res?.data));
+      })
+      .catch(err => {
+        console.log(err);
+      });
+  };
+  const fetchStatusdata = (userId: string) => {
+    axios
+      .get(`${API}/chargerstatus/${userId}`)
+      .then(res => {
+        dispatch(setChargerStatus(res?.data));
+      })
+      .catch(err => {
+        console.log(err);
+      });
   };
 
   return (
@@ -198,6 +360,7 @@ export default function EnergyStats() {
                 alignItems: 'center',
               }}>
               <TouchableOpacity
+              onPress={getDeviceIDData}
                 style={{
                   width: mobileW * 0.3,
                   borderRadius: 10,
@@ -355,7 +518,6 @@ export default function EnergyStats() {
             }}
             tabBar={props => <MyTabBar {...props} />}>
             <Tab.Screen name="Day" component={Day} />
-
             <Tab.Screen name="Week" component={Week} />
             <Tab.Screen name="Month" component={Month} />
             <Tab.Screen name="Quarter" component={Quarter} />

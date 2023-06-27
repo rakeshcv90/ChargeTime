@@ -1,28 +1,46 @@
 import {View, Text, StyleSheet, TouchableOpacity, Image} from 'react-native';
 import React from 'react';
-import { Dolllar } from '../../assets/images/Dollar';
-import { navigationRef } from '../../App';
+import {Dolllar} from '../../assets/images/Dollar';
+import {navigationRef} from '../../App';
 
-const BoxThree = ({data}) => {
-  console.log(data,'gg')
-  
+const PurchseButton = ({data}) => {
+  console.log(data, 'gg');
+
   return (
-    <View style={[styles.mainDiv_purchage_dollar,styles.shadowProp]}>
+    <View style={[styles.mainDiv_purchage_dollar, styles.shadowProp]}>
       <View style={styles.dollar_div}>
         {/* <Image source={require('../../assets/images/price.png')} /> */}
         <Dolllar />
-        <Text style={styles.per_month}>${data?.total_price} /month</Text>
+        <View
+          style={{
+            alignItems: 'center',
+            justifyContent: 'center',
+            flexDirection: 'row',
+          }}>
+          <Text style={styles.per_month}>${data?.total_price}</Text>
+          <Text
+            style={{
+              fontSize: 12,
+              color: COLORS.BLACK,
+              paddingLeft: 2,
+              lineHeight: 24,
+            }}>
+            /month
+          </Text>
+        </View>
       </View>
       <View>
-        <TouchableOpacity style={styles.btn_purchage} onPress={() => navigationRef.navigate("PlanSummary", {data: data})}>
-          <Text style={styles.purchage_text}>PURCHAGE</Text>
+        <TouchableOpacity
+          style={styles.btn_purchage}
+          onPress={() => navigationRef.navigate('PlanSummary', {data: data})}>
+          <Text style={styles.purchage_text}>PURCHASE</Text>
         </TouchableOpacity>
       </View>
     </View>
   );
 };
 
-export default BoxThree;
+export default PurchseButton;
 const styles = StyleSheet.create({
   managing_width: {
     paddingHorizontal: 20,
@@ -30,13 +48,13 @@ const styles = StyleSheet.create({
   },
   shadowProp: {
     backgroundColor: 'white',
-    shadowColor: 'rgba(0, 0, 0, 1)', 
+    shadowColor: 'rgba(0, 0, 0, 1)',
     shadowOffset: {
-      width: 6, 
-      height: 4, 
+      width: 6,
+      height: 4,
     },
-    shadowOpacity: 1, 
-    shadowRadius: 4, 
+    shadowOpacity: 1,
+    shadowRadius: 4,
     elevation: Platform.OS === 'android' ? 8 : 0,
   },
   mainDiv_installation: {
@@ -128,18 +146,18 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   per_month: {
-    fontWeight: 500,
+    fontWeight: '500',
     fontSize: 20,
     color: COLORS.BLACK,
     paddingLeft: 7,
+    lineHeight: 24,
   },
   btn_purchage: {
-    paddingHorizontal: 30,
+    paddingHorizontal: 20,
     paddingVertical: 10,
     backgroundColor: COLORS.GREEN,
     alignItems: 'center',
     borderRadius: 12,
-
   },
   purchage_text: {
     fontWeight: 700,

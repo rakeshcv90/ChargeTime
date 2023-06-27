@@ -1,24 +1,37 @@
-import {View, Text, StyleSheet, TouchableOpacity, Image,Dimensions, Platform, SafeAreaView} from 'react-native';
-import React,{useEffect} from 'react';
+import {
+  View,
+  Text,
+  StyleSheet,
+  TouchableOpacity,
+  Image,
+  Dimensions,
+  Platform,
+  SafeAreaView,
+} from 'react-native';
+import React, {useEffect} from 'react';
 // import { Address } from '../../assets/images/Address';
 import {InstallBase} from '../../assets/svgs/InstallBase';
-import { Vanderberg } from '../../assets/images/Vanderberg';
-import { Connecticut } from '../../assets/images/Connecticut';
+import {Vanderberg} from '../../assets/images/Vanderberg';
+import {Connecticut} from '../../assets/images/Connecticut';
 import COLORS from '../constants/COLORS';
-import { useSelector } from 'react-redux';
-
+import {useSelector} from 'react-redux';
+import {navigationRef} from '../../App';
 
 const mobileW = Math.round(Dimensions.get('screen').width);
-const BoxOne = ({data}) => {
+const InstallationBase = ({data}) => {
   // const {navigation, route} = props;
-  const setBasePackage = useSelector((state)=> state.setBasePackage)
-  
-
+  const setBasePackage = useSelector(state => state.setBasePackage);
 
   return (
-    <View style={[styles.mainDiv_installation]}>
+    <View
+      style={[
+        styles.mainDiv_installation,
+        styles.shadowProp,
+        {
+          marginVertical:10,
+        },
+      ]}>
       <TouchableOpacity style={styles.install_touchable}>
-        
         {/* <Address style={styles.img_width} /> */}
         <InstallBase style={styles.img_width} />
         <Text style={styles.installation_text}>Installation Base</Text>
@@ -27,8 +40,7 @@ const BoxOne = ({data}) => {
         <View style={styles.location_div}>
           <Vanderberg style={styles.img_width} />
           <Text style={styles.force_base}>{data?.location}</Text>
-              {/* <Text style={styles.force_base}>{setBasePackage[0].location}</Text> */}
-
+          {/* <Text style={styles.force_base}>{setBasePackage[0].location}</Text> */}
         </View>
         <Image
           // style={styles.img_width}
@@ -54,16 +66,14 @@ const BoxOne = ({data}) => {
             />
             <Text style={styles.force_base}>{data?.ZIP_code}</Text>
             {/* <Text style={styles.force_base}>{setBasePackage[0].ZIP_code}</Text> */}
-
           </View>
         </View>
       </View>
     </View>
-
   );
 };
 
-export default BoxOne;
+export default InstallationBase;
 
 const styles = StyleSheet.create({
   managing_width: {
@@ -73,7 +83,6 @@ const styles = StyleSheet.create({
   mainDiv_installation: {
     overflow: 'hidden',
     borderRadius: 10,
-    marginTop: Platform.OS === "ios"?10: 10,
     shadowColor: '#000000',
     shadowOffset: {
       width: 4,
@@ -93,10 +102,10 @@ const styles = StyleSheet.create({
     marginLeft: 20,
   },
   installation_text: {
-    fontWeight: "700",
+    fontWeight: '700',
     fontSize: 12,
     paddingLeft: 10,
-    color:COLORS.BLACK
+    color: COLORS.BLACK,
   },
   location_div: {
     flexDirection: 'row',
@@ -115,14 +124,15 @@ const styles = StyleSheet.create({
     },
     shadowOpacity: 1,
     shadowRadius: 4,
-    elevation: Platform.OS === 'android' ? 8 : 0,
+    elevation: 8,
+    // elevation: Platform.OS === 'android' ? 8 : 0,
   },
   force_base: {
-    fontWeight: "400",
+    fontWeight: '400',
     fontSize: 14,
     paddingLeft: 10,
-    paddingRight:70,
-    color:COLORS.BLACK
+    paddingRight: 70,
+    color: COLORS.BLACK,
   },
   mainDiv_state_zip: {
     flexDirection: 'row',

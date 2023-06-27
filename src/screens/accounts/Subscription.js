@@ -1,3 +1,4 @@
+
 import { View, Text, StyleSheet, TouchableOpacity, SafeAreaView, ScrollView,ToastAndroid, Image, Dimensions, Platform } from 'react-native';
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
@@ -29,6 +30,7 @@ const Subscription = () => {
   console.log("helloooooo", packageExists);
   const dispatch = useDispatch();
   useEffect(() => {
+
     // userSubsEnergy();
  }, []);
 
@@ -96,78 +98,121 @@ const PlanCancel = async () => {
 
 
 
+
   return (
     <SafeAreaView style={{ backgroundColor: COLORS.CREAM, flex: 1 }}>
-  <Header headerName="Subscription" />
-  {Platform.OS == 'android' ? (
-    <HorizontalLine style={styles.line} />
-  ) : (
-    <View>
-      <Image
-        source={require('../../../assets/images/dotted.png')}
-        style={{ width: mobileW * 0.97, top: Platform.OS == 'ios' ? -30 : 2 }}
-      />
-    </View>
-  )}
-  <ScrollView showsVerticalScrollIndicator={false}>
-    {packageExists !== null ? (
-      <View>
-        <View style={styles.managing_width}>
-          <SubBoxOne />
-          <SubBoxTwo />
-        </View>
-        <View style={styles.mainDiv_installation}>
-          <WaveAnimation />
-        </View>
-        <View style={styles.managing_width}>
-          <PriceValiditySubs />
-        </View>
-        <View
-          style={{
-            flexDirection: 'row',
-            justifyContent: 'center',
-            marginHorizontal: 20,
-            paddingBottom: 30,
-          }}>
-          <TouchableOpacity
-            onPress={() => {
-              PlanCancel();
-            }}
+
+      <ScrollView showsVerticalScrollIndicator={false}>
+        <View>
+          <Header headerName="Subscription" />
+          {Platform.OS == 'android' ? <HorizontalLine style={styles.line} /> : <View
             style={{
-              marginTop: 15,
-              marginRight: 170,
+
+
+            }}>
+            <Image source={require('../../../assets/images/dotted.png')} style={{ width: mobileW * 0.97 }} />
+          </View>}
+
+          <View style={styles.managing_width}>
+            <SubBoxOne data={getSubscription} />
+            <SubBoxTwo data={getSubscription} />
+
+            {/* <SubBoxOne/> */}
+            {/* <SubBoxTwo/> */}
+
+          </View>
+          <View style={styles.mainDiv_installation}>
+            <WaveAnimation />
+          </View>
+          <View style={styles.managing_width}>
+            <PriceValiditySubs data={getSubscription} />
+            {/* <PriceValiditySubs /> */}
+          </View>
+          {/* <View
+            style={{
+              flexDirection: 'row',
+              justifyContent: 'center',
+              ...Platform.select({
+                ios: {
+                  shadowColor: '#000000',
+                  shadowOffset: { width: 0, height: 5 },
+                  shadowOpacity: 0.3,
+                  shadowRadius: 4,
+                },
+                // android: {
+                //   elevation: 8,
+                
+                // },
+              }),
+              marginHorizontal: 20,
+              paddingBottom: 30,
+            }}>
+            <TouchableOpacity
+              onPress={() => { PlanCancel() }}
+              style={{
+                marginTop: 15,
+                // marginLeft: 200,
+                marginRight: 170,
+                backgroundColor: '#F84E4E',
+                alignItems: 'center',
+                padding: 13,
+                borderRadius: 10,
+                width: '50%',
+              }}
+
+            >
+
+              <Text
+                style={{
+                  color: COLORS.WHITE,
+                  fontSize: 14,
+                  fontWeight: '700',
+                }}>
+                Cancel Subscription
+              </Text>
+            </TouchableOpacity>
+          </View> */}
+          <View
+            style={{
               backgroundColor: '#F84E4E',
               alignItems: 'center',
-              padding: 13,
               borderRadius: 10,
-              width: '50%',
-            }}>
-            <Text
-              style={{
-                color: COLORS.WHITE,
-                fontSize: 14,
-                fontWeight: '700',
-              }}>
-              Cancel Subscription
-            </Text>
-          </TouchableOpacity>
-        </View>
-      </View>
-    ) : (
-      <View style={styles.managing_width}>
-        <Text style={{
-                color: COLORS.RED,
-                fontSize: 16,
-                fontWeight: '700',
-              }}>
-                No Active Subscription.
-                </Text>
-        {/* <SubBoxOne /> */}
-      </View>
-    )}
-  </ScrollView>
-</SafeAreaView>
+              marginTop: DIMENSIONS.SCREEN_HEIGHT * 3.5 / 100,
+              width: DIMENSIONS.SCREEN_WIDTH * 50 / 100,
+              paddingVertical: Platform.OS == 'ios' ? DIMENSIONS.SCREEN_WIDTH * 3.5 / 100 : DIMENSIONS.SCREEN_WIDTH * 3.5 / 100,
+              left: DIMENSIONS.SCREEN_WIDTH * 6 / 100,
+              bottom: DIMENSIONS.SCREEN_WIDTH * 5 / 100,
 
+              ...Platform.select({
+                ios: {
+                  shadowColor: '#000000',
+                  shadowOffset: { width: 0, height: 2 },
+                  shadowOpacity: 0.3,
+                  shadowRadius: 4,
+                },
+                android: {
+                  elevation: 4,
+                },
+              }),
+
+
+            }}>
+            <TouchableOpacity
+              onPress={PlanCancel()}
+            >
+              <Text
+                style={{
+                  color: COLORS.WHITE,
+                  fontSize: 14,
+                  fontWeight: '700',
+                }}>
+                Cancel Subscription
+              </Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </ScrollView>
+    </SafeAreaView>
   );
 };
 

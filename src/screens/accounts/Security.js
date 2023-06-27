@@ -138,7 +138,15 @@ const UpdatePassword= async () =>{
     <SafeAreaView style={{ backgroundColor: COLORS.CREAM, flex: 1}}>
      <Header headerName="Security" editShow={true} onPress={onPress} enableEdit ={enableEdit} editButton={isEditable} />
       
-     <HorizontalLine style={styles.line} />
+
+     {Platform.OS=='android'? <HorizontalLine style={styles.line} />:<View
+              style={{
+             
+             
+              }}>
+              <Image source={require('../../../assets/images/dotted.png')} style={{ width: mobileW * 0.97 ,}} />
+            </View> }
+
      <View style={[styles.mainDiv_container]}>
      <Input
             IconLeft={null}  

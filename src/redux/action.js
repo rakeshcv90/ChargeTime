@@ -22,7 +22,6 @@ export const userProfileData = (data) => {
   return {type: types.GET_PROFILE_DATA, payload: data};
 };
 
-
 export const setBasePackage = (data) => {
 
   return {type:types.GET_BASE_PACKAGE,payload:data}
@@ -87,6 +86,7 @@ export const setPurchaseData = (data) => {
 export const setDeviceId = (data) => {
   return {type:types.GET_DEVICE_ID,payload:data}
 } 
+
 //store the default card details for make payment screen
 export const getCardDetails = (data) => {
   return {type:types.GET_CARD_DETAILS,payload:data}
@@ -95,6 +95,7 @@ export const getCardDetails = (data) => {
 export const getCurrentPlan= (data) => {
   return {type:types.GET_CURRENT_PLAN,payload:data}
 } 
-
-
+export const setOverUsage = (data) => {
+  return {type:types.GET_OVERUSAGE,payload:data}
+} 
 

@@ -9,7 +9,6 @@ import {
   Modal,
   Pressable,
   Alert,
-  
   KeyboardAvoidingView,
 } from 'react-native';
 import AnimatedLottieView from 'lottie-react-native';

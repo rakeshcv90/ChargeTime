@@ -1,15 +1,16 @@
-import React, {useEffect, useState, useRef} from 'react';
-import {View, Image, StyleSheet, Animated} from 'react-native';
+import React, { useEffect, useState, useRef } from 'react';
+import { View, Image, StyleSheet, Animated } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import App, {navigationRef} from '../../App';
-import {DIMENSIONS} from '../constants/DIMENSIONS';
+import App, { navigationRef } from '../../App';
+import { DIMENSIONS } from '../constants/DIMENSIONS';
 import Introduction from './Introduction';
-import {BackHandler} from 'react-native';
+import { BackHandler } from 'react-native';
 import COLORS from '../constants/COLORS';
+import { useSelector } from 'react-redux';
 
 const Splash = () => {
   const backHandler = useRef(null);
-
+  const [imageSource, setImageSource] = useState(require('../../assets/unnamed.png'));
   useEffect(() => {
     const handleBackButton = () => {
       clearTimeout(timer);
@@ -27,91 +28,72 @@ const Splash = () => {
       }
     };
   }, []);
-  const [showIntro, setShowIntro] = useState(false);
+  const [showIntro, setShowIntro] = useState('');
   useEffect(() => {
-    const checkFirstTime = async () => {
-      try {
-        const isFirstTime = await AsyncStorage.getItem('isFirstTime');
-        if (isFirstTime === null || isFirstTime == undefined) {
-          // setShowIntro(true)
-          // First time user, show intro
-          await AsyncStorage.setItem('isFirstTime', 'true');
-          navigationRef.navigate('Introduction');
-        } else {
-          // Not first time user, show login
-          navigationRef.navigate('Login');
-        }
-      } catch (error) {
-        console.log('Error checking first time:', error);
-        // In case of error, show login as fallback
-        navigationRef.navigate('Login');
-      }
-    };
-
+checkFirstTime()
     // const checkFirstTime=async ()=>{{
     //   navigationRef.navigate('Introduction');
     // }}
 
-    const timer = setTimeout(() => {
-      checkFirstTime();
-    }, 3000);
+    // const timer = setTimeout(() => {
+    //   checkFirstTime();
+    // }, 3000);
 
-    return () => clearTimeout(timer);
+    // return () => clearTimeout(timer);
   }, []);
-  const scaleValue = useRef(new Animated.Value(1)).current; // Initial scale value
+  const checkFirstTime = async () => {
+    try {
+      const isFirstTime = await AsyncStorage.getItem('isFirstTime');
+      if (isFirstTime === null || isFirstTime == undefined) {
+        // setShowIntro(true)
+        // First time user, show intro
+        await AsyncStorage.setItem('isFirstTime', 'true');
+        navigationRef.navigate('Introduction');
+      } else {
+        // Not first time user, show login
+        navigationRef.navigate('Login');
+      }
+    } catch (error) {
+      console.log('Error checking first time:', error);
+      // In case of error, show login as fallback
+      navigationRef.navigate('Login');
+    }
+  };
+  // const scaleValue = useRef(new Animated.Value(1)).current; // Initial scale value
   const imageIndex = useRef(0); // Initial image index
   const images = [
     require('../../assets/unnamed.png'),
     require('../../assets/images/splash_screen_top.png'),
   ]; // Array of images
 
+  const scaleValue = useRef(new Animated.Value(0)).current;
+
   useEffect(() => {
-    startAnimation();
-  }, []);
-  const startAnimation = () => {
+    // Zoom out animation
     Animated.timing(scaleValue, {
-      toValue: 2, // Target scale value for zoom in
-      duration: 500,
+      toValue: 1,
+      duration: 1000,
       useNativeDriver: true,
     }).start(() => {
-      imageIndex.current = (imageIndex.current + 1) % images.length; // Change the image index
-      Animated.timing(scaleValue, {
-        toValue: 1, // Target scale value for zoom out
-        duration: 1000,
-        useNativeDriver: true,
-      }).start(() => {
-        startAnimation(); // Restart the animation
-      });
+      // Animation completed, change image source
+      // You can replace 'image2.jpg' with the path to your new image
+      // imageRef.setNativeProps({ source: require('../../assets/unnamed.png') });
+      setImageSource(require('../../assets/images/splash_screen_top.png'));
     });
-  };
-  // const startAnimation = () => {
-  //   Animated.sequence([
-  //     Animated.timing(scaleValue, {
-  //       toValue: 1, // Target scale value for zoom in
-  //       duration: 500,
-  //       useNativeDriver: true,
-  //     }),
-  //     Animated.timing(scaleValue, {
-  //       toValue: 2, // Target scale value for zoom out
-  //       duration: 500,
-  //       useNativeDriver: true,
-  //     }),
-  //   ]).start(() => {
-  //     imageIndex.current = (imageIndex.current + 1) % images.length; // Change the image index
-  //     startAnimation(); // Restart the animation
-  //   });
-  // };
+  }, []);
   return (
     <>
       <View style={styles.container}>
         <Animated.Image
-          source={images[imageIndex.current]}
+          // ref={imageRef}r
           style={[
             styles.splash_image,
             {
               transform: [{scale: scaleValue}],
+              width: DIMENSIONS.SCREEN_WIDTH * 0.8,
             },
           ]}
+          source={imageSource}
         />
         <Image
           source={require('../../assets/images/splash_screen_bottom.png')}
@@ -136,7 +118,6 @@ const styles = StyleSheet.create({
     // left: 83,
     alignSelf: 'center',
     resizeMode: 'contain',
-
     top: 141,
   },
   splash_botm_image: {

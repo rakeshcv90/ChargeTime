@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, TextInput, StyleSheet, Button, SafeAreaView, TouchableOpacity, Text, ToastAndroid, Image, Platform,Dimensions } from 'react-native';
+import { View, TextInput, StyleSheet, Button, SafeAreaView, TouchableOpacity, Text, ToastAndroid, Image, Platform, Dimensions } from 'react-native';
 import Input from '../../Components/Input';
 import COLORS from '../../constants/COLORS';
 import { useSelector } from 'react-redux';
@@ -10,7 +10,7 @@ import { Eye } from '../../../assets/svgs/Eye';
 import { API } from '../../api/API';
 import { navigationRef } from '../../../App';
 import { ms } from 'react-native-size-matters';
-import {PLATFORM_IOS} from '../../constants/DIMENSIONS';
+import { PLATFORM_IOS } from '../../constants/DIMENSIONS';
 
 // import Button from '../../Components/Button';
 
@@ -19,8 +19,8 @@ const DeleteAccountScreen = () => {
   const [reason, setReason] = useState('');
   const [password, setPassword] = useState('');
   const getUserID = useSelector((state) => state.getUserID);
-  const [hidePassword,setHidePassword] = useState(true);
-  const [showNew , setShowNew]=useState(false);
+  const [hidePassword, setHidePassword] = useState(true);
+  const [showNew, setShowNew] = useState(false);
 
   const user_ID = getUserID;
   const mobileW = Math.round(Dimensions.get('screen').width);
@@ -79,13 +79,13 @@ const DeleteAccountScreen = () => {
   return (
     <SafeAreaView style={{ backgroundColor: COLORS.CREAM, flex: 1 }}>
       <Header headerName="Account Delete Request" />
-      {Platform.OS=='android'? <HorizontalLine style={styles.line} />:<View
-              style={{
-             
-             
-              }}>
-              <Image source={require('../../../assets/images/dotted.png')} style={{ width: mobileW * 0.97 ,top:Platform.OS=='ios'?-30:2}} />
-            </View> }
+      {Platform.OS == 'android' ? <HorizontalLine style={styles.line} /> : <View
+            style={{
+
+
+            }}>
+            <Image source={require('../../../assets/images/dotted.png')} style={{ width: mobileW * 0.97 }} />
+          </View>}
       <View style={styles.container}>
         <View style={{backgroundColor:COLORS.CREAM,width:70,position:'absolute',zIndex:99,top:23,left:32,alignItems:'center'}}><Text style={{color: 'black'}}>Reason</Text></View>
       <TextInput
@@ -138,6 +138,7 @@ const DeleteAccountScreen = () => {
           onChangeText={text => setReason(text)}
           value={reason}
         /> */}
+
         
        <Input
             IconLeft={null}  
@@ -165,6 +166,7 @@ const DeleteAccountScreen = () => {
             }}
           />
 
+
         <View
           style={{
             flexDirection: 'row',
@@ -182,6 +184,17 @@ const DeleteAccountScreen = () => {
               padding: 13,
               borderRadius: 10,
               width: '50%',
+              ...Platform.select({
+                ios: {
+                  shadowColor: '#000000',
+                  shadowOffset: { width: 0, height: 2 },
+                  shadowOpacity: 0.3,
+                  shadowRadius: 4,
+                },
+                android: {
+                  elevation: 4,
+                },
+              }),
             }}
 
           >
@@ -215,12 +228,12 @@ const styles = StyleSheet.create({
   button: {
     backgroundColor: COLORS.RED,
   },
-label: {
+  label: {
     position: "absolute",
-    top:' -15px',
+    top: ' -15px',
     left: "23px",
-    padding:" 2px",
-}
+    padding: " 2px",
+  }
 });
 
 export default DeleteAccountScreen;
