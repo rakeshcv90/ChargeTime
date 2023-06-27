@@ -1,4 +1,5 @@
-import { View, Text, StyleSheet, TouchableOpacity, SafeAreaView, ScrollView, Image, Dimensions, Platform, ToastAndroid, Toast } from 'react-native';
+
+import { View, Text, StyleSheet, TouchableOpacity, SafeAreaView, ScrollView,ToastAndroid, Image, Dimensions, Platform } from 'react-native';
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import HorizontalLine from '../../Components/HorizontalLine'
@@ -11,94 +12,91 @@ import WaveAnimation from '../../Components/WaveAnimation';
 import { DIMENSIONS } from '../../constants/DIMENSIONS';
 import PriceValiditySubs from '../../Components/PriceValiditySubs';
 import { API } from '../../api/API';
-import { setBasePackage } from '../../redux/action';
+import { getCurrentPlan as UpdatedCurrentPlan } from '../../redux/action';
 import { userSubsData } from '../../redux/action';
 
 
 const mobileW = Math.round(Dimensions.get('screen').width);
 const Subscription = () => {
-
-  // const getPlanSummary = useSelector((state)=> state.getPlanSummary)
   const getUserID = useSelector((state) => state.getUserID)
-  const [getSubscription, setGetSubscription] = useState([]);
-  const [getData, setGetData] = useState([]);
+  const getCurrentPlan = useSelector((state)=> state.getCurrentPlan)
+
+  // const [getSubscription, setGetSubscription] = useState([]);
+  // const [getData, setGetData] = useState([]);
+  // const [packageExists, setPackageExists] = useState(getCurrentPlan[0]);
+
+  const packageExists = getCurrentPlan[0]?.energy_plan;
+
+  console.log("helloooooo", packageExists);
   const dispatch = useDispatch();
   useEffect(() => {
-    // console.log('data for this User:---------', getPlanSummary); 
-    console.log(getSubscription, "----------")
-    userSubscription();
 
-    userSubsEnergy();
-  }, []);
+    // userSubsEnergy();
+ }, []);
 
-  const user_id = getUserID;
-  //  console.log("user_id", user_id)
+ const user_id= getUserID;
+ console.log("user_id", user_id)
 
-  const userSubscription = async () => {
-    try {
-      // const response = await fetch(`${API}/subscriptionplan/${user_id}`);
-      const response = await fetch(`${API}/currentplan/${user_id}`);
+// const userSubsEnergy = async () => {
 
-      const result = await response.json();
+//   try {
+//     const response = await fetch(`${API}/subscription/${user_id}`);
+//     const result = await response.json();
+//     // console.log("-----",result)
+//     if(result !== null)
+//     {
+//     console.log(result, "----------------")
+//     // dispatch(userSubsData(result));
+//     // setGetData(result)
+//     }else{
+//       console.log("iiiiiiiiiiii")
+//     }
+ 
+//   } catch (error) {
+//    console.log("get deleted", error)
+//   }
+// }  
 
-      if (result[0].id !== null) {
-        setGetSubscription(result[0]);
-        // dispatch(setBasePackage(result)); 
-      } else {
-        console.log("iiiiiiiiiiii")
-      }
+const PlanCancel = async () => {
+  try {
+    const response = await fetch(`${API}/plancancel/${user_id}`,{
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      }, 
+    })
+    const result = await response.json();
+    console.log(result,'ttt');
+    if(result.message == 'Plan Cancelled Successfully'){
+      const updatedData = [{
+        ...getCurrentPlan[0],
+        End_validity : null,
+        dollar_mi : null,
+        energy_plan: null,
+        energy_price :null, 
+        kwh: null,
+        mi_eq: null,
+        remaining_package : null,
+        total_package: null,
+      }];
+      dispatch(UpdatedCurrentPlan(updatedData));
+      PLATFORM_IOS
+      ? Toast.show({
+          type: 'success',
+          text1: 'Plan Cancelled Successfully',
+        })
+      : ToastAndroid.show(
+          'Plan Cancelled Successfully',
+          ToastAndroid.SHORT,
+        );
+        
     }
-    catch (error) {
-      console.error(error);
-    }
-
+  }catch (error) {
+    console.error(error);
   }
-  const userSubsEnergy = async () => {
+}
 
-    try {
-      const response = await fetch(`${API}/subscription/15`);
-      const result = await response.json();
-      console.log("-----", result)
-      if (result !== null) {
-        console.log(result, "----------------")
-        // dispatch(userSubsData(result));
-        setGetData(result)
-      } else {
-        console.log("iiiiiiiiiiii")
-      }
 
-    } catch (error) {
-      console.log("get deleted", error)
-    }
-  }
-
-  const PlanCancel = async () => {
-    try {
-      const response = await fetch(`${API}/plancancel/${user_id}`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      })
-      const result = await response.json();
-      console.log(result, 'ttt');
-      if (result.message == 'Plan Cancelled Successfully') {
-        PLATFORM_IOS
-          ? Toast.show({
-            type: 'success',
-            text1: ' Your Subscription has been Cancelled.',
-          })
-          : ToastAndroid.show(
-            'Your Subscription has been Cancelled.',
-            ToastAndroid.SHORT,
-          );
-
-      }
-    }
-    catch (error) {
-      console.error(error);
-    }
-  }
 
 
   return (

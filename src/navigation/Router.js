@@ -457,6 +457,7 @@ const AccountStack = () => {
       <Stack.Screen name="LoginStack" component={LoginStack} />
       <Stack.Screen name="DrawerStack" component={DrawerNavigation} />
       <Stack.Screen name="HomeStack" component={HomeStack} />
+      <Stack.Screen name="PaymentGateWay" component={PaymentGateWay} />
     </Stack.Navigator>
   );
 };

@@ -1,16 +1,9 @@
-import {
-  Image,
-  View,
-  Text,
-  StyleSheet,
-  Dimensions,
-  TouchableOpacity,
-  SafeAreaView,
-} from 'react-native';
-import React, {useState, useEffect} from 'react';
-import {createDrawerNavigator} from '@react-navigation/drawer';
-import {CommonActions, NavigationContainer} from '@react-navigation/native';
-import Picker from '@react-native-picker/picker';
+
+import { Image, View, Text, StyleSheet, Dimensions, TouchableOpacity, SafeAreaView, ScrollView } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { createDrawerNavigator } from '@react-navigation/drawer';
+import { CommonActions, NavigationContainer } from '@react-navigation/native';
+import Picker from '@react-native-picker/picker'
 import logo from '../../../assets/images/logo.png';
 import COLORS from '../../constants/COLORS';
 import HorizontalLine from '../../Components/HorizontalLine';
@@ -19,12 +12,12 @@ import {navigationRef} from '../../../App';
 import {FONTS} from '../../constants/FONTS';
 import {DIMENSIONS} from '../../constants/DIMENSIONS';
 import DrawerOpen from '../../Components/DrawerOpen';
-import {persistor} from '../../redux/store';
-import {useSelector} from 'react-redux';
-import {API} from '../../api/API';
-import {useDispatch} from 'react-redux';
-import {userProfileData} from '../../redux/action';
-import {getBasePackage} from '../../redux/action';
+import { persistor } from '../../redux/store';
+import { useSelector } from 'react-redux';
+import { API } from '../../api/API';
+import { useDispatch } from 'react-redux';
+import { userProfileData } from '../../redux/action';
+import { getCurrentPlan } from '../../redux/action';
 import SubBoxOne from '../../Components/SubBoxOne';
 const mobileW = Math.round(Dimensions.get('screen').width);
 const mobileH = Math.round(Dimensions.get('screen').height);
@@ -43,7 +36,6 @@ const Account = ({ navigation }) => {
 
   useEffect(() => {
     //  console.log('data for this User:---------', userRegisterData); 
-    console.log('iiiiddddddd', user_ID)
     userDetails();
     userSubscription();
     //  userSubsEnergy();
@@ -113,16 +105,19 @@ const Account = ({ navigation }) => {
     console.log('Log out successfully');
   };
 
+
   const userDetails = async () => {
     // const response = await fetch(`${API}/userexisting/${user_ID}`);
     try {
       const response = await fetch(`${API}/userexisting/${user_ID}`);
       const result = await response.json();
       if (result[0].message == "sucess") {
-        console.log('wwwwww', result);
+
+        // console.log('wwwwww', result);
         //  setUserData(result);
         dispatch(userProfileData(result));
-        console.log(result)
+        //  console.log(result)
+
       } else {
         console.log("iiiiiiiiiiii")
       }
@@ -139,36 +134,39 @@ const Account = ({ navigation }) => {
       const result = await response.json();
 
       if (result[0].id !== null) {
-        setGetSubscription(result[0]);
-        console.log(result[0], "-------");
-        // dispatch(getBasePackage(result)); 
-      } else {
-        console.log("iiiiiiiiiiii")
-      }
-    }
-    catch (error) {
-      console.log(error)
+        // setGetSubscription(result[0]);
+        // console.log("======ytytytytyyt=====", result[0]);
+        dispatch(getCurrentPlan(result)); 
 
-    }
-  }
-  const userSubsEnergy = async () => {
-
-    try {
-      const response = await fetch(`${API}/subscription/${user_ID}`);
-      const result = await response.json();
-      console.log("-----", result)
-      if (result !== null) {
-        // console.log(result, "----------------")
-        // dispatch(userSubsData(result));
-        setGetData(result)
       } else {
         console.log("iiiiiiiiiiii")
       }
     } catch (error) {
-      console.log(error)
 
+      console.error(error);
     }
   }
+
+  //   const userSubsEnergy = async () => {
+
+  //   try {
+  //     const response = await fetch(`${API}/subscription/${user_ID}`);
+  //     const result = await response.json();
+  //     console.log("-----",result)
+  //     if(result !== null)
+  //     {
+  //     // console.log(result, "----------------")
+  //     // dispatch(userSubsData(result));
+  //     setGetData(result)
+  //     }else{
+  //       console.log("iiiiiiiiiiii")
+  //     } 
+  //   }catch (error) {
+  //     console.error(error);
+  //   }
+  // }
+
+
 
   const handleLinkPress = (screen) => {
     navigation.navigate(screen);
@@ -237,6 +235,7 @@ const Account = ({ navigation }) => {
           </TouchableOpacity>
         </View>
       </View>
+
     </SafeAreaView>
   );
 };

@@ -37,25 +37,51 @@ import { navigationRef } from '../../../App';
 import creditCardType, { types as CardType } from 'credit-card-type';
 import { FlatList } from 'react-native-gesture-handler';
 import { mvs, ms } from 'react-native-size-matters';
-import Carousel from "react-native-reanimated-carousel";
+import Carousel from 'react-native-snap-carousel';
+import { getCardDetails } from '../../redux/action';
+import { useDispatch } from 'react-redux';
 
 const mobileW = Math.round(Dimensions.get('screen').width);
 const mobileH = Math.round(Dimensions.get('window').height);
 const validationSchema = Yup.object().shape({
   cardHolderName: Yup.string().required('Card Holder Name is required'),
   cardNumber: Yup.string().required('Invalid Card Number'),
-  validTill: Yup.string().required('expiry date required'),
-  cvv: Yup.string().required('cvv is required'),
+  validTill: Yup.string()
+    .required('expiry date required')
+    .test(
+      'expiration',
+      'Expiration date must be greater than current date',
+      function (value) {
+        if (!value) return false;
+        const currentDate = new Date();
+        const [month, year] = value.split('/');
+        const expirationDate = new Date(
+          parseInt(`20${year}`, 10),
+          parseInt(month, 10) - 1,
+        );
+        return expirationDate > currentDate;
+      },
+    ),
+  cvv: Yup.string().required('cvv is required')
+    .matches(/^[0-9]{3}$/, 'CVV must be 3 digits'),
 });
 export default function PaymentGateWay({ navigation }) {
   const { getUserID } = useSelector(
     state => state,
   );
+  useEffect(() => {
+
+    // console.log("Credit card...",creditCardType(creditCard))
+    getCardType(cardDetails?.card_number ?? "")
+    handleGetCard()
+  }, [creditCard, cardDetails, cardId])
+
   const [pagingEnabled, setPagingEnabled] = useState(true);
   const [getCard_Number, setGetCard_Number] = useState('');
   const [creditCard, setCreditCard] = useState('');
   const [error, setError] = useState('');
   const [error1, setError1] = useState('');
+  const [cardID, setCardID] = useState('');
   const [cardDetails, setCardDetails] = useState({
     cardHolderName: '',
     card_number: '',
@@ -65,6 +91,7 @@ export default function PaymentGateWay({ navigation }) {
   });
   const [cardId, setCardId] = useState('');
   const [savedCard, setSavedCard] = useState('');
+  const [currentCard, setCurrentCard] = useState('');
 
   const initialValues = {
     cardHolderName: '',
@@ -72,9 +99,9 @@ export default function PaymentGateWay({ navigation }) {
     validTill: '',
     cvv: '',
   }
-
+  // console.log("-------------",savedCard)
   const user_ID = getUserID;
-
+  const dispatch = useDispatch();
   const getCardType = (cardNumber) => {
 
     const cardType = creditCardType(cardNumber ? cardNumber : creditCard)[0]?.type;
@@ -99,7 +126,7 @@ export default function PaymentGateWay({ navigation }) {
 
     // console.log("Credit card...",creditCardType(creditCard))
     getCardType(cardDetails?.card_number ?? "")
-
+    handleGetCard()
   }, [creditCard, cardDetails, cardId])
 
   const handleAddCard = async (values, cb) => {
@@ -162,7 +189,7 @@ export default function PaymentGateWay({ navigation }) {
     try {
       const response = await fetch(`${API}/getcarddetails/${user_ID}`);
       const result = await response.json();
-      console.log("Result", result[0])
+      // console.log("Result", result[0])
       if (result[0]?.length > 0) {
         // console.log("defaultCard",defaultCard[0])
         setSavedCard(result[0])
@@ -187,13 +214,16 @@ export default function PaymentGateWay({ navigation }) {
   }
   const card_id = cardId;
 
-  const handleDeleteCard = async () => {
+  const handleDeleteCard = async (value) => {
+    // console.log("-------rrrr",cardID)
     try {
-      const response = await fetch(`${API}/deletecard/${savedCard?.id}`, {
+      const response = await fetch(`${API}/deletecard/${value}`, {
         method: 'DELETE',
       });
       const result = await response.json();
       if (result.success === "Your card is deleted") {
+        setSavedCard('')
+        handleGetCard()
         setCardDetails({
           cardHolderName: '',
           card_number: '',
@@ -201,14 +231,15 @@ export default function PaymentGateWay({ navigation }) {
           validTill: '',
           // card_exp_year:'',
         })
-        console.log("Card deleted successfully");
+        // console.log("MY CARD DETAIS", cardDetails)
+        // console.log("Your card is deleted");
         PLATFORM_IOS
           ? Toast.show({
             type: 'success',
-            text1: ' Your Card Deleted Successfully.',
+            text1: ' Your card is deleted.',
           })
           : ToastAndroid.show(
-            'Your Card Deleted Successfully.',
+            'Your card is deleted.',
             ToastAndroid.SHORT,
           );
       } else {
@@ -227,6 +258,53 @@ export default function PaymentGateWay({ navigation }) {
       console.error("Error deleting card", error);
     }
   };
+
+
+  const handleMakeDefaultCard = async (values) => {
+    // console.log("-----------",cardID);
+    // console.log("===========",user_ID)
+    try {
+      const response = await fetch(`${API}/defaultcard`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          id: values,
+          user_id: user_ID,
+        }),
+      });
+      // console.log("999999999999",response)
+      const result = await response.json();
+      // console.log("---------------",result)
+      if (result.msg === "sucessfull") {
+        console.log("Default card set successfully");
+        PLATFORM_IOS
+          ? Toast.show({
+            type: 'success',
+            text1: ' Default card set successfully',
+          })
+          : ToastAndroid.show(
+            'Default card set successfully',
+            ToastAndroid.SHORT,
+          );
+      } else {
+        // console.log("Error deleting card");
+        PLATFORM_IOS
+          ? Toast.show({
+            type: 'success',
+            text1: "Default card  not set",
+          })
+          : ToastAndroid.show(
+            "Default card not set",
+            ToastAndroid.SHORT,
+          );
+      }
+    } catch (error) {
+      console.error("Error Making default card", error);
+    }
+  };
+
 
 
   const cardTypeImage = getCardType(getCard_Number);
@@ -260,133 +338,66 @@ export default function PaymentGateWay({ navigation }) {
               touched,
             }) => (
               <>
-                {/* {savedCard ?
-              <Carousel
-              style={{
-                width: "100%",
-                height: 240,
-                alignItems: "center",
-                justifyContent: "center",
-              }}
-              loop
-              width={"100%"}
-              height={200}
-              autoPlay={true}
-              data={savedCard}
-              scrollAnimationDuration={1000}
-              onSnapToItem={(index) => console.log('current index:', index)}
-              renderItem={(item,index)=>{
-                return(
-                  <View style={{}}>
-                     <ImageBackground
-                  source={cardTypeImage}
-                  style={{
-                    width: DIMENSIONS.SCREEN_WIDTH * 0.9,
-                    resizeMode: 'contain',
-                    height:mvs(190),
-                    // height:200,
-                    
 
-                  }}
-                >
-                   <View style={styles.cardNumber_position}>
-                  
-                  <Text
-                    style={{color: '#fff', fontWeight: '600', fontSize: ms(20) }}>
-                    { String(item.item.card_number).replace(/^(\d{12})(\d{4})$/, 'xxxx xxxx xxxx $2') }
-                  </Text>
-                  <View style={styles.text_div}>
-                  <View style={{gap:ms(5), width:ms(100)}}>
-                    <Text style={{color: 'gray', fontWeight: '600', fontSize: 8}}>Card Holder</Text>
-                  <Text
-                    style={{color: '#fff', fontWeight: '600', fontSize: 13}}>
-                    {String(item.item.cust_name )}
-                  </Text>
-                  </View>
-                  <View style={{gap:ms(5)}}>
-                  <Text style={{ fontWeight: '600', fontSize: 8,color:'gray'}}>Expires</Text>
-                  <Text
-                    style={{color: '#fff', fontWeight: '600', fontSize: 13}}>
-                    {String(item.item.card_exp_month+'/'+item.item.card_exp_year)}
-                  </Text>
-                  </View>
-                  <View style={{gap:5}}>
-                  <Text style={{fontWeight: '600', fontSize: 8,color:'gray'}}>CVV</Text>
-                  <Text
-                    style={{color: '#fff', fontWeight: '600', fontSize: 13}}>
-                    {String(item.item.card_cvc)}
-                  </Text>
-                  </View>
-                   </View>
-                </View>
-                  </ImageBackground>
-                  </View>
-                )
-              }}
-            />:null  
-              } */}
-                {savedCard ? <FlatList
-                  style={{ height: mvs(200), flexGrow: 0 }}
-                  horizontal={true}
-                  snapToAlignment='center'
-                  pagingEnabled={true}
-                  showsHorizontalScrollIndicator={false}
-                  data={savedCard}
-                  renderItem={(item, index) => {
-                    return (
-                      <View style={{}}>
-                        <ImageBackground
-                          source={cardTypeImage}
-                          style={{
-                            width: DIMENSIONS.SCREEN_WIDTH * 0.9,
-                            resizeMode: 'contain',
-                            height: mvs(190),
-                            // height:200,
+                {savedCard ?
+                  <Carousel
+                    //ref={(c) => { this._carousel = c; }}
+                    data={savedCard}
+                    renderItem={({ item, index }) => {
+                      return (
+                        <View style={{}}>
+                          <ImageBackground
+                            source={cardTypeImage}
+                            style={{
+                              width: DIMENSIONS.SCREEN_WIDTH * 0.9,
+                              resizeMode: 'contain',
+                              height: mvs(190),
+                              // height:200,
 
 
-                          }}
-                        >
-                          <View style={styles.cardNumber_position}>
+                            }}
+                          >
+                            <View style={styles.cardNumber_position}>
 
-                            <Text
-                              style={{ color: '#fff', fontWeight: '600', fontSize: ms(20) }}>
-                              {String(item.item.card_number).replace(/^(\d{12})(\d{4})$/, 'xxxx xxxx xxxx $2')}
-                            </Text>
-                            <View style={styles.text_div}>
-                              <View style={{ gap: ms(5), width: ms(100) }}>
-                                <Text style={{ color: 'gray', fontWeight: '600', fontSize: 8 }}>Card Holder</Text>
-                                <Text
-                                  style={{ color: '#fff', fontWeight: '600', fontSize: 13 }}>
-                                  {String(item.item.cust_name)}
-                                </Text>
-                              </View>
-                              <View style={{ gap: ms(5) }}>
-                                <Text style={{ fontWeight: '600', fontSize: 8, color: 'gray' }}>Expires</Text>
-                                <Text
-                                  style={{ color: '#fff', fontWeight: '600', fontSize: 13 }}>
-                                  {String(item.item.card_exp_month + '/' + item.item.card_exp_year)}
-                                </Text>
-                              </View>
-                              <View style={{ gap: 5 }}>
-                                <Text style={{ fontWeight: '600', fontSize: 8, color: 'gray' }}>CVV</Text>
-                                <Text
-                                  style={{ color: '#fff', fontWeight: '600', fontSize: 13 }}>
-                                  {String(item.item.card_cvc)}
-                                  {/* {cardDetails ? '*'.repeat(String(cardDetails.card_cvc).length) : values.cvv} */}
-                                </Text>
+                              <Text
+                                style={{ color: '#fff', fontWeight: '600', fontSize: ms(20) }}>
+                                {String(item.card_number).replace(/^(\d{12})(\d{4})$/, 'xxxx xxxx xxxx $2')}
+                              </Text>
+                              <View style={styles.text_div}>
+                                <View style={{ gap: ms(5), width: ms(100) }}>
+                                  <Text style={{ color: 'gray', fontWeight: '600', fontSize: 8 }}>Card Holder</Text>
+                                  <Text
+                                    style={{ color: '#fff', fontWeight: '600', fontSize: 13 }}>
+                                    {String(item.cust_name)}
+                                  </Text>
+                                </View>
+                                <View style={{ gap: ms(5) }}>
+                                  <Text style={{ fontWeight: '600', fontSize: 8, color: 'gray' }}>Expires</Text>
+                                  <Text
+                                    style={{ color: '#fff', fontWeight: '600', fontSize: 13 }}>
+                                    {String(item.card_exp_month + '/' + item.card_exp_year)}
+                                  </Text>
+                                </View>
+                                <View style={{ gap: 5 }}>
+                                  <Text style={{ fontWeight: '600', fontSize: 8, color: 'gray' }}>CVV</Text>
+                                  <Text
+                                    style={{ color: '#fff', fontWeight: '600', fontSize: 13 }}>
+                                    {String(item.card_cvc)}
+                                  </Text>
+                                </View>
                               </View>
                             </View>
-                          </View>
-                        </ImageBackground>
-                      </View>
-                    )
-                  }}
-                  keyExtractor={item => item.id}
-                >
-
-                </FlatList> : null}
-                {!savedCard ?
-                  <View>
+                          </ImageBackground>
+                        </View>
+                      )
+                    }}
+                    sliderWidth={400}
+                    itemWidth={400}
+                    loop={false}
+                    onSnapToItem={(index) => {
+                      setCurrentCard(savedCard[index])
+                    }}
+                  /> : <View>
                     <Image
                       source={cardTypeImage}
                       style={{
@@ -429,8 +440,8 @@ export default function PaymentGateWay({ navigation }) {
                         </View>
                       </View>
                     </View>
-                  </View> : null
-                }
+                  </View>}
+
 
                 <View
                   style={{
@@ -442,7 +453,25 @@ export default function PaymentGateWay({ navigation }) {
                     marginBottom: 35,
                   }}>
                   <TouchableOpacity
-                    onPress={() => handleGetCard()}
+                    onPress={() => {
+                      // console.log("cccccccccccc", currentCard)
+                      if (currentCard.status == 0) {
+                        // console.log("TEst123456789")
+                        // setCardID(currentCard.id)
+                        // call api to make new card as default and id will be currentCard.id
+                        handleMakeDefaultCard(currentCard.id)
+                      } else if (currentCard.status == 1) {
+                        console.log("------------", currentCard)
+
+                        dispatch(getCardDetails(currentCard))
+
+                        navigationRef.navigate('PaymentGateWay');
+                      } else if (savedCard.length == 1) {
+                        // setCardID(savedCard[0]?.id)
+                        // console.log("------",savedCard[0]?.id)
+                        handleMakeDefaultCard(savedCard[0]?.id)
+                      }
+                    }}
                     style={{
                       // marginTop: 200,
                       marginLeft: 95,
@@ -459,11 +488,25 @@ export default function PaymentGateWay({ navigation }) {
                         fontSize: 12,
                         fontWeight: '400',
                       }}>
-                      Make Default
+                      {currentCard.status === 1 ? "Default Payment Method" : "Make Default"}
+
                     </Text>
                   </TouchableOpacity>
                   <TouchableOpacity
-                    onPress={() => handleDeleteCard()}
+                    onPress={() => {
+                      console.log(currentCard);
+                      if (currentCard.status === 1 || currentCard.status === 0) {
+                        // setCardID(currentCard.id)
+                        handleDeleteCard(currentCard.id)
+                      } else if (savedCard.length == 1) {
+                        // console.log("------",savedCard[0]?.id)
+                        // setCardID(savedCard[0]?.id)
+                        handleDeleteCard(savedCard[0]?.id)
+                      }
+                      else {
+                        console.log("delete.........")
+                      }
+                    }}
                     style={{
 
                       marginLeft: 35,
@@ -497,12 +540,10 @@ export default function PaymentGateWay({ navigation }) {
                   placeholder="John Doe"
                   bW={1}
                   textWidth={ms(110)}
-                  placeholderTextColor={COLORS.LIGHT_GREY}
+                  placeholderTextColor={COLORS.HALFBLACK}
                 />
 
-                {errors.cardHolderName && touched.cardHolderName && (
-                  <Text style={{ color: 'red' }}>{errors.cardHolderName}</Text>
-                )}
+
                 <Input
                   IconLeft={null}
                   errors={undefined}
@@ -513,19 +554,16 @@ export default function PaymentGateWay({ navigation }) {
 
                     setSavedCard('')
                     setCardDetails({ ...cardDetails, ['card_number']: text })
-                    // setCardDetails('');
-                    // Remove non-digit characters from the input
-                    const cardNumber = text.replace(/\D/g, '');
-                    // Insert a space after every fourth digit
+                    var num = /[^0-9]/g;
+                    const cardNumbers = text.replace(/\s/g, ''); // Remove spaces from card number
+                    const cardNumber = cardNumbers.replace(num, '');
                     let formattedCardNumber = '';
                     for (let i = 0; i < cardNumber.length; i += 4) {
                       formattedCardNumber += cardNumber.substr(i, 4) + ' ';
                     }
 
-                    // Remove any trailing space
                     formattedCardNumber = formattedCardNumber.trim();
-                    setCreditCard(text)
-                    // Update the card number value
+
                     handleChange('cardNumber')(formattedCardNumber);
                   }}
                   onBlur={handleBlur('cardNumber')}
@@ -536,12 +574,10 @@ export default function PaymentGateWay({ navigation }) {
                   placeholder="1234  5678  xxxx  xxxx"
                   bW={1}
                   textWidth={ms(85)}
-                  placeholderTextColor={COLORS.LIGHT_GREY}
+                  placeholderTextColor={COLORS.HALFBLACK}
                   keyboardType="numeric"
                 />
-                {errors.cardNumber && touched.cardNumber && (
-                  <Text style={{ color: 'red' }}>{errors.cardNumber}</Text>
-                )}
+
                 <View style={styles.mainDiv_state_ZIP}>
                   <View style={styles.zip_state_view}>
                     <Input
@@ -551,45 +587,21 @@ export default function PaymentGateWay({ navigation }) {
                       value={values.validTill}
                       //
                       onChangeText={text => {
-                        const validTill = text.replace(/\D/g, '');
-
-                        // Extract the month and year values
-                        const month = validTill.slice(0, 2);
-                        const year = validTill.slice(2);
-
-                        // Validate the month and year values
-                        let formattedValidTill = '';
-                        const currentYear = new Date().getFullYear();
-
-                        if (month >= 1 && month <= 12) {
-                          formattedValidTill += month;
-                        } else {
-                          setError("Please enter valid month")
-
-                        }
-
-                        // if (year.length === 2) {
-                        //   const formattedYear = currentYear.toString().substr(0, 2) + year;
-                        //   const maxValidYear = currentYear + 2; // Allowing a maximum validity of 2 years into the future
-                        //   if (formattedYear >= currentYear.toString().substr(0, 2) && formattedYear <= maxValidYear.toString().substr(0, 2)) {
-                        //     formattedValidTill += '/';
-                        //     formattedValidTill += formattedYear;
-                        //   } else {
-                        //     setError1("Please enter valid month");
-                        //   }
-                        // }
-                        if (year.length > 0) {
-                          formattedValidTill += '/';
-                          formattedValidTill += year;
-                        }
-
-
-                        // Update the state with the formatted valid till value
+                        setSavedCard('')
                         setCardDetails({ ...cardDetails, validTill: formattedValidTill });
 
-                        // Update the valid till value in the formik field
-                        handleChange('validTill')(formattedValidTill);
+                        // Remove non-digit characters from the input
+                        const validTill = text.replace(/\D/g, '');
 
+                        // Insert a slash after the second character
+                        let formattedValidTill = validTill;
+                        if (validTill.length > 2) {
+                          formattedValidTill =
+                            validTill.slice(0, 2) + '/' + validTill.slice(2);
+                        }
+                        console.log(formattedValidTill, 'asd');
+                        // Update the valid till value
+                        handleChange('validTill')(formattedValidTill);
                       }}
                       onBlur={handleBlur('validTill')}
                       text="Valid Till"
@@ -598,17 +610,12 @@ export default function PaymentGateWay({ navigation }) {
                       placeholder="07/23"
                       bW={1}
                       textWidth={ms(62)}
-                      placeholderTextColor={COLORS.LIGHT_GREY}
+                      placeholderTextColor={COLORS.HALFBLACK}
                       w="half"
                       keyboardType="numeric"
                       maxLength={5}
                     />
-                    {/* {errors.validTill && touched.validTill && (
-                        <Text style={{color: 'red'}}>{errors.validTill}</Text>
-                      )} */}
 
-                    {error && <Text style={{ color: 'red' }}>{error}</Text>}
-                    {error1 && <Text style={{ color: 'red' }}>{error1}</Text>}
 
                   </View>
 
@@ -631,7 +638,7 @@ export default function PaymentGateWay({ navigation }) {
                       placeholder="***"
                       bW={1}
                       textWidth={ms(38)}
-                      placeholderTextColor={COLORS.LIGHT_GREY}
+                      placeholderTextColor={COLORS.HALFBLACK}
                       w="half"
                       secureTextEntry={true}
                       maxLength={3}
@@ -705,8 +712,10 @@ const styles = StyleSheet.create({
   mainDiv_container: {
     paddingHorizontal: 20,
     width: mobileW,
+
     height: mobileH,
     marginVertical: '10%'
+
     // paddingTop: 30,
   },
   mainDiv_state_ZIP: {

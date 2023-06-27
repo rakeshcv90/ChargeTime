@@ -126,6 +126,8 @@ export default function Login({navigation}) {
         // AsyncStorage.setItem('loginDataOne', JSON.stringify(data.locationid ));
 
         if (res.data.message == 'Login Successfull') {
+          // console.log("------------",res.data.user_id)
+          dispatch(setUserID(res.data?.user_id));
           AsyncStorage.setItem(
             'locationID',
             JSON.stringify(res.data?.locationid),
@@ -147,7 +149,7 @@ export default function Login({navigation}) {
           if (res.data.status == 'All details available') {
             dispatch(setEmailData(res.data?.email));
             dispatch(setPackageStatus(true));
-            dispatch(setUserID(res.data?.user_id));
+            // dispatch(setUserID(res.data?.user_id));
             dispatch(getLocationID(res.data?.locationid));
             // dispatch(setIsAuthorized(true));
             fetchGraphData(res.data?.user_id);

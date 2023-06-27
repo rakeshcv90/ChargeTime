@@ -12,7 +12,7 @@ import {
   KeyboardAvoidingView,
 } from 'react-native';
 import AnimatedLottieView from 'lottie-react-native';
-import React, {useState, useRef} from 'react';
+import React, {useState, useRef,useEffect} from 'react';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import Input from '../../Components/Input';
 import COLORS from '../../constants/COLORS';
@@ -62,10 +62,31 @@ export default function PaymentGateWay({navigation, route}) {
   const {getDataForPayment, getUserID, getEmailDAta} = useSelector(
     state => state,
   );
+  const {getCardDetails} = useSelector((state) => state.getCardDetails);
+
+
+ 
+
   const [modalVisible, setModalVisible] = useState(false);
   const [loader, setLoader] = useState(false);
   const inputRef = useRef(null);
 const dispatch = useDispatch();
+const [cardDetails, setCardDetails] = useState({
+  cardHolderName: '',
+  card_number: getCardDetails?.card_number,
+  card_cvv: getCardDetails?.card_cvc,
+  validTill: '',
+  // card_exp_year:'',
+});
+
+
+// const [savedCard, setSavedCard] = useState(getCardDetails[0]);
+useEffect(() => {
+ console.log(getCardDetails[0])
+ console.log("9999999999999",cardDetails)
+}, []);
+
+// console.log(savedCard,"------------")
   const handlePaymentSubmit = async values => {
     setLoader(true);
     let payload = new FormData();
@@ -287,7 +308,9 @@ const dispatch = useDispatch();
                     errors={errors.cardHolderName}
                     touched={touched.cardHolderName}
                     value={values.cardHolderName}
-                    onChangeText={handleChange('cardHolderName')}
+                    onChangeText={(text) => { handleChange('cardHolderName')(text);
+                    setSavedCard('')
+                    setCardDetails({ ...cardDetails, ['cardHolderName']: text })}}
                     onBlur={handleBlur('cardHolderName')}
                     text="Card Holder Name"
                     IconRight={() => <Admin />}
@@ -304,6 +327,8 @@ const dispatch = useDispatch();
                     value={values.cardNumber}
                     //onChangeText={handleChange('cardNumber')}
                     onChangeText={text => {
+                      setSavedCard('')
+                      setCardDetails({ ...cardDetails, ['card_number']: text })
                       var num = /[^0-9]/g;
                       const cardNumbers = text.replace(/\s/g, ''); // Remove spaces from card number
                       const cardNumber = cardNumbers.replace(num, '');
@@ -336,6 +361,9 @@ const dispatch = useDispatch();
                         value={values.validTill}
                         //
                         onChangeText={text => {
+
+                          setSavedCard('')
+                          setCardDetails({ ...cardDetails, validTill: formattedValidTill });
                           // Remove non-digit characters from the input
                           const validTill = text.replace(/\D/g, '');
 
@@ -368,7 +396,12 @@ const dispatch = useDispatch();
                         errors={errors.cvv}
                         touched={touched.cvv}
                         value={values.cvv}
-                        onChangeText={handleChange('cvv')}
+                        onChangeText={(text) => {
+                          handleChange('cvv')(text),
+                            // setCardDetails('');
+                            setSavedCard('')
+                          setCardDetails({ ...cardDetails, ['card_cvv']: text })
+                        }}
                         onBlur={handleBlur('cvv')}
                         text="CVV"
                         IconRight={null}

@@ -15,6 +15,7 @@ import axios from 'axios';
 import { FONTS } from '../../constants/FONTS'
 import { navigationRef } from '../../../App'
 import { ms } from 'react-native-size-matters';
+import { userProfileData as updatePersionalDetail } from '../../redux/action';
 
 
 
@@ -39,7 +40,7 @@ const Installation = () => {
   const [forLoading,setForLoading] = useState(false)
   const mobileW = Math.round(Dimensions.get('screen').width);
   useEffect(() => {
-    console.log('data for this User:---------', userProfileData); 
+    // console.log('data for this User:---------', userProfileData); 
     setAddLineTwo(userProfileData[0]?.pwa_add2);
     setAddLineOne(userProfileData[0]?.pwa_add1);
     // console.log('userrrrrrrrr',getUserID)
@@ -135,7 +136,13 @@ const InstalltionUpdate = async () => {
         console.log(data, 'fff');
 
         if (data) {
-          
+          const updatedData = [{
+            ...userProfileData[0],
+          name: name,
+            mobile: number,
+          }];
+          console.log(updatedData,"------")
+          dispatch(updatePersionalDetail(updatedData));
           PLATFORM_IOS
             ? Toast.show({
                 type: 'success',

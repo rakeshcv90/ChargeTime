@@ -25,6 +25,8 @@ const initialState = {
     getPurchaseData:[],
     getDeviceID:'',
     userProfileData: [],
+    getCardDetails:[],
+    getCurrentPlan: [],
     getMonthData: [],
     getQuarterData: [],
     getYearData: [],
@@ -91,6 +93,11 @@ const initialState = {
           case types.GET_OVERUSAGE:
           return { ...state, overusage: action.payload }
         //dashboard boxtwo and price details data end
+        case types.GET_CARD_DETAILS:
+          return { ...state, getCardDetails: action.payload }
+        case types.GET_CURRENT_PLAN:
+            return { ...state, getCurrentPlan: action.payload }
+  
 
       default:
         return state;

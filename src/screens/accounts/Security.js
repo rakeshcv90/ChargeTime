@@ -35,7 +35,7 @@ const ValidateSchema = Yup.object().shape({
 
 
 const Security = () => {
-const userRegisterData = useSelector((state)=> state.userRegisterData)
+const userProfileData = useSelector((state)=> state.userProfileData)
 const [isEditable, setIsEditable] = useState(false);
 const [currentPassword, setCurrentPassword] = useState('');
 const [newPassword, setNewPassword] = useState('');
@@ -47,16 +47,25 @@ const [confirmPassword, setConfirmPassword] = useState('');
 const [hidePassword,setHidePassword] = useState(true);
 const [Password,setPassword] = useState(true);
 const [keyPressed,setKeyPressed] = useState(true);
+const [errors, setErrors] = useState({});
 const mobileW = Math.round(Dimensions.get('screen').width);
-useEffect(() => {
-  console.log("+++++++++++++++",userRegisterData)
-}, [userRegisterData]);
-const onPress = ()=>{
+// useEffect(() => {
+//   console.log("+++++++++++++++",userProfileData)
+// }, []);
+const onPress = async ()=>{
   // updatePersonalDetails();
   UpdatePassword();
+  // ValidateSchema.validate(values, { abortEarly: false })
+  //     .then(() => {
+  //       UpdatePassword();
+  //     })
+  //     .catch((error) => {
+  //       const errorMessage = error.errors.join('\n');
+  //       ToastAndroid.show(errorMessage, ToastAndroid.SHORT);
+  //     });
 }
 
-const mail = userRegisterData[0]?.email;
+const mail = userProfileData[0]?.email;
 const enableEdit =()=>{
   console.log("enable edit",isEditable)
   setIsEditable(true)
@@ -64,6 +73,9 @@ const enableEdit =()=>{
 const UpdatePassword= async () =>{
     // console.log(values);
     try {
+      // const values = { password: newPassword, confirmPassword };
+
+      // await ValidateSchema.validate(values, { abortEarly: false });
       await fetch(`${API}/changePassword `,{
         method: 'POST',
         headers: {
@@ -91,10 +103,11 @@ const UpdatePassword= async () =>{
                   ToastAndroid.SHORT,
                 );
                 setIsEditable(false)
-                navigationRef.navigate('Account');
+                // navigationRef.navigate('Account');
                 setCurrentPassword(' ');
                 setNewPassword (' ');
                 setConfirmPassword(' ');
+                setErrors({});
           } else {
             PLATFORM_IOS
               ? Toast.show({
@@ -106,7 +119,13 @@ const UpdatePassword= async () =>{
           }
         });
     } catch (err) {
-      console.log(err);
+      if (err.inner) {
+        const validationErrors = {};
+        err.inner.forEach((error) => {
+          validationErrors[error.path] = error.message;
+        });
+        setErrors(validationErrors);
+      }
     }
   };
 
@@ -119,6 +138,7 @@ const UpdatePassword= async () =>{
     <SafeAreaView style={{ backgroundColor: COLORS.CREAM, flex: 1}}>
      <Header headerName="Security" editShow={true} onPress={onPress} enableEdit ={enableEdit} editButton={isEditable} />
       
+
      {Platform.OS=='android'? <HorizontalLine style={styles.line} />:<View
               style={{
              
@@ -126,12 +146,13 @@ const UpdatePassword= async () =>{
               }}>
               <Image source={require('../../../assets/images/dotted.png')} style={{ width: mobileW * 0.97 ,}} />
             </View> }
+
      <View style={[styles.mainDiv_container]}>
      <Input
             IconLeft={null}  
             bgColor={COLORS.CREAM}
             editable={isEditable}
-            placeholderTextColor={COLORS.LIGHT_GREY}
+            placeholderTextColor={COLORS.HALFBLACK}
             text=" Current Password"
             // passwordInput={true}
             // pasButton={() => setShowPassword(!showPassword)}
@@ -139,6 +160,7 @@ const UpdatePassword= async () =>{
             secureTextEntry={keyPressed}
             passwordInputIcon={!showPassword}
             placeholder="*************"
+            error={errors.currentPassword}
             onChangeText={text => setCurrentPassword(text)}
             value={currentPassword}
             mV={15}
@@ -162,6 +184,7 @@ const UpdatePassword= async () =>{
             editable={isEditable}
             placeholderTextColor={COLORS.BLACK}
             passwordInput={true}
+            error={errors.newPassword}
             pasButton={() => {
               setHidePassword(!hidePassword)
               setShowNew(!showNew)}}
@@ -189,8 +212,9 @@ const UpdatePassword= async () =>{
             IconLeft={null}  
             bgColor={COLORS.CREAM}
             editable={isEditable}
-            placeholderTextColor={COLORS.BLACK}
+            placeholderTextColor={COLORS.HALFBLACK}
             passwordInput={true}
+            error={errors.confirmPassword}
             pasButton={() => {
               setPassword(!Password)
               setShowNew1(!showNew1)

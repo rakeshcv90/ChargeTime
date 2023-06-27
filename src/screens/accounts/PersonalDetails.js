@@ -20,8 +20,13 @@ import { FONTS } from '../../constants/FONTS';
 import { useDispatch } from 'react-redux';
 import axios from 'axios';
 import { mvs, ms } from 'react-native-size-matters';
-import { userProfileData } from '../../redux/action';
+
+
+
+import { userProfileData as updatePersionalDetail } from '../../redux/action';
 const mobileW = Math.round(Dimensions.get('screen').width);
+
+
 
 
 const PersonalDetails = () => {
@@ -56,10 +61,8 @@ const PersonalDetails = () => {
     setIsEditable(true)
   }
 
-  const updatePersonalDetails = async () => {
 
-
-
+  const updatePersonalDetails = async () =>{
 
     // setIsEditable(true);
     await fetch(`${API}/personalInfo/${user_ID}`, {
@@ -77,22 +80,19 @@ const PersonalDetails = () => {
         if (data.msg == "Your profile has been succesfully updated") {
           const updatedData = [{
             ...userProfileData[0],
-            pwa_name: name,
-            pwa_mobile: number,
-          }];
-          console.log(updatedData, "------")
-          // if (updatedData) {
-          //   dispatch(userProfileData(updatedData));
-          // } else {
-          //   console.log('updatedData is not defined or has an incorrect value');
-          // }
-          dispatch(userProfileData(updatedData));
-          PLATFORM_IOS ?
-            Toast.show({
-              type: 'success',
-              text1: "Your Profile Updated Successfully",
 
-            }) : ToastAndroid.show("Your Profile Updated Successfully", ToastAndroid.SHORT);
+          name: name,
+            mobile: number,
+          }];
+          // console.log(updatedData,"------")
+        
+          dispatch(updatePersionalDetail(updatedData));
+          PLATFORM_IOS?
+          Toast.show({
+            type: 'success',
+            text1: "Your Profile Updated Successfully",
+            
+          }):ToastAndroid.show("Your Profile Updated Successfully", ToastAndroid.SHORT);
           setIsEditable(false)
           // navigationRef.navigate('Account');
           // navigation.navigate('Home');
@@ -121,11 +121,6 @@ const PersonalDetails = () => {
     }
     // Limit the length of the input to 10 characters
     const limitedText = cleanedText.slice(0, 10);
-    // if (limitedText >= 10){
-    // setError('Mobile number should contain 10 digits only');
-    // }else {
-    //   setError('');
-    // }
     // Update the state with the validated input
     setNumber(limitedText);
   };
@@ -178,16 +173,18 @@ const PersonalDetails = () => {
           bColor={COLORS.BLACK}
           text="Phone No."
           mV={15}
+          maxLength={10}
           textWidth={ms(70)}
-          placeholderTextColor={COLORS.BLACK}
+          placeholderTextColor={COLORS.HALFBLACK}
           style={{
             color: COLORS.BLACK,
             fontFamily: 'Roboto',
             fontWeight: '200',
           }}
-          onChangeText={(text) => {
-            handleInputChange(text);
-            setNumber(number)
+
+          onChangeText={(number)=>{handleInputChange(number);
+          setNumber(number)
+
           }}
           value={number}
         />
@@ -208,7 +205,9 @@ const PersonalDetails = () => {
           mV={5}
           textWidth={ms(50)}
           value={userProfileData[0]?.email}
-          placeholderTextColor={COLORS.BLACK}
+
+          placeholderTextColor={COLORS.HALFBLACK}
+
           style={{
             color: COLORS.BLACK,
             fontFamily: 'Roboto',
@@ -220,14 +219,17 @@ const PersonalDetails = () => {
       </View>
 
       <View style={styles.bottom}>
-        <Text>Want to delete account?{' '}</Text>
+        <Text style={{fontSize: 14, color: COLORS.BLACK}}>Want to delete account?{' '}</Text>
 
         <TouchableOpacity onPress={() => navigationRef.navigate('deleteAccount')}>
           <Text
             style={{
               fontWeight: 'bold',
-              font: 14,
-          
+
+              fontSize: 14,
+              height: 25,
+              color:COLORS.BLACK,
+
             }}
           >Request here.</Text>
         </TouchableOpacity>
@@ -237,7 +239,9 @@ const PersonalDetails = () => {
 }
 const styles = StyleSheet.create({
   bottom: {
+
     marginTop: 'auto',
+
     flexDirection: 'row',
     alignContent: 'center',
     alignItems: 'center',

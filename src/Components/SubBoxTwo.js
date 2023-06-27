@@ -1,10 +1,18 @@
-import {View, Text, StyleSheet, TouchableOpacity, Image} from 'react-native';
-import React from 'react';
+import { View, Text, StyleSheet, TouchableOpacity, Image } from 'react-native';
+import React, { useEffect } from 'react';
 import COLORS from '../constants/COLORS';
-import {Unit} from '../../assets/images/Unit';
-import {Mieq} from '../../assets/images/Mieq';
+import { Unit } from '../../assets/images/Unit';
+import { Mieq } from '../../assets/images/Mieq';
+import { useSelector } from 'react-redux';
 
-const SubBoxTwo = ({data}) => {
+
+const SubBoxTwo = () => {
+  const getCurrentPlan = useSelector((state) => state.getCurrentPlan);
+
+  // useEffect(() => {
+  //   // console.log('data for this User:---------', getPlanSummary); 
+  //   // console.log(getCurrentPlan, "----------")
+  // }, []);
   return (
     <View style={styles.mainDiv_installation}>
       <TouchableOpacity style={styles.install_touchable}>
@@ -14,11 +22,11 @@ const SubBoxTwo = ({data}) => {
         />
         <Text style={styles.installation_text}>Plan Details</Text>
       </TouchableOpacity>
-      <View style={[styles.mainDiv_plan_details,styles.shadowProp]}>
+      <View style={[styles.mainDiv_plan_details, styles.shadowProp]}>
         <View style={styles.second_main_div_kwh}>
           {/* <Image source={require('../../assets/images/kwh.png')} /> */}
           <Unit />
-          <Text style={styles.kwh_mieq_text}>{data?.kwh} kWh</Text>
+          <Text style={styles.kwh_mieq_text}>{getCurrentPlan[0]?.kwh} kWh</Text>
           <Text style={styles.unit_allowed}>Units Alloted</Text>
         </View>
         <View style={styles.second_main_div_kwh}>
@@ -26,16 +34,16 @@ const SubBoxTwo = ({data}) => {
                   source={require('../../assets/images/kwh_icon_one.png')}
                 /> */}
           <Mieq />
-          <Text style={styles.kwh_mieq_text}>~ {data?.mi_eq}</Text>
+          <Text style={styles.kwh_mieq_text}>~ {getCurrentPlan[0]?.mi_eq}</Text>
           <Text style={styles.unit_allowed}>Mi Eq</Text>
         </View>
         <View style={styles.second_main_div_kwh}>
           <Image
             source={require('../../assets/images/kwh_dollar.png')}
-            style={{width: 20, height: 20}}
+            style={{ width: 20, height: 20 }}
           />
           {/* <MileOne /> */}
-          <Text style={styles.kwh_mieq_text}>{data?.dollar_mi}</Text>
+          <Text style={styles.kwh_mieq_text}>{getCurrentPlan[0]?.dollar_mi}</Text>
           <Text style={styles.unit_allowed}>$ / Mile</Text>
         </View>
       </View>
@@ -69,7 +77,7 @@ const styles = StyleSheet.create({
   mainDiv_installation: {
     overflow: 'hidden',
     borderRadius: 10,
-    marginTop: Platform.OS === "ios"?20: 20,
+    marginTop: Platform.OS === "ios" ? 20 : 20,
     shadowColor: '#000000',
     shadowOffset: {
       width: 4,
@@ -89,12 +97,12 @@ const styles = StyleSheet.create({
     marginLeft: 20,
   },
   installation_text: {
-    fontWeight:"700",
+    fontWeight: "700",
     fontSize: 12,
     paddingLeft: 10,
-    color:COLORS.BLACK,
+    color: COLORS.BLACK,
   },
-  
+
   force_base: {
     fontWeight: 400,
     fontSize: 14,
@@ -117,13 +125,13 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     // alignItems:'center',
     paddingVertical: 20,
-    backgroundColor:COLORS.GRAY
+    backgroundColor: COLORS.GRAY
   },
   kwh_mieq_text: {
     fontWeight: 700,
     fontSize: 16,
     paddingTop: 8,
-    color:COLORS.BLACK
+    color: COLORS.BLACK
   },
   second_main_div_kwh: {
     flexDirection: 'column',
@@ -131,10 +139,10 @@ const styles = StyleSheet.create({
     // alignSelf: 'center',
     alignContent: 'center',
     paddingHorizontal: 10,
-    
-    
+
+
   },
-  
+
   dollar_div: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -152,10 +160,10 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     borderRadius: 20,
   },
-  
+
   unit_allowed: {
     fontWeight: 400,
     fontSize: 10,
-    color:COLORS.BLACK,
+    color: COLORS.BLACK,
   },
 });

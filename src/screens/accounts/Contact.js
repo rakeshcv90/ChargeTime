@@ -10,54 +10,101 @@ import { Eye } from '../../../assets/svgs/Eye';
 import { API } from '../../api/API';
 import { navigationRef } from '../../../App';
 import { ms } from 'react-native-size-matters';
-import { PLATFORM_IOS } from '../../constants/DIMENSIONS';
-import { Image } from 'react-native';
+
+import {PLATFORM_IOS} from '../../constants/DIMENSIONS';
+import axios from 'axios';
+
 
 // import Button from '../../Components/Button';
 
 const Contact = () => {
-  const getUserID = useSelector((state) => state.getUserID);
+
+
   const [message, setMessage] = useState('');
-  const user_ID = getUserID;
-  const mobileW = Math.round(Dimensions.get('screen').width);
+   
+  const handleMessage = async (values) => {
+
+    try {
+
+      const response = await axios.post(`${API}/sendEmail`, {
+
+        "message": message,
+      });
+      // console.log("update-----------",response)
+      if (response.data.message === 'Email sent successfully') {
+        setMessage('')
+              console.log("hello");
+        PLATFORM_IOS
+          ? Toast.show({
+            type: 'success',
+            text1: 'Email sent successfully.',
+          })
+          : ToastAndroid.show(
+            'Email sent successfully.',
+            ToastAndroid.SHORT,
+          );
+      }
+      else {
+        // cb();
+        PLATFORM_IOS
+          ? Toast.show({
+            type: 'success',
+            text1: 'Email not sent ',
+          })
+          : ToastAndroid.show(
+            'Email not sent.',
+            ToastAndroid.SHORT,
+          );
+      }
+    } catch (error) {
+      console.error(error);
+    }
+
+  };
+
+
 
   return (
     <SafeAreaView style={{ backgroundColor: COLORS.CREAM, flex: 1 }}>
       <Header headerName="Contact Us" />
       {Platform.OS == 'android' ? <HorizontalLine style={styles.line} /> : <View
-        style={{
 
-
-        }}>
-        <Image source={require('../../../assets/images/dotted.png')} style={{ width: mobileW * 0.97 }} />
-      </View>}
-      <View style={styles.container}>
-        <TextInput
           style={{
-            // flex: 1,
-            backgroundColor: COLORS.CREAM,
-            borderRadius: 5,
-            borderWidth: 0.7,
-            borderColor: COLORS.BLACK,
-            marginVertical: 19,
-            width: ms(340),
-            height: ms(150),
-            color: COLORS.BLACK,
-            fontSize: 14,
-            fontFamily: 'Roboto',
-            fontWeight: '100',
-            paddingLeft: 10,
-            paddingTop: 10,
-            textAlignVertical: 'top',
 
-          }}
-          multiline
-          maxLength={550}
-          placeholder="Please describe your query / issue in detail. "
-          placeholderTextColor={COLORS.LIGHT_GREY}
-          onChangeText={text => setMessage(text)}
-          value={message}
-        />
+
+          }}>
+          <Image source={require('../../../assets/images/dotted.png')} style={{ width: mobileW * 0.97, top: Platform.OS == 'ios' ? -30 : 2 }} />
+        </View>}
+      {/* <HorizontalLine style={styles.line} /> */}
+      <View style={styles.container}>
+      <View style={{backgroundColor:COLORS.CREAM,width:110,position:'absolute',zIndex:99,top:23,left:32,alignItems:'center'}}><Text style={{color: 'black'}}>Your Message</Text></View>
+      <TextInput
+    style={{
+      // flex: 1,
+      backgroundColor: COLORS.CREAM,
+      borderRadius: 5,
+      borderWidth: 0.7,
+      borderColor: COLORS.BLACK,
+      marginVertical: 19,
+      width: ms(340),
+      height: ms(150),
+      color: COLORS.BLACK,
+      fontSize:14,
+      fontFamily: 'Roboto',
+      fontWeight: '100',
+      paddingLeft: 10, 
+      paddingTop: 10,
+      textAlignVertical: 'top',
+       
+    }}
+    multiline
+    maxLength={550}
+    placeholder="Please describe your query / issue in detail. "
+    placeholderTextColor={COLORS.HALFBLACK}
+    onChangeText={text => setMessage(text)}
+    value={message}
+  />
+
         <View
           style={{
             flexDirection: 'row',
@@ -66,6 +113,7 @@ const Contact = () => {
             marginHorizontal: 20,
           }}>
           <TouchableOpacity
+          onPress={()=> handleMessage(message)}
             style={{
               marginTop: 15,
               marginLeft: 190,
@@ -127,3 +175,5 @@ const styles = StyleSheet.create({
 });
 
 export default Contact;
+
+
