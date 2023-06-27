@@ -51,6 +51,7 @@ import {NoCharge} from '../../assets/images/NoCharge';
 import COLORS from '../constants/COLORS';
 import {DIMENSIONS} from '../constants/DIMENSIONS';
 import Contact from '../screens/accounts/Contact';
+import ForDownGrade from '../Components/ForDownGrade';
 
 const Drawer = createDrawerNavigator();
 const Stack = createNativeStackNavigator();
@@ -428,7 +429,7 @@ const EnergyOptions = () => {
   return (
     <Stack.Navigator screenOptions={screenOptions}>
       <Stack.Screen name="HomeOne" component={HomeOne} />
-      <Stack.Screen name="DownGradeData" component={DownGradeData} />
+      <Stack.Screen name="DownGradeData" component={ForDownGrade} />
       <Stack.Screen name="PaymentGateWay" component={PaymentGateWay} />
     </Stack.Navigator>
   );

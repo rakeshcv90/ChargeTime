@@ -22,7 +22,7 @@ export default function DrawerOpen({navigation}) {
         position: 'absolute',
         right: PLATFORM_IOS ? 25 : 20,
         alignSelf: 'flex-end',
-        top: PLATFORM_IOS ? 40 : 25,
+        top: 70,
         zIndex: 5,
         backgroundColor: COLORS.WHITE,
         borderRadius: 35,

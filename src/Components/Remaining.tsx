@@ -1,19 +1,45 @@
 import {Dimensions, StyleSheet, Text, View} from 'react-native';
-import React, { useEffect } from 'react';
+import React, {useEffect} from 'react';
 import COLORS from '../constants/COLORS';
 import LinearGradient from 'react-native-linear-gradient';
 import {DIMENSIONS} from '../constants/DIMENSIONS';
-import { useSelector } from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
+import axios from 'axios';
+import {API} from '../api/API';
+import {setRemainingData} from '../redux/action';
 
 const Remaining = ({...props}) => {
-  
-  const {getRemainingData} =useSelector((state:any) => state)
-  
+  const dispatch = useDispatch();
+  const {getRemainingData, getUserID} = useSelector((state: any) => state);
+  useEffect(() => {
+    remainigUsuageData();
+  }, []);
+
+  const remainigUsuageData = () => {
+    let remaingData;
+
+    axios
+      .get(`${API}/remainingusage/${getUserID}`)
+      .then(res => {
+        if (res.data?.kwh_unit_remaining >= 0) {
+          remaingData = res.data?.kwh_unit_remaining;
+        } else {
+          remaingData = res.data?.kwh_unit_overusage;
+        }
+        dispatch(setRemainingData(remaingData));
+      })
+      .catch(err => {
+        console.log(err);
+      });
+  };
   return (
     <View
       style={{
         backgroundColor: '#F5F5F5',
-        width: props?.data !=="energy" ? DIMENSIONS.SCREEN_WIDTH * 0.4:DIMENSIONS.SCREEN_WIDTH * 0.9,
+        width:
+          props?.data !== 'energy'
+            ? DIMENSIONS.SCREEN_WIDTH * 0.4
+            : DIMENSIONS.SCREEN_WIDTH * 0.9,
         height: DIMENSIONS.SCREEN_WIDTH * 0.35,
         marginVertical: 20,
         flexDirection: 'column-reverse',
@@ -28,6 +54,7 @@ const Remaining = ({...props}) => {
         borderWidth: 0,
         borderRadius: 10,
         overflow: 'hidden',
+            // transform: [animatedValue ? {rotate}: null],
       }}>
       <Text
         style={{
@@ -44,14 +71,12 @@ const Remaining = ({...props}) => {
         Remaining Usage
       </Text>
       <LinearGradient
-        colors={[
-            'rgba(177, 211, 79, 0.7) 0%,', 
-            'rgb(177, 211, 79) 0%,', ]}
+        colors={['rgba(177, 211, 79, 0.7) 0%,', 'rgb(177, 211, 79) 0%,']}
         start={{x: 0, y: 0}}
         end={{x: 0, y: 1}}
         style={{
           width: '100%',
-          height: props.RemainingFill ? `${props.RemainingFill}%` : '1%',
+          height: getRemainingData ? `${getRemainingData/10}%` : '1%',
           flexDirection: 'column-reverse',
         }}>
         <View style={{marginBottom: 30, marginLeft: 30}}>
@@ -63,7 +88,7 @@ const Remaining = ({...props}) => {
               color: COLORS.BLACK,
             }}>
             {' '}
-            {getRemainingData ? getRemainingData + ' kWh' : 0 + ' kWh'}
+            {getRemainingData ? getRemainingData : 0}{' kWh'}
           </Text>
           <Text
             style={{
@@ -82,7 +107,7 @@ const Remaining = ({...props}) => {
         //   flex: 0.1,
           backgroundColor: COLORS.GREEN,
         }}>
-        {props.RemainingFill > 10 && props.RemainingFill < 90 && (
+        {getRemainingData > 10 && getRemainingData < 90 && (
           <View
             style={{
               width: '100%',
@@ -99,7 +124,7 @@ const Remaining = ({...props}) => {
             />
           </View>
         )}
-        {props.RemainingFill > 10 && props.RemainingFill < 90 && (
+        {getRemainingData > 10 && getRemainingData < 90 && (
           <View
             style={{
               width: '100%',

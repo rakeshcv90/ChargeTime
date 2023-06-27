@@ -113,6 +113,7 @@ const dispatch = useDispatch();
         console.log(res.data, 'tt');
         if (res.data.status == 'True') {
           // dispatch(setDeviceId(res.data.message));
+          navigationRef.navigate('DrawerStack')
         } else {
           dispatch(setDeviceId(res.data.message));
           getPlanCurrent();

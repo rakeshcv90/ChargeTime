@@ -28,11 +28,7 @@ const InstallationBase = ({data}) => {
         styles.mainDiv_installation,
         styles.shadowProp,
         {
-          marginVertical:
-            navigationRef.current.getState().key ==
-            'stack-ezLtOyG4qMhZLUvDJui5S'
-              ? 10
-              : 0,
+          marginVertical:10,
         },
       ]}>
       <TouchableOpacity style={styles.install_touchable}>

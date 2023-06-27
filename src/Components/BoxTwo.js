@@ -113,7 +113,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     // alignItems:'center',
-    paddingVertical: 20,
+    padding: 20,
     backgroundColor:COLORS.GRAY
   },
   kwh_mieq_text: {

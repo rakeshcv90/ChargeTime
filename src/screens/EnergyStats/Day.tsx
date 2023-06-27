@@ -26,32 +26,14 @@ const Day = (props:any) => {
   
   useEffect(() => {
     setShowSlider(true);
+    console.log(getkwhData)
   }, []);
 
-  const remainigUsuageData = () => {
-    let remaingData;
-
-    axios
-      .get(`${API}/remainingusage/${getUserID}`)
-      .then(res => {
-        if (res.data?.kwh_unit_remaining >= 0) {
-          remaingData = res.data?.kwh_unit_remaining;
-        } else {
-          remaingData = res.data?.kwh_unit_overusage;
-        }
-        console.log('first', res.data);
-        dispatch(setRemainingData(remaingData));
-      })
-      .catch(err => {
-        console.log(err);
-      });
-  };
   const handleRefresh = () => {
     setRefresh(true);
     setTimeout(() => {
       setRefresh(false);
     }, 2000);
-    remainigUsuageData();
   };
 
   return (
@@ -79,7 +61,7 @@ const Day = (props:any) => {
               marginTop: 10,
             }}>
              
-            <Remaining RemainingFill={getRemainingData / 10} KWH={400} data={"home"} />
+            <Remaining RemainingFill={10} KWH={400} data={"home"} />
             <TotalUsage data={getkwhData.Totalusedkwhs} />
           </View>
           
