@@ -481,9 +481,11 @@ const styles = StyleSheet.create({
   textInput_otp: {
     width: 45,
     height: 45,
-    borderRadius: 15,
+    borderRadius: 10,
     backgroundColor: COLORS.BROWN,
-    paddingHorizontal: 20,
+    textAlign: 'center',
+    fontSize: 14,
+    // paddingHorizontal: 20,
   },
   mainDiv_verify_email: {
     // paddingTop: 20,

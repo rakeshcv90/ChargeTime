@@ -36,7 +36,7 @@ const validationSchema = Yup.object().shape({
   cardHolderName: Yup.string().required('Card Holder Name is required'),
   cardNumber: Yup.string()
     .required('Invalid Card Number')
-    .min(16, 'Card number must be 16 digits'),
+    .min(19, 'Card number must be 16 digits'),
   // .matches(/^[0-9]{16}$/, 'Card number must be 16 digits'),
   validTill: Yup.string()
     .required('expiry date required')

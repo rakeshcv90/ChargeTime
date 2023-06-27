@@ -121,7 +121,7 @@ const styles = StyleSheet.create({
     paddingVertical: PLATFORM_IOS ? 0 : 0,
     marginVertical: PLATFORM_IOS ? 0 : 0,
     // backgroundColor:"red"
-    marginTop: 20,
+    marginVertical: 20,
     //   paddingTop:20
     // marginBottom:20
   },

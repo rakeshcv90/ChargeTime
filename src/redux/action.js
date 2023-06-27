@@ -87,3 +87,6 @@ export const setPurchaseData = (data) => {
 export const setDeviceId = (data) => {
   return {type:types.GET_DEVICE_ID,payload:data}
 } 
+export const setOverUsage = (data) => {
+  return {type:types.GET_OVERUSAGE,payload:data}
+} 

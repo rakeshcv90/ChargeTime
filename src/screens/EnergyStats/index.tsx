@@ -34,7 +34,7 @@ import DrawerOpen from '../../Components/DrawerOpen';
 import {navigationRef} from '../../../App';
 import {DrawerActions} from '@react-navigation/native';
 import AnimatedLottieView from 'lottie-react-native';
-import { setBoxTwoDataForDashboard, setChargerStatus, setDeviceId, setGraphData, setKwhData, setMonthGraphData, setQuarterGraphData, setRemainingData, setWeekGraphData, setYearGraphData } from '../../redux/action';
+import { setBoxTwoDataForDashboard, setChargerStatus, setDeviceId, setGraphData, setIsAuthorized, setKwhData, setMonthGraphData, setOverUsage, setQuarterGraphData, setRemainingData, setWeekGraphData, setYearGraphData } from '../../redux/action';
 const mobileW = Math.round(Dimensions.get('screen').width);
 
 function MyTabBar({state, descriptors, navigation}) {
@@ -120,6 +120,7 @@ export default function EnergyStats() {
   const [toggleState, setToggleState] = useState(false);
 const dispatch = useDispatch()
   useEffect(() => {
+    dispatch(setIsAuthorized(true))
     const backAction = () => {
       Alert.alert(
         'Exit App',
@@ -208,8 +209,10 @@ const dispatch = useDispatch()
       .then(res => {
         if (res.data?.kwh_unit_remaining >= 0) {
           remaingData = res.data?.kwh_unit_remaining;
+          dispatch(setOverUsage(false));
         } else {
           remaingData = res.data?.kwh_unit_overusage;
+          dispatch(setOverUsage(true));
         }
         console.log('first', res.data);
         dispatch(setRemainingData(remaingData));
@@ -502,7 +505,6 @@ const dispatch = useDispatch()
             }}
             tabBar={props => <MyTabBar {...props} />}>
             <Tab.Screen name="Day" component={Day} />
-
             <Tab.Screen name="Week" component={Week} />
             <Tab.Screen name="Month" component={Month} />
             <Tab.Screen name="Quarter" component={Quarter} />

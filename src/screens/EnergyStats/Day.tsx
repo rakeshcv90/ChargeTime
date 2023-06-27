@@ -9,7 +9,7 @@ import ButtonSlider from '../../Components/ButtonSlider';
 import PriceBox from '../../Components/PriceBox';
 import { useDispatch, useSelector } from 'react-redux';
 import axios from 'axios';
-import { setRemainingData } from '../../redux/action';
+import { setOverUsage, setRemainingData } from '../../redux/action';
 import { API } from '../../api/API';
 
 const Day = (props:any) => {
@@ -34,8 +34,29 @@ const Day = (props:any) => {
     setTimeout(() => {
       setRefresh(false);
     }, 2000);
+    remainigUsuageData()
   };
 
+  const remainigUsuageData = () => {
+    let remaingData;
+
+    axios
+      .get(`${API}/remainingusage/${getUserID}`)
+      .then(res => {
+        if (res.data?.kwh_unit_remaining >= 0) {
+          remaingData = res.data?.kwh_unit_remaining;
+          dispatch(setOverUsage(false));
+        } else {
+          remaingData = res.data?.kwh_unit_overusage;
+          dispatch(setOverUsage(true));
+        }
+        console.log(res.data)
+        dispatch(setRemainingData(remaingData));
+      })
+      .catch(err => {
+        console.log(err);
+      });
+  };
   return (
     <>
       <View style={{flex: 1, backgroundColor: COLORS.CREAM}}>

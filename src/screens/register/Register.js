@@ -56,7 +56,7 @@ export default function Register({navigation}) {
         name: values.name,
         email: values.email,
       });
-      console.log(response.data.error);
+      console.log('SIGNUOP',response.data);
       if (response.data.status == 'true') {
         PLATFORM_IOS
           ? Toast.show({
