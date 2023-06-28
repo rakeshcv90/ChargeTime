@@ -12,29 +12,34 @@ import {
   KeyboardAvoidingView,
 } from 'react-native';
 import AnimatedLottieView from 'lottie-react-native';
+
 import React, {useState, useRef, useEffect} from 'react';
 import {SafeAreaView} from 'react-native-safe-area-context';
+
 import Input from '../../Components/Input';
 import COLORS from '../../constants/COLORS';
-import {Card} from '../../../assets/svgs/Card';
-import {Name} from '../../../assets/svgs/Name';
-import {DIMENSIONS} from '../../constants/DIMENSIONS';
-import {LeftIcon} from '../../../assets/images/LeftIcon';
-import {Formik} from 'formik';
+import { Card } from '../../../assets/svgs/Card';
+import { Name } from '../../../assets/svgs/Name';
+import { DIMENSIONS } from '../../constants/DIMENSIONS';
+import { LeftIcon } from '../../../assets/images/LeftIcon';
+import { Formik } from 'formik';
 import * as Yup from 'yup';
 import {Admin} from '../../../assets/images/Admin';
 import {Message} from '../../../assets/images/Message';
 import {useDispatch, useSelector} from 'react-redux';
+
 import axios from 'axios';
-import {API} from '../../api/API';
-import {navigationRef} from '../../../App';
+import { API } from '../../api/API';
+import { navigationRef } from '../../../App';
 import ActivityLoader from '../../Components/ActivityLoader';
+
 import {
   setDeviceId,
   setPackageStatus,
   setPlanStatus,
   setPurchaseData,
 } from '../../redux/action';
+
 const mobileW = Math.round(Dimensions.get('screen').width);
 const mobileH = Math.round(Dimensions.get('window').height);
 const validationSchema = Yup.object().shape({
@@ -63,19 +68,22 @@ const validationSchema = Yup.object().shape({
     .required('cvv is required')
     .matches(/^[0-9]{3}$/, 'CVV must be 3 digits'),
 });
-export default function PaymentGateWay({navigation, route}) {
-  const {getDataForPayment, getUserID, getEmailDAta} = useSelector(
+export default function PaymentGateWay({ navigation, route }) {
+  const { getDataForPayment, getUserID, getEmailDAta } = useSelector(
     state => state,
   );
   const [modalVisible, setModalVisible] = useState(false);
   const [loader, setLoader] = useState(false);
   const inputRef = useRef(null);
   const dispatch = useDispatch();
+
   const getCardDetails = useSelector(state => state.getCardDetails);
+
   const [cardDetails, setCardDetails] = useState({
     cardHolderName: getCardDetails[0]?.cust_name,
     card_number: getCardDetails[0]?.card_number,
     card_cvv: getCardDetails[0]?.card_cvc,
+
     validTill:
       getCardDetails[0]?.card_exp_month +
       '/' +
@@ -116,6 +124,7 @@ export default function PaymentGateWay({navigation, route}) {
     let exp_month = cardDetails?.validTill?.split('/')[0];
     let exp_year = cardDetails?.validTill?.split('/')[1];
 
+
     payload.append('kwh_unit', route.params.data.kwh);
     payload.append('card_number', cardDetails.card_number);
     payload.append('card_cvc', cardDetails.card_cvv);
@@ -155,6 +164,7 @@ export default function PaymentGateWay({navigation, route}) {
     let exp_year = values?.validTill?.split('/')[1];
 
     payload.append('kwh_unit', route.params.data.kwh);
+
     payload.append('card_number', values.cardNumber.replace(/\s/g, ''));
     payload.append('card_cvc', values.cvv);
     payload.append('card_exp_month', exp_month);
@@ -249,10 +259,10 @@ export default function PaymentGateWay({navigation, route}) {
   };
 
   return (
-    <SafeAreaView style={{backgroundColor: COLORS.CREAM, flex: 1}}>
+    <SafeAreaView style={{ backgroundColor: COLORS.CREAM, flex: 1 }}>
       {loader && <ActivityLoader />}
       <ScrollView>
-        <View style={{marginHorizontal: 20, paddingTop: 20}}>
+        <View style={{ marginHorizontal: 20, paddingTop: 20 }}>
           <Text style={styles.complete_profile}>Payment Details</Text>
         </View>
         <View style={styles.centeredView}>
@@ -273,7 +283,7 @@ export default function PaymentGateWay({navigation, route}) {
                   }} // Replace with your animation file
                   autoPlay
                   loop
-                  style={{width: 50, height: 50}}
+                  style={{ width: 50, height: 50 }}
                 />
                 <Text
                   style={{
@@ -297,12 +307,14 @@ export default function PaymentGateWay({navigation, route}) {
 
         <View style={styles.mainDiv_container}>
           <View>
+
             <Formik
               initialValues={{
                 cardHolderName: '',
                 cardNumber: '',
                 validTill: '',
                 cvv: '',
+
               }}
               onSubmit={values => handlePaymentSubmit(values)}
               validationSchema={validationSchema}>
@@ -324,6 +336,7 @@ export default function PaymentGateWay({navigation, route}) {
                     }}
                   />
                   <View style={styles.cardNumber_position}>
+
                     {cardDetails.card_number ? (
                       <Text
                         style={{
@@ -344,7 +357,7 @@ export default function PaymentGateWay({navigation, route}) {
                       </Text>
                     )}
                     <View style={styles.text_div}>
-                      <View style={{gap: 5, width: 100}}>
+                      <View style={{ gap: 5, width: 100 }}>
                         <Text
                           style={{
                             color: 'gray',
@@ -353,6 +366,7 @@ export default function PaymentGateWay({navigation, route}) {
                           }}>
                           Card Holder
                         </Text>
+
                         {cardDetails.cardHolderName ? (
                           <Text
                             style={{
@@ -373,7 +387,7 @@ export default function PaymentGateWay({navigation, route}) {
                           </Text>
                         )}
                       </View>
-                      <View style={{gap: 5}}>
+                      <View style={{ gap: 5 }}>
                         <Text
                           style={{
                             fontWeight: '600',
@@ -382,6 +396,7 @@ export default function PaymentGateWay({navigation, route}) {
                           }}>
                           Expires
                         </Text>
+
                         {cardDetails.validTill !== 'undefined/undefined' ? (
                           <Text
                             style={{
@@ -401,8 +416,9 @@ export default function PaymentGateWay({navigation, route}) {
                             {values.validTill}
                           </Text>
                         )}
+
                       </View>
-                      <View style={{gap: 5}}>
+                      <View style={{ gap: 5 }}>
                         <Text
                           style={{
                             fontWeight: '600',

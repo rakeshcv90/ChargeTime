@@ -127,7 +127,7 @@ const Account = ({ navigation }) => {
 
         // console.log('wwwwww', result);
         //  setUserData(result);
-        dispatch(userProfileData(result.error));
+        dispatch(userProfileData(result));
         //  console.log(result)
 
       } else {
