@@ -110,14 +110,7 @@ export default function HomeOne(route) {
   const [showLottieView, setShowLottieView] = useState(false);
   
   const [refresh, setRefresh] = useState(false);
-  const handleRefresh = () => {
-    setRefresh(true);
-    setTimeout(() => {
-      setRefresh(false);
-    }, 2000);
-    fetchData();
-    getPlanCurrent()
-  };
+
   useEffect(() => {
     fetchData();
     console.log('getBasePackage',getBasePackage)
@@ -130,7 +123,7 @@ export default function HomeOne(route) {
   
     if (getBasePackage?.length >= 1 && getBasePackage) {
       getBasePackage.forEach((item) => {
-        const num = item.package_name.toLowerCase() === getPurchaseData[0].energy_plan.toLowerCase();
+        const num = item.package_name.toLowerCase() === getPurchaseData.data.energy_plan.toLowerCase();
         numArray.push(num);
       });
     }
@@ -251,7 +244,7 @@ export default function HomeOne(route) {
   return (
     <SafeAreaView style={{backgroundColor: COLORS.CREAM, flex: 1}}>
        
-      {getPurchaseData[0].energy_plan.toLowerCase() === myTest.toLowerCase()  && 
+      {getPurchaseData.data.energy_plan.toLowerCase() === myTest.toLowerCase()  && 
            <View
            
             style={{
@@ -327,8 +320,8 @@ export default function HomeOne(route) {
             getBasePackage.map((item, ind) => {
 
             let  purchageData =
-                item.kwh > getPurchaseData[0].kwh ? 'UPGRADE' : 'DOWNGRADE';
-                let num = item.package_name.toLowerCase() === getPurchaseData[0].energy_plan.toLowerCase();
+                item.kwh > getPurchaseData.data.kwh ? 'UPGRADE' : 'DOWNGRADE';
+                let num = item.package_name.toLowerCase() === getPurchaseData.data.energy_plan.toLowerCase();
                 
               return (
                 <Tab.Screen

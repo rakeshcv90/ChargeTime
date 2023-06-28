@@ -30,6 +30,7 @@ const initialState = {
     getMonthData: [],
     getQuarterData: [],
     getYearData: [],
+    getPlanStatus: [],
     overusage: false
   };
   
@@ -97,6 +98,8 @@ const initialState = {
           return { ...state, getCardDetails: action.payload }
         case types.GET_CURRENT_PLAN:
             return { ...state, getCurrentPlan: action.payload }
+        case types.GET_PLAN_STATUS:
+            return { ...state, getPlanStatus: action.payload }
   
 
       default:

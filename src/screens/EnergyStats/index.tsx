@@ -124,7 +124,7 @@ export default function EnergyStats() {
   const [showCar, setShowCar] = useState(true);
   const [offline, setOffline] = useState(true);
   const [charging, setCharging] = useState(true);
-  // const [deviceId, setDeviceId] = useState('');
+  const [deviceIdTemp, setDeviceIdTemp] = useState('');
 
   const [isLoading, setIsLoading] = useState(true);
   const {getGraphData} = useSelector((state: any) => state);
@@ -161,25 +161,27 @@ const dispatch = useDispatch()
   };
 
   const getDeviceIDData = () => {
+    setIsLoading(true)
     axios
       .get(`${API}/devicecheck/${getUserID}}`)
       .then(res => {
         console.log(res.data, 'tt');
         if (res.data.status == 'True') {
-          dispatch(setDeviceId(res.data.message));
+          setDeviceIdTemp(res.data.message);
           fetchGraphData(res.data?.user_id);
-          fetchWeekGraphData(res.data?.user_id);
-          fetchMonthGraphData(res.data?.user_id);
-          fetchQuarterGraphData(res.data.user_id);
-          fetchYearGraphData(res.data?.user_id);
+          // fetchMonthGraphData(res.data?.user_id);
+          // fetchQuarterGraphData(res.data.user_id);
           fetchBoxTwoDashboardData(res.data?.user_id);
           fetchStatusdata(res.data?.user_id);
+          // setTimeout(() => {
+          // }, 10000);
         } else {
 
           // getPlanCurrent(res.data?.user_id);
         }
       })
       .catch(err => {
+        setIsLoading(false)
         console.log(err);
       });
   };
@@ -187,16 +189,17 @@ const dispatch = useDispatch()
 
   //day data start
   const fetchGraphData = (userID: string) => {
-    console.log(userID, 'object');
     axios
       .get(`${API}/dailyusagegraph/${userID}`)
       .then(res => {
+        console.log("GRAPH.........", res.data)
         dispatch(setGraphData(res?.data));
 
         dailyUsuagekwh(userID);
         // navigation.navigate('DrawerStack');
       })
       .catch(err => {
+        setIsLoading(false)
         console.log(err);
       });
   };
@@ -229,8 +232,11 @@ const dispatch = useDispatch()
         }
         console.log('first', res.data);
         dispatch(setRemainingData(remaingData));
-      })
-      .catch(err => {
+setIsLoading(false)
+fetchWeekGraphData(getUserID);
+})
+.catch(err => {
+        setIsLoading(false)
         console.log(err);
       });
   };
@@ -242,10 +248,13 @@ const dispatch = useDispatch()
       .get(`${API}/weeklyusage/${userID}`)
       .then(res => {
         if (res?.data) {
+          console.log(res.data)
           dispatch(setWeekGraphData(res?.data));
+          fetchYearGraphData(getUserID);
         }
       })
       .catch(err => {
+        fetchYearGraphData(getUserID);
         console.log(err);
       });
   };
@@ -255,6 +264,7 @@ const dispatch = useDispatch()
       .then(res => {
         if (res?.data) {
           dispatch(setMonthGraphData(res?.data));
+          fetchQuarterGraphData(getUserID)
         }
       })
       .catch(err => {
@@ -267,6 +277,8 @@ const dispatch = useDispatch()
       .then(res => {
         if (res?.data) {
           dispatch(setQuarterGraphData(res?.data));
+          dispatch(setDeviceId(deviceIdTemp));
+          setIsLoading(false)
         }
       })
       .catch(err => {
@@ -278,10 +290,13 @@ const dispatch = useDispatch()
       .get(`${API}/yearlyusage/${userID}`)
       .then(res => {
         if (res?.data) {
+          console.log("Year GRAPH", res.data)
           dispatch(setYearGraphData(res?.data));
+          fetchMonthGraphData(getUserID)
         }
       })
       .catch(err => {
+        setIsLoading(false)
         console.log(err);
       });
   };
@@ -537,10 +552,10 @@ const dispatch = useDispatch()
               tabBarScrollEnabled: true,
             }}
             tabBar={props => <MyTabBar {...props} />}>
-            <Tab.Screen name="Day" component={Day} />
-            <Tab.Screen name="Week" component={Day} />
-            <Tab.Screen name="Month" component={Day} />
-            <Tab.Screen name="Quarter" component={Day} />
+            <Tab.Screen name="Day" component={Week} />
+            <Tab.Screen name="Week" component={Week} />
+            <Tab.Screen name="Month" component={Month} />
+            <Tab.Screen name="Quarter" component={Quarter} />
             <Tab.Screen name="Year" component={Year} />
           </Tab.Navigator>
         )}
@@ -553,6 +568,7 @@ const dispatch = useDispatch()
           <ButtonSlider onToggle={handleToggle} />
         )}
       </SafeAreaView>
+      {/* {isLoading && <ActivityLoader />} */}
     </>
   );
 }

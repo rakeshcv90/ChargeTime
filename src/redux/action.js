@@ -95,6 +95,9 @@ export const getCardDetails = (data) => {
 export const getCurrentPlan= (data) => {
   return {type:types.GET_CURRENT_PLAN,payload:data}
 } 
+export const setPlanStatus= (data) => {
+  return {type:types.GET_PLAN_STATUS,payload:data}
+} 
 export const setOverUsage = (data) => {
   return {type:types.GET_OVERUSAGE,payload:data}
 } 

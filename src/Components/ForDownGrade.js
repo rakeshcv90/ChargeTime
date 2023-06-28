@@ -42,7 +42,7 @@ export default function ForDownGrade({route, navigation}) {
       .post(`${API}/upgrade_downgrade/${getUserID}`)
       .then(res => {
         console.log('DOWNGRADE', res.data);
-        navigationRef.navigate('PaymentGateWay', {data: dataOne});
+        navigationRef.navigate('PaymentGateWay', {data: dataOne, purchageData:purchageData});
       })
       .catch(err => {
         console.log(err.response.data.message);
@@ -118,7 +118,7 @@ export default function ForDownGrade({route, navigation}) {
                   paddingHorizontal: 18,
                 }}>
                 <Text style={styles.text_formating_part}>
-                  {getPurchaseData[0].kwh}kwh
+                  {getPurchaseData.data.kwh}kwh
                 </Text>
                 <View style={{alignItems: 'center', gap: 5, paddingTop: 5,
                     alignSelf: 'center',}}>
@@ -150,7 +150,7 @@ export default function ForDownGrade({route, navigation}) {
                   paddingHorizontal: 18,
                 }}>
                 <Text style={styles.text_formating_part}>
-                ~ {getPurchaseData[0].mi_eq}
+                ~ {getPurchaseData.data.mi_eq}
                 </Text>
                 <View
                   style={{
@@ -188,7 +188,7 @@ export default function ForDownGrade({route, navigation}) {
                   paddingHorizontal: 18,
                 }}>
                 <Text style={styles.text_formating_part}>
-                  {getPurchaseData[0].dollar_mi}
+                  {getPurchaseData.data.dollar_mi}
                 </Text>
                 <View
                   style={{alignItems: 'center', paddingVertical: 10, gap: 5,

@@ -66,17 +66,20 @@ export default function VerifyEmail(props) {
 
     try {
       if (email !== '' && otp.length == 6) {
-        await fetch(`${API}/verifyotp`, {
+        let payload = new FormData()
+        payload.append('email', email)
+        payload.append('otp', otp)
+       const res = await axios( {
+        url: `${API}/verifyotp`,
           method: 'POST',
           headers: {
-            'Content-Type': 'application/json',
+            'Content-Type': 'multipart/form-data',
           },
-          body: JSON.stringify({email: email, otp: otp}),
+          data: payload,
         })
-          .then(res => res.json())
-          .then(data => {
-            console.log(data)
-            if (data.message !== 'Invalid OTP or OTP expired') {
+          if(res.data) {
+            console.log(res.data)
+            if (res.data.message !== 'Invalid OTP or OTP expired') {
               PLATFORM_IOS
                 ? Toast.show({
                     type: 'success',
@@ -105,7 +108,7 @@ export default function VerifyEmail(props) {
 
               setForLoading(false);
             }
-          });
+          }
       } else {
         PLATFORM_IOS
           ? Toast.show({

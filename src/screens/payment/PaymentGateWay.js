@@ -29,7 +29,7 @@ import axios from 'axios';
 import {API} from '../../api/API';
 import {navigationRef} from '../../../App';
 import ActivityLoader from '../../Components/ActivityLoader';
-import {setDeviceId, setPackageStatus, setPurchaseData} from '../../redux/action';
+import {setDeviceId, setPackageStatus, setPlanStatus, setPurchaseData} from '../../redux/action';
 const mobileW = Math.round(Dimensions.get('screen').width);
 const mobileH = Math.round(Dimensions.get('window').height);
 const validationSchema = Yup.object().shape({
@@ -113,10 +113,14 @@ const dispatch = useDispatch();
         console.log(res.data, 'tt');
         if (res.data.status == 'True') {
           // dispatch(setDeviceId(res.data.message));
-          navigationRef.navigate('DrawerStack')
+          console.log(route.params.purchageData)
+          if(route.params.purchageData == 'DOWNGRADE'){
+            PlanStatus()
+          }else{
+            getPlanCurrent();
+          }
         } else {
           dispatch(setDeviceId(res.data.message));
-          getPlanCurrent();
 
           // fetchGraphData(res.data?.user_id);
           // fetchWeekGraphData(res.data?.user_id);
@@ -139,6 +143,22 @@ const dispatch = useDispatch();
         console.log(res.data)
         dispatch(setPurchaseData(res?.data));
         dispatch(setPackageStatus(true));
+        navigationRef.navigate('HomeOne')
+      })
+      .catch(err => {
+        console.log(err);
+      });
+  };
+
+  const PlanStatus = () => {
+    axios
+      .get(`${API}/planstatus/${getUserID}`)
+      .then(res => {
+        const name = res.data.subscriptions.filter(
+          item => item.subscription_status == 'scheduled',
+        );
+        dispatch(setPlanStatus(name[0].item_name));
+        navigationRef.navigate('DrawerStack')
       })
       .catch(err => {
         console.log(err);
