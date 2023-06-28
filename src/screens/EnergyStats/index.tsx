@@ -219,7 +219,17 @@ export default function EnergyStats() {
                   alignItems: 'center',
                   justifyContent: 'center',
                   margin: 10,
-                  elevation: 10,
+                  ...Platform.select({
+                    ios: {
+                      shadowColor: '#000000',
+                      shadowOffset: { width: 0, height: 2 },
+                      shadowOpacity: 0.3,
+                      shadowRadius: 4,
+                    },
+                    android: {
+                      elevation: 4,
+                    },
+                  }),
                 }}>
                 <Text
                   style={{
@@ -241,7 +251,17 @@ export default function EnergyStats() {
                   alignItems: 'center',
                   justifyContent: 'center',
                   margin: 10,
-                  elevation: 10,
+                  ...Platform.select({
+                    ios: {
+                      shadowColor: '#000000',
+                      shadowOffset: { width: 0, height: 2 },
+                      shadowOpacity: 0.3,
+                      shadowRadius: 4,
+                    },
+                    android: {
+                      elevation: 4,
+                    },
+                  }),
                 }}>
                 <Text
                   style={{
