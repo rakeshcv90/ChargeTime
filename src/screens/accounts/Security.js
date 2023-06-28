@@ -1,4 +1,4 @@
-import { View, Text, SafeAreaView,StyleSheet,TextInput, TouchableOpacity,ToastAndroid, Image,Platform,Dimensions, Alert} from 'react-native'
+import { View, Text, SafeAreaView,StyleSheet,TextInput, TouchableOpacity,ToastAndroid, Image,Platform,Dimensions} from 'react-native'
 import React, { useEffect } from 'react'
 import * as Yup from 'yup';
 import COLORS from '../../constants/COLORS'
@@ -16,23 +16,6 @@ import Toast from 'react-native-toast-message';
 import { PLATFORM_IOS } from '../../constants/DIMENSIONS';
 import { navigationRef } from '../../../App';
 import { ms } from 'react-native-size-matters';
-
-const PasswordRegex =
-  /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
-const ValidateSchema = Yup.object().shape({
-  password: Yup
-    .string()
-    .matches(
-      PasswordRegex,
-      'Wachtwoord moet 1 hoofdletter en 1 kleine letter bevatten, 1 cijfer en 1 speciaal teken, en de lengte moet minimaal 8 zijn',
-    )
-    .required('Voer uw wachtwoord in'),
-  confirmPassword: Yup
-    .string()
-    .oneOf([Yup.ref('password'), ''], 'wachtwoorden moeten overeenkomen')
-    .required('Voer je wachtwoord opnieuw in'),
-});
-
 
 const Security = () => {
 const userProfileData = useSelector((state)=> state.userProfileData)
@@ -54,43 +37,17 @@ const mobileW = Math.round(Dimensions.get('screen').width);
 // }, []);
 const onPress = async ()=>{
   // updatePersonalDetails();
-  //console.log("Current passord..",currentPassword,userProfileData)
-  const isPrevCorrect = currentPassword === userProfileData[0].pwa_password;
-  if(!isPrevCorrect){
-    Alert.alert("Current password did not match.")
-    return;
-  }
-  const isValid = validatePassword(newPassword);
-  
-  if(newPassword!==confirmPassword){
-    Alert.alert("Alert!","New password did not match.")
-    return;
-  }
-  if(isValid ){
   UpdatePassword();
-  }
+  // ValidateSchema.validate(values, { abortEarly: false })
+  //     .then(() => {
+  //       UpdatePassword();
+  //     })
+  //     .catch((error) => {
+  //       const errorMessage = error.errors.join('\n');
+  //       ToastAndroid.show(errorMessage, ToastAndroid.SHORT);
+  //     });
 }
 
-
-function validatePassword(p) {
-  
-    let  errors = [];
-  if (p.length < 8) {
-      errors.push("Your password must be at least 8 characters"); 
-  }
-  if (p.search(/[a-z]/i) < 0) {
-      errors.push("Your password must contain at least one letter.");
-  }
-  if (p.search(/[0-9]/) < 0) {
-      errors.push("Your password must contain at least one digit."); 
-  }
-  if (errors.length > 0) {
-    
-      Alert.alert("New Password..." ,errors.join("\n"));
-      return false;
-  }
-  return true;
-}
 const mail = userProfileData[0]?.email;
 const enableEdit =()=>{
   console.log("enable edit",isEditable)
@@ -99,7 +56,9 @@ const enableEdit =()=>{
 const UpdatePassword= async () =>{
     // console.log(values);
     try {
-    
+      // const values = { password: newPassword, confirmPassword };
+
+      // await ValidateSchema.validate(values, { abortEarly: false });
       await fetch(`${API}/changePassword `,{
         method: 'POST',
         headers: {
@@ -162,15 +121,7 @@ const UpdatePassword= async () =>{
     <SafeAreaView style={{ backgroundColor: COLORS.CREAM, flex: 1}}>
      <Header headerName="Security" editShow={true} onPress={onPress} enableEdit ={enableEdit} editButton={isEditable} />
       
-
-     {Platform.OS=='android'? <HorizontalLine style={styles.line} />:<View
-              style={{
-             
-             
-              }}>
-              <Image source={require('../../../assets/images/dotted.png')} style={{ width: mobileW * 0.97 ,}} />
-            </View> }
-
+     <HorizontalLine style={styles.line} />
      <View style={[styles.mainDiv_container]}>
      <Input
             IconLeft={null}  
@@ -198,9 +149,6 @@ const UpdatePassword= async () =>{
               fontWeight: '200',
             }}
           />
- {/* {errors.password && touched.password && (
-                    <Text style={{color: 'red'}}>{errors.password}</Text>
-                  )} */}
     
   <Input
             IconLeft={null}  

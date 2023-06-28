@@ -12,7 +12,7 @@ import {
   KeyboardAvoidingView,
 } from 'react-native';
 import AnimatedLottieView from 'lottie-react-native';
-import React, {useState, useRef} from 'react';
+import React, {useState, useRef,useEffect} from 'react';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import Input from '../../Components/Input';
 import COLORS from '../../constants/COLORS';
@@ -23,7 +23,7 @@ import {LeftIcon} from '../../../assets/images/LeftIcon';
 import {Formik} from 'formik';
 import * as Yup from 'yup';
 import {Admin} from '../../../assets/images/Admin';
-import {Message} from '../../../assets/images/Message';
+import { CardNumber } from '../../../assets/svgs/CardNumber';
 import {useDispatch, useSelector} from 'react-redux';
 import axios from 'axios';
 import {API} from '../../api/API';
@@ -68,18 +68,21 @@ export default function PaymentGateWay({navigation, route}) {
 const dispatch = useDispatch();
 const getCardDetails = useSelector((state) => state.getCardDetails)
 const [cardDetails, setCardDetails] = useState({
-  cardHolderName: '',
-  card_number: getCardDetails?.card_number,
-  card_cvv: getCardDetails?.card_cvc,
-  validTill: '',
+  cardHolderName: getCardDetails[0]?.cust_name,
+  card_number: getCardDetails[0]?.card_number,
+  card_cvv: getCardDetails[0]?.card_cvc,
+  validTill: getCardDetails[0]?.card_exp_month + '/' + getCardDetails[0]?.card_exp_year
   // card_exp_year:'',
 });
+const [card_name, setCard_Name]=useState(getCardDetails[0]?.cust_name ?? '')
+const [card_Number, setCard_Number]=useState(((String(getCardDetails[0]?.card_number).replace(/^(\d{4})(\d{4})(\d{4})(\d{4})$/, '$1 $2 $3 $4')) ?? ''))
+const [card_cvv, setCard_Cvv]=useState((String(getCardDetails[0]?.card_cvc) ?? ''))
+const [validity, setValidity]=useState((String(getCardDetails[0]?.card_exp_month + '/' + getCardDetails[0]?.card_exp_year) ?? ''))
 
 
-// const [savedCard, setSavedCard] = useState(getCardDetails[0]);
+// const [savedCard, setSavedCard] = useState(cardDetails.cardHolderName ?? '');
 useEffect(() => {
-//  console.log(getCardDetails[0])
-//  console.log("9999999999999",cardDetails)
+ console.log("9999999999999",cardDetails)
 }, []);
 
 // console.log(savedCard,"------------")
@@ -88,12 +91,12 @@ useEffect(() => {
     setLoader(true);
     let payload = new FormData();
 
-    let exp_month = values?.validTill?.split('/')[0];
-    let exp_year = values?.validTill?.split('/')[1];
+    let exp_month = validity?.split('/')[0];
+    let exp_year = validity?.split('/')[1];
 
     payload.append('kwh_unit', route.params.data.kwh);
-    payload.append('card_number', values.cardNumber.replace(/\s/g, ''));
-    payload.append('card_cvc', values.cvv);
+    payload.append('card_number',card_Number.replace(/\s/g, ''));
+    payload.append('card_cvc', card_cvv);
     payload.append('card_exp_month', exp_month);
     payload.append('card_exp_year', exp_year);
     payload.append('item_details', getDataForPayment.package_name);
@@ -135,15 +138,6 @@ useEffect(() => {
         } else {
           dispatch(setDeviceId(res.data.message));
           getPlanCurrent();
-
-          // fetchGraphData(res.data?.user_id);
-          // fetchWeekGraphData(res.data?.user_id);
-          // fetchMonthGraphData(res.data?.user_id);
-          // fetchQuarterGraphData(res.data.user_id);
-          // fetchYearGraphData(res.data?.user_id);
-          // fetchBoxTwoDashboardData(res.data?.user_id);
-          // fetchStatusdata(res.data?.user_id);
-          // getPlanCurrent(res.data?.user_id);
         }
       })
       .catch(err => {
@@ -162,7 +156,14 @@ useEffect(() => {
         console.log(err);
       });
   };
-
+const cardNumberDetail=(value)=>{
+  let formattedCardNumber = '';
+  for (let i = 0; i < value.length; i += 4) {
+    formattedCardNumber += value.substr(i, 4) + ' ';
+  }
+  console.log("----------",formattedCardNumber)
+  return formattedCardNumber
+}
   return (
     <SafeAreaView style={{backgroundColor: COLORS.CREAM, flex: 1}}>
       {loader && <ActivityLoader />}
@@ -212,12 +213,14 @@ useEffect(() => {
 
         <View style={styles.mainDiv_container}>
           <View>
+           
             <Formik
               initialValues={{
-                cardHolderName: '',
-                cardNumber: '',
-                validTill: '',
-                cvv: '',
+                cardHolderName: getCardDetails[0]?.cust_name,
+                // cardNumber: getCardDetails[0]?.card_number,
+                cardNumber : card_Number,
+                 cvv: getCardDetails[0]?.card_cvc,
+                validTill: getCardDetails[0]?.card_exp_month + '/' + getCardDetails[0]?.card_exp_year
               }}
               onSubmit={values => handlePaymentSubmit(values)}
               validationSchema={validationSchema}>
@@ -240,8 +243,10 @@ useEffect(() => {
                   />
                   <View style={styles.cardNumber_position}>
                     <Text
-                      style={{color: '#fff', fontWeight: '600', fontSize: 13}}>
-                      {values.cardNumber}
+                      style={{color: '#fff', fontWeight: '600', fontSize: 18}}>
+                      {/* {values.cardNumber} */}
+                      {String(cardDetails.card_number).replace(/^(\d{12})(\d{4})$/, 'xxxx xxxx xxxx $2')}
+                      {/* {setCard_Number(String(cardDetails.card_number))} */}
                     </Text>
                     <View style={styles.text_div}>
                       <View style={{gap: 5, width: 100}}>
@@ -259,7 +264,7 @@ useEffect(() => {
                             fontWeight: '600',
                             fontSize: 13,
                           }}>
-                          {values.cardHolderName}
+                            {String(cardDetails.cardHolderName)}
                         </Text>
                       </View>
                       <View style={{gap: 5}}>
@@ -277,7 +282,7 @@ useEffect(() => {
                             fontWeight: '600',
                             fontSize: 13,
                           }}>
-                          {values.validTill}
+                            {String(cardDetails.validTill)}
                         </Text>
                       </View>
                       <View style={{gap: 5}}>
@@ -295,7 +300,7 @@ useEffect(() => {
                             fontWeight: '600',
                             fontSize: 13,
                           }}>
-                          {values.cvv}
+                            {String(cardDetails.card_cvv)}
                         </Text>
                       </View>
                     </View>
@@ -304,8 +309,10 @@ useEffect(() => {
                     IconLeft={null}
                     errors={errors.cardHolderName}
                     touched={touched.cardHolderName}
-                    value={values.cardHolderName}
-                    onChangeText={handleChange('cardHolderName')}
+                    value={card_name}
+                    onChangeText={(card_name) => {
+                      setCard_Name(card_name);
+                    }}
                     onBlur={handleBlur('cardHolderName')}
                     text="Card Holder Name"
                     IconRight={() => <Admin />}
@@ -319,9 +326,10 @@ useEffect(() => {
                     IconLeft={null}
                     errors={errors.cardNumber}
                     touched={errors.cardNumber}
-                    value={values.cardNumber}
-                    //onChangeText={handleChange('cardNumber')}
+                    value={card_Number}
+                    // onChangeText={(card_Number)=> setCard_Number(card_Number)}
                     onChangeText={text => {
+                      
                       var num = /[^0-9]/g;
                       const cardNumbers = text.replace(/\s/g, ''); // Remove spaces from card number
                       const cardNumber = cardNumbers.replace(num, '');
@@ -332,12 +340,12 @@ useEffect(() => {
 
                       formattedCardNumber = formattedCardNumber.trim();
 
-                      handleChange('cardNumber')(formattedCardNumber);
+                      setCard_Number(formattedCardNumber);
                     }}
                     onBlur={handleBlur('cardNumber')}
                     maxLength={19}
                     text="Card Number"
-                    IconRight={() => <Message />}
+                    IconRight={() => <CardNumber />}
                     mV={15}
                     placeholder="1234  5678  xxxx  xxxx"
                     bW={1}
@@ -351,7 +359,7 @@ useEffect(() => {
                         IconLeft={null}
                         errors={errors.validTill}
                         touched={touched.validTill}
-                        value={values.validTill}
+                        value={validity}
                         //
                         onChangeText={text => {
                           // Remove non-digit characters from the input
@@ -365,7 +373,7 @@ useEffect(() => {
                           }
                           console.log(formattedValidTill, 'asd');
                           // Update the valid till value
-                          handleChange('validTill')(formattedValidTill);
+                         setValidity(formattedValidTill);
                         }}
                         onBlur={handleBlur('validTill')}
                         text="Valid Till"
@@ -385,8 +393,8 @@ useEffect(() => {
                         IconLeft={null}
                         errors={errors.cvv}
                         touched={touched.cvv}
-                        value={values.cvv}
-                        onChangeText={handleChange('cvv')}
+                        value={card_cvv}
+                        onChangeText={(card_cvv)=> setCard_Cvv(card_cvv)}
                         onBlur={handleBlur('cvv')}
                         text="CVV"
                         IconRight={null}
@@ -396,7 +404,7 @@ useEffect(() => {
                         textWidth={'50%'}
                         placeholderTextColor={COLORS.BLACK}
                         w="half"
-                        secureTextEntry={true}
+                        // secureTextEntry={true}
                         maxLength={3}
                         keyboardType="numeric"
                       />
@@ -469,7 +477,7 @@ const styles = StyleSheet.create({
   },
   cardNumber_position: {
     position: 'absolute',
-    top: 130,
+    top: 120,
     left: 30,
   },
   text_div: {

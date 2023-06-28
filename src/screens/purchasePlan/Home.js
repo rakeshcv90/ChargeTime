@@ -248,7 +248,7 @@ export default function Home(route) {
           })}
         </Tab.Navigator>
       ) : getBasePackage.length == 1 ? (
-        <TabOne item={getBasePackage[0]}/>
+        <TabOne item={getBasePackage}/>
           ) : (
             <Text>No Package available for you location</Text>
             )}

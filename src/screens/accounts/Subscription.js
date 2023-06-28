@@ -14,20 +14,25 @@ import PriceValiditySubs from '../../Components/PriceValiditySubs';
 import { API } from '../../api/API';
 import { getCurrentPlan as UpdatedCurrentPlan } from '../../redux/action';
 import { userSubsData } from '../../redux/action';
+import AnimatedLottieView from 'lottie-react-native';
+import { navigationRef } from '../../../App';
+
 
 
 const mobileW = Math.round(Dimensions.get('screen').width);
 const Subscription = () => {
   const getUserID = useSelector((state) => state.getUserID)
-  const getCurrentPlan = useSelector((state)=> state.getCurrentPlan)
+  const getCurrentPlan = useSelector((state)=> state.getCurrentPlan);
+  const {getChargerStatus, getDeviceID} = useSelector((state) => state);
+
 
   // const [getSubscription, setGetSubscription] = useState([]);
   // const [getData, setGetData] = useState([]);
   // const [packageExists, setPackageExists] = useState(getCurrentPlan[0]);
 
-  const packageExists = getCurrentPlan[0]?.energy_plan;
+  const packageExists = getCurrentPlan;
+  console.log("helloooooo",getCurrentPlan.error);
 
-  console.log("helloooooo", packageExists);
   const dispatch = useDispatch();
   useEffect(() => {
 
@@ -113,14 +118,108 @@ const PlanCancel = async () => {
         </View>
       )}
       <ScrollView showsVerticalScrollIndicator={false}>
-      {packageExists !== null ? (
+      {getCurrentPlan.error=='Package details not found' ? (
+      //    <View style={styles.managing_width}>
+      //    <Text style={{
+      //            color: COLORS.RED,
+      //            fontSize: 16,
+      //            fontWeight: '700',
+      //          }}>
+      //            No Active Subscription.
+      //            </Text>
+      //    {/* <SubBoxOne /> */}
+      //  </View>
+      // 'Your Account is not currently linked with a TRO Charger. Please contact customer service if you believe this is an error.' ? (
+      <View
+      style={{
+        justifyContent: 'center',
+        alignItems: 'center',
+        flex: 1,
+      }}>
+      <View
+        style={{
+          flexDirection: 'row',
+          justifyContent: 'center',
+          alignItems: 'center',
+        }}>
+        <AnimatedLottieView
+          source={{
+            uri: 'https://assets5.lottiefiles.com/packages/lf20_v4UB4ch6dZ.json',
+          }} // Replace with your animation file
+          autoPlay
+          loop
+          style={{width: 150, height: 150}}
+        />
+        <AnimatedLottieView
+          source={{
+            uri: 'https://assets7.lottiefiles.com/packages/lf20_qgq2nqsy.json',
+          }} // Replace with your animation file
+          autoPlay
+          loop
+          style={{width: 50, height: 50}}
+        />
+      </View>
+      <Text
+        style={{
+          fontSize: 14,
+          lineHeight: 25,
+          textAlign: 'center',
+          paddingHorizontal: 30,
+        }}>
+        {getDeviceID}
+      </Text>
+      <View
+        style={{
+          flexDirection: 'row',
+          justifyContent: 'center',
+          alignItems: 'center',
+        }}>
+        <TouchableOpacity
+        onPress={()=>navigationRef.navigate('Home')}
+          style={{
+            width: mobileW * 0.3,
+            borderRadius: 10,
+            backgroundColor: COLORS.WHITE,
+            padding: 10,
+            alignItems: 'center',
+            justifyContent: 'center',
+            margin: 10,
+            ...Platform.select({
+              ios: {
+                shadowColor: '#000000',
+                shadowOffset: { width: 0, height: 2 },
+                shadowOpacity: 0.3,
+                shadowRadius: 4,
+              },
+              android: {
+                elevation: 4,
+              },
+            }),
+          }}>
+          <Text
+            style={{
+              color: '#263238',
+              fontWeight: '700',
+              fontSize: 14,
+              lineHeight: 17,
+              textTransform: 'capitalize',
+            }}>
+            Purchase Plan
+          </Text>
+        </TouchableOpacity>
+        </View>
+        </View>
+      
+    ) : (
       <View>
         <View style={styles.managing_width}>
           <SubBoxOne />
           <SubBoxTwo />
         </View>
         <View style={styles.mainDiv_installation}>
-          <WaveAnimation />
+       
+          
+          {/* <WaveAnimation /> */}
         </View>
         <View style={styles.managing_width}>
           <PriceValiditySubs />
@@ -155,17 +254,6 @@ const PlanCancel = async () => {
             </Text>
           </TouchableOpacity>
         </View>
-      </View>
-    ) : (
-      <View style={styles.managing_width}>
-        <Text style={{
-                color: COLORS.RED,
-                fontSize: 16,
-                fontWeight: '700',
-              }}>
-                No Active Subscription.
-                </Text>
-        {/* <SubBoxOne /> */}
       </View>
     )}
       </ScrollView>

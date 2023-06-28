@@ -25,7 +25,7 @@ import { LeftIcon } from '../../../assets/images/LeftIcon';
 import { Formik } from 'formik';
 import * as Yup from 'yup';
 import { Admin } from '../../../assets/images/Admin';
-import { Message } from '../../../assets/images/Message';
+import { CardNumber } from '../../../assets/svgs/CardNumber';
 import { useSelector } from 'react-redux';
 import axios from 'axios';
 import Header from '../../Components/Header'
@@ -193,8 +193,9 @@ export default function PaymentGateWay({ navigation }) {
       if (result[0]?.length > 0) {
         // console.log("defaultCard",defaultCard[0])
         setSavedCard(result[0].sort((b, a) => a.status - b.status))
-
-        //  console.log(defaultCard[0].id,"--------")
+        const statusOneObjects = result[0].filter(item => item.status === 1);
+        // console.log("-----------------",statusOneObjects);
+        dispatch(getCardDetails(statusOneObjects))
 
       } else {
         console.log("iiiiiiiiiiii")
@@ -261,8 +262,8 @@ export default function PaymentGateWay({ navigation }) {
 
 
   const handleMakeDefaultCard = async (values) => {
-    console.log("-----------", values);
-    console.log("===========", user_ID)
+    // console.log("-----------", values);
+    // console.log("===========", user_ID)
     try {
       const response = await fetch(`${API}/defaultcard`, {
         method: 'POST',
@@ -432,7 +433,7 @@ export default function PaymentGateWay({ navigation }) {
                           <Text
                             style={{ color: '#fff', fontWeight: '600', fontSize: 13 }}>
                             {/* {cardDetails.card_exp_month?String(cardDetails.card_exp_month+'/'+cardDetails.card_exp_year):null} */}
-                            {cardDetails.validTill}
+                            {String(cardDetails.validTill)}
                           </Text>
                         </View>
                         <View style={{ gap: 5 }}>
@@ -460,28 +461,12 @@ export default function PaymentGateWay({ navigation }) {
                   <TouchableOpacity
                     onPress={() => {
                       if (savedCard && savedCard[0].status === 1 && (!currentCard || currentCard.status === 1)) {
-                        dispatch(getCardDetails(currentCard))
-                        navigationRef.navigate('PaymentGateWay');
+                        // console.log("------",savedCard[0])
+                        // navigationRef.navigate('PaymentGateWay');
                       } else {
                         handleMakeDefaultCard(currentCard.id)
                       }
-                      // console.log("cccccccccccc", currentCard)
-                      // if (currentCard?.status == 0) {
-                      //   // console.log("TEst123456789")
-                      //   // setCardID(currentCard.id)
-                      //   // call api to make new card as default and id will be currentCard.id
-                      //   handleMakeDefaultCard(currentCard.id)
-                      // } else if (currentCard.status == 1) {
-                      //   // console.log("------------", currentCard)
-
-                      //   dispatch(getCardDetails(currentCard))
-
-                      //   navigationRef.navigate('PaymentGateWay');
-                      // } else if (savedCard.length == 1) {
-                      //   // setCardID(savedCard[0]?.id)
-                      //   // console.log("------",savedCard[0]?.id)
-                      //   handleMakeDefaultCard(savedCard[0]?.id)
-                      // }
+                   
                     }}
                     style={{
                       // marginTop: 200,
@@ -492,14 +477,15 @@ export default function PaymentGateWay({ navigation }) {
                       padding: 10,
                       borderRadius: 60,
                       width: '70%',
-                    }}>
+                    }}
+                    disabled = {savedCard && savedCard[0].status === 1 && (!currentCard || currentCard.status === 1)?true:false}>
                     <Text
                       style={{
                         color: COLORS.BLACK,
                         fontSize: 12,
                         fontWeight: '400',
                       }}>
-                      {savedCard && savedCard[0].status === 1 && (!currentCard || currentCard.status === 1) ? "Default Payment Method" : "Make Default"}
+                      {savedCard && savedCard[0].status === 1 && (!currentCard || currentCard.status === 1) ? "Current Payment Method" : "Make Default"}
 
                     </Text>
                   </TouchableOpacity>
@@ -580,7 +566,7 @@ export default function PaymentGateWay({ navigation }) {
                   onBlur={handleBlur('cardNumber')}
                   maxLength={19}
                   text="Card Number"
-                  IconRight={() => <Message />}
+                  IconRight={() => <CardNumber />}
                   mV={15}
                   placeholder="1234  5678  xxxx  xxxx"
                   bW={1}
@@ -594,7 +580,7 @@ export default function PaymentGateWay({ navigation }) {
                     <Input
                       IconLeft={null}
                       errors={errors.validTill}
-                      touched={touched.validTill}
+                  touched={touched.validTill}
                       value={values.validTill}
                       //
                       onChangeText={text => {
@@ -655,9 +641,7 @@ export default function PaymentGateWay({ navigation }) {
                       maxLength={3}
                       keyboardType="numeric"
                     />
-                    {errors.cvv && touched.cvv && (
-                      <Text style={{ color: 'red' }}>{errors.cvv}</Text>
-                    )}
+                  
                   </View>
                 </View>
                 <View
