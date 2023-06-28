@@ -13,8 +13,8 @@ import { setOverUsage, setRemainingData } from '../../redux/action';
 import { API } from '../../api/API';
 
 const Day = (props: any) => {
-  const { getkwhData } = useSelector((state: any) => state)
-  const { getBoxTwoDataForDashboard, getUserID, getGraphData, getChargerStatus, getRemainingData } = useSelector((state: any) => state)
+
+  const { getBoxTwoDataForDashboard, getUserID, getGraphData, getChargerStatus, getRemainingData,getkwhData } = useSelector((state: any) => state)
 
   const [toggleState, setToggleState] = useState(false);
 

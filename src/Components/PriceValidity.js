@@ -89,7 +89,7 @@ const styles = StyleSheet.create({
     // paddingRight:250,
   },
   force_base: {
-    fontWeight: 350,
+    fontWeight: '350',
     color:COLORS.BLACK,
     fontSize: 14,
     paddingLeft: 20,
