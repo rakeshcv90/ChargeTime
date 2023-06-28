@@ -1,4 +1,4 @@
-import { View, Text, SafeAreaView,StyleSheet,TextInput, TouchableOpacity,ToastAndroid, Image,Platform,Dimensions} from 'react-native'
+import { View, Text, SafeAreaView,StyleSheet,TextInput, TouchableOpacity,ToastAndroid, Image,Platform,Dimensions, Alert} from 'react-native'
 import React, { useEffect } from 'react'
 import * as Yup from 'yup';
 import COLORS from '../../constants/COLORS'
@@ -54,17 +54,43 @@ const mobileW = Math.round(Dimensions.get('screen').width);
 // }, []);
 const onPress = async ()=>{
   // updatePersonalDetails();
+  //console.log("Current passord..",currentPassword,userProfileData)
+  const isPrevCorrect = currentPassword === userProfileData[0].pwa_password;
+  if(!isPrevCorrect){
+    Alert.alert("Current password did not match.")
+    return;
+  }
+  const isValid = validatePassword(newPassword);
+  
+  if(newPassword!==confirmPassword){
+    Alert.alert("Alert!","New password did not match.")
+    return;
+  }
+  if(isValid ){
   UpdatePassword();
-  // ValidateSchema.validate(values, { abortEarly: false })
-  //     .then(() => {
-  //       UpdatePassword();
-  //     })
-  //     .catch((error) => {
-  //       const errorMessage = error.errors.join('\n');
-  //       ToastAndroid.show(errorMessage, ToastAndroid.SHORT);
-  //     });
+  }
 }
 
+
+function validatePassword(p) {
+  
+    let  errors = [];
+  if (p.length < 8) {
+      errors.push("Your password must be at least 8 characters"); 
+  }
+  if (p.search(/[a-z]/i) < 0) {
+      errors.push("Your password must contain at least one letter.");
+  }
+  if (p.search(/[0-9]/) < 0) {
+      errors.push("Your password must contain at least one digit."); 
+  }
+  if (errors.length > 0) {
+    
+      Alert.alert("New Password..." ,errors.join("\n"));
+      return false;
+  }
+  return true;
+}
 const mail = userProfileData[0]?.email;
 const enableEdit =()=>{
   console.log("enable edit",isEditable)
@@ -73,9 +99,7 @@ const enableEdit =()=>{
 const UpdatePassword= async () =>{
     // console.log(values);
     try {
-      // const values = { password: newPassword, confirmPassword };
-
-      // await ValidateSchema.validate(values, { abortEarly: false });
+    
       await fetch(`${API}/changePassword `,{
         method: 'POST',
         headers: {

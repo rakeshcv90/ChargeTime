@@ -82,8 +82,8 @@ const [cardDetails, setCardDetails] = useState({
 
 // const [savedCard, setSavedCard] = useState(getCardDetails[0]);
 useEffect(() => {
- console.log(getCardDetails[0])
- console.log("9999999999999",cardDetails)
+//  console.log(getCardDetails[0])
+//  console.log("9999999999999",cardDetails)
 }, []);
 
 // console.log(savedCard,"------------")

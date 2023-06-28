@@ -101,7 +101,17 @@ const PlanCancel = async () => {
 
   return (
     <SafeAreaView style={{ backgroundColor: COLORS.CREAM, flex: 1 }}>
-
+   <Header headerName="Subscription" />
+      {Platform.OS == 'android' ? (
+        <HorizontalLine style={styles.line} />
+      ) : (
+        <View>
+          <Image
+            source={require('../../../assets/images/dotted.png')}
+            style={{ width: mobileW * 0.97, top: Platform.OS == 'ios' ? -30 : 2 }}
+          />
+        </View>
+      )}
       <ScrollView showsVerticalScrollIndicator={false}>
       {packageExists !== null ? (
       <View>
