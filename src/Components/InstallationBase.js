@@ -8,35 +8,29 @@ import {
   Platform,
   SafeAreaView,
 } from 'react-native';
-import React, {useEffect} from 'react';
+import React, { useEffect } from 'react';
 // import { Address } from '../../assets/images/Address';
-import {InstallBase} from '../../assets/svgs/InstallBase';
-import {Vanderberg} from '../../assets/images/Vanderberg';
-import {Connecticut} from '../../assets/images/Connecticut';
+import { InstallBase } from '../../assets/svgs/InstallBase';
+import { Vanderberg } from '../../assets/images/Vanderberg';
+import { Connecticut } from '../../assets/images/Connecticut';
 import COLORS from '../constants/COLORS';
-import {useSelector} from 'react-redux';
-import {navigationRef} from '../../App';
+import { useSelector } from 'react-redux';
+import { navigationRef } from '../../App';
+import { DIMENSIONS } from '../constants/DIMENSIONS';
 
 const mobileW = Math.round(Dimensions.get('screen').width);
-const InstallationBase = ({data}) => {
+const InstallationBase = ({ data }) => {
   // const {navigation, route} = props;
   const setBasePackage = useSelector(state => state.setBasePackage);
 
   return (
-    <View
-      style={[
-        styles.mainDiv_installation,
-        styles.shadowProp,
-        {
-          marginVertical:10,
-        },
-      ]}>
-      <TouchableOpacity style={styles.install_touchable}>
+    <View style={Platform.OS == 'android' ? styles.mainDiv_installation1 : styles.mainDiv_installation}>
+      <View style={styles.install_touchable}>
         {/* <Address style={styles.img_width} /> */}
         <InstallBase style={styles.img_width} />
         <Text style={styles.installation_text}>Installation Base</Text>
-      </TouchableOpacity>
-      <View style={styles.shadowProp}>
+      </View>
+      <View >
         <View style={styles.location_div}>
           <Vanderberg style={styles.img_width} />
           <Text style={styles.force_base}>{data?.location}</Text>
@@ -46,7 +40,7 @@ const InstallationBase = ({data}) => {
           // style={styles.img_width}
           source={require('../../assets/images/dotted.png')}
           resizeMode="stretch"
-          style={{alignSelf: 'center', width: mobileW}}
+          style={{ alignSelf: 'center', width: mobileW }}
         />
         <View style={styles.mainDiv_state_zip}>
           <View style={styles.state_div}>
@@ -62,7 +56,7 @@ const InstallationBase = ({data}) => {
             <Image
               //style={styles.img_width}
               source={require('../../assets/images/zip_code.png')}
-              style={{width: 20, height: 20}}
+              style={{ width: 20, height: 20 }}
             />
             <Text style={styles.force_base}>{data?.ZIP_code}</Text>
             {/* <Text style={styles.force_base}>{setBasePackage[0].ZIP_code}</Text> */}
@@ -81,13 +75,9 @@ const styles = StyleSheet.create({
     // paddingVertical:15
   },
   mainDiv_installation: {
-    overflow: 'hidden',
-    borderRadius: 10,
+
     shadowColor: '#000000',
-    shadowOffset: {
-      width: 4,
-      height: 6,
-    },
+    shadowOffset: { width: 0, height: 6 },
     shadowOpacity: 0.2,
     shadowRadius: 5.62,
     elevation: 8,
@@ -97,6 +87,8 @@ const styles = StyleSheet.create({
     backgroundColor: COLORS.GREEN,
     alignItems: 'center',
     paddingVertical: 15,
+    borderTopLeftRadius: 10,
+    borderTopRightRadius: 10
   },
   img_width: {
     marginLeft: 20,
@@ -138,9 +130,12 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    paddingRight: 10,
+    // paddingRight: 10,
     paddingVertical: 10,
     backgroundColor: COLORS.GRAY,
+    borderBottomLeftRadius: 10,
+    borderBottomRightRadius: 10
+
   },
   state_div: {
     flexDirection: 'row',
@@ -152,6 +147,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     // alignItems:'center',
     paddingVertical: 10,
+
   },
   kwh_mieq_text: {
     fontWeight: 800,
@@ -185,6 +181,7 @@ const styles = StyleSheet.create({
     },
     shadowOpacity: 2,
     shadowRadius: 4,
+
   },
   dollar_div: {
     flexDirection: 'row',
@@ -207,5 +204,19 @@ const styles = StyleSheet.create({
     fontWeight: 700,
     fontSize: 14,
     color: COLORS.WHITE,
+  }, mainDiv_installation1: {
+    overflow: 'hidden',
+    borderRadius: 10,
+
+
+    shadowColor: '#000000',
+    shadowOffset: {
+      width: 4,
+      height: 6,
+    },
+    shadowOpacity: 0.2,
+    shadowRadius: 5.62,
+    elevation: Platform.OS === 'android' ? 8 : 0,
+
   },
 });

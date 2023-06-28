@@ -62,8 +62,10 @@ export default function Year() {
             )}
             <BoxTwo data={getBoxTwoDataForDashboard[0]} />
           </View>
-          <View style={{marginBottom: 80}}>
-            <PriceBox data={getBoxTwoDataForDashboard[0]} />
+
+          <View style={{marginBottom:80}}>
+          <PriceBox data={getBoxTwoDataForDashboard.data}/>
+
           </View>
         </ScrollView>
       </View>

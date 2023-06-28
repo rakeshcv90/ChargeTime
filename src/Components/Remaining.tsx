@@ -144,7 +144,7 @@ const nav = () => {
           elevation: 8,
           borderWidth: 0,
           borderRadius: 10,
-          overflow: 'hidden',
+          //overflow: 'hidden',
           // transform: [animatedValue ? {rotate}: null],
         }}>
         <Text

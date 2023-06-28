@@ -421,6 +421,17 @@ const dispatch = useDispatch();
                         paddingHorizontal: 20,
                         paddingVertical: 10,
                         borderRadius: 12,
+                        ...Platform.select({
+                          ios: {
+                            shadowColor: '#000000',
+                            shadowOffset: { width: 0, height: 2 },
+                            shadowOpacity: 0.3,
+                            shadowRadius: 4,
+                          },
+                          android: {
+                            elevation: 4,
+                          },
+                        }),
                       }}>
                       <TouchableOpacity onPress={handleSubmit}>
                         <Text
@@ -467,6 +478,17 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
+    ...Platform.select({
+      ios: {
+        shadowColor: '#000000',
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.3,
+        shadowRadius: 4,
+      },
+      android: {
+        elevation: 4,
+      },
+    }),
     // borderRadius: 6,
   },
   cardNumber_position: {

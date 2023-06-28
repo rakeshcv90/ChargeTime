@@ -202,7 +202,7 @@ export default function Home(route) {
 
   return (
     <SafeAreaView style={{backgroundColor: COLORS.CREAM, flex: 1}}>
-      <DrawerOpen />
+    <DrawerOpen top={ PLATFORM_IOS ? 70 : 30}/>
       <View style={styles.charging_imag_style}>
         {changePage == 0 ? (
           <Image

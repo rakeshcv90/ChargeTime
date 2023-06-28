@@ -20,9 +20,6 @@ import { FONTS } from '../../constants/FONTS';
 import { useDispatch } from 'react-redux';
 import axios from 'axios';
 import { mvs, ms } from 'react-native-size-matters';
-
-
-
 import { userProfileData as updatePersionalDetail } from '../../redux/action';
 const mobileW = Math.round(Dimensions.get('screen').width);
 
@@ -54,7 +51,45 @@ const PersonalDetails = () => {
   const isDark = theme === 'dark';
 
   const onPress = () => {
-    updatePersonalDetails();
+    if (name.trim().length <= 0) {
+      PLATFORM_IOS
+        ? Toast.show({
+          type: 'error',
+          text1: 'Please Enter Name',
+        })
+        : ToastAndroid.show('Please Enter Name', ToastAndroid.SHORT);
+    }
+    else if (name.trim().length <= 3) {
+      PLATFORM_IOS
+        ? Toast.show({
+          type: 'error',
+          text1: 'Please Enter Full Name',
+        })
+        : ToastAndroid.show('Please Enter Full Name', ToastAndroid.SHORT);
+
+    }
+    else if (number.trim().length <= 0) {
+      PLATFORM_IOS
+        ? Toast.show({
+          type: 'error',
+          text1: 'Please Enter Mobile Number',
+        })
+        : ToastAndroid.show('Please Enter Mobile Number', ToastAndroid.SHORT);
+
+    }
+    else if (number.trim().length < 10) {
+      PLATFORM_IOS
+        ? Toast.show({
+          type: 'error',
+          text1: 'Please Enter Correct Mobile Number',
+        })
+        : ToastAndroid.show('Please Enter Correct Mobile Number', ToastAndroid.SHORT);
+
+    }
+    else {
+      updatePersonalDetails();
+    }
+
   }
   const enableEdit = () => {
 
@@ -62,7 +97,7 @@ const PersonalDetails = () => {
   }
 
 
-  const updatePersonalDetails = async () =>{
+  const updatePersonalDetails = async () => {
 
     // setIsEditable(true);
     await fetch(`${API}/personalInfo/${user_ID}`, {
@@ -81,18 +116,18 @@ const PersonalDetails = () => {
           const updatedData = [{
             ...userProfileData[0],
 
-          name: name,
+            name: name,
             mobile: number,
           }];
           // console.log(updatedData,"------")
-        
+
           dispatch(updatePersionalDetail(updatedData));
-          PLATFORM_IOS?
-          Toast.show({
-            type: 'success',
-            text1: "Your Profile Updated Successfully",
-            
-          }):ToastAndroid.show("Your Profile Updated Successfully", ToastAndroid.SHORT);
+          PLATFORM_IOS ?
+            Toast.show({
+              type: 'success',
+              text1: "Your Profile Updated Successfully",
+
+            }) : ToastAndroid.show("Your Profile Updated Successfully", ToastAndroid.SHORT);
           setIsEditable(false)
           // navigationRef.navigate('Account');
           // navigation.navigate('Home');
@@ -178,12 +213,13 @@ const PersonalDetails = () => {
           placeholderTextColor={COLORS.HALFBLACK}
           style={{
             color: COLORS.BLACK,
-            fontFamily: 'Roboto',
+            //fontFamily: 'Roboto',
             fontWeight: '200',
           }}
 
-          onChangeText={(number)=>{handleInputChange(number);
-          setNumber(number)
+          onChangeText={(number) => {
+            handleInputChange(number);
+            setNumber(number)
 
           }}
           value={number}
@@ -219,16 +255,16 @@ const PersonalDetails = () => {
       </View>
 
       <View style={styles.bottom}>
-        <Text style={{fontSize: 14, color: COLORS.BLACK}}>Want to delete account?{' '}</Text>
+        <Text style={{ fontSize: 14, color: COLORS.BLACK }}>Want to delete account?{' '}</Text>
 
-        <TouchableOpacity onPress={() => navigationRef.navigate('deleteAccount')}>
+        <TouchableOpacity onPress={() => navigationRef.navigate('deleteAccount')} >
           <Text
             style={{
               fontWeight: 'bold',
 
               fontSize: 14,
               height: 25,
-              color:COLORS.BLACK,
+              color: COLORS.BLACK,
 
             }}
           >Request here.</Text>
@@ -239,14 +275,10 @@ const PersonalDetails = () => {
 }
 const styles = StyleSheet.create({
   bottom: {
-
     marginTop: 'auto',
-
     flexDirection: 'row',
     alignContent: 'center',
-    alignItems: 'center',
-    alignSelf: 'center',
-    justifyContent:'center',
+    justifyContent: 'center',
     bottom: mobileW * 0.3,
 
   },

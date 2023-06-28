@@ -62,29 +62,18 @@ export default function Login({navigation}) {
   const dispatch = useDispatch();
   const {getDeviceID, getGraphData} = useSelector(state => state);
   // console.log(getUserID,"object")
+ 
   useEffect(() => {
-    // const backAction = () => {
-    //   Alert.alert(
-    //     'Exit App',
-    //     'Are you sure you want to exit?',
-    //     [
-    //       {
-    //         text: 'Cancel',
-    //         onPress: () => null,
-    //         style: 'cancel',
-    //       },
-    //       { text: 'Exit', onPress: () => BackHandler.exitApp() },
-    //     ],
-    //     { cancelable: false }
-    //   );
-    //   return true;
-    // };
-    // BackHandler.addEventListener('hardwareBackPress', () =>
-    //   BackHandler.exitApp(),
-    // );
+    const backHandler = BackHandler.addEventListener(
+      'hardwareBackPress',
+      handleBackButton
+    );
 
-    // return () => backHandler.remove();
+    return () => backHandler.remove();
   }, []);
+  const handleBackButton = () => {
+    return true;
+  };
   const packagePlans = async locationID => {
     //  loginData = await AsyncStorage.getItem('loginDataOne');
 
