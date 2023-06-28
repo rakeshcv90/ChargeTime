@@ -1,25 +1,42 @@
-import { View, Text, StyleSheet, ScrollView, RefreshControl } from 'react-native';
-import React, { useEffect, useRef, useState } from 'react';
+import {View, Text, StyleSheet, ScrollView, RefreshControl} from 'react-native';
+import React, {useEffect, useRef, useState} from 'react';
 import COLORS from '../../constants/COLORS';
 import Remaining from '../../Components/Remaining';
 import TotalUsage from '../../Components/TotalUsuage';
-import Graph from '../../Components/DayGraph';
+import Graph from '../../Components/Graph';
 import BoxTwo from '../../Components/BoxTwo';
 import ButtonSlider from '../../Components/ButtonSlider';
 import PriceBox from '../../Components/PriceBox';
-import { useDispatch, useSelector } from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 import axios from 'axios';
-import { setBoxTwoDataForDashboard, setChargerStatus, setGraphData, setKwhData, setMonthGraphData, setOverUsage, setQuarterGraphData, setRemainingData, setWeekGraphData, setYearGraphData } from '../../redux/action';
-import { API } from '../../api/API';
+import {
+  setBoxTwoDataForDashboard,
+  setChargerStatus,
+  setGraphData,
+  setKwhData,
+  setMonthGraphData,
+  setOverUsage,
+  setQuarterGraphData,
+  setRemainingData,
+  setWeekGraphData,
+  setYearGraphData,
+} from '../../redux/action';
+import {API} from '../../api/API';
 
 const Day = (props: any) => {
-
-  const { getBoxTwoDataForDashboard, getUserID, getGraphData, getChargerStatus, getRemainingData,getkwhData } = useSelector((state: any) => state)
+  const {
+    getBoxTwoDataForDashboard,
+    getUserID,
+    getGraphData,
+    getChargerStatus,
+    getRemainingData,
+    getkwhData,
+  } = useSelector((state: any) => state);
 
   const [toggleState, setToggleState] = useState(false);
 
   const handleToggle = (value: any) => setToggleState(value);
-  const dispatch = useDispatch()
+  const dispatch = useDispatch();
   const [showSlider, setShowSlider] = useState(true);
   const [refresh, setRefresh] = useState(false);
   const ScrollRef = useRef(null);
@@ -41,7 +58,8 @@ const Day = (props: any) => {
     setTimeout(() => {
       setRefresh(false);
     }, 2000);
-    remainigUsuageData()
+    remainigUsuageData();
+    dailyUsuagekwh(getUserID)
   };
 
   const remainigUsuageData = () => {
@@ -57,7 +75,7 @@ const Day = (props: any) => {
           remaingData = res.data?.kwh_unit_overusage;
           dispatch(setOverUsage(true));
         }
-        console.log(res.data)
+        console.log(res.data);
         dispatch(setRemainingData(remaingData));
       })
       .catch(err => {
@@ -80,18 +98,19 @@ const Day = (props: any) => {
   //       console.log(err);
   //     });
   // };
-  // const dailyUsuagekwh = (userId: string) => {
-  //   axios
-  //     .get(`${API}/dailyusage/${userId}`)
-  //     .then(res => {
-  //       if (res?.data) {
-  //         dispatch(setKwhData(res?.data));
-  //       }
-  //     })
-  //     .catch(err => {
-  //       console.log(err);
-  //     });
-  // };
+  const dailyUsuagekwh = (userId: string) => {
+    axios
+      .get(`${API}/dailyusage/${userId}`)
+      .then(res => {
+        if (res?.data) {
+          console.log(res.data,"TOALASD")
+          dispatch(setKwhData(res?.data));
+        }
+      })
+      .catch(err => {
+        console.log(err);
+      });
+  };
   // //day data end
 
   // //week data start
@@ -166,7 +185,7 @@ const Day = (props: any) => {
   // };
   return (
     <>
-      <View style={{ flex: 1, backgroundColor: COLORS.CREAM }}>
+      <View style={{flex: 1, backgroundColor: COLORS.CREAM}}>
         <ScrollView
           ref={ScrollRef}
           showsVerticalScrollIndicator={false}
@@ -188,13 +207,14 @@ const Day = (props: any) => {
               marginHorizontal: 20,
               marginTop: 10,
             }}>
-             
-            <Remaining RemainingFill={10} KWH={400} data={"home"} />
+            <Remaining RemainingFill={10} KWH={400} data={'home'} />
             <TotalUsage data={getkwhData.Totalusedkwhs} />
           </View>
 
-          <View style={{ marginHorizontal: 20, }}>
-            {getGraphData.length >= 1 ?(<Graph dataOne={getGraphData} /> ) : (
+          <View style={{marginHorizontal: 20}}>
+            {getGraphData.Usage.length >= 1 ? (
+              <Graph dataOne={getGraphData} />
+            ) : (
               <Text
                 style={{
                   color: COLORS.BLACK,
@@ -208,7 +228,7 @@ const Day = (props: any) => {
             )}
             <BoxTwo data={getBoxTwoDataForDashboard[0]} />
           </View>
-          <View style={{ marginBottom: 120 }}>
+          <View style={{marginBottom: 120}}>
             <PriceBox data={getBoxTwoDataForDashboard.data} />
           </View>
         </ScrollView>

@@ -46,9 +46,9 @@ export default function Week() {
           </View>
 
           <View style={{marginHorizontal: 20}}>
-            <Graph dataOne={getWeekGraphData} />
             {getWeekGraphData.Date.length >= 1 ? (
-              null
+            <Graph dataOne={getWeekGraphData} />
+              
             ) : (
               <Text
                 style={{

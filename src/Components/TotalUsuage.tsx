@@ -1,14 +1,39 @@
 import {Dimensions, StyleSheet, Text, View} from 'react-native';
-import React, { useEffect } from 'react';
+import React, { useCallback, useEffect } from 'react';
 import COLORS from '../constants/COLORS';
 import LinearGradient from 'react-native-linear-gradient';
 import {DIMENSIONS} from '../constants/DIMENSIONS';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
+import { useFocusEffect } from '@react-navigation/native';
+import axios from 'axios';
+import { API } from '../api/API';
+import { setKwhData } from '../redux/action';
 
-const TotalUsage = ({data}) => {
+const TotalUsage = ({...props}) => {
+  const dispatch = useDispatch();
+  const {getRemainingData, getUserID, getkwhData} = useSelector(
+    (state: any) => state,
+  );
+  useFocusEffect(
+    // overusage && setModalVisible(true);
+    useCallback(() => {
+      dailyUsuagekwh();
+    }, []),
+  );
   
- 
-  
+  const dailyUsuagekwh = () => {
+    axios
+      .get(`${API}/dailyusage/${getUserID}`)
+      .then(res => {
+        if (res?.data) {
+          console.log("DAILTYRWTEW", res.data)
+          dispatch(setKwhData(res?.data));
+        }
+      })
+      .catch(err => {
+        console.log(err);
+      });
+  };
   return (
     <View
       style={{
@@ -52,7 +77,7 @@ const TotalUsage = ({data}) => {
               color: COLORS.BLACK,
             }}>
             
-            {data ? data?.toFixed(2) + ' kWh' : 0 + ' kWh'}
+            {getkwhData.Totalusedkwhs ? getkwhData.Totalusedkwhs?.toFixed(2) + ' kWh' : 0 + ' kWh'}
           </Text>
           <Text
             style={{

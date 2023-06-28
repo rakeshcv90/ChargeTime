@@ -106,7 +106,7 @@ export default function HomeOne(route) {
   const [activeTab, setActiveTab] = useState('');
   const [apiData, setApiData] = useState([]);
   const [myTest, setMyTest] = useState('');
-  const {getLocationID, getPurchaseData} = useSelector(state => state);
+  const {getLocationID, getPurchaseData, getBasePackage} = useSelector(state => state);
   const [showLottieView, setShowLottieView] = useState(false);
   
 

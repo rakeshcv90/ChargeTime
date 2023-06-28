@@ -45,9 +45,9 @@ export default function Year() {
           </View>
 
           <View style={{marginHorizontal: 20}}>
-            <Graph dataOne={getYearData} />
             {getYearData.Date.length >= 1 ? (
-              null
+            <Graph dataOne={getYearData} />
+              
             ) : (
               <Text
                 style={{

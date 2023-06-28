@@ -45,9 +45,9 @@ export default function Month() {
           </View>
 
           <View style={{marginHorizontal: 20}}>
-            <Graph dataOne={getMonthData} />
             {getMonthData.Date.length >= 1 ? (
-              null
+            <Graph dataOne={getMonthData} />
+              
             ) : (
               <Text
                 style={{

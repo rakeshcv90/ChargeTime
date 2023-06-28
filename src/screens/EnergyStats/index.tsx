@@ -126,7 +126,7 @@ export default function EnergyStats() {
   const [charging, setCharging] = useState(true);
   const [deviceIdTemp, setDeviceIdTemp] = useState('');
 
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
   const { getGraphData } = useSelector((state: any) => state);
 
   const { getChargerStatus, getDeviceID, getUserID } = useSelector((state: any) => state);
@@ -157,7 +157,7 @@ export default function EnergyStats() {
         console.log(res.data, 'tt');
         if (res.data.status == 'True') {
           setDeviceIdTemp(res.data.message);
-          fetchGraphData(res.data?.user_id);
+          fetchGraphData(getUserID);
           // fetchMonthGraphData(res.data?.user_id);
           // fetchQuarterGraphData(res.data.user_id);
           fetchBoxTwoDashboardData(res.data?.user_id);
@@ -184,7 +184,7 @@ export default function EnergyStats() {
         console.log("GRAPH.........", res.data)
         dispatch(setGraphData(res?.data));
 
-        dailyUsuagekwh(userID);
+        dailyUsuagekwh(getUserID);
         // navigation.navigate('DrawerStack');
       })
       .catch(err => {
@@ -197,10 +197,11 @@ export default function EnergyStats() {
       .get(`${API}/dailyusage/${userId}`)
       .then(res => {
         if (res?.data) {
+          console.log("DAILTYRWTEW", res.data)
           dispatch(setKwhData(res?.data));
         }
 
-        remainigUsuageData(userId);
+        remainigUsuageData(getUserID);
       })
       .catch(err => {
         console.log(err);
@@ -279,7 +280,7 @@ fetchWeekGraphData(getUserID);
       .get(`${API}/yearlyusage/${userID}`)
       .then(res => {
         if (res?.data) {
-          console.log("Year GRAPH", res.data)
+          // console.log("Year GRAPH", res.data)
           dispatch(setYearGraphData(res?.data));
           fetchMonthGraphData(getUserID)
         }
@@ -541,7 +542,7 @@ fetchWeekGraphData(getUserID);
               tabBarScrollEnabled: true,
             }}
             tabBar={props => <MyTabBar {...props} />}>
-            <Tab.Screen name="Day" component={Week} />
+            <Tab.Screen name="Day" component={Day} />
             <Tab.Screen name="Week" component={Week} />
             <Tab.Screen name="Month" component={Month} />
             <Tab.Screen name="Quarter" component={Quarter} />
@@ -557,7 +558,7 @@ fetchWeekGraphData(getUserID);
           <ButtonSlider onToggle={handleToggle} />
         )}
       </SafeAreaView>
-      {/* {isLoading && <ActivityLoader />} */}
+      {isLoading && <ActivityLoader />}
     </>
   );
 }

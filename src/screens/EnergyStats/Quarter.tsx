@@ -46,9 +46,9 @@ export default function Quarter() {
           </View>
 
           <View style={{marginHorizontal: 20}}>
-            <Graph dataOne={getQuarterData} />
             {getQuarterData.Date.length >= 1 ? (
-              null
+            <Graph dataOne={getQuarterData} />
+              
             ) : (
               <Text
                 style={{
