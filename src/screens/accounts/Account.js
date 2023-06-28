@@ -1,5 +1,5 @@
 
-import { Image, View, Text, StyleSheet, Dimensions, TouchableOpacity, SafeAreaView, ScrollView } from 'react-native';
+import { Image, View, Text, StyleSheet, Dimensions, TouchableOpacity, SafeAreaView, ScrollView, BackHandler } from 'react-native';
 import React, { useState, useEffect } from 'react';
 import { createDrawerNavigator } from '@react-navigation/drawer';
 import { CommonActions, NavigationContainer } from '@react-navigation/native';
@@ -10,7 +10,7 @@ import HorizontalLine from '../../Components/HorizontalLine';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {navigationRef} from '../../../App';
 import {FONTS} from '../../constants/FONTS';
-import {DIMENSIONS} from '../../constants/DIMENSIONS';
+import {DIMENSIONS, PLATFORM_IOS} from '../../constants/DIMENSIONS';
 import DrawerOpen from '../../Components/DrawerOpen';
 import { persistor } from '../../redux/store';
 import { useSelector } from 'react-redux';
@@ -19,6 +19,7 @@ import { useDispatch } from 'react-redux';
 import { userProfileData } from '../../redux/action';
 import { getCurrentPlan } from '../../redux/action';
 import SubBoxOne from '../../Components/SubBoxOne';
+import Privacy from '../drawerPart/Privacy';
 const mobileW = Math.round(Dimensions.get('screen').width);
 const mobileH = Math.round(Dimensions.get('screen').height);
 
@@ -40,7 +41,17 @@ const Account = ({ navigation }) => {
     userSubscription();
     //  userSubsEnergy();
   }, []);
+  useEffect(() => {
+    const backHandler = BackHandler.addEventListener(
+      'hardwareBackPress',
+      handleBackButton
+    );
 
+    return () => backHandler.remove();
+  }, []);
+  const handleBackButton = () => {
+    return true;
+  };
   const Screen = [
     {
       title: 'Personal Details',
@@ -177,7 +188,8 @@ const Account = ({ navigation }) => {
       <View style={styles.main_div}>
         <View style={styles.row}>
           <Text style={styles.heading}>Account</Text>
-          <DrawerOpen />
+    
+          <DrawerOpen top={ PLATFORM_IOS ? 30 : 30}/>
         </View>
         {Screen.map((item, index) => (
           <TouchableOpacity
@@ -212,7 +224,7 @@ const Account = ({ navigation }) => {
           </TouchableOpacity>
         </View>
         <View style={styles.addContainer}>
-          <TouchableOpacity style={styles.listItem}>
+          <TouchableOpacity style={styles.listItem} onPress={()=>{ navigation.navigate('Privacy Policy')}}>
             <Text style={styles.bullet}>•</Text>
             <Text style={styles.text}>Privacy Policy</Text>
           </TouchableOpacity>

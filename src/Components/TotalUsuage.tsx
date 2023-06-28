@@ -15,10 +15,9 @@ const TotalUsage = ({data}) => {
         backgroundColor: '#F5F5F5',
         width: DIMENSIONS.SCREEN_WIDTH * 0.4,
         height: DIMENSIONS.SCREEN_WIDTH * 0.35,
-        marginVertical: DIMENSIONS.SCREEN_HEIGHT * 0.03,
+        marginVertical: DIMENSIONS.SCREEN_HEIGHT * 0.02,
         flexDirection: 'column-reverse',
         shadowColor: '#000000',
-     
         shadowOffset: { width: 0, height: 2 },
         shadowOpacity: 0.8,
         shadowRadius: 5,
@@ -44,7 +43,7 @@ const TotalUsage = ({data}) => {
         style={{
           width: '100%',
         }}>
-        <View style={{marginBottom: 30, marginLeft: 30}}>
+        <View style={{marginBottom: 50, marginLeft: 30,alignContent:'center',}}>
           <Text
             style={{
               fontWeight: '800',

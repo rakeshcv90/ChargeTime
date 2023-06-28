@@ -96,17 +96,6 @@ const styles = StyleSheet.create({
   },
 
   mainDiv_installation: {
-    // overflow: 'hidden',
-    // borderRadius: 10,
-    // marginTop: Platform.OS === "ios"?10: 10,
-    // shadowColor: '#000000',
-    // shadowOffset: {
-    //   width: 4,
-    //   height: 6,
-    // },
-    // shadowOpacity: 0.2,
-    // shadowRadius: 5.62,
-    // elevation: 8,
     marginTop: DIMENSIONS.SCREEN_HEIGHT * 0.03,
     marginBottom: DIMENSIONS.SCREEN_HEIGHT * 0.03,
     shadowColor: '#000000',

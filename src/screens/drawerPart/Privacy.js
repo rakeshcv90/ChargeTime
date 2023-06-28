@@ -1,37 +1,30 @@
-import { View, Text, SafeAreaView, TouchableOpacity, StyleSheet } from 'react-native'
+import { View, Text, SafeAreaView, StyleSheet, Platform, Image, Dimensions } from 'react-native'
 import React from 'react'
+import Header from '../../Components/Header';
+import HorizontalLine from '../../Components/HorizontalLine';
+const mobileW = Math.round(Dimensions.get('screen').width);
+const mobileH = Math.round(Dimensions.get('screen').height);
 
 export default function Privacy() {
   return (
-    <SafeAreaView style={styles.container}>
-      <View style={styles.container}>
-      <View style={styles.shadowContainer}>
-        <Text style={styles.text}>Box Shadow Example</Text>
-      </View>
-    </View>
+    <SafeAreaView style={{ backgroundColor: COLORS.CREAM, flex: 1 }}>
+     <Header headerName="Privacy Policy" />
+      {Platform.OS == 'android' ? <HorizontalLine style={styles.line} /> : <View
+        style={{
+
+
+        }}>
+        <Image source={require('../../../assets/images/dotted.png')} style={{ width: mobileW * 0.97 }} />
+      </View>}
     </SafeAreaView>
   )
 }
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  shadowContainer: {
-    backgroundColor: '#ffffff',
-    borderRadius: 8,
-    padding: 10,
-    shadowColor: '#888888',
-    shadowOffset: { width: 5, height: 10 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 4, // Required for Android
-  },
-  text: {
-    fontSize: 16,
-    fontWeight: 'bold',
-    color: '#000000',
-    textAlign: 'center',
+
+
+  line: {
+    marginTop: 40,
+    marginBottom: 10,
+    marginHorizontal: 5,
   },
 });

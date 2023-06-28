@@ -7,7 +7,6 @@ import {
   Animated,
   Image,
   Dimensions,
-  RefreshControl,
 } from 'react-native';
 import {useNavigationState} from '@react-navigation/native';
 import {SafeAreaView} from 'react-native-safe-area-context';
@@ -22,7 +21,7 @@ import axios from 'axios';
 import ActivityLoader from '../../Components/ActivityLoader';
 
 import {useDispatch} from 'react-redux';
-import {setBasePackage, setPurchaseData} from '../../redux/action';
+import {setBasePackage} from '../../redux/action';
 
 import {useSelector} from 'react-redux';
 import SliderOne from './SliderOne';
@@ -105,32 +104,25 @@ export default function HomeOne(route) {
   const Tab = createMaterialTopTabNavigator();
   // const [purChaseButton,setPurchaseButton] = use
   const [activeTab, setActiveTab] = useState('');
+  const [apiData, setApiData] = useState([]);
   const [myTest, setMyTest] = useState('');
-  const {getLocationID, getPurchaseData,getBasePackage} = useSelector(state => state);
+  const {getLocationID, getPurchaseData} = useSelector(state => state);
   const [showLottieView, setShowLottieView] = useState(false);
   
-  const [refresh, setRefresh] = useState(false);
-  const handleRefresh = () => {
-    setRefresh(true);
-    setTimeout(() => {
-      setRefresh(false);
-    }, 2000);
-    fetchData();
-    getPlanCurrent()
-  };
+  
   useEffect(() => {
     fetchData();
-    console.log('getBasePackage',getBasePackage)
   }, []);
- 
+  
+  
   
   
   const populateNumArray = () => {
     const numArray = [];
   
-    if (getBasePackage?.length >= 1 && getBasePackage) {
-      getBasePackage.forEach((item) => {
-        const num = item.package_name.toLowerCase() === getPurchaseData[0].energy_plan.toLowerCase();
+    if (apiData?.length >= 1 && apiData) {
+      apiData.forEach((item) => {
+        const num = item.package_name.toLowerCase() === getPurchaseData.data.energy_plan.toLowerCase();
         numArray.push(num);
       });
     }
@@ -145,7 +137,7 @@ export default function HomeOne(route) {
   useEffect(() => {
     const updatedNumArray = populateNumArray();
     setNumArray(updatedNumArray);
-  }, [getPurchaseData]);
+  }, [apiData, getPurchaseData]);
 
   
 
@@ -159,6 +151,7 @@ export default function HomeOne(route) {
         setIsLoading(true);
         setShowPackage(true);
       } else {
+        setApiData(response?.data?.locations);
         dispatch(setBasePackage(response.data.locations));
         setIsLoading(false);
       }
@@ -250,8 +243,9 @@ export default function HomeOne(route) {
 
   return (
     <SafeAreaView style={{backgroundColor: COLORS.CREAM, flex: 1}}>
+      
        
-      {getPurchaseData[0].energy_plan.toLowerCase() === myTest.toLowerCase()  && 
+      {getPurchaseData.data.energy_plan.toLowerCase() === myTest.toLowerCase()  && 
            <View
            
             style={{
@@ -277,7 +271,7 @@ export default function HomeOne(route) {
           </View>
 }
         
-      <DrawerOpen />
+<DrawerOpen top={ PLATFORM_IOS ? 70 : 30}/>
       <View style={[styles.charging_imag_style]}>
         {changePage == 0 ? (
           <Image
@@ -322,14 +316,15 @@ export default function HomeOne(route) {
             },
           }}
           tabBar={props => <MyTabBar {...props} />}>
-          {getBasePackage?.length >= 1 &&
-            getBasePackage &&
-            getBasePackage.map((item, ind) => {
+          {apiData?.length >= 1 &&
+            apiData &&
+            apiData.map((item, ind) => {
 
             let  purchageData =
-                item.kwh > getPurchaseData[0].kwh ? 'UPGRADE' : 'DOWNGRADE';
-                let num = item.package_name.toLowerCase() === getPurchaseData[0].energy_plan.toLowerCase();
+                item.kwh > getPurchaseData.data.kwh ? 'UPGRADE' : 'DOWNGRADE';
+                let num = item.package_name.toLowerCase() === getPurchaseData.data.energy_plan.toLowerCase();
                 
+
               return (
                 <Tab.Screen
                   key={ind}
@@ -346,6 +341,7 @@ export default function HomeOne(route) {
         </Tab.Navigator>
         
       )}
+     
     </SafeAreaView>
   );
 }

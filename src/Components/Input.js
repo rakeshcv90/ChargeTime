@@ -128,7 +128,7 @@ const Input: FC<Props> = ({...Props}) => {
         </View>
       </View>
       {Props.errors && Props.touched && (
-        <Text style={{color: 'red', fontSize: 11, textAlign: 'center'}}>
+        <Text style={{color: 'red', fontSize: 12, textAlign: 'center'}}>
           {Props.errors}
         </Text>
       )}

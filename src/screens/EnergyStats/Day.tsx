@@ -91,7 +91,7 @@ const Day = (props: any) => {
             <BoxTwo data={getBoxTwoDataForDashboard[0]} />
           </View>
           <View style={{ marginBottom: 120 }}>
-            <PriceBox data={getBoxTwoDataForDashboard[0]} />
+            <PriceBox data={getBoxTwoDataForDashboard.data} />
           </View>
         </ScrollView>
       </View>

@@ -69,20 +69,20 @@ export default function SliderOne(props) {
 
       <View style={styles.managing_width}>
         <BoxTwo data={props.route.params.item} />
-        {getPurchaseData[0].energy_plan.toLowerCase() ===
+        {getPurchaseData.data.energy_plan.toLowerCase() ===
           props.route.params.item.package_name.toLowerCase() && (
           <Remaining RemainingFill={50} KWH={400} data={'energy'} />
         )}
-        {getPurchaseData[0].energy_plan.toLowerCase() ===
+        {getPurchaseData.data.energy_plan.toLowerCase() ===
           props.route.params.item.package_name.toLowerCase() && (
           <View style={{marginBottom: 20}}>
-            <PriceBox data={getPurchaseData[0]} />
+            <PriceBox data={getPurchaseData.data} />
           </View>
         )}
         <View
           style={{
             marginBottom:
-              getPurchaseData[0].energy_plan.toLowerCase() ===
+              getPurchaseData.data.energy_plan.toLowerCase() ===
               props.route.params.item.package_name.toLowerCase()
                 ? 20
                 : null,
@@ -90,7 +90,7 @@ export default function SliderOne(props) {
           <InstallationBase data={props.route.params.item} />
         </View>
 
-        {getPurchaseData[0].energy_plan.toLowerCase() !==
+        {getPurchaseData.data.energy_plan.toLowerCase() !==
           props.route.params.item.package_name.toLowerCase() && (
           <BoxFive
             data={props.route.params.item}
