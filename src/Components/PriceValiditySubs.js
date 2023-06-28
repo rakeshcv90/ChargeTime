@@ -24,7 +24,7 @@ const PriceValidity = () => {
       <View style={styles.location_div}>
 
         <Text style={styles.force_base_b}>Package Name :</Text>
-        <Text style={styles.force_base}>{getCurrentPlan[0]?.energy_plan}</Text>
+        <Text style={styles.force_base}>{getCurrentPlan.energy_plan}</Text>
       </View>
       <Image
         // style={styles.img_width}
@@ -33,7 +33,7 @@ const PriceValidity = () => {
       />
       <View style={styles.location_div}>
         <Text style={styles.force_base_b}>Price :</Text>
-        <Text style={styles.force_base}>${getCurrentPlan[0]?.energy_price}</Text>
+        <Text style={styles.force_base}>${getCurrentPlan.energy_price}</Text>
       </View>
       <Image
         // style={styles.img_width}
@@ -42,7 +42,7 @@ const PriceValidity = () => {
       />
       <View style={styles.location_div}>
         <Text style={styles.force_base_b}>Valid Till :</Text>
-        <Text style={styles.force_base}>{getCurrentPlan[0]?.End_validity}</Text>
+        <Text style={styles.force_base}>{getCurrentPlan.End_validity}</Text>
       </View>
 
     </View>

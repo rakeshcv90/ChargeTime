@@ -30,7 +30,7 @@ const SubBoxOne = () => {
         <View style={styles.location_div}>
           <Vanderberg style={styles.img_width} />
           {/* <Text style={styles.force_base}>{data?.location?data?.location}</Text> */}
-          <Text style={styles.force_base}>{getCurrentPlan[0]?.location}</Text>
+          <Text style={styles.force_base}>{getCurrentPlan.location}</Text>
           {/* <Text style={styles.force_base}>{data?.location}</Text> */}
           {/* <Text style={styles.force_base}>{setBasePackage[0].location}</Text> */}
         </View>
@@ -47,7 +47,7 @@ const SubBoxOne = () => {
             source={require('../../assets/images/connecticut.png')}
           /> */}
             <Connecticut style={styles.img_width} />
-            <Text style={styles.force_base}>{getCurrentPlan[0]?.pwa_state}</Text>
+            <Text style={styles.force_base}>{getCurrentPlan.pwa_state}</Text>
             {/* <Text style={styles.force_base}>{setBasePackage[0].state}</Text> */}
           </View>
           <View style={styles.state_div}>
@@ -56,7 +56,7 @@ const SubBoxOne = () => {
               source={require('../../assets/images/zip_code.png')}
               style={{ width: 20, height: 20 }}
             />
-            <Text style={styles.force_base}>{getCurrentPlan[0]?.pwa_zip}</Text>
+            <Text style={styles.force_base}>{getCurrentPlan.pwa_zip}</Text>
             {/* <Text style={styles.force_base}>{setBasePackage[0].ZIP_code}</Text> */}
 
           </View>

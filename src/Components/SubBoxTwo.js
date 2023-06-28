@@ -26,7 +26,7 @@ const SubBoxTwo = () => {
         <View style={styles.second_main_div_kwh}>
           {/* <Image source={require('../../assets/images/kwh.png')} /> */}
           <Unit />
-          <Text style={styles.kwh_mieq_text}>{getCurrentPlan[0]?.kwh} kWh</Text>
+          <Text style={styles.kwh_mieq_text}>{getCurrentPlan.kwh} kWh</Text>
           <Text style={styles.unit_allowed}>Units Alloted</Text>
         </View>
         <View style={styles.second_main_div_kwh}>
@@ -34,7 +34,7 @@ const SubBoxTwo = () => {
                   source={require('../../assets/images/kwh_icon_one.png')}
                 /> */}
           <Mieq />
-          <Text style={styles.kwh_mieq_text}>~ {getCurrentPlan[0]?.mi_eq}</Text>
+          <Text style={styles.kwh_mieq_text}>~ {getCurrentPlan.mi_eq}</Text>
           <Text style={styles.unit_allowed}>Mi Eq</Text>
         </View>
         <View style={styles.second_main_div_kwh}>
@@ -43,7 +43,7 @@ const SubBoxTwo = () => {
             style={{ width: 20, height: 20 }}
           />
           {/* <MileOne /> */}
-          <Text style={styles.kwh_mieq_text}>{getCurrentPlan[0]?.dollar_mi}</Text>
+          <Text style={styles.kwh_mieq_text}>{getCurrentPlan.dollar_mi}</Text>
           <Text style={styles.unit_allowed}>$ / Mile</Text>
         </View>
       </View>

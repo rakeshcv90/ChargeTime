@@ -69,8 +69,10 @@ const Contact = () => {
       <Header headerName="Contact Us" />
       {Platform.OS == 'android' ? <HorizontalLine style={styles.line} /> : <View
 
-      >
+
+   
         <Image source={require('../../../assets/images/dotted.png')} style={{ width: mobileW * 0.97, }} />
+
       </View>}
       {/* <HorizontalLine style={styles.line} /> */}
       <View style={styles.container}>
@@ -83,11 +85,13 @@ const Contact = () => {
             borderWidth: 0.7,
             borderColor: COLORS.BLACK,
             marginVertical: 19,
+
             width:  mobileW*0.92,
             height: ms(150),
             color: COLORS.BLACK,
             fontSize: 14,
             //fontFamily: 'Roboto',
+
             fontWeight: '100',
             paddingLeft: 10,
             paddingTop: 10,

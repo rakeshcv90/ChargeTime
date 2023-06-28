@@ -33,6 +33,7 @@ const Account = ({ navigation }) => {
   const [getSubscription, setGetSubscription] = useState([]);
   const [getData, setGetData] = useState([]);
   const user_ID = getUserID;
+  
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -126,7 +127,7 @@ const Account = ({ navigation }) => {
 
         // console.log('wwwwww', result);
         //  setUserData(result);
-        dispatch(userProfileData(result));
+        dispatch(userProfileData(result.error));
         //  console.log(result)
 
       } else {
@@ -143,14 +144,18 @@ const Account = ({ navigation }) => {
     try {
       const response = await fetch(`${API}/currentplan/${user_ID}`);
       const result = await response.json();
+      console.log("-------------",user_ID)
 
-      if (result[0].id !== null) {
+      
+      if (result.data) {
+        console.log("-------------",result.data)
         // setGetSubscription(result[0]);
-        // console.log("======ytytytytyyt=====", result[0]);
-        dispatch(getCurrentPlan(result)); 
+        // console.log("======ytytytytyyt=====", result[0].data);
+       dispatch(getCurrentPlan(result.data)); 
 
       } else {
-        console.log("iiiiiiiiiiii")
+       dispatch(getCurrentPlan(result));
+       
       }
     } catch (error) {
 

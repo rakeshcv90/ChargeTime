@@ -125,7 +125,9 @@ export default function HomeOne(route) {
     if (getBasePackage?.length >= 1 && getBasePackage) {
       getBasePackage.forEach((item) => {
 
+
         const num = item.package_name.toLowerCase() === getPurchaseData.data.energy_plan.toLowerCase();
+
         numArray.push(num);
       });
     }
@@ -248,7 +250,9 @@ export default function HomeOne(route) {
     <SafeAreaView style={{backgroundColor: COLORS.CREAM, flex: 1}}>
       
        
+
       {getPurchaseData.data.energy_plan.toLowerCase() === myTest.toLowerCase()  && 
+
            <View
            
             style={{
@@ -324,8 +328,10 @@ export default function HomeOne(route) {
             apiData.map((item, ind) => {
 
             let  purchageData =
+
                 item.kwh > getPurchaseData.data.kwh ? 'UPGRADE' : 'DOWNGRADE';
                 let num = item.package_name.toLowerCase() === getPurchaseData.data.energy_plan.toLowerCase();
+
                 
 
               return (

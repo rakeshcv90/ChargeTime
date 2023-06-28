@@ -17,23 +17,6 @@ import { PLATFORM_IOS } from '../../constants/DIMENSIONS';
 import { navigationRef } from '../../../App';
 import { ms } from 'react-native-size-matters';
 
-const PasswordRegex =
-  /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
-const ValidateSchema = Yup.object().shape({
-  password: Yup
-    .string()
-    .matches(
-      PasswordRegex,
-      'Wachtwoord moet 1 hoofdletter en 1 kleine letter bevatten, 1 cijfer en 1 speciaal teken, en de lengte moet minimaal 8 zijn',
-    )
-    .required('Voer uw wachtwoord in'),
-  confirmPassword: Yup
-    .string()
-    .oneOf([Yup.ref('password'), ''], 'wachtwoorden moeten overeenkomen')
-    .required('Voer je wachtwoord opnieuw in'),
-});
-
-
 const Security = () => {
   const userProfileData = useSelector((state) => state.userProfileData)
   const [isEditable, setIsEditable] = useState(false);
@@ -160,6 +143,7 @@ const Security = () => {
 
 
   return (
+
     <SafeAreaView style={{ backgroundColor: COLORS.CREAM, flex: 1 }}>
       <Header headerName="Security" editShow={true} onPress={onPress} enableEdit={enableEdit} editButton={isEditable} />
 
@@ -231,6 +215,7 @@ const Security = () => {
           }}
         />
         {/* {errors.password && touched.password && (
+
                     <Text style={{color: 'red'}}>{errors.password}</Text>
                   )} */}
 
