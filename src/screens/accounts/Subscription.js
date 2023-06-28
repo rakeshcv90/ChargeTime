@@ -124,15 +124,15 @@ const Subscription = () => {
   };
 
 
-        dispatch(setPurchaseData(res?.data));
-        // dispatch(setIsAuthorized(true));
-        // navigation.navigate('DrawerStack');
-      })
-      .catch(err => {
-        setForLoading(false);
-        console.log(err);
-      });
-  };
+  //       dispatch(setPurchaseData(res?.data));
+  //       // dispatch(setIsAuthorized(true));
+  //       // navigation.navigate('DrawerStack');
+  //     })
+  //     .catch(err => {
+  //       setForLoading(false);
+  //       console.log(err);
+  //     });
+  // };
 
   return (
 
