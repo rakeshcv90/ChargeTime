@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import {
   View,
   Image,
@@ -7,6 +7,7 @@ import {
   Dimensions,
   Text,
   TouchableOpacity,
+  BackHandler,
 } from 'react-native';
 import {DIMENSIONS} from '../constants/DIMENSIONS';
 import COLORS from '../constants/COLORS';
@@ -15,6 +16,17 @@ const mobileH = Math.round(Dimensions.get('window').height);
 const mobileW = Math.round(Dimensions.get('window').width);
 
 const Introduction = ({navigation}) => {
+  useEffect(() => {
+    const backHandler = BackHandler.addEventListener(
+      'hardwareBackPress',
+      handleBackButton
+    );
+
+    return () => backHandler.remove();
+  }, []);
+  const handleBackButton = () => {
+    return true;
+  };
   return (
     <SafeAreaView style={styles.safeArea}>
       <View style={styles.container}>

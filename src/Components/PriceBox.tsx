@@ -142,6 +142,7 @@ const styles = StyleSheet.create({
     fontWeight: '400',
     fontSize: 14,
     paddingLeft: 10,
+    color: COLORS.BLACK
   },
   mainDiv_state_zip: {
     flexDirection: 'row',

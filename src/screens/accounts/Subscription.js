@@ -4,23 +4,25 @@ import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import HorizontalLine from '../../Components/HorizontalLine'
 import Header from '../../Components/Header'
+
 import COLORS from '../../constants/COLORS';
 import SubBoxOne from '../../Components/SubBoxOne';
 import SubBoxTwo from '../../Components/SubBoxTwo';
-import { PLATFORM_IOS } from '../../constants/DIMENSIONS';
+import {PLATFORM_IOS} from '../../constants/DIMENSIONS';
 import WaveAnimation from '../../Components/WaveAnimation';
-import { DIMENSIONS } from '../../constants/DIMENSIONS';
+import {DIMENSIONS} from '../../constants/DIMENSIONS';
 import PriceValiditySubs from '../../Components/PriceValiditySubs';
+
 import { API } from '../../api/API';
 import { getCurrentPlan as UpdatedCurrentPlan, setPurchaseData } from '../../redux/action';
 import { userSubsData } from '../../redux/action';
+
 import AnimatedLottieView from 'lottie-react-native';
-import { navigationRef } from '../../../App';
-
-
+import {navigationRef} from '../../../App';
 
 const mobileW = Math.round(Dimensions.get('screen').width);
 const Subscription = () => {
+
   const getUserID = useSelector((state) => state.getUserID)
   const getCurrentPlan = useSelector((state) => state.getCurrentPlan);
   const { getChargerStatus, getDeviceID } = useSelector((state) => state);
@@ -31,16 +33,15 @@ const Subscription = () => {
   // const [packageExists, setPackageExists] = useState(getCurrentPlan[0]);
 
   const packageExists = getCurrentPlan;
-  console.log("helloooooo", getCurrentPlan.error);
+
 
   const dispatch = useDispatch();
   useEffect(() => {
-
     // userSubsEnergy();
   }, []);
 
   const user_id = getUserID;
-  console.log("user_id", user_id)
+
 
   // const userSubsEnergy = async () => {
 
@@ -60,6 +61,7 @@ const Subscription = () => {
   //   } catch (error) {
   //    console.log("get deleted", error)
   //   }
+
   // }  
 
   const PlanCancel = async () => {
@@ -122,8 +124,20 @@ const Subscription = () => {
   };
 
 
+        dispatch(setPurchaseData(res?.data));
+        // dispatch(setIsAuthorized(true));
+        // navigation.navigate('DrawerStack');
+      })
+      .catch(err => {
+        setForLoading(false);
+        console.log(err);
+      });
+  };
+
   return (
+
     <SafeAreaView style={{ backgroundColor: COLORS.CREAM, flex: 1 }}>
+
       <Header headerName="Subscription" />
       {Platform.OS == 'android' ? (
         <HorizontalLine style={styles.line} />
@@ -131,12 +145,13 @@ const Subscription = () => {
         <View>
           <Image
             source={require('../../../assets/images/dotted.png')}
-            style={{ width: mobileW * 0.97, top: Platform.OS == 'ios' ? -30 : 2 }}
+            style={{width: mobileW * 0.97, top: Platform.OS == 'ios' ? -30 : 2}}
           />
         </View>
       )}
       <ScrollView showsVerticalScrollIndicator={false}>
         {getCurrentPlan.error == 'Package details not found' ? (
+
           //    <View style={styles.managing_width}>
           //    <Text style={{
           //            color: COLORS.RED,
@@ -230,13 +245,13 @@ const Subscription = () => {
           </View>
 
         ) : (
+
           <View>
             <View style={styles.managing_width}>
               <SubBoxOne />
               <SubBoxTwo />
             </View>
             <View style={styles.mainDiv_installation}>
-
 
               {/* <WaveAnimation /> */}
             </View>
@@ -310,5 +325,4 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     overflow: 'hidden',
   },
-
 });

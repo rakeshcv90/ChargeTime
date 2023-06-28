@@ -97,7 +97,9 @@ const DrawerNavigation = () => {
   const [focus, setFocus] = useState();
   const [focusOne, setFocusOne] = useState();
   const [focusTwo, setFocusTwo] = useState();
-  const {getPackageStatus, getChargerStatus,getDeviceID} = useSelector(state => state);
+  const {getPackageStatus, getChargerStatus, getDeviceID} = useSelector(
+    state => state,
+  );
 
   return (
     <Drawer.Navigator
@@ -341,89 +343,90 @@ const DrawerNavigation = () => {
         component={Terms}
       />
       {getDeviceID !==
-        'Your Account is not currently linked with a TRO Charger. Please contact customer service if you believe this is an error.' && getPackageStatus && (
-        <Drawer.Screen
-          options={{
-            drawerActiveBackgroundColor: '#fff',
-            gestureEnabled: false,
-            drawerItemStyle: {
-              marginTop: (DIMENSIONS.SCREEN_HEIGHT * 3) / 100,
-              marginLeft: (DIMENSIONS.SCREEN_HEIGHT * 3) / 100,
-            },
-            headerInteractionEnabled: false,
-            drawerIcon: ({focused, color, size}) => {
-              let iconComponent = null;
+        'Your Account is not currently linked with a TRO Charger. Please contact customer service if you believe this is an error.' &&
+        getPackageStatus && (
+          <Drawer.Screen
+            options={{
+              drawerActiveBackgroundColor: '#fff',
+              gestureEnabled: false,
+              drawerItemStyle: {
+                marginTop: (DIMENSIONS.SCREEN_HEIGHT * 3) / 100,
+                marginLeft: (DIMENSIONS.SCREEN_HEIGHT * 3) / 100,
+              },
+              headerInteractionEnabled: false,
+              drawerIcon: ({focused, color, size}) => {
+                let iconComponent = null;
 
-              if (getChargerStatus?.message === 'Charging') {
-                iconComponent = <Charging />;
-              } else if (getChargerStatus?.message === 'Online') {
-                iconComponent = (
-                  <OnlineCharge style={{marginTop: 10, marginLeft: 5}} />
+                if (getChargerStatus?.message === 'Charging') {
+                  iconComponent = <Charging />;
+                } else if (getChargerStatus?.message === 'Online') {
+                  iconComponent = (
+                    <OnlineCharge style={{marginTop: 10, marginLeft: 5}} />
+                  );
+                } else if (getChargerStatus?.message === 'Offline') {
+                  iconComponent = (
+                    <NoCharge style={{marginTop: 10, marginLeft: 5}} />
+                  );
+                }
+
+                return getChargerStatus.message !== 'Charging' ? (
+                  <View
+                    style={{
+                      // margin: 20,
+                      backgroundColor: COLORS.WHITE,
+                      height: (DIMENSIONS.SCREEN_HEIGHT * 7) / 100,
+                      width: (DIMENSIONS.SCREEN_WIDTH * 16) / 100,
+
+                      borderRadius: 15,
+                      justifyContent: 'center',
+                      alignItems: 'center',
+                      alignContent: 'center',
+
+                      shadowColor: '#000',
+                      shadowOffset: {
+                        width: 0,
+                        height: 5,
+                      },
+                      shadowOpacity: 0.29,
+                      shadowRadius: 4.65,
+                      elevation: Platform.OS === 'android' ? 10 : 0,
+                    }}>
+                    {iconComponent}
+                  </View>
+                ) : (
+                  <View
+                    style={{
+                      marginLeft: -25,
+                      shadowColor: '#000',
+                      // shadowOffset: {
+                      //   width: -5,
+                      //   height: 3,
+                      // },
+                      // shadowOpacity: 0.29,
+                      // shadowRadius: 4.65,
+                      // elevation: 7,
+                    }}>
+                    {iconComponent}
+                  </View>
                 );
-              } else if (getChargerStatus?.message === 'Offline') {
-                iconComponent = (
-                  <NoCharge style={{marginTop: 10, marginLeft: 5}} />
-                );
-              }
-
-              return getChargerStatus.message !== 'Charging' ? (
-                <View
-                  style={{
-                    // margin: 20,
-                    backgroundColor: COLORS.WHITE,
-                    height: (DIMENSIONS.SCREEN_HEIGHT * 7) / 100,
-                    width: (DIMENSIONS.SCREEN_WIDTH * 16) / 100,
-
-                    borderRadius: 15,
-                    justifyContent: 'center',
-                    alignItems: 'center',
-                    alignContent: 'center',
-
-                    shadowColor: '#000',
-                    shadowOffset: {
-                      width: 0,
-                      height: 5,
-                    },
-                    shadowOpacity: 0.29,
-                    shadowRadius: 4.65,
-                    elevation: Platform.OS === 'android' ? 10 : 0,
-                  }}>
-                  {iconComponent}
-                </View>
-              ) : (
-                <View
-                  style={{
-                    marginLeft: -25,
-                    shadowColor: '#000',
-                    // shadowOffset: {
-                    //   width: -5,
-                    //   height: 3,
-                    // },
-                    // shadowOpacity: 0.29,
-                    // shadowRadius: 4.65,
-                    // elevation: 7,
-                  }}>
-                  {iconComponent}
-                </View>
-              );
-            },
-            drawerLabelStyle: {
-              backgroundColor: '#fff',
-            },
-            drawerActiveTintColor: 'black',
-          }}
-          name={getChargerStatus?.message == 'Online' ? `Online` : `Offline`}
-          component={ChargerStatus}
-        />
-      )}
+              },
+              drawerLabelStyle: {
+                backgroundColor: '#fff',
+              },
+              drawerActiveTintColor: 'black',
+            }}
+            name={getChargerStatus?.message == 'Online' ? `Online` : `Offline`}
+            component={ChargerStatus}
+          />
+        )}
     </Drawer.Navigator>
   );
 };
 const LoginStack = () => {
   return (
     <Stack.Navigator screenOptions={screenOptions}>
-      <Stack.Screen name="Splash" component={Splash} />
-      <Stack.Screen name="Introduction" component={Introduction} />
+    <Stack.Screen name="Splash" component={Splash} />
+    <Stack.Screen name="Introduction" component={Introduction} />
       <Stack.Screen name="Login" component={Login} />
       <Stack.Screen name="Register" component={Register} />
       <Stack.Screen name="VerifyEmail" component={VerifyEmail} />
@@ -444,6 +447,21 @@ const HomeStack = () => {
     </Stack.Navigator>
   );
 };
+const SplashStack = () => {
+  return (
+    <Stack.Navigator screenOptions={screenOptions}>
+      <Stack.Screen name="Splash" component={Splash} />
+      <Stack.Screen name="Introduction" component={Introduction} />
+      <Stack.Screen name="Login" component={Login} />
+      <Stack.Screen name="Register" component={Register} />
+      <Stack.Screen name="VerifyEmail" component={VerifyEmail} />
+      <Stack.Screen name="CompleteProfile" component={CompleteProfile} />
+      <Stack.Screen name="ForgetPassword" component={ForgetPassword} />
+      <Stack.Screen name="ResetPassword" component={ResetPassword} />
+      <Stack.Screen name="DrawerStack" component={DrawerNavigation} />
+    </Stack.Navigator>
+  );
+};
 const EnergyOptions = () => {
   return (
     <Stack.Navigator screenOptions={screenOptions}>
@@ -451,7 +469,6 @@ const EnergyOptions = () => {
       <Stack.Screen name="DownGradeData" component={ForDownGrade} />
       <Stack.Screen name="PaymentGateWay" component={PaymentGateWay} />
       {/* <Stack.Screen name="PlanSummary" component={PlanSummary} /> */}
-
     </Stack.Navigator>
   );
 };
@@ -475,7 +492,6 @@ const AccountStack = () => {
 
       <Stack.Screen name="PlanSummary" component={PlanSummary} />
 
-
       <Stack.Screen name="Privacy Policy" component={Privacy} />
     </Stack.Navigator>
   );
@@ -497,31 +513,34 @@ export default function Router() {
   };
 
   console.log(isAuthorized, 'getLocationId');
-  // let locationId;
+  let isFirstTime;
 
-  // useEffect(() => {
-  //   retrieveLoginData();
-  // }, []);
-  // const retrieveLoginData = async () => {
-  //   try {
-  //     //loginDataString = await AsyncStorage.getItem('loginDataOne');
-
-  //     if (loginDataString !== null) {
-  //       const loginData = JSON.parse(loginDataString);
-  //       setIsAuthorized(true);
-  //       console.log('Retrieved login data: ', loginDataString);
-  //     }
-  //   } catch (error) {
-  //     console.log('Error retrieving login data: ', error);
-  //     // setIsAuthorized(false);
-  //   }
-  // };
+  useEffect(() => {
+    retrieveLoginData();
+  }, []);
+  const retrieveLoginData = async () => {
+    try {
+      //loginDataString = await AsyncStorage.getItem('loginDataOne');
+      isFirstTime = await AsyncStorage.getItem('isFirstTime');
+console.log('isFirstTime',isFirstTime)
+      // if (loginDataString !== null) {
+      //   const loginData = JSON.parse(loginDataString);
+      //   setIsAuthorized(true);
+      //   console.log('Retrieved login data: ', loginDataString);
+      // }
+    } catch (error) {
+      console.log('Error retrieving login data: ', error);
+      // setIsAuthorized(false);
+    }
+  };
 
   return (
     <Stack.Navigator screenOptions={screenOptions}>
-      {/* <>
-        <Stack.Screen name="DrawerStack" component={DrawerNavigation} />
-      </> */}
+      {/* {(isFirstTime == null || isFirstTime == undefined) && (
+        <>
+          <Stack.Screen name="SplashStack" component={SplashStack} />
+        </>
+      )} */}
       {!isAuthorized ? (
         <>
           <Stack.Screen name="LoginStack" component={LoginStack} />

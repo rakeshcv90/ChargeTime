@@ -12,8 +12,10 @@ import {
   KeyboardAvoidingView,
 } from 'react-native';
 import AnimatedLottieView from 'lottie-react-native';
-import React, { useState, useRef, useEffect } from 'react';
-import { SafeAreaView } from 'react-native-safe-area-context';
+
+import React, {useState, useRef, useEffect} from 'react';
+import {SafeAreaView} from 'react-native-safe-area-context';
+
 import Input from '../../Components/Input';
 import COLORS from '../../constants/COLORS';
 import { Card } from '../../../assets/svgs/Card';
@@ -22,14 +24,22 @@ import { DIMENSIONS } from '../../constants/DIMENSIONS';
 import { LeftIcon } from '../../../assets/images/LeftIcon';
 import { Formik } from 'formik';
 import * as Yup from 'yup';
-import { Admin } from '../../../assets/images/Admin';
-import { CardNumber } from '../../../assets/svgs/CardNumber';
-import { useDispatch, useSelector } from 'react-redux';
+import {Admin} from '../../../assets/images/Admin';
+import {Message} from '../../../assets/images/Message';
+import {useDispatch, useSelector} from 'react-redux';
+
 import axios from 'axios';
 import { API } from '../../api/API';
 import { navigationRef } from '../../../App';
 import ActivityLoader from '../../Components/ActivityLoader';
-import { setDeviceId, setPackageStatus, setPlanStatus, setPurchaseData } from '../../redux/action';
+
+import {
+  setDeviceId,
+  setPackageStatus,
+  setPlanStatus,
+  setPurchaseData,
+} from '../../redux/action';
+
 const mobileW = Math.round(Dimensions.get('screen').width);
 const mobileH = Math.round(Dimensions.get('window').height);
 const validationSchema = Yup.object().shape({
@@ -66,41 +76,97 @@ export default function PaymentGateWay({ navigation, route }) {
   const [loader, setLoader] = useState(false);
   const inputRef = useRef(null);
   const dispatch = useDispatch();
-  const getCardDetails = useSelector((state) => state.getCardDetails)
+
+  const getCardDetails = useSelector(state => state.getCardDetails);
+
   const [cardDetails, setCardDetails] = useState({
     cardHolderName: getCardDetails[0]?.cust_name,
     card_number: getCardDetails[0]?.card_number,
     card_cvv: getCardDetails[0]?.card_cvc,
-    validTill: getCardDetails[0]?.card_exp_month + '/' + getCardDetails[0]?.card_exp_year
+
+    validTill:
+      getCardDetails[0]?.card_exp_month +
+      '/' +
+      getCardDetails[0]?.card_exp_year,
     // card_exp_year:'',
   });
-  // const [card_name, setCard_Name] = useState(getCardDetails[0]?.cust_name ?? '')
-  // const [card_Number, setCard_Number] = useState(((String(getCardDetails[0]?.card_number).replace(/^(\d{4})(\d{4})(\d{4})(\d{4})$/, '$1 $2 $3 $4')) ?? ''))
-  // const [card_cvv, setCard_Cvv] = useState((String(getCardDetails[0]?.card_cvc) ?? ''))
-  // const [validity, setValidity] = useState((String(getCardDetails[0]?.card_exp_month + '/' + getCardDetails[0]?.card_exp_year) ?? ''))
-
-  const [card_name, setCard_Name] = useState('')
-  const [card_Number, setCard_Number] = useState('')
-  const [card_cvv, setCard_Cvv] = useState('')
-  const [validity, setValidity] = useState('')
+  const [card_name, setCard_Name] = useState(
+    getCardDetails[0]?.cust_name ?? '',
+  );
+  const [card_Number, setCard_Number] = useState(
+    String(getCardDetails[0]?.card_number).replace(
+      /^(\d{4})(\d{4})(\d{4})(\d{4})$/,
+      '$1 $2 $3 $4',
+    ) ?? '',
+  );
+  const [card_cvv, setCard_Cvv] = useState(
+    String(getCardDetails[0]?.card_cvc) ?? '',
+  );
+  const [validity, setValidity] = useState(
+    String(
+      getCardDetails[0]?.card_exp_month +
+        '/' +
+        getCardDetails[0]?.card_exp_year,
+    ) ?? '',
+  );
 
   // const [savedCard, setSavedCard] = useState(cardDetails.cardHolderName ?? '');
   useEffect(() => {
-    console.log("9999999999999rrrrr", getCardDetails.length)
+    console.log('9999999999999', cardDetails);
   }, []);
 
   // console.log(savedCard,"------------")
 
+  const newPAYMENT = async values => {
+    setLoader(true);
+    let payload = new FormData();
+
+    let exp_month = cardDetails?.validTill?.split('/')[0];
+    let exp_year = cardDetails?.validTill?.split('/')[1];
+
+
+    payload.append('kwh_unit', route.params.data.kwh);
+    payload.append('card_number', cardDetails.card_number);
+    payload.append('card_cvc', cardDetails.card_cvv);
+    payload.append('card_exp_month', exp_month);
+    payload.append('card_exp_year', exp_year);
+    payload.append('item_details', getDataForPayment.package_name);
+    payload.append('price', getDataForPayment.total_price);
+    payload.append('price_stripe_id', getDataForPayment.price_stripe_id);
+    payload.append('user_id', getUserID);
+    console.log(payload, 'object');
+    try {
+      const response = await axios.post(`${API}/checkout`, payload, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      });
+      console.log('PAYMENT', response.data);
+      if ((response.data.status = 'success')) {
+        setLoader(false);
+        setModalVisible(true);
+      }
+    } catch (err) {
+      setLoader(false);
+      if (err.response) {
+        console.log(err.response.data);
+        console.log(err.response.status);
+      } else {
+        console.log(err);
+      }
+    }
+  };
   const handlePaymentSubmit = async values => {
     setLoader(true);
     let payload = new FormData();
 
-    let exp_month = validity?.split('/')[0];
-    let exp_year = validity?.split('/')[1];
+    let exp_month = values?.validTill?.split('/')[0];
+    let exp_year = values?.validTill?.split('/')[1];
 
     payload.append('kwh_unit', route.params.data.kwh);
-    payload.append('card_number', card_Number.replace(/\s/g, ''));
-    payload.append('card_cvc', card_cvv);
+
+    payload.append('card_number', values.cardNumber.replace(/\s/g, ''));
+    payload.append('card_cvc', values.cvv);
     payload.append('card_exp_month', exp_month);
     payload.append('card_exp_year', exp_year);
     payload.append('item_details', getDataForPayment.package_name);
@@ -138,17 +204,25 @@ export default function PaymentGateWay({ navigation, route }) {
         console.log(res.data, 'tt');
         if (res.data.status == 'True') {
           // dispatch(setDeviceId(res.data.message));
-          console.log(route.params.purchageData)
+          console.log(route.params.purchageData);
           if (route.params.purchageData == 'DOWNGRADE') {
-            PlanStatus()
+            PlanStatus();
           } else {
             getPlanCurrent();
           }
         } else {
           getPlanCurrent();
           dispatch(setDeviceId(res.data.message));
-          navigationRef.navigate('DrawerStack')
+          navigationRef.navigate('DrawerStack');
 
+          // fetchGraphData(res.data?.user_id);
+          // fetchWeekGraphData(res.data?.user_id);
+          // fetchMonthGraphData(res.data?.user_id);
+          // fetchQuarterGraphData(res.data.user_id);
+          // fetchYearGraphData(res.data?.user_id);
+          // fetchBoxTwoDashboardData(res.data?.user_id);
+          // fetchStatusdata(res.data?.user_id);
+          // getPlanCurrent(res.data?.user_id);
         }
       })
       .catch(err => {
@@ -159,10 +233,10 @@ export default function PaymentGateWay({ navigation, route }) {
     axios
       .get(`${API}/currentplan/${getUserID}`)
       .then(res => {
-        console.log(res.data)
+        console.log(res.data);
         dispatch(setPurchaseData(res?.data));
         dispatch(setPackageStatus(true));
-        navigationRef.navigate('HomeOne')
+        navigationRef.navigate('HomeOne');
       })
       .catch(err => {
         console.log(err);
@@ -177,20 +251,13 @@ export default function PaymentGateWay({ navigation, route }) {
           item => item.subscription_status == 'scheduled',
         );
         dispatch(setPlanStatus(name[0].item_name));
-        navigationRef.navigate('HomeOne')
+        navigationRef.navigate('HomeOne');
       })
       .catch(err => {
         console.log(err);
       });
   };
-  const cardNumberDetail = (value) => {
-    let formattedCardNumber = '';
-    for (let i = 0; i < value.length; i += 4) {
-      formattedCardNumber += value.substr(i, 4) + ' ';
-    }
-    console.log("----------", formattedCardNumber)
-    return formattedCardNumber
-  }
+
   return (
     <SafeAreaView style={{ backgroundColor: COLORS.CREAM, flex: 1 }}>
       {loader && <ActivityLoader />}
@@ -243,15 +310,11 @@ export default function PaymentGateWay({ navigation, route }) {
 
             <Formik
               initialValues={{
-                // cardHolderName: getCardDetails[0]?.cust_name,
-                // // cardNumber: getCardDetails[0]?.card_number,
-                // cardNumber : card_Number,
-                //  cvv: getCardDetails[0]?.card_cvc,
-                // validTill: getCardDetails[0]?.card_exp_month + '/' + getCardDetails[0]?.card_exp_year
-                cardHolderName: getCardDetails.length === 0?card_name: getCardDetails[0]?.cust_name,
-                cardNumber: getCardDetails.length === 0?card_Number:getCardDetails[0]?.card_number,
-                cvv: getCardDetails.length === 0?getCardDetails[0]?.card_cvc:card_cvv,
-                validTill:getCardDetails.length === 0? getCardDetails[0]?.card_exp_month + '/' + getCardDetails[0]?.card_exp_year:validityc
+                cardHolderName: '',
+                cardNumber: '',
+                validTill: '',
+                cvv: '',
+
               }}
               onSubmit={values => handlePaymentSubmit(values)}
               validationSchema={validationSchema}>
@@ -273,12 +336,26 @@ export default function PaymentGateWay({ navigation, route }) {
                     }}
                   />
                   <View style={styles.cardNumber_position}>
-                    <Text
-                      style={{ color: '#fff', fontWeight: '600', fontSize: 18 }}>
-                      {/* {values.cardNumber} */}
-                      {String(cardDetails.card_number).replace(/^(\d{12})(\d{4})$/, 'xxxx xxxx xxxx $2')}
-                      {/* {setCard_Number(String(cardDetails.card_number))} */}
-                    </Text>
+
+                    {cardDetails.card_number ? (
+                      <Text
+                        style={{
+                          color: '#fff',
+                          fontWeight: '600',
+                          fontSize: 13,
+                        }}>
+                        {cardDetails.card_number}
+                      </Text>
+                    ) : (
+                      <Text
+                        style={{
+                          color: '#fff',
+                          fontWeight: '600',
+                          fontSize: 13,
+                        }}>
+                        {values.cardNumber}
+                      </Text>
+                    )}
                     <View style={styles.text_div}>
                       <View style={{ gap: 5, width: 100 }}>
                         <Text
@@ -289,14 +366,26 @@ export default function PaymentGateWay({ navigation, route }) {
                           }}>
                           Card Holder
                         </Text>
-                        <Text
-                          style={{
-                            color: '#fff',
-                            fontWeight: '600',
-                            fontSize: 13,
-                          }}>
-                          {String(cardDetails.cardHolderName)}
-                        </Text>
+
+                        {cardDetails.cardHolderName ? (
+                          <Text
+                            style={{
+                              color: '#fff',
+                              fontWeight: '600',
+                              fontSize: 13,
+                            }}>
+                            {cardDetails.cardHolderName}
+                          </Text>
+                        ) : (
+                          <Text
+                            style={{
+                              color: '#fff',
+                              fontWeight: '600',
+                              fontSize: 13,
+                            }}>
+                            {values.cardHolderName}
+                          </Text>
+                        )}
                       </View>
                       <View style={{ gap: 5 }}>
                         <Text
@@ -307,14 +396,27 @@ export default function PaymentGateWay({ navigation, route }) {
                           }}>
                           Expires
                         </Text>
-                        <Text
-                          style={{
-                            color: '#fff',
-                            fontWeight: '600',
-                            fontSize: 13,
-                          }}>
-                          {String(cardDetails.validTill)}
-                        </Text>
+
+                        {cardDetails.validTill !== 'undefined/undefined' ? (
+                          <Text
+                            style={{
+                              color: '#fff',
+                              fontWeight: '600',
+                              fontSize: 13,
+                            }}>
+                            {cardDetails.validTill}
+                          </Text>
+                        ) : (
+                          <Text
+                            style={{
+                              color: '#fff',
+                              fontWeight: '600',
+                              fontSize: 13,
+                            }}>
+                            {values.validTill}
+                          </Text>
+                        )}
+
                       </View>
                       <View style={{ gap: 5 }}>
                         <Text
@@ -325,14 +427,25 @@ export default function PaymentGateWay({ navigation, route }) {
                           }}>
                           CVV
                         </Text>
-                        <Text
-                          style={{
-                            color: '#fff',
-                            fontWeight: '600',
-                            fontSize: 13,
-                          }}>
-                          {String(cardDetails.card_cvv)}
-                        </Text>
+                        {cardDetails.card_cvv ? (
+                          <Text
+                            style={{
+                              color: '#fff',
+                              fontWeight: '600',
+                              fontSize: 13,
+                            }}>
+                            {cardDetails.card_cvv}
+                          </Text>
+                        ) : (
+                          <Text
+                            style={{
+                              color: '#fff',
+                              fontWeight: '600',
+                              fontSize: 13,
+                            }}>
+                            {values.cvv}
+                          </Text>
+                        )}
                       </View>
                     </View>
                   </View>
@@ -340,10 +453,8 @@ export default function PaymentGateWay({ navigation, route }) {
                     IconLeft={null}
                     errors={errors.cardHolderName}
                     touched={touched.cardHolderName}
-                    value={card_name}
-                    onChangeText={(card_name) => {
-                      setCard_Name(card_name);
-                    }}
+                    value={values.cardHolderName}
+                    onChangeText={handleChange('cardHolderName')}
                     onBlur={handleBlur('cardHolderName')}
                     text="Card Holder Name"
                     IconRight={() => <Admin />}
@@ -357,10 +468,9 @@ export default function PaymentGateWay({ navigation, route }) {
                     IconLeft={null}
                     errors={errors.cardNumber}
                     touched={errors.cardNumber}
-                    value={card_Number}
-                    // onChangeText={(card_Number)=> setCard_Number(card_Number)}
+                    value={values.cardNumber}
+                    //onChangeText={handleChange('cardNumber')}
                     onChangeText={text => {
-
                       var num = /[^0-9]/g;
                       const cardNumbers = text.replace(/\s/g, ''); // Remove spaces from card number
                       const cardNumber = cardNumbers.replace(num, '');
@@ -371,12 +481,12 @@ export default function PaymentGateWay({ navigation, route }) {
 
                       formattedCardNumber = formattedCardNumber.trim();
 
-                      setCard_Number(formattedCardNumber);
+                      handleChange('cardNumber')(formattedCardNumber);
                     }}
                     onBlur={handleBlur('cardNumber')}
                     maxLength={19}
                     text="Card Number"
-                    IconRight={() => <CardNumber />}
+                    IconRight={() => <Message />}
                     mV={15}
                     placeholder="1234  5678  xxxx  xxxx"
                     bW={1}
@@ -390,7 +500,7 @@ export default function PaymentGateWay({ navigation, route }) {
                         IconLeft={null}
                         errors={errors.validTill}
                         touched={touched.validTill}
-                        value={validity}
+                        value={values.validTill}
                         //
                         onChangeText={text => {
                           // Remove non-digit characters from the input
@@ -404,7 +514,7 @@ export default function PaymentGateWay({ navigation, route }) {
                           }
                           console.log(formattedValidTill, 'asd');
                           // Update the valid till value
-                          setValidity(formattedValidTill);
+                          handleChange('validTill')(formattedValidTill);
                         }}
                         onBlur={handleBlur('validTill')}
                         text="Valid Till"
@@ -424,8 +534,8 @@ export default function PaymentGateWay({ navigation, route }) {
                         IconLeft={null}
                         errors={errors.cvv}
                         touched={touched.cvv}
-                        value={card_cvv}
-                        onChangeText={(card_cvv) => setCard_Cvv(card_cvv)}
+                        value={values.cvv}
+                        onChangeText={handleChange('cvv')}
                         onBlur={handleBlur('cvv')}
                         text="CVV"
                         IconRight={null}
@@ -435,7 +545,7 @@ export default function PaymentGateWay({ navigation, route }) {
                         textWidth={'50%'}
                         placeholderTextColor={COLORS.BLACK}
                         w="half"
-                        // secureTextEntry={true}
+                        secureTextEntry={true}
                         maxLength={3}
                         keyboardType="numeric"
                       />
@@ -461,7 +571,7 @@ export default function PaymentGateWay({ navigation, route }) {
                         ...Platform.select({
                           ios: {
                             shadowColor: '#000000',
-                            shadowOffset: { width: 0, height: 2 },
+                            shadowOffset: {width: 0, height: 2},
                             shadowOpacity: 0.3,
                             shadowRadius: 4,
                           },
@@ -470,6 +580,16 @@ export default function PaymentGateWay({ navigation, route }) {
                           },
                         }),
                       }}>
+                      {cardDetails.card_cvv ?<TouchableOpacity onPress={newPAYMENT}>
+                        <Text
+                          style={{
+                            fontSize: 14,
+                            fontWeight: '700',
+                            color: COLORS.BLACK,
+                          }}>
+                          Make Payment
+                        </Text>
+                      </TouchableOpacity>:
                       <TouchableOpacity onPress={handleSubmit}>
                         <Text
                           style={{
@@ -479,7 +599,7 @@ export default function PaymentGateWay({ navigation, route }) {
                           }}>
                           Make Payment
                         </Text>
-                      </TouchableOpacity>
+                      </TouchableOpacity>}
                     </View>
                   </View>
                 </KeyboardAvoidingView>
@@ -518,7 +638,7 @@ const styles = StyleSheet.create({
     ...Platform.select({
       ios: {
         shadowColor: '#000000',
-        shadowOffset: { width: 0, height: 2 },
+        shadowOffset: {width: 0, height: 2},
         shadowOpacity: 0.3,
         shadowRadius: 4,
       },
