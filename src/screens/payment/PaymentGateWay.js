@@ -12,24 +12,24 @@ import {
   KeyboardAvoidingView,
 } from 'react-native';
 import AnimatedLottieView from 'lottie-react-native';
-import React, {useState, useRef,useEffect} from 'react';
-import {SafeAreaView} from 'react-native-safe-area-context';
+import React, { useState, useRef, useEffect } from 'react';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import Input from '../../Components/Input';
 import COLORS from '../../constants/COLORS';
-import {Card} from '../../../assets/svgs/Card';
-import {Name} from '../../../assets/svgs/Name';
-import {DIMENSIONS} from '../../constants/DIMENSIONS';
-import {LeftIcon} from '../../../assets/images/LeftIcon';
-import {Formik} from 'formik';
+import { Card } from '../../../assets/svgs/Card';
+import { Name } from '../../../assets/svgs/Name';
+import { DIMENSIONS } from '../../constants/DIMENSIONS';
+import { LeftIcon } from '../../../assets/images/LeftIcon';
+import { Formik } from 'formik';
 import * as Yup from 'yup';
-import {Admin} from '../../../assets/images/Admin';
+import { Admin } from '../../../assets/images/Admin';
 import { CardNumber } from '../../../assets/svgs/CardNumber';
-import {useDispatch, useSelector} from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import axios from 'axios';
-import {API} from '../../api/API';
-import {navigationRef} from '../../../App';
+import { API } from '../../api/API';
+import { navigationRef } from '../../../App';
 import ActivityLoader from '../../Components/ActivityLoader';
-import {setDeviceId, setPackageStatus, setPlanStatus, setPurchaseData} from '../../redux/action';
+import { setDeviceId, setPackageStatus, setPlanStatus, setPurchaseData } from '../../redux/action';
 const mobileW = Math.round(Dimensions.get('screen').width);
 const mobileH = Math.round(Dimensions.get('window').height);
 const validationSchema = Yup.object().shape({
@@ -58,34 +58,38 @@ const validationSchema = Yup.object().shape({
     .required('cvv is required')
     .matches(/^[0-9]{3}$/, 'CVV must be 3 digits'),
 });
-export default function PaymentGateWay({navigation, route}) {
-  const {getDataForPayment, getUserID, getEmailDAta} = useSelector(
+export default function PaymentGateWay({ navigation, route }) {
+  const { getDataForPayment, getUserID, getEmailDAta } = useSelector(
     state => state,
   );
   const [modalVisible, setModalVisible] = useState(false);
   const [loader, setLoader] = useState(false);
   const inputRef = useRef(null);
-const dispatch = useDispatch();
-const getCardDetails = useSelector((state) => state.getCardDetails)
-const [cardDetails, setCardDetails] = useState({
-  cardHolderName: getCardDetails[0]?.cust_name,
-  card_number: getCardDetails[0]?.card_number,
-  card_cvv: getCardDetails[0]?.card_cvc,
-  validTill: getCardDetails[0]?.card_exp_month + '/' + getCardDetails[0]?.card_exp_year
-  // card_exp_year:'',
-});
-const [card_name, setCard_Name]=useState(getCardDetails[0]?.cust_name ?? '')
-const [card_Number, setCard_Number]=useState(((String(getCardDetails[0]?.card_number).replace(/^(\d{4})(\d{4})(\d{4})(\d{4})$/, '$1 $2 $3 $4')) ?? ''))
-const [card_cvv, setCard_Cvv]=useState((String(getCardDetails[0]?.card_cvc) ?? ''))
-const [validity, setValidity]=useState((String(getCardDetails[0]?.card_exp_month + '/' + getCardDetails[0]?.card_exp_year) ?? ''))
+  const dispatch = useDispatch();
+  const getCardDetails = useSelector((state) => state.getCardDetails)
+  const [cardDetails, setCardDetails] = useState({
+    cardHolderName: getCardDetails[0]?.cust_name,
+    card_number: getCardDetails[0]?.card_number,
+    card_cvv: getCardDetails[0]?.card_cvc,
+    validTill: getCardDetails[0]?.card_exp_month + '/' + getCardDetails[0]?.card_exp_year
+    // card_exp_year:'',
+  });
+  // const [card_name, setCard_Name] = useState(getCardDetails[0]?.cust_name ?? '')
+  // const [card_Number, setCard_Number] = useState(((String(getCardDetails[0]?.card_number).replace(/^(\d{4})(\d{4})(\d{4})(\d{4})$/, '$1 $2 $3 $4')) ?? ''))
+  // const [card_cvv, setCard_Cvv] = useState((String(getCardDetails[0]?.card_cvc) ?? ''))
+  // const [validity, setValidity] = useState((String(getCardDetails[0]?.card_exp_month + '/' + getCardDetails[0]?.card_exp_year) ?? ''))
 
+  const [card_name, setCard_Name] = useState('')
+  const [card_Number, setCard_Number] = useState('')
+  const [card_cvv, setCard_Cvv] = useState('')
+  const [validity, setValidity] = useState('')
 
-// const [savedCard, setSavedCard] = useState(cardDetails.cardHolderName ?? '');
-useEffect(() => {
- console.log("9999999999999",cardDetails)
-}, []);
+  // const [savedCard, setSavedCard] = useState(cardDetails.cardHolderName ?? '');
+  useEffect(() => {
+    console.log("9999999999999rrrrr", getCardDetails.length)
+  }, []);
 
-// console.log(savedCard,"------------")
+  // console.log(savedCard,"------------")
 
   const handlePaymentSubmit = async values => {
     setLoader(true);
@@ -95,7 +99,7 @@ useEffect(() => {
     let exp_year = validity?.split('/')[1];
 
     payload.append('kwh_unit', route.params.data.kwh);
-    payload.append('card_number',card_Number.replace(/\s/g, ''));
+    payload.append('card_number', card_Number.replace(/\s/g, ''));
     payload.append('card_cvc', card_cvv);
     payload.append('card_exp_month', exp_month);
     payload.append('card_exp_year', exp_year);
@@ -135,9 +139,9 @@ useEffect(() => {
         if (res.data.status == 'True') {
           // dispatch(setDeviceId(res.data.message));
           console.log(route.params.purchageData)
-          if(route.params.purchageData == 'DOWNGRADE'){
+          if (route.params.purchageData == 'DOWNGRADE') {
             PlanStatus()
-          }else{
+          } else {
             getPlanCurrent();
           }
         } else {
@@ -179,19 +183,19 @@ useEffect(() => {
         console.log(err);
       });
   };
-const cardNumberDetail=(value)=>{
-  let formattedCardNumber = '';
-  for (let i = 0; i < value.length; i += 4) {
-    formattedCardNumber += value.substr(i, 4) + ' ';
+  const cardNumberDetail = (value) => {
+    let formattedCardNumber = '';
+    for (let i = 0; i < value.length; i += 4) {
+      formattedCardNumber += value.substr(i, 4) + ' ';
+    }
+    console.log("----------", formattedCardNumber)
+    return formattedCardNumber
   }
-  console.log("----------",formattedCardNumber)
-  return formattedCardNumber
-}
   return (
-    <SafeAreaView style={{backgroundColor: COLORS.CREAM, flex: 1}}>
+    <SafeAreaView style={{ backgroundColor: COLORS.CREAM, flex: 1 }}>
       {loader && <ActivityLoader />}
       <ScrollView>
-        <View style={{marginHorizontal: 20, paddingTop: 20}}>
+        <View style={{ marginHorizontal: 20, paddingTop: 20 }}>
           <Text style={styles.complete_profile}>Payment Details</Text>
         </View>
         <View style={styles.centeredView}>
@@ -212,7 +216,7 @@ const cardNumberDetail=(value)=>{
                   }} // Replace with your animation file
                   autoPlay
                   loop
-                  style={{width: 50, height: 50}}
+                  style={{ width: 50, height: 50 }}
                 />
                 <Text
                   style={{
@@ -236,14 +240,18 @@ const cardNumberDetail=(value)=>{
 
         <View style={styles.mainDiv_container}>
           <View>
-           
+
             <Formik
               initialValues={{
-                cardHolderName: getCardDetails[0]?.cust_name,
-                // cardNumber: getCardDetails[0]?.card_number,
-                cardNumber : card_Number,
-                 cvv: getCardDetails[0]?.card_cvc,
-                validTill: getCardDetails[0]?.card_exp_month + '/' + getCardDetails[0]?.card_exp_year
+                // cardHolderName: getCardDetails[0]?.cust_name,
+                // // cardNumber: getCardDetails[0]?.card_number,
+                // cardNumber : card_Number,
+                //  cvv: getCardDetails[0]?.card_cvc,
+                // validTill: getCardDetails[0]?.card_exp_month + '/' + getCardDetails[0]?.card_exp_year
+                cardHolderName: getCardDetails.length === 0?card_name: getCardDetails[0]?.cust_name,
+                cardNumber: getCardDetails.length === 0?card_Number:getCardDetails[0]?.card_number,
+                cvv: getCardDetails.length === 0?getCardDetails[0]?.card_cvc:card_cvv,
+                validTill:getCardDetails.length === 0? getCardDetails[0]?.card_exp_month + '/' + getCardDetails[0]?.card_exp_year:validityc
               }}
               onSubmit={values => handlePaymentSubmit(values)}
               validationSchema={validationSchema}>
@@ -266,13 +274,13 @@ const cardNumberDetail=(value)=>{
                   />
                   <View style={styles.cardNumber_position}>
                     <Text
-                      style={{color: '#fff', fontWeight: '600', fontSize: 18}}>
+                      style={{ color: '#fff', fontWeight: '600', fontSize: 18 }}>
                       {/* {values.cardNumber} */}
                       {String(cardDetails.card_number).replace(/^(\d{12})(\d{4})$/, 'xxxx xxxx xxxx $2')}
                       {/* {setCard_Number(String(cardDetails.card_number))} */}
                     </Text>
                     <View style={styles.text_div}>
-                      <View style={{gap: 5, width: 100}}>
+                      <View style={{ gap: 5, width: 100 }}>
                         <Text
                           style={{
                             color: 'gray',
@@ -287,10 +295,10 @@ const cardNumberDetail=(value)=>{
                             fontWeight: '600',
                             fontSize: 13,
                           }}>
-                            {String(cardDetails.cardHolderName)}
+                          {String(cardDetails.cardHolderName)}
                         </Text>
                       </View>
-                      <View style={{gap: 5}}>
+                      <View style={{ gap: 5 }}>
                         <Text
                           style={{
                             fontWeight: '600',
@@ -305,10 +313,10 @@ const cardNumberDetail=(value)=>{
                             fontWeight: '600',
                             fontSize: 13,
                           }}>
-                            {String(cardDetails.validTill)}
+                          {String(cardDetails.validTill)}
                         </Text>
                       </View>
-                      <View style={{gap: 5}}>
+                      <View style={{ gap: 5 }}>
                         <Text
                           style={{
                             fontWeight: '600',
@@ -323,7 +331,7 @@ const cardNumberDetail=(value)=>{
                             fontWeight: '600',
                             fontSize: 13,
                           }}>
-                            {String(cardDetails.card_cvv)}
+                          {String(cardDetails.card_cvv)}
                         </Text>
                       </View>
                     </View>
@@ -352,7 +360,7 @@ const cardNumberDetail=(value)=>{
                     value={card_Number}
                     // onChangeText={(card_Number)=> setCard_Number(card_Number)}
                     onChangeText={text => {
-                      
+
                       var num = /[^0-9]/g;
                       const cardNumbers = text.replace(/\s/g, ''); // Remove spaces from card number
                       const cardNumber = cardNumbers.replace(num, '');
@@ -396,7 +404,7 @@ const cardNumberDetail=(value)=>{
                           }
                           console.log(formattedValidTill, 'asd');
                           // Update the valid till value
-                         setValidity(formattedValidTill);
+                          setValidity(formattedValidTill);
                         }}
                         onBlur={handleBlur('validTill')}
                         text="Valid Till"
@@ -417,7 +425,7 @@ const cardNumberDetail=(value)=>{
                         errors={errors.cvv}
                         touched={touched.cvv}
                         value={card_cvv}
-                        onChangeText={(card_cvv)=> setCard_Cvv(card_cvv)}
+                        onChangeText={(card_cvv) => setCard_Cvv(card_cvv)}
                         onBlur={handleBlur('cvv')}
                         text="CVV"
                         IconRight={null}

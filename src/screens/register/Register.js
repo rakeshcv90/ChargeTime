@@ -35,7 +35,7 @@ const PasswordRegex =
 const validationSchema = Yup.object().shape({
   name: Yup.string().required('Full Name is required'),
   email: Yup.string().email('Invalid Email').required('Email is required'),
-  mobile: Yup.string().max(10).required('Phone No. is required'),
+  mobile: Yup.string().min(10).required('Phone No. is required'),
   password: Yup.string()
     .matches(
       PasswordRegex,
