@@ -1,24 +1,48 @@
 import {Dimensions, StyleSheet, Text, View} from 'react-native';
-import React, { useEffect } from 'react';
+import React, { useCallback, useEffect } from 'react';
 import COLORS from '../constants/COLORS';
 import LinearGradient from 'react-native-linear-gradient';
 import {DIMENSIONS} from '../constants/DIMENSIONS';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
+import { useFocusEffect } from '@react-navigation/native';
+import axios from 'axios';
+import { API } from '../api/API';
+import { setKwhData } from '../redux/action';
 
-const TotalUsage = ({data}) => {
+const TotalUsage = ({...props}) => {
+  const dispatch = useDispatch();
+  const {getRemainingData, getUserID, getkwhData} = useSelector(
+    (state: any) => state,
+  );
+  useFocusEffect(
+    // overusage && setModalVisible(true);
+    useCallback(() => {
+      dailyUsuagekwh();
+    }, []),
+  );
   
- 
-  
+  const dailyUsuagekwh = () => {
+    axios
+      .get(`${API}/dailyusage/${getUserID}`)
+      .then(res => {
+        if (res?.data) {
+          console.log("DAILTYRWTEW", res.data)
+          dispatch(setKwhData(res?.data));
+        }
+      })
+      .catch(err => {
+        console.log(err);
+      });
+  };
   return (
     <View
       style={{
         backgroundColor: '#F5F5F5',
         width: DIMENSIONS.SCREEN_WIDTH * 0.4,
         height: DIMENSIONS.SCREEN_WIDTH * 0.35,
-        marginVertical: DIMENSIONS.SCREEN_HEIGHT * 0.03,
+        marginVertical: DIMENSIONS.SCREEN_HEIGHT * 0.02,
         flexDirection: 'column-reverse',
         shadowColor: '#000000',
-     
         shadowOffset: { width: 0, height: 2 },
         shadowOpacity: 0.8,
         shadowRadius: 5,
@@ -44,7 +68,7 @@ const TotalUsage = ({data}) => {
         style={{
           width: '100%',
         }}>
-        <View style={{marginBottom: 30, marginLeft: 30}}>
+        <View style={{marginBottom: 50, marginLeft: 30,alignContent:'center',}}>
           <Text
             style={{
               fontWeight: '800',
@@ -53,7 +77,7 @@ const TotalUsage = ({data}) => {
               color: COLORS.BLACK,
             }}>
             
-            {data ? data?.toFixed(2) + ' kWh' : 0 + ' kWh'}
+            {getkwhData.Totalusedkwhs ? getkwhData.Totalusedkwhs?.toFixed(2) + ' kWh' : 0 + ' kWh'}
           </Text>
           <Text
             style={{

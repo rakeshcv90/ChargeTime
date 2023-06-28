@@ -54,6 +54,7 @@ import {DIMENSIONS} from '../constants/DIMENSIONS';
 import Contact from '../screens/accounts/Contact';
 import ForDownGrade from '../Components/ForDownGrade';
 
+
 const Drawer = createDrawerNavigator();
 const Stack = createNativeStackNavigator();
 const screenOptions = {
@@ -64,6 +65,7 @@ export const DrawerScreenPart = ({navigation}) => {
   useEffect(() => {
     handleLinkPress();
   }, []);
+
   const handleLinkPress = () => {
     // Handle the link press action here
     // For example, navigate to a different screen
@@ -379,7 +381,7 @@ const DrawerNavigation = () => {
 
                     shadowColor: '#000',
                     shadowOffset: {
-                      width: -5,
+                      width: 0,
                       height: 5,
                     },
                     shadowOpacity: 0.29,
@@ -393,13 +395,13 @@ const DrawerNavigation = () => {
                   style={{
                     marginLeft: -25,
                     shadowColor: '#000',
-                    shadowOffset: {
-                      width: -5,
-                      height: 3,
-                    },
-                    shadowOpacity: 0.29,
-                    shadowRadius: 4.65,
-                    elevation: 7,
+                    // shadowOffset: {
+                    //   width: -5,
+                    //   height: 3,
+                    // },
+                    // shadowOpacity: 0.29,
+                    // shadowRadius: 4.65,
+                    // elevation: 7,
                   }}>
                   {iconComponent}
                 </View>
@@ -470,8 +472,11 @@ const AccountStack = () => {
       {/* <Stack.Screen name="DrawerStack" component={DrawerNavigation} /> */}
       <Stack.Screen name="Home" component={Home} />
       <Stack.Screen name="PaymentGateWay" component={PaymentGateWay} />
+
       <Stack.Screen name="PlanSummary" component={PlanSummary} />
 
+
+      <Stack.Screen name="Privacy Policy" component={Privacy} />
     </Stack.Navigator>
   );
 };

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, TextInput, StyleSheet, Button, SafeAreaView, TouchableOpacity, Text, ToastAndroid, Dimensions } from 'react-native';
+import { View, TextInput, StyleSheet, Button, SafeAreaView, TouchableOpacity, Text, ToastAndroid, Dimensions, Image } from 'react-native';
 import Input from '../../Components/Input';
 import COLORS from '../../constants/COLORS';
 import { useSelector } from 'react-redux';
@@ -13,9 +13,9 @@ import { ms } from 'react-native-size-matters';
 
 import { PLATFORM_IOS } from '../../constants/DIMENSIONS';
 import axios from 'axios';
+const mobileW = Math.round(Dimensions.get('screen').width);
 
 
-// import Button from '../../Components/Button';
 
 const Contact = () => {
 
@@ -69,11 +69,10 @@ const Contact = () => {
       <Header headerName="Contact Us" />
       {Platform.OS == 'android' ? <HorizontalLine style={styles.line} /> : <View
 
-        style={{
 
+   
+        <Image source={require('../../../assets/images/dotted.png')} style={{ width: mobileW * 0.97, }} />
 
-        }}>
-        <Image source={require('../../../assets/images/dotted.png')} style={{ width: mobileW * 0.97, top: Platform.OS == 'ios' ? -30 : 2 }} />
       </View>}
       {/* <HorizontalLine style={styles.line} /> */}
       <View style={styles.container}>
@@ -86,11 +85,13 @@ const Contact = () => {
             borderWidth: 0.7,
             borderColor: COLORS.BLACK,
             marginVertical: 19,
-            width: ms(340),
+
+            width:  mobileW*0.92,
             height: ms(150),
             color: COLORS.BLACK,
             fontSize: 14,
-            fontFamily: 'Roboto',
+            //fontFamily: 'Roboto',
+
             fontWeight: '100',
             paddingLeft: 10,
             paddingTop: 10,

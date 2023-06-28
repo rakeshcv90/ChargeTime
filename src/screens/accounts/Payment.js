@@ -47,9 +47,9 @@ const validationSchema = Yup.object().shape({
   cardHolderName: Yup.string().required('Card Holder Name is required'),
   cardNumber: Yup.string().required('Invalid Card Number'),
   validTill: Yup.string()
-    .required('expiry date required')
+    .required('Expiry date required')
     .test(
-      'expiration',
+      'xpiration',
       'Expiration date must be greater than current date',
       function (value) {
         if (!value) return false;
@@ -62,7 +62,7 @@ const validationSchema = Yup.object().shape({
         return expirationDate > currentDate;
       },
     ),
-  cvv: Yup.string().required('cvv is required')
+  cvv: Yup.string().required('Cvv is required')
     .matches(/^[0-9]{3}$/, 'CVV must be 3 digits'),
 });
 export default function PaymentGateWay({ navigation }) {
@@ -193,6 +193,7 @@ export default function PaymentGateWay({ navigation }) {
       if (result[0]?.length > 0) {
         // console.log("defaultCard",defaultCard[0])
         setSavedCard(result[0].sort((b, a) => a.status - b.status))
+
         const statusOneObjects = result[0].filter(item => item.status === 1);
         // console.log("-----------------",statusOneObjects);
         dispatch(getCardDetails(statusOneObjects))
@@ -262,8 +263,7 @@ export default function PaymentGateWay({ navigation }) {
 
 
   const handleMakeDefaultCard = async (values) => {
-    // console.log("-----------", values);
-    // console.log("===========", user_ID)
+
     try {
       const response = await fetch(`${API}/defaultcard`, {
         method: 'POST',
@@ -313,16 +313,18 @@ export default function PaymentGateWay({ navigation }) {
 
   return (
     <SafeAreaView style={{ backgroundColor: COLORS.CREAM, flex: 1 }}>
-   
-
-        <Header headerName="Payment Methods" editShow={false} />
-        {Platform.OS == 'android' ? <HorizontalLine style={styles.line} /> : <View
 
 
-        >
-          <Image source={require('../../../assets/images/dotted.png')} style={{ width: mobileW * 0.97 }} />
-        </View>}
-        <ScrollView showsVerticalScrollIndicator={false} style={{ flexGrow: 1, flex: 1 }} >
+      <Header headerName="Payment Methods" editShow={false} />
+      {Platform.OS == 'android' ? <HorizontalLine style={styles.line} /> : <View
+
+
+
+      
+        <Image source={require('../../../assets/images/dotted.png')} style={{ width: mobileW * 0.97 }} />
+      </View>}
+      <ScrollView showsVerticalScrollIndicator={false} style={{ flexGrow: 1, flex: 1 }} >
+
         <View style={styles.mainDiv_container}>
           <Formik
             initialValues={initialValues}
@@ -461,6 +463,7 @@ export default function PaymentGateWay({ navigation }) {
                   <TouchableOpacity
                     onPress={() => {
                       if (savedCard && savedCard[0].status === 1 && (!currentCard || currentCard.status === 1)) {
+
                         // console.log("------",savedCard[0])
                         // navigationRef.navigate('PaymentGateWay');
                       } else {
@@ -485,6 +488,18 @@ export default function PaymentGateWay({ navigation }) {
                         fontSize: 12,
                         fontWeight: '400',
                       }}>
+
+                        dispatch(getCardDetails(currentCard))
+                        navigationRef.navigate('PaymentGateWay');
+                      } else {
+                        handleMakeDefaultCard(currentCard.id)
+                      }
+
+                    }}
+                    style={savedCard && savedCard[0].status === 1 && (!currentCard || currentCard.status === 1) ? styles.default : styles.makeDefault}>
+                    <Text
+                      style={savedCard && savedCard[0].status === 1 && (!currentCard || currentCard.status === 1) ? styles.makeDefaultText : styles.defaultText}>
+
                       {savedCard && savedCard[0].status === 1 && (!currentCard || currentCard.status === 1) ? "Current Payment Method" : "Make Default"}
 
                     </Text>
@@ -519,7 +534,17 @@ export default function PaymentGateWay({ navigation }) {
                 </View>
 
 
-                <HorizontalLine />
+                {Platform.OS == 'android' ? <HorizontalLine style={styles.line} /> : <View>
+                  <Image source={require('../../../assets/images/dotted.png')} style={{ width: mobileW * 0.98 }} />
+                </View>}
+                <View style={{ marginTop: 10, marginBottom: 10 }}>
+                  <Text style={{
+                    fontSize: 15, color: COLORS.BLACK,
+                    fontWeight: '700',
+                    lineHeight: 26,
+                    letterSpacing: 0.5,
+                  }}>Add New Card</Text>
+                </View>
                 <Input
                   IconLeft={null}
                   errors={errors.cardHolderName}
@@ -580,7 +605,9 @@ export default function PaymentGateWay({ navigation }) {
                     <Input
                       IconLeft={null}
                       errors={errors.validTill}
-                  touched={touched.validTill}
+
+                      touched={touched.validTill}
+
                       value={values.validTill}
                       //
                       onChangeText={text => {
@@ -641,7 +668,7 @@ export default function PaymentGateWay({ navigation }) {
                       maxLength={3}
                       keyboardType="numeric"
                     />
-                  
+
                   </View>
                 </View>
                 <View
@@ -798,5 +825,42 @@ const styles = StyleSheet.create({
     fontWeight: "400",
     fontSize: 24,
     color: "#000000"
-  }
+  },
+  makeDefault: {
+    marginLeft: 95,
+    marginRight: 50,
+    backgroundColor: '#CCCCCC',
+    alignItems: 'center',
+    padding: 10,
+    borderRadius: 60,
+    width: '70%',
+
+  },
+  default: {
+    backgroundColor: '#F84E4E',
+    marginLeft: 95,
+    marginRight: 50,
+
+    alignItems: 'center',
+    padding: 10,
+    borderRadius: 60,
+    width: '70%',
+  },
+
+  defaultText: {
+    color: COLORS.BLACK,
+    fontSize: 12,
+    fontWeight: '400',
+  },
+  makeDefaultText: {
+    color: 'white',
+    fontSize: 12,
+    fontWeight: '400',
+  },
+  line: {
+    marginTop: 50,
+    marginBottom: 10,
+    //marginHorizontal:5,
+  },
+
 });

@@ -42,7 +42,7 @@ export default function ForDownGrade({route, navigation}) {
       .post(`${API}/upgrade_downgrade/${getUserID}`)
       .then(res => {
         console.log('DOWNGRADE', res.data);
-        navigationRef.navigate('PaymentGateWay', {data: dataOne});
+        navigationRef.navigate('PaymentGateWay', {data: dataOne, purchageData:purchageData});
       })
       .catch(err => {
         console.log(err.response.data.message);
@@ -97,16 +97,17 @@ export default function ForDownGrade({route, navigation}) {
               {message}
             </Text>}
           </View>
-          <View style={styles.mainDiv_installation}>
-            <TouchableOpacity style={styles.install_touchable_one}>
+          <View style={Platform.OS == 'android' ? styles.mainDiv_installation : styles.mainDiv_installation1}>
+            <View style={styles.install_touchable_one}>
               <Text style={styles.cuurent_plan}>Current Plan</Text>
               <Text style={styles.cuurent_plan}>New Plan</Text>
-            </TouchableOpacity>
+            </View>
             <View
               style={{
                 flexDirection: 'column',
                 justifyContent: 'space-between',
-
+                borderBottomLeftRadius:10,
+                borderBottomRightRadius:10,
                 paddingVertical: 15,
                 backgroundColor: COLORS.GRAY,
               }}>
@@ -118,7 +119,7 @@ export default function ForDownGrade({route, navigation}) {
                   paddingHorizontal: 18,
                 }}>
                 <Text style={styles.text_formating_part}>
-                  {getPurchaseData[0].kwh}kwh
+                  {getPurchaseData.data.kwh}kwh
                 </Text>
                 <View style={{alignItems: 'center', gap: 5, paddingTop: 5,
                     alignSelf: 'center',}}>
@@ -150,7 +151,7 @@ export default function ForDownGrade({route, navigation}) {
                   paddingHorizontal: 18,
                 }}>
                 <Text style={styles.text_formating_part}>
-                ~ {getPurchaseData[0].mi_eq}
+                ~ {getPurchaseData.data.mi_eq}
                 </Text>
                 <View
                   style={{
@@ -188,7 +189,7 @@ export default function ForDownGrade({route, navigation}) {
                   paddingHorizontal: 18,
                 }}>
                 <Text style={styles.text_formating_part}>
-                  {getPurchaseData[0].dollar_mi}
+                  {getPurchaseData.data.dollar_mi}
                 </Text>
                 <View
                   style={{alignItems: 'center', paddingVertical: 10, gap: 5,
@@ -212,7 +213,7 @@ export default function ForDownGrade({route, navigation}) {
               </View>
             </View>
           </View>
-          <View style={styles.plan_pricing_div}>
+          <View style={Platform.OS == 'android' ? styles.plan_pricing_div1 : styles.plan_pricing_div}>
             <View>
                 <TouchableOpacity style={styles.install_touchable}>
                   <PlanPricing style={styles.img_width} />
@@ -228,6 +229,8 @@ export default function ForDownGrade({route, navigation}) {
                   backgroundColor: COLORS.GRAY,
                   paddingHorizontal: 10,
                   paddingVertical: 20,
+                  borderBottomLeftRadius:10,
+                  borderBottomRightRadius:10
                 }}>
                 <View>
                   <Text
@@ -235,6 +238,7 @@ export default function ForDownGrade({route, navigation}) {
                       fontSize: 12,
                       fontWeight: '400',
                       paddingVertical: 5,
+                      
                     }}>
                     Price (excl.taxes):
                   </Text>
@@ -292,6 +296,17 @@ export default function ForDownGrade({route, navigation}) {
                 paddingVertical: 12,
                 boxShadow: '0 4 4 rgba(0, 0, 0, 0.2)',
                 borderRadius: 12,
+                ...Platform.select({
+                  ios: {
+                    shadowColor: '#000000',
+                    shadowOffset: { width: 0, height: 2 },
+                    shadowOpacity: 0.3,
+                    shadowRadius: 4,
+                  },
+                  android: {
+                    elevation: 4,
+                  },
+                }),
               }}>
               <Text
                 style={{fontWeight: '700', color: COLORS.BLACK, fontSize: 14}}>
@@ -307,6 +322,17 @@ export default function ForDownGrade({route, navigation}) {
                 paddingVertical: 12,
                 boxShadow: '0 4 4 rgba(0, 0, 0, 0.2)',
                 borderRadius: 12,
+                ...Platform.select({
+                  ios: {
+                    shadowColor: '#000000',
+                    shadowOffset: { width: 0, height: 2 },
+                    shadowOpacity: 0.3,
+                    shadowRadius: 4,
+                  },
+                  android: {
+                    elevation: 4,
+                  },
+                }),
               }}>
               <Text
                 style={{fontWeight: '700', color: COLORS.WHITE, fontSize: 14}}>
@@ -333,6 +359,19 @@ const styles = StyleSheet.create({
     shadowRadius: 5.62,
     elevation: 8,
   },
+  mainDiv_installation1: {
+   // overflow: 'hidden',
+    borderRadius: 10,
+    marginTop: Platform.OS === 'ios' ? 10 : 10,
+    shadowColor: '#000000',
+    shadowOffset: {
+      width: 4,
+      height: 6,
+    },
+    shadowOpacity: 0.2,
+    shadowRadius: 5.62,
+    elevation: 8,
+  },
   install_touchable_one: {
     flexDirection: 'row',
     backgroundColor: COLORS.GREEN,
@@ -340,6 +379,8 @@ const styles = StyleSheet.create({
     paddingVertical: 15,
     justifyContent: 'space-between',
     paddingHorizontal: 18,
+    borderTopLeftRadius:10,
+    borderTopRightRadius:10
   },
   cuurent_plan: {
     fontSize: 14,
@@ -353,7 +394,7 @@ const styles = StyleSheet.create({
     paddingVertical: 7,
   },
   plan_pricing_div: {
-    overflow: 'hidden',
+   // overflow: 'hidden',
 
     borderRadius: 10,
     marginTop: Platform.OS === 'ios' ? 20 : 30,
@@ -366,11 +407,14 @@ const styles = StyleSheet.create({
     shadowRadius: 5.62,
     elevation: 8,
   },
+  
   install_touchable: {
     flexDirection: 'row',
     backgroundColor: COLORS.GREEN,
     alignItems: 'center',
     paddingVertical: 15,
+    borderTopLeftRadius:10,
+    borderTopRightRadius:10
   },
   img_width: {
     marginHorizontal: 20,
@@ -381,5 +425,20 @@ const styles = StyleSheet.create({
     fontSize: 12,
     marginLeft: -10,
     color: COLORS.BLACK,
-  }
+  },
+  plan_pricing_div1: {
+  
+ 
+     borderRadius: 10,
+     marginTop: Platform.OS === 'ios' ? 20 : 30,
+     shadowColor: '#000000',
+     shadowOffset: {
+       width: 4,
+       height: 6,
+     },
+     shadowOpacity: 0.2,
+     shadowRadius: 5.62,
+     elevation: 8,
+   },
+  
 });

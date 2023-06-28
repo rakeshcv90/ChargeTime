@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   ScrollView,
   View,
@@ -13,32 +13,32 @@ import {
   Alert,
   Platform
 } from 'react-native';
-import {useDispatch, useSelector} from 'react-redux';
-import {SafeAreaView} from 'react-native-safe-area-context';
-import {createMaterialTopTabNavigator} from '@react-navigation/material-top-tabs';
+import { useDispatch, useSelector } from 'react-redux';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 import COLORS from '../../constants/COLORS';
 import Day from './Day';
 import Month from './Month';
 import Week from './Week';
 import Quarter from './Quarter';
 import Year from './Year';
-import {DIMENSIONS} from '../../constants/DIMENSIONS';
+import { DIMENSIONS, PLATFORM_IOS } from '../../constants/DIMENSIONS';
 import ButtonSlider from '../../Components/ButtonSlider';
-import {NoCharge} from '../../../assets/images/NoCharge';
-import {OnlineCharge} from '../../../assets/images/OnlineCharge';
+import { NoCharge } from '../../../assets/images/NoCharge';
+import { OnlineCharge } from '../../../assets/images/OnlineCharge';
 import Charging from '../../Components/Charging';
 import axios from 'axios';
-import {API} from '../../api/API';
+import { API } from '../../api/API';
 import ActivityLoader from '../../Components/ActivityLoader';
 import DayOne from './DayOne';
 import DrawerOpen from '../../Components/DrawerOpen';
-import {navigationRef} from '../../../App';
-import {DrawerActions} from '@react-navigation/native';
+import { navigationRef } from '../../../App';
+import { DrawerActions } from '@react-navigation/native';
 import AnimatedLottieView from 'lottie-react-native';
 import { setBoxTwoDataForDashboard, setChargerStatus, setDeviceId, setGraphData, setIsAuthorized, setKwhData, setMonthGraphData, setOverUsage, setQuarterGraphData, setRemainingData, setWeekGraphData, setYearGraphData } from '../../redux/action';
 const mobileW = Math.round(Dimensions.get('screen').width);
 
-function MyTabBar({state, descriptors, navigation}) {
+function MyTabBar({ state, descriptors, navigation }) {
   return (
     <View
       style={{
@@ -46,7 +46,7 @@ function MyTabBar({state, descriptors, navigation}) {
         marginHorizontal: 20,
         backgroundColor: '#EEEEEE',
         borderRadius: 20,
-       // overflow: 'hidden',
+        // overflow: 'hidden',
         ...Platform.select({
           ios: {
             shadowColor: '#000000',
@@ -61,17 +61,17 @@ function MyTabBar({state, descriptors, navigation}) {
         borderWidth: 1,
         borderColor: '#EEEEEE',
         zIndex: 1,
-        
-    
+
+
       }}>
       {state.routes.map((route, index) => {
-        const {options} = descriptors[route.key];
+        const { options } = descriptors[route.key];
         const label =
           options.tabBarLabel !== undefined
             ? options.tabBarLabel
             : options.title !== undefined
-            ? options.title
-            : route.name;
+              ? options.title
+              : route.name;
 
         const isFocused = state.index === index;
 
@@ -84,7 +84,7 @@ function MyTabBar({state, descriptors, navigation}) {
 
           if (!isFocused && !event.defaultPrevented) {
             // The `merge: true` option makes sure that the params inside the tab screen are preserved
-            navigation.navigate({name: route.name, merge: true});
+            navigation.navigate({ name: route.name, merge: true });
           }
         };
 
@@ -124,36 +124,25 @@ export default function EnergyStats() {
   const [showCar, setShowCar] = useState(true);
   const [offline, setOffline] = useState(true);
   const [charging, setCharging] = useState(true);
-  // const [deviceId, setDeviceId] = useState('');
+  const [deviceIdTemp, setDeviceIdTemp] = useState('');
 
-  const [isLoading, setIsLoading] = useState(true);
-  const {getGraphData} = useSelector((state: any) => state);
+  const [isLoading, setIsLoading] = useState(false);
+  const { getGraphData } = useSelector((state: any) => state);
 
-  const {getChargerStatus, getDeviceID,getUserID} = useSelector((state: any) => state);
+  const { getChargerStatus, getDeviceID, getUserID } = useSelector((state: any) => state);
   const [toggleState, setToggleState] = useState(false);
-const dispatch = useDispatch()
-  // useEffect(() => {
-    // dispatch(setIsAuthorized(true))
-  //   const backAction = () => {
-  //     Alert.alert(
-  //       'Exit App',
-  //       'Are you sure you want to exit?',
-  //       [
-  //         {
-  //           text: 'Cancel',
-  //           onPress: () => null,
-  //           style: 'cancel',
-  //         },
-  //         { text: 'Exit', onPress: () => BackHandler.exitApp() },
-  //       ],
-  //       { cancelable: false }
-  //     );
-  //     return true;
-  //   };
-  //   const backHandler = BackHandler.addEventListener('hardwareBackPress', backAction);
+  const dispatch = useDispatch()
+  useEffect(() => {
+    const backHandler = BackHandler.addEventListener(
+      'hardwareBackPress',
+      handleBackButton
+    );
 
-  //   return () => backHandler.remove();
-  // }, []);
+    return () => backHandler.remove();
+  }, []);
+  const handleBackButton = () => {
+    return true;
+  };
 
   const handleToggle = (value: any) => {
     setToggleState(value);
@@ -161,25 +150,27 @@ const dispatch = useDispatch()
   };
 
   const getDeviceIDData = () => {
+    setIsLoading(true)
     axios
       .get(`${API}/devicecheck/${getUserID}}`)
       .then(res => {
         console.log(res.data, 'tt');
         if (res.data.status == 'True') {
-          dispatch(setDeviceId(res.data.message));
-          fetchGraphData(res.data?.user_id);
-          fetchWeekGraphData(res.data?.user_id);
-          fetchMonthGraphData(res.data?.user_id);
-          fetchQuarterGraphData(res.data.user_id);
-          fetchYearGraphData(res.data?.user_id);
+          setDeviceIdTemp(res.data.message);
+          fetchGraphData(getUserID);
+          // fetchMonthGraphData(res.data?.user_id);
+          // fetchQuarterGraphData(res.data.user_id);
           fetchBoxTwoDashboardData(res.data?.user_id);
           fetchStatusdata(res.data?.user_id);
+          // setTimeout(() => {
+          // }, 10000);
         } else {
 
           // getPlanCurrent(res.data?.user_id);
         }
       })
       .catch(err => {
+        setIsLoading(false)
         console.log(err);
       });
   };
@@ -187,16 +178,17 @@ const dispatch = useDispatch()
 
   //day data start
   const fetchGraphData = (userID: string) => {
-    console.log(userID, 'object');
     axios
       .get(`${API}/dailyusagegraph/${userID}`)
       .then(res => {
+        console.log("GRAPH.........", res.data)
         dispatch(setGraphData(res?.data));
 
-        dailyUsuagekwh(userID);
+        dailyUsuagekwh(getUserID);
         // navigation.navigate('DrawerStack');
       })
       .catch(err => {
+        setIsLoading(false)
         console.log(err);
       });
   };
@@ -205,10 +197,11 @@ const dispatch = useDispatch()
       .get(`${API}/dailyusage/${userId}`)
       .then(res => {
         if (res?.data) {
+          console.log("DAILTYRWTEW", res.data)
           dispatch(setKwhData(res?.data));
         }
 
-        remainigUsuageData(userId);
+        remainigUsuageData(getUserID);
       })
       .catch(err => {
         console.log(err);
@@ -229,8 +222,11 @@ const dispatch = useDispatch()
         }
         console.log('first', res.data);
         dispatch(setRemainingData(remaingData));
-      })
-      .catch(err => {
+setIsLoading(false)
+fetchWeekGraphData(getUserID);
+})
+.catch(err => {
+        setIsLoading(false)
         console.log(err);
       });
   };
@@ -242,10 +238,13 @@ const dispatch = useDispatch()
       .get(`${API}/weeklyusage/${userID}`)
       .then(res => {
         if (res?.data) {
+          console.log(res.data)
           dispatch(setWeekGraphData(res?.data));
+          fetchYearGraphData(getUserID);
         }
       })
       .catch(err => {
+        fetchYearGraphData(getUserID);
         console.log(err);
       });
   };
@@ -255,6 +254,7 @@ const dispatch = useDispatch()
       .then(res => {
         if (res?.data) {
           dispatch(setMonthGraphData(res?.data));
+          fetchQuarterGraphData(getUserID)
         }
       })
       .catch(err => {
@@ -267,6 +267,8 @@ const dispatch = useDispatch()
       .then(res => {
         if (res?.data) {
           dispatch(setQuarterGraphData(res?.data));
+          dispatch(setDeviceId(deviceIdTemp));
+          setIsLoading(false)
         }
       })
       .catch(err => {
@@ -278,10 +280,13 @@ const dispatch = useDispatch()
       .get(`${API}/yearlyusage/${userID}`)
       .then(res => {
         if (res?.data) {
+          // console.log("Year GRAPH", res.data)
           dispatch(setYearGraphData(res?.data));
+          fetchMonthGraphData(getUserID)
         }
       })
       .catch(err => {
+        setIsLoading(false)
         console.log(err);
       });
   };
@@ -309,12 +314,12 @@ const dispatch = useDispatch()
 
   return (
     <>
-      <SafeAreaView style={{backgroundColor: COLORS.CREAM, flex: 1}}>
+      <SafeAreaView style={{ backgroundColor: COLORS.CREAM, flex: 1 }}>
         <StatusBar backgroundColor={COLORS.CREAM2} barStyle={'dark-content'} />
 
-        <DrawerOpen />
+        <DrawerOpen top={PLATFORM_IOS ? 70 : 30} />
         {getDeviceID ==
-        'Your Account is not currently linked with a TRO Charger. Please contact customer service if you believe this is an error.' ? (
+          'Your Account is not currently linked with a TRO Charger. Please contact customer service if you believe this is an error.' ? (
           <View
             style={{
               justifyContent: 'center',
@@ -333,7 +338,7 @@ const dispatch = useDispatch()
                 }} // Replace with your animation file
                 autoPlay
                 loop
-                style={{width: 150, height: 150}}
+                style={{ width: 150, height: 150 }}
               />
               <AnimatedLottieView
                 source={{
@@ -341,7 +346,7 @@ const dispatch = useDispatch()
                 }} // Replace with your animation file
                 autoPlay
                 loop
-                style={{width: 50, height: 50}}
+                style={{ width: 50, height: 50 }}
               />
             </View>
             <Text
@@ -360,7 +365,7 @@ const dispatch = useDispatch()
                 alignItems: 'center',
               }}>
               <TouchableOpacity
-              onPress={getDeviceIDData}
+                onPress={getDeviceIDData}
                 style={{
                   width: mobileW * 0.3,
                   borderRadius: 10,
@@ -428,8 +433,8 @@ const dispatch = useDispatch()
           </View>
         ) : (
           <View>
-            <View style={{backgroundColor: COLORS.CREAM2}}>
-              <View style={{flexDirection: 'row', alignItems: 'center'}}>
+            <View style={{ backgroundColor: COLORS.CREAM2 }}>
+              <View style={{ flexDirection: 'row', alignItems: 'center' }}>
                 {getChargerStatus?.message == 'Charging' ? (
                   <Charging />
                 ) : (
@@ -453,9 +458,9 @@ const dispatch = useDispatch()
                         elevation: 7,
                       }}>
                       {getChargerStatus?.message == 'Online' ? (
-                        <OnlineCharge style={{marginTop: 8, marginLeft: 5}} />
+                        <OnlineCharge style={{ marginTop: 8, marginLeft: 5 }} />
                       ) : (
-                        <NoCharge style={{marginTop: 8, marginLeft: 5}} />
+                        <NoCharge style={{ marginTop: 8, marginLeft: 5 }} />
                       )}
                     </View>
                     <View>
@@ -520,7 +525,7 @@ const dispatch = useDispatch()
         )}
 
         {getDeviceID ==
-        'Your Account is not currently linked with a TRO Charger. Please contact customer service if you believe this is an error.' ? (
+          'Your Account is not currently linked with a TRO Charger. Please contact customer service if you believe this is an error.' ? (
           <View
             style={{
               justifyContent: 'center',
@@ -538,14 +543,14 @@ const dispatch = useDispatch()
             }}
             tabBar={props => <MyTabBar {...props} />}>
             <Tab.Screen name="Day" component={Day} />
-            <Tab.Screen name="Week" component={Day} />
-            <Tab.Screen name="Month" component={Day} />
-            <Tab.Screen name="Quarter" component={Day} />
+            <Tab.Screen name="Week" component={Week} />
+            <Tab.Screen name="Month" component={Month} />
+            <Tab.Screen name="Quarter" component={Quarter} />
             <Tab.Screen name="Year" component={Year} />
           </Tab.Navigator>
         )}
         {getDeviceID ==
-        'Your Account is not currently linked with a TRO Charger. Please contact customer service if you believe this is an error.' ? (
+          'Your Account is not currently linked with a TRO Charger. Please contact customer service if you believe this is an error.' ? (
           <View>
             <Text></Text>
           </View>
@@ -553,6 +558,7 @@ const dispatch = useDispatch()
           <ButtonSlider onToggle={handleToggle} />
         )}
       </SafeAreaView>
+      {isLoading && <ActivityLoader />}
     </>
   );
 }

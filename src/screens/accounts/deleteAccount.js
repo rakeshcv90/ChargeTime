@@ -11,6 +11,8 @@ import { API } from '../../api/API';
 import { navigationRef } from '../../../App';
 import { ms } from 'react-native-size-matters';
 import { PLATFORM_IOS } from '../../constants/DIMENSIONS';
+const mobileW = Math.round(Dimensions.get('screen').width);
+const mobileH = Math.round(Dimensions.get('screen').height);
 
 // import Button from '../../Components/Button';
 
@@ -23,7 +25,7 @@ const DeleteAccountScreen = () => {
   const [showNew, setShowNew] = useState(false);
 
   const user_ID = getUserID;
-  const mobileW = Math.round(Dimensions.get('screen').width);
+ 
 
   useEffect(() => {
     console.log('data for this User:---------', userRegisterData);
@@ -80,39 +82,39 @@ const DeleteAccountScreen = () => {
     <SafeAreaView style={{ backgroundColor: COLORS.CREAM, flex: 1 }}>
       <Header headerName="Account Delete Request" />
       {Platform.OS == 'android' ? <HorizontalLine style={styles.line} /> : <View
-            style={{
+        style={{
 
 
-            }}>
-            <Image source={require('../../../assets/images/dotted.png')} style={{ width: mobileW * 0.97 }} />
-          </View>}
+        }}>
+        <Image source={require('../../../assets/images/dotted.png')} style={{ width: mobileW * 0.97 }} />
+      </View>}
       <View style={styles.container}>
-        <View style={{backgroundColor:COLORS.CREAM,width:70,position:'absolute',zIndex:99,top:23,left:32,alignItems:'center'}}><Text style={{color: 'black'}}>Reason</Text></View>
-      <TextInput
-    style={{
-      // flex: 1,
-      backgroundColor: COLORS.CREAM,
-      borderRadius: 5,
-      borderWidth: 0.5,
-      borderColor: COLORS.BLACK,
-      marginVertical: 19,
-      width: ms(340),
-      height: ms(150),
-      color: COLORS.BLACK,
-      fontFamily: 'Roboto',
-      fontWeight: '100',
-      paddingLeft: 10, 
-      paddingTop: 10,
-      textAlignVertical: 'top',
-       
-    }}
-    multiline
-    maxLength={550}
-    placeholder="Please let us know the reason for the account closure request."
-    placeholderTextColor={COLORS.HALFBLACK}
-    onChangeText={text => setReason(text)}
-    value={reason}
-  />
+        <View style={{ backgroundColor: COLORS.CREAM, width: 70, position: 'absolute', zIndex: 99, top: 23, left: 32, alignItems: 'center' }}><Text style={{ color: 'black' }}>Reason</Text></View>
+        <TextInput
+          style={{
+            // flex: 1,
+            backgroundColor: COLORS.CREAM,
+            borderRadius: 5,
+            borderWidth: 0.5,
+            borderColor: COLORS.BLACK,
+           marginVertical: 19,
+            width: mobileW*0.92,
+            height: ms(150),
+            color: COLORS.BLACK,
+            //fontFamily: 'Roboto',
+            fontWeight: '100',
+            // paddingLeft: 10,
+            // paddingTop: 10,
+            textAlignVertical: 'top',
+
+          }}
+          multiline
+          maxLength={550}
+          placeholder="Please let us know the reason for the account closure request."
+          placeholderTextColor={COLORS.HALFBLACK}
+          onChangeText={text => setReason(text)}
+          value={reason}
+        />
 
         {/* <Input
           IconLeft={null}
@@ -139,32 +141,33 @@ const DeleteAccountScreen = () => {
           value={reason}
         /> */}
 
-        
-       <Input
-            IconLeft={null}  
-            bgColor={COLORS.CREAM}
-            // editable={isEditable}
-            placeholderTextColor={COLORS.HALFBLACK}
-            passwordInput={true}
-            pasButton={() => {
-              setHidePassword(!hidePassword)
-              setShowNew(!showNew)}}
-            secureTextEntry={hidePassword}
-            passwordInputIcon={showNew}
-            placeholder="Enter password to verify..."
-            onChangeText={text => setPassword(text)}
-            value={password}
-            text="Password"
-            mV={5}
-            bW={1}
-            bR={3}
-            textWidth={ms(70)}
-            style={{
-              color: COLORS.BLACK,
-              fontFamily: 'Roboto',
-              fontWeight: '200',
-            }}
-          />
+
+        <Input
+          IconLeft={null}
+          bgColor={COLORS.CREAM}
+          // editable={isEditable}
+          placeholderTextColor={COLORS.HALFBLACK}
+          passwordInput={true}
+          pasButton={() => {
+            setHidePassword(!hidePassword)
+            setShowNew(!showNew)
+          }}
+          secureTextEntry={hidePassword}
+          passwordInputIcon={showNew}
+          placeholder="Enter password to verify..."
+          onChangeText={text => setPassword(text)}
+          value={password}
+          text="Password"
+          mV={5}
+          bW={1}
+          bR={3}
+          textWidth={ms(70)}
+          style={{
+            color: COLORS.BLACK,
+            fontFamily: 'Roboto',
+            fontWeight: '200',
+          }}
+        />
 
 
         <View

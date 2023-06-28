@@ -53,8 +53,9 @@ const Remaining = ({...props}) => {
       });
   };
 const nav = () => {
-  // navigationRef.navigate('EnergyOptions')
-  console.log(navigationRef.current?.getState().key)
+  setModalVisible(!modalVisible);
+  navigationRef.navigate('HomeOne')
+  // console.log(navigationRef.current?.getState().key)
 }
   const OverusageModal = () => {
     return (
@@ -86,7 +87,9 @@ const nav = () => {
             </Text>
             <View style={styles.button_one}>
               <Pressable
-                style={[styles.button]}
+                style={{
+                  borderRadius: 20,
+                  padding: 10,}}
                 onPress={() => setModalVisible(false)}>
                 <Text style={styles.textStyle}>Cancel</Text>
               </Pressable>

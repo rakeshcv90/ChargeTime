@@ -17,28 +17,41 @@ import {PLATFORM_IOS} from '../../constants/DIMENSIONS';
 import BoxFive from '../../Components/BoxFive';
 import Remaining from '../../Components/Remaining';
 import PriceBox from '../../Components/PriceBox';
-import {useSelector} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 import {useEffect, useState} from 'react';
 import axios from 'axios';
 import {API} from '../../api/API';
 import ActivityLoader from '../../Components/ActivityLoader';
 import AnimatedLottieView from 'lottie-react-native';
+import {setPlanStatus, setPurchaseData} from '../../redux/action';
 
 export default function SliderOne(props) {
   const [forLoading, setForLoading] = useState(false);
-  const [planStatus, setPlanStatus] = useState([]);
-  const [schedulePackageName, setSchedulePackageName] = useState('');
-
-  const {getUserID, getPurchaseData} = useSelector(state => state);
+  const [planStatus, setPlanStatus] = useState(false);
+  // const [schedulePackageName, setSchedulePackageName] = useState('');
+  const dispatch = useDispatch();
+  const {getUserID, getPurchaseData, getPlanStatus} = useSelector(
+    state => state,
+  );
 
   useEffect(() => {
     getPlanCurrent();
+    console.log('getPlanStatus', getPlanStatus);
   }, []);
-
+  const handleRefresh = () => {
+    setRefresh(true);
+    setTimeout(() => {
+      setRefresh(false);
+    }, 2000);
+    fetchData();
+    getPlanCurrent()
+  };
   const getPlanCurrent = () => {
     axios
       .get(`${API}/currentplan/${getUserID}`)
       .then(res => {
+        console.log('PLADSAADSASDAD', res.data)
+        dispatch(setPurchaseData(res.data));
         PlanStatus();
       })
       .catch(err => {
@@ -47,17 +60,25 @@ export default function SliderOne(props) {
   };
 
   const PlanStatus = () => {
+    setForLoading(true);
     axios
       .get(`${API}/planstatus/${getUserID}`)
       .then(res => {
-        setPlanStatus(res.data);
         const name = res.data.subscriptions.filter(
           item => item.subscription_status == 'scheduled',
         );
-        setSchedulePackageName(name[0].item_name);
+        if (name.length != 0) {
+          dispatch(setPlanStatus(name[0]));
+          setForLoading(false);
+        } else {
+          dispatch(setPlanStatus([]));
+          setForLoading(false);
+        }
+        console.log('STATUSSSS', getPlanStatus);
       })
       .catch(err => {
         console.log(err);
+        setForLoading(false);
       });
   };
 
@@ -69,20 +90,20 @@ export default function SliderOne(props) {
 
       <View style={styles.managing_width}>
         <BoxTwo data={props.route.params.item} />
-        {getPurchaseData[0].energy_plan.toLowerCase() ===
+        {getPurchaseData.data.energy_plan.toLowerCase() ===
           props.route.params.item.package_name.toLowerCase() && (
           <Remaining RemainingFill={50} KWH={400} data={'energy'} />
         )}
-        {getPurchaseData[0].energy_plan.toLowerCase() ===
+        {getPurchaseData.data.energy_plan.toLowerCase() ===
           props.route.params.item.package_name.toLowerCase() && (
           <View style={{marginBottom: 20}}>
-            <PriceBox data={getPurchaseData[0]} />
+            <PriceBox data={getPurchaseData.data} />
           </View>
         )}
         <View
           style={{
             marginBottom:
-              getPurchaseData[0].energy_plan.toLowerCase() ===
+              getPurchaseData.data.energy_plan.toLowerCase() ===
               props.route.params.item.package_name.toLowerCase()
                 ? 20
                 : null,
@@ -90,26 +111,37 @@ export default function SliderOne(props) {
           <InstallationBase data={props.route.params.item} />
         </View>
 
-        {getPurchaseData[0].energy_plan.toLowerCase() !==
+        {getPurchaseData.data.energy_plan.toLowerCase() !==
           props.route.params.item.package_name.toLowerCase() && (
           <BoxFive
             data={props.route.params.item}
             purchageData={props.route.params.purchageData}
-            disabled={schedulePackageName.toLowerCase() == props.route.params.item.package_name.toLowerCase() ? true : false}
+            disabled={
+              getPlanStatus.length != 0
+                ? getPlanStatus.toLowerCase() ==
+                  props.route.params.item.package_name.toLowerCase()
+                  ? true
+                  : false
+                : false
+            }
           />
         )}
-        {!forLoading && schedulePackageName.toLowerCase() == props.route.params.item.package_name.toLowerCase() && (
-          <Text
-            style={{
-              fontSize: 13,
-              fontWeight: '500',
-              marginTop: 15,
-              color: COLORS.RED,
-              lineHeight: 20,
-            }}>
-            {planStatus.message}
-          </Text>
-        )}
+        {!forLoading &&
+          getPlanStatus.length !== 0 &&
+          getPlanStatus.item_name.toLowerCase() ==
+            props.route.params.item.package_name.toLowerCase() && (
+            <Text
+              style={{
+                fontSize: 13,
+                fontWeight: '500',
+                marginTop: 15,
+                color: COLORS.RED,
+                lineHeight: 20,
+              }}>
+              {/* {planStatus.message} */}
+              This package is already purchased, and it will be activated at the end of your billing cycle.
+            </Text>
+          )}
       </View>
     </ScrollView>
   );
@@ -121,7 +153,7 @@ const styles = StyleSheet.create({
     paddingVertical: PLATFORM_IOS ? 0 : 0,
     marginVertical: PLATFORM_IOS ? 0 : 0,
     // backgroundColor:"red"
-    marginVertical: 20,
+    // marginVertical: 10,
     //   paddingTop:20
     // marginBottom:20
   },
