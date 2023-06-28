@@ -42,7 +42,7 @@ export default function ForDownGrade({route, navigation}) {
       .post(`${API}/upgrade_downgrade/${getUserID}`)
       .then(res => {
         console.log('DOWNGRADE', res.data);
-        navigationRef.navigate('PaymentGateWay', {data: dataOne});
+        navigationRef.navigate('PaymentGateWay', {data: dataOne, purchageData:purchageData});
       })
       .catch(err => {
         console.log(err.response.data.message);

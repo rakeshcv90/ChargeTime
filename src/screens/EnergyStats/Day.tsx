@@ -3,13 +3,13 @@ import React, { useEffect, useRef, useState } from 'react';
 import COLORS from '../../constants/COLORS';
 import Remaining from '../../Components/Remaining';
 import TotalUsage from '../../Components/TotalUsuage';
-import Graph from '../../Components/Graph';
+import Graph from '../../Components/DayGraph';
 import BoxTwo from '../../Components/BoxTwo';
 import ButtonSlider from '../../Components/ButtonSlider';
 import PriceBox from '../../Components/PriceBox';
 import { useDispatch, useSelector } from 'react-redux';
 import axios from 'axios';
-import { setOverUsage, setRemainingData } from '../../redux/action';
+import { setBoxTwoDataForDashboard, setChargerStatus, setGraphData, setKwhData, setMonthGraphData, setOverUsage, setQuarterGraphData, setRemainingData, setWeekGraphData, setYearGraphData } from '../../redux/action';
 import { API } from '../../api/API';
 
 const Day = (props: any) => {
@@ -26,7 +26,14 @@ const Day = (props: any) => {
 
   useEffect(() => {
     setShowSlider(true);
-    console.log(getkwhData)
+    // fetchGraphData(getUserID);
+    // fetchWeekGraphData(getUserID);
+    // fetchMonthGraphData(getUserID);
+    // fetchQuarterGraphData(getUserID);
+    // fetchYearGraphData(getUserID);
+    // fetchBoxTwoDashboardData(getUserID);
+    // fetchStatusdata(getUserID);
+    // console.log(getkwhData)
   }, []);
 
   const handleRefresh = () => {
@@ -57,6 +64,106 @@ const Day = (props: any) => {
         console.log(err);
       });
   };
+
+  //day data start
+  // const fetchGraphData = (userID: string) => {
+  //   axios
+  //     .get(`${API}/dailyusagegraph/${userID}`)
+  //     .then(res => {
+  //       console.log("GRAPH.........", res.data)
+  //       dispatch(setGraphData(res?.data));
+
+  //       dailyUsuagekwh(userID);
+  //       // navigation.navigate('DrawerStack');
+  //     })
+  //     .catch(err => {
+  //       console.log(err);
+  //     });
+  // };
+  // const dailyUsuagekwh = (userId: string) => {
+  //   axios
+  //     .get(`${API}/dailyusage/${userId}`)
+  //     .then(res => {
+  //       if (res?.data) {
+  //         dispatch(setKwhData(res?.data));
+  //       }
+  //     })
+  //     .catch(err => {
+  //       console.log(err);
+  //     });
+  // };
+  // //day data end
+
+  // //week data start
+  // const fetchWeekGraphData = (userID: string) => {
+  //   axios
+  //     .get(`${API}/weeklyusage/${userID}`)
+  //     .then(res => {
+  //       if (res?.data) {
+  //         dispatch(setWeekGraphData(res?.data));
+  //       }
+  //     })
+  //     .catch(err => {
+  //       console.log(err);
+  //     });
+  // };
+  // const fetchMonthGraphData = (userID: string) => {
+  //   axios
+  //     .get(`${API}/monthlyusage/${userID}`)
+  //     .then(res => {
+  //       if (res?.data) {
+  //         dispatch(setMonthGraphData(res?.data));
+  //       }
+  //     })
+  //     .catch(err => {
+  //       console.log(err);
+  //     });
+  // };
+  // const fetchQuarterGraphData = (userID: string) => {
+  //   axios
+  //     .get(`${API}/threemonthusage/${userID}`)
+  //     .then(res => {
+  //       if (res?.data) {
+  //         dispatch(setQuarterGraphData(res?.data));
+  //       }
+  //     })
+  //     .catch(err => {
+  //       console.log(err);
+  //     });
+  // };
+  // const fetchYearGraphData = (userID: string) => {
+  //   axios
+  //     .get(`${API}/yearlyusage/${userID}`)
+  //     .then(res => {
+  //       if (res?.data) {
+  //         dispatch(setYearGraphData(res?.data));
+  //       }
+  //     })
+  //     .catch(err => {
+  //       console.log(err);
+  //     });
+  // };
+
+  // const fetchBoxTwoDashboardData = (userId: string) => {
+  //   axios
+  //     .get(`${API}/currentplan/${userId}`)
+  //     .then(res => {
+  //       dispatch(setBoxTwoDataForDashboard(res?.data));
+  //     })
+  //     .catch(err => {
+  //       console.log(err);
+  //     });
+  // };
+  // const fetchStatusdata = (userId: string) => {
+  //   axios
+  //     .get(`${API}/chargerstatus/${userId}`)
+  //     .then(res => {
+  //       dispatch(setChargerStatus(res?.data));
+  //     })
+  //     .catch(err => {
+  //       console.log(err);
+  //     });
+  // };
   return (
     <>
       <View style={{ flex: 1, backgroundColor: COLORS.CREAM }}>
@@ -87,7 +194,18 @@ const Day = (props: any) => {
           </View>
 
           <View style={{ marginHorizontal: 20, }}>
-            <Graph dataOne={getGraphData} />
+            {getGraphData.length >= 1 ?(<Graph dataOne={getGraphData} /> ) : (
+              <Text
+                style={{
+                  color: COLORS.BLACK,
+                  fontWeight: 'bold',
+                  alignSelf: 'center',
+                  fontSize: 14,
+                  marginVertical: 10,
+                }}>
+                No Graph Data available
+              </Text>
+            )}
             <BoxTwo data={getBoxTwoDataForDashboard[0]} />
           </View>
           <View style={{ marginBottom: 120 }}>

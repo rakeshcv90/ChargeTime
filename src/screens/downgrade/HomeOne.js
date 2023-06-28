@@ -109,7 +109,8 @@ export default function HomeOne(route) {
   const {getLocationID, getPurchaseData} = useSelector(state => state);
   const [showLottieView, setShowLottieView] = useState(false);
   
-  
+
+
   useEffect(() => {
     fetchData();
   }, []);
@@ -120,8 +121,10 @@ export default function HomeOne(route) {
   const populateNumArray = () => {
     const numArray = [];
   
-    if (apiData?.length >= 1 && apiData) {
-      apiData.forEach((item) => {
+
+    if (getBasePackage?.length >= 1 && getBasePackage) {
+      getBasePackage.forEach((item) => {
+
         const num = item.package_name.toLowerCase() === getPurchaseData.data.energy_plan.toLowerCase();
         numArray.push(num);
       });

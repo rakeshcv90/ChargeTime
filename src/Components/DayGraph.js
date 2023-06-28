@@ -6,18 +6,17 @@ import {DIMENSIONS} from '../constants/DIMENSIONS';
 
 
 const Graph = ({ dataOne }) => {
+  console.log("MY graph Data =-=-=-=-=-= is",dataOne)
 
-  
-  // let num = (dataOne || []).map(item => (item?.Usage === undefined || item?.Usage === [] || item?.Usage === '') ? [0, 0, 0] : item?.Usage);
-  // let numOne = (dataOne || []).map(item => (item?.date === undefined || item?.date === [] || item?.date === '') ? ["sun", "mon", "tues"] : item?.date);
-  console.log("MY graph Data is",dataOne.Usage)
-
+//  let num = (dataOne || []).map(item => (item?.Usage === undefined || item?.Usage === [] || item?.Usage === '') ? [0, 0, 0] : item?.Usage);
+ let num = dataOne.length >= 1 ? dataOne.map(item => item?.Usage): [];
+  let numOne = dataOne.length >= 1 ? dataOne.map(item =>  item?.date): [];
 
   const data = {
-    labels: dataOne.Date,
+    labels: numOne.length ? numOne : ["sun", "mon", "tues"],
     datasets: [
       {
-        data: dataOne.Usage,
+        data: num.length ? num : [0, 0, 0],
       },
     ],
   };
