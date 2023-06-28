@@ -316,7 +316,7 @@ export default function PaymentGateWay({ navigation }) {
 
 
       <Header headerName="Payment Methods" editShow={false} />
-      {Platform.OS == 'android' ? <HorizontalLine style={styles.line} /> : <View
+      {Platform.OS == 'android' ? <HorizontalLine style={styles.line} /> : <View>
 
 
 
@@ -471,32 +471,8 @@ export default function PaymentGateWay({ navigation }) {
                       }
                    
                     }}
-                    style={{
-                      // marginTop: 200,
-                      marginLeft: 95,
-                      marginRight: 50,
-                      backgroundColor: '#CCCCCC',
-                      alignItems: 'center',
-                      padding: 10,
-                      borderRadius: 60,
-                      width: '70%',
-                    }}
+                    style={savedCard && savedCard[0].status === 1 && (!currentCard || currentCard.status === 1) ? styles.default : styles.makeDefault}
                     disabled = {savedCard && savedCard[0].status === 1 && (!currentCard || currentCard.status === 1)?true:false}>
-                    <Text
-                      style={{
-                        color: COLORS.BLACK,
-                        fontSize: 12,
-                        fontWeight: '400',
-                      }}>
-
-                        dispatch(getCardDetails(currentCard))
-                        navigationRef.navigate('PaymentGateWay');
-                      } else {
-                        handleMakeDefaultCard(currentCard.id)
-                      }
-
-                    }}
-                    style={savedCard && savedCard[0].status === 1 && (!currentCard || currentCard.status === 1) ? styles.default : styles.makeDefault}>
                     <Text
                       style={savedCard && savedCard[0].status === 1 && (!currentCard || currentCard.status === 1) ? styles.makeDefaultText : styles.defaultText}>
 
@@ -523,7 +499,7 @@ export default function PaymentGateWay({ navigation }) {
 
                       marginLeft: 35,
                       marginRight: 100,
-                      backgroundColor: '#CCCCCC',
+                      backgroundColor: '#F84E4E',
                       alignItems: 'center',
                       padding: 13,
                       borderRadius: 150,

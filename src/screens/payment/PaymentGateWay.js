@@ -141,7 +141,9 @@ useEffect(() => {
             getPlanCurrent();
           }
         } else {
+          getPlanCurrent();
           dispatch(setDeviceId(res.data.message));
+          navigationRef.navigate('DrawerStack')
 
         }
       })
@@ -171,7 +173,7 @@ useEffect(() => {
           item => item.subscription_status == 'scheduled',
         );
         dispatch(setPlanStatus(name[0].item_name));
-        navigationRef.navigate('DrawerStack')
+        navigationRef.navigate('HomeOne')
       })
       .catch(err => {
         console.log(err);

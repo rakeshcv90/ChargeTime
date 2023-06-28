@@ -27,6 +27,7 @@ import {useDispatch} from 'react-redux';
 import {setBasePackage} from '../../redux/action';
 
 import {useSelector} from 'react-redux';
+import { PLATFORM_IOS } from '../../constants/DIMENSIONS';
 
 const mobileW = Math.round(Dimensions.get('screen').width);
 const mobileH = Math.round(Dimensions.get('window').height);

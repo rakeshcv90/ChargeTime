@@ -67,13 +67,14 @@ const Contact = () => {
   return (
     <SafeAreaView style={{ backgroundColor: COLORS.CREAM, flex: 1 }}>
       <Header headerName="Contact Us" />
-      {Platform.OS == 'android' ? <HorizontalLine style={styles.line} /> : <View
+      {Platform.OS == 'android' ? <HorizontalLine style={styles.line} /> : <View>
 
 
    
         <Image source={require('../../../assets/images/dotted.png')} style={{ width: mobileW * 0.97, }} />
 
-      </View>}
+      </View>
+      }
       {/* <HorizontalLine style={styles.line} /> */}
       <View style={styles.container}>
         <View style={{ backgroundColor: COLORS.CREAM, width: 110, position: 'absolute', zIndex: 99, top: 23, left: 32, alignItems: 'center' }}><Text style={{ color: 'black' }}>Your Message</Text></View>
