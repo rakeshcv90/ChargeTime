@@ -12,21 +12,21 @@ const Splash = () => {
   const backHandler = useRef(null);
   const [imageSource, setImageSource] = useState(require('../../assets/unnamed.png'));
   useEffect(() => {
-    const handleBackButton = () => {
-      clearTimeout(timer);
-      BackHandler.exitApp();
-      // return true;
-    };
+    // const handleBackButton = () => {
+    //   clearTimeout(timer);
+    //   BackHandler.exitApp();
+    //   // return true;
+    // };
 
-    // if (Platform.OS === 'android') {
-    //   BackHandler.addEventListener('hardwareBackPress', handleBackButton);
-    // }
+    // // if (Platform.OS === 'android') {
+    // //   BackHandler.addEventListener('hardwareBackPress', handleBackButton);
+    // // }
 
-    return () => {
-      if (Platform.OS === 'android') {
-        BackHandler.removeEventListener('hardwareBackPress', handleBackButton);
-      }
-    };
+    // return () => {
+    //   if (Platform.OS === 'android') {
+    //     BackHandler.removeEventListener('hardwareBackPress', handleBackButton);
+    //   }
+    // };
   }, []);
   const [showIntro, setShowIntro] = useState('');
   useEffect(() => {

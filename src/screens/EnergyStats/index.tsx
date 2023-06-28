@@ -132,28 +132,28 @@ export default function EnergyStats() {
   const {getChargerStatus, getDeviceID,getUserID} = useSelector((state: any) => state);
   const [toggleState, setToggleState] = useState(false);
 const dispatch = useDispatch()
-  useEffect(() => {
-    dispatch(setIsAuthorized(true))
-    const backAction = () => {
-      Alert.alert(
-        'Exit App',
-        'Are you sure you want to exit?',
-        [
-          {
-            text: 'Cancel',
-            onPress: () => null,
-            style: 'cancel',
-          },
-          { text: 'Exit', onPress: () => BackHandler.exitApp() },
-        ],
-        { cancelable: false }
-      );
-      return true;
-    };
-    const backHandler = BackHandler.addEventListener('hardwareBackPress', backAction);
+  // useEffect(() => {
+    // dispatch(setIsAuthorized(true))
+  //   const backAction = () => {
+  //     Alert.alert(
+  //       'Exit App',
+  //       'Are you sure you want to exit?',
+  //       [
+  //         {
+  //           text: 'Cancel',
+  //           onPress: () => null,
+  //           style: 'cancel',
+  //         },
+  //         { text: 'Exit', onPress: () => BackHandler.exitApp() },
+  //       ],
+  //       { cancelable: false }
+  //     );
+  //     return true;
+  //   };
+  //   const backHandler = BackHandler.addEventListener('hardwareBackPress', backAction);
 
-    return () => backHandler.remove();
-  }, []);
+  //   return () => backHandler.remove();
+  // }, []);
 
   const handleToggle = (value: any) => {
     setToggleState(value);
@@ -518,9 +518,9 @@ const dispatch = useDispatch()
             }}
             tabBar={props => <MyTabBar {...props} />}>
             <Tab.Screen name="Day" component={Day} />
-            <Tab.Screen name="Week" component={Week} />
-            <Tab.Screen name="Month" component={Month} />
-            <Tab.Screen name="Quarter" component={Quarter} />
+            <Tab.Screen name="Week" component={Day} />
+            <Tab.Screen name="Month" component={Day} />
+            <Tab.Screen name="Quarter" component={Day} />
             <Tab.Screen name="Year" component={Year} />
           </Tab.Navigator>
         )}

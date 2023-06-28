@@ -79,9 +79,9 @@ export default function Login({navigation}) {
     //   );
     //   return true;
     // };
-    BackHandler.addEventListener('hardwareBackPress', () =>
-      BackHandler.exitApp(),
-    );
+    // BackHandler.addEventListener('hardwareBackPress', () =>
+    //   BackHandler.exitApp(),
+    // );
 
     // return () => backHandler.remove();
   }, []);
@@ -98,7 +98,7 @@ export default function Login({navigation}) {
       } else {
         console.log(response.data, 'Packaagessssss');
         dispatch(setBasePackage(response.data.locations));
-        // dispatch(setIsAuthorized(true));
+        dispatch(setIsAuthorized(true));
         setForLoading(false);
         navigation.navigate('DrawerStack');
       }
@@ -300,7 +300,7 @@ export default function Login({navigation}) {
         }
       })
       .catch(err => {
-        console.log(err);
+        console.log('Week ERRRR',err);
       });
   };
   const fetchMonthGraphData = userID => {
@@ -313,7 +313,7 @@ export default function Login({navigation}) {
         }
       })
       .catch(err => {
-        console.log(err);
+        console.log('MONTHS ERRRR',err);
       });
   };
   const fetchQuarterGraphData = userID => {
@@ -326,7 +326,7 @@ export default function Login({navigation}) {
         }
       })
       .catch(err => {
-        console.log(err);
+        console.log('QUar ERRRR',err);
       });
   };
   const fetchYearGraphData = userID => {
@@ -339,7 +339,7 @@ export default function Login({navigation}) {
         }
       })
       .catch(err => {
-        console.log(err);
+        console.log('Year ERRRR',err);
       });
   };
 
