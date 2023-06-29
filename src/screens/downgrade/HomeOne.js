@@ -107,20 +107,20 @@ export default function HomeOne(route) {
   const [activeTab, setActiveTab] = useState('');
   const [apiData, setApiData] = useState([]);
   const [myTest, setMyTest] = useState('');
-  const {getLocationID, getPurchaseData, getBasePackage} = useSelector(state => state);
+  const {getLocationID, getPurchaseData, getBasePackage} = useSelector(
+    state => state,
+  );
   const [showLottieView, setShowLottieView] = useState(false);
-  
-
 
   useEffect(() => {
     fetchData();
+    console.log(getPurchaseData,'sdfjhiauvshriaeushrviuaesbvuiarsvyayvbiuabvyraiv uayse')
   }, []);
-  
-  
+
   useEffect(() => {
     const backHandler = BackHandler.addEventListener(
       'hardwareBackPress',
-      handleBackButton
+      handleBackButton,
     );
 
     return () => backHandler.remove();
@@ -128,34 +128,34 @@ export default function HomeOne(route) {
   const handleBackButton = () => {
     return true;
   };
-  
+
   const populateNumArray = () => {
     const numArray = [];
-  
 
     if (getBasePackage?.length >= 1 && getBasePackage) {
-      getBasePackage.forEach((item) => {
-
-
-        const num = item.package_name.toLowerCase() === getPurchaseData.data.energy_plan.toLowerCase();
+      getBasePackage.forEach(item => {
+        const num =
+          getPurchaseData.length != 0
+            ? item.package_name.toLowerCase() ===
+              getPurchaseData.data.energy_plan.toLowerCase()
+            : '';
 
         numArray.push(num);
       });
     }
-  
+
     return numArray;
   };
-  
+
   // State to hold the numArray value
   const [numArray, setNumArray] = useState([]);
-  
-  // Update the numArray when apiData or getPurchaseData changes
+
+  // Update the numArray when getBasePackage or getPurchaseData changes
   useEffect(() => {
     const updatedNumArray = populateNumArray();
     setNumArray(updatedNumArray);
-  }, [apiData, getPurchaseData]);
-
-  
+    console.log(getPurchaseData.data)
+  }, [getBasePackage, getPurchaseData]);
 
   const fetchData = async () => {
     //  loginData = await AsyncStorage.getItem('loginDataOne');
@@ -180,14 +180,12 @@ export default function HomeOne(route) {
   function MyTabBar({state, descriptors, navigation, position}) {
     useEffect(() => {
       setChangePage(state.index);
-      
     }, []);
-    let activeTabIndex = state.routes.map((item) => item.name);
-  
-  useEffect(() => {
-    // Do something with the activeTabIndex
-  }, [activeTabIndex]);
-    
+    let activeTabIndex = state.routes.map(item => item.name);
+
+    useEffect(() => {
+      // Do something with the activeTabIndex
+    }, [activeTabIndex]);
 
     return (
       <View style={[styles.tabbar_part, styles.shadowProp]}>
@@ -201,12 +199,11 @@ export default function HomeOne(route) {
               : route.name;
 
           const isFocused = state.index === index;
-           
-           if(isFocused){
-            setMyTest(label)
-            
-           }
-          
+
+          if (isFocused) {
+            setMyTest(label);
+          }
+
           const onPress = () => {
             const event = navigation.emit({
               type: 'tabPress',
@@ -215,7 +212,6 @@ export default function HomeOne(route) {
             });
 
             if (!isFocused && !event.defaultPrevented) {
-              
               navigation.navigate({name: route.name, merge: true});
             }
           };
@@ -259,37 +255,33 @@ export default function HomeOne(route) {
 
   return (
     <SafeAreaView style={{backgroundColor: COLORS.CREAM, flex: 1}}>
-      
-       
-
-      {getPurchaseData.data.energy_plan.toLowerCase() === myTest.toLowerCase()  && 
-
-           <View
-           
+      {getPurchaseData.length != 0 &&
+        getPurchaseData.data.energy_plan.toLowerCase() ===
+          myTest.toLowerCase() && (
+          <View
             style={{
               position: 'absolute',
-              right: PLATFORM_IOS ? mobileW*25/100 :mobileW*25/100,
+              right: PLATFORM_IOS ? (mobileW * 25) / 100 : (mobileW * 25) / 100,
               alignSelf: 'flex-end',
-              top: PLATFORM_IOS ? mobileH*-2/100:mobileH*-6/100,
-             // marginVertical:PLATFORM_IOS ? -20: -40,
+              top: PLATFORM_IOS ? (mobileH * -2) / 100 : (mobileH * -6) / 100,
+              // marginVertical:PLATFORM_IOS ? -20: -40,
               zIndex: 5,
             }}>
-          
-           
-              <AnimatedLottieView
-                source={{
-                  uri: 'https://assets3.lottiefiles.com/packages/lf20_OrMyddm62t.json',
-                }} // Replace with your animation file
-                autoPlay
-                loop
-                style={{width: mobileW*25/100, height: mobileH*25/100}}
-              />
-           
-            
+            <AnimatedLottieView
+              source={{
+                uri: 'https://assets3.lottiefiles.com/packages/lf20_OrMyddm62t.json',
+              }} // Replace with your animation file
+              autoPlay
+              loop
+              style={{
+                width: (mobileW * 25) / 100,
+                height: (mobileH * 25) / 100,
+              }}
+            />
           </View>
-}
-        
-<DrawerOpen top={ PLATFORM_IOS ? 70 : 30}/>
+        )}
+
+      <DrawerOpen top={PLATFORM_IOS ? 70 : 30} />
       <View style={[styles.charging_imag_style]}>
         {changePage == 0 ? (
           <Image
@@ -318,8 +310,7 @@ export default function HomeOne(route) {
             <ActivityLoader visible={!showPackage} />
           ) : (
             <View>
-            <Text>No Package</Text>
-            
+              <Text>No Package</Text>
             </View>
           )}
         </View>
@@ -334,16 +325,16 @@ export default function HomeOne(route) {
             },
           }}
           tabBar={props => <MyTabBar {...props} />}>
-          {apiData?.length >= 1 &&
-            apiData &&
-            apiData.map((item, ind) => {
-
-            let  purchageData =
-
-                item.kwh > getPurchaseData.data.kwh ? 'UPGRADE' : 'DOWNGRADE';
-                let num = item.package_name.toLowerCase() === getPurchaseData.data.energy_plan.toLowerCase();
-
-                
+          {getBasePackage?.length >= 1 &&
+            getBasePackage &&
+            getBasePackage.map((item, ind) => {
+              let purchageData = getPurchaseData.length != 0 ?
+                item.kwh > getPurchaseData.data.kwh 
+                  ? 'UPGRADE'
+                  : 'DOWNGRADE':'';
+              let num =
+                (item.package_name.toLowerCase() === getPurchaseData.length) !=
+                  0 && getPurchaseData.data.energy_plan.toLowerCase();
 
               return (
                 <Tab.Screen
@@ -351,17 +342,11 @@ export default function HomeOne(route) {
                   name={item?.package_name}
                   component={SliderOne}
                   initialParams={{item: item, purchageData: purchageData}}
-                  
                 />
               );
-              
             })}
-            
-             
         </Tab.Navigator>
-        
       )}
-     
     </SafeAreaView>
   );
 }

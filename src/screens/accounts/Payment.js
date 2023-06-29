@@ -37,7 +37,7 @@ import { navigationRef } from '../../../App';
 import creditCardType, { types as CardType } from 'credit-card-type';
 import { FlatList } from 'react-native-gesture-handler';
 import { mvs, ms } from 'react-native-size-matters';
-import { getCardDetails } from '../../redux/action';
+import { setCardDetails } from '../../redux/action';
 import { useDispatch } from 'react-redux';
 import Carousel from 'react-native-reanimated-carousel';
 
@@ -82,7 +82,7 @@ export default function PaymentGateWay({ navigation }) {
   const [error, setError] = useState('');
   const [error1, setError1] = useState('');
   const [cardID, setCardID] = useState('');
-  const [cardDetails, setCardDetails] = useState({
+  const [cardDetails, setCardDetails1] = useState({
     cardHolderName: '',
     card_number: '',
     card_cvv: '',
@@ -149,7 +149,7 @@ export default function PaymentGateWay({ navigation }) {
         cb();
 
         console.log("card add success")
-        setCardDetails({
+        setCardDetails1({
           cardHolderName: '',
           card_number: '',
           card_cvv: '',
@@ -196,7 +196,7 @@ export default function PaymentGateWay({ navigation }) {
 
         const statusOneObjects = result[0].filter(item => item.status === 1);
         // console.log("-----------------",statusOneObjects);
-        dispatch(getCardDetails(statusOneObjects))
+        dispatch(setCardDetails(statusOneObjects))
 
       } else {
         console.log("iiiiiiiiiiii")
@@ -226,7 +226,7 @@ export default function PaymentGateWay({ navigation }) {
       if (result.success === "Your card is deleted") {
         setSavedCard('')
         handleGetCard()
-        setCardDetails({
+        setCardDetails1({
           cardHolderName: '',
           card_number: '',
           card_cvv: '',
@@ -466,8 +466,14 @@ export default function PaymentGateWay({ navigation }) {
 
                         // console.log("------",savedCard[0])
                         // navigationRef.navigate('PaymentGateWay');
-                      } else {
+                      } else if(savedCard && savedCard.length ===1 && savedCard[0].status === 0){
+                        console.log("In else if------",savedCard[0].id)
+                        handleMakeDefaultCard(savedCard[0].id)
+                      }
+                      else if(savedCard && savedCard.length >1 && (currentCard.status === 0)){
+                        console.log("In else------",currentCard.id)
                         handleMakeDefaultCard(currentCard.id)
+                       
                       }
                    
                     }}
@@ -529,7 +535,7 @@ export default function PaymentGateWay({ navigation }) {
                   onChangeText={(text) => {
                     handleChange('cardHolderName')(text);
                     setSavedCard('')
-                    setCardDetails({ ...cardDetails, ['cardHolderName']: text })
+                    setCardDetails1({ ...cardDetails, ['cardHolderName']: text })
                   }}
                   onBlur={handleBlur('cardHolderName')}
                   text="Card Holder Name"
@@ -551,7 +557,6 @@ export default function PaymentGateWay({ navigation }) {
 
 
                     setSavedCard('')
-                    setCardDetails({ ...cardDetails, ['card_number']: text })
                     var num = /[^0-9]/g;
                     const cardNumbers = text.replace(/\s/g, ''); // Remove spaces from card number
                     const cardNumber = cardNumbers.replace(num, '');
@@ -563,6 +568,8 @@ export default function PaymentGateWay({ navigation }) {
                     formattedCardNumber = formattedCardNumber.trim();
 
                     handleChange('cardNumber')(formattedCardNumber);
+                    setCardDetails1({ ...cardDetails, ['card_number']: formattedCardNumber })
+
                   }}
                   onBlur={handleBlur('cardNumber')}
                   maxLength={19}
@@ -588,7 +595,6 @@ export default function PaymentGateWay({ navigation }) {
                       //
                       onChangeText={text => {
                         setSavedCard('')
-                        setCardDetails({ ...cardDetails, validTill: formattedValidTill });
 
                         // Remove non-digit characters from the input
                         const validTill = text.replace(/\D/g, '');
@@ -602,6 +608,8 @@ export default function PaymentGateWay({ navigation }) {
                         console.log(formattedValidTill, 'asd');
                         // Update the valid till value
                         handleChange('validTill')(formattedValidTill);
+                        setCardDetails1({ ...cardDetails, validTill: formattedValidTill });
+
                       }}
                       onBlur={handleBlur('validTill')}
                       text="Valid Till"
@@ -627,9 +635,8 @@ export default function PaymentGateWay({ navigation }) {
                       value={values.cvv}
                       onChangeText={(text) => {
                         handleChange('cvv')(text),
-                          // setCardDetails('');
                           setSavedCard('')
-                        setCardDetails({ ...cardDetails, ['card_cvv']: text })
+                        setCardDetails1({ ...cardDetails, ['card_cvv']: text })
                       }}
                       onBlur={handleBlur('cvv')}
                       text="CVV"

@@ -10,6 +10,7 @@ import {
   Pressable,
   Alert,
   KeyboardAvoidingView,
+  ToastAndroid,
 } from 'react-native';
 import AnimatedLottieView from 'lottie-react-native';
 
@@ -20,7 +21,7 @@ import Input from '../../Components/Input';
 import COLORS from '../../constants/COLORS';
 import { Card } from '../../../assets/svgs/Card';
 import { Name } from '../../../assets/svgs/Name';
-import { DIMENSIONS } from '../../constants/DIMENSIONS';
+import { DIMENSIONS, PLATFORM_IOS } from '../../constants/DIMENSIONS';
 import { LeftIcon } from '../../../assets/images/LeftIcon';
 import { Formik } from 'formik';
 import * as Yup from 'yup';
@@ -34,6 +35,7 @@ import { navigationRef } from '../../../App';
 import ActivityLoader from '../../Components/ActivityLoader';
 
 import {
+  setCardDetails,
   setDeviceId,
   setPackageStatus,
   setPlanStatus,
@@ -78,8 +80,8 @@ export default function PaymentGateWay({ navigation, route }) {
   const dispatch = useDispatch();
 
   const getCardDetails = useSelector(state => state.getCardDetails);
-
-  const [cardDetails, setCardDetails] = useState({
+const [cardId, setCardId]=useState('');
+  const [cardDetails, setCardDetails1] = useState({
     cardHolderName: getCardDetails[0]?.cust_name,
     card_number: getCardDetails[0]?.card_number,
     card_cvv: getCardDetails[0]?.card_cvc,
@@ -182,8 +184,11 @@ export default function PaymentGateWay({ navigation, route }) {
       });
       console.log('PAYMENT', response.data);
       if ((response.data.status = 'success')) {
-        setLoader(false);
+
+        // handleAddCard(values)
         setModalVisible(true);
+
+        setLoader(false);
       }
     } catch (err) {
       setLoader(false);
@@ -196,6 +201,144 @@ export default function PaymentGateWay({ navigation, route }) {
     }
   };
 
+  // const handleMakeDefaultCard = async () => {
+
+  //   try {
+  //     const response = await fetch(`${API}/defaultcard`, {
+  //       method: 'POST',
+  //       headers: {
+  //         'Content-Type': 'application/json',
+  //       },
+  //       body: JSON.stringify({
+  //         id: cardId,
+  //         user_id: getUserID,
+  //       }),
+  //     });
+  //     // console.log("999999999999",response)
+  //     const result = await response.json();
+  //     // console.log("---------------",result)
+  //     if (result.msg === "sucessfull") {
+  //       handleGetCard();
+  //       // handleGetCard();
+  //       console.log("Default card set successfully");
+  //       PLATFORM_IOS
+  //         ? Toast.show({
+  //           type: 'success',
+  //           text1: ' Default card set successfully',
+  //         })
+  //         : ToastAndroid.show(
+  //           'Default card set successfully',
+  //           ToastAndroid.SHORT,
+  //         );
+
+  //     } else {
+  //       // console.log("Error deleting card");
+  //       PLATFORM_IOS
+  //         ? Toast.show({
+  //           type: 'success',
+  //           text1: "Default card  not set",
+  //         })
+  //         : ToastAndroid.show(
+  //           "Default card not set",
+  //           ToastAndroid.SHORT,
+  //         );
+  //     }
+  //   } catch (error) {
+  //     console.error("Error Making default card", error);
+  //   }
+  // };
+ 
+  // const handleGetCard = async () => {
+
+  //   try {
+  //     const response = await fetch(`${API}/getcarddetails/${getUserID}`);
+  //     const result = await response.json();
+  //     // console.log("Result", result[0].sort((b, a) => a.status - b.status))
+  //     if (result[0]?.length > 0) {
+  //       // console.log("defaultCard",defaultCard[0])
+  //       // setSavedCard(result[0].sort((b, a) => a.status - b.status))
+  //       setCardId(result[0].id)
+  //       if (result[0].status===0){
+  //       handleMakeDefaultCard()}
+  //       else{
+  //       const statusOneObjects = result[0].filter(item => item.status === 1);
+  //       // // console.log("-----------------",statusOneObjects);
+  //       dispatch(setCardDetails(statusOneObjects))
+  //       }
+  //     } else {
+  //       console.log("iiiiiiiiiiii")
+  //     }
+
+  //   } catch (error) {
+  //     PLATFORM_IOS
+  //       ? Toast.show({
+  //         type: 'success',
+  //         text1: ' Your card details not saved.',
+  //       })
+  //       : ToastAndroid.show(
+  //         ' Your card details not saved.',
+  //         ToastAndroid.SHORT,
+  //       );
+  //   }
+  // }
+
+  const handleAddCard = async (values) => {
+    console.log("--------",values)
+    let exp_month = values?.validTill?.split('/')[0];
+    let exp_year = values?.validTill?.split('/')[1];
+    // let cust_number = values?.cardNumber.split(" ").join("");
+    // setGetCard_Number(values?.cardNumber)
+    try {
+
+      const response = await axios.post(`${API}/addcarddetail`, {
+
+        "user_id": getUserID,
+        "cust_name": values.cardHolderName,
+        "card_number": values.cardNumber.replace(/\s/g, ''),
+        "card_cvc": values.cvv,
+        "card_exp_month": exp_month,
+        "card_exp_year": exp_year,
+      });
+      if (response.data.message === 'Your Card Detail Save') {
+        // cb();
+
+        console.log("card add success")
+        // setCardDetails({
+        //   cardHolderName: '',
+        //   card_number: '',
+        //   card_cvv: '',
+        //   validTill: '',
+        //   // card_exp_year:'',
+        // });
+        // handleGetCard()
+        PLATFORM_IOS
+          ? Toast.show({
+            type: 'success',
+            text1: ' Your Card Detail Save.',
+          })
+          : ToastAndroid.show(
+            'Your Card Detail Save.',
+            ToastAndroid.SHORT,
+          );
+      }
+      else {
+        // cb();
+        PLATFORM_IOS
+          ? Toast.show({
+            type: 'success',
+            text1: ' Your Card Detail Not Save.',
+          })
+          : ToastAndroid.show(
+            'Your Card Detail Not Save.',
+            ToastAndroid.SHORT,
+          );
+      }
+    } catch (error) {
+      console.error(error);
+    }
+
+  };
+  
   const getDeviceIDData = () => {
     axios
       .get(`${API}/devicecheck/${getUserID}}`)
@@ -234,7 +377,12 @@ export default function PaymentGateWay({ navigation, route }) {
       .get(`${API}/currentplan/${getUserID}`)
       .then(res => {
         console.log(res.data);
-        dispatch(setPurchaseData(res?.data));
+      
+        if (res.data.error == 'Package details not found') {
+          dispatch(setPurchaseData([]));
+        } else {
+          dispatch(setPurchaseData(res?.data));
+        }
         dispatch(setPackageStatus(true));
         navigationRef.navigate('HomeOne');
       })
