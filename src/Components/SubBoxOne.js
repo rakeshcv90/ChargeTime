@@ -12,12 +12,12 @@ const mobileW = Math.round(Dimensions.get('screen').width);
 const SubBoxOne = () => {
   // const {navigation, route} = props;
 
-  const getCurrentPlan = useSelector((state) => state.getCurrentPlan);
+  const getPurchaseData = useSelector((state) => state.getPurchaseData);
 
-  //   useEffect(() => {
-  //     // console.log('data for this User:---------', getPlanSummary); 
-  //     console.log(getCurrentPlan, "----------")
-  //  }, []);
+    useEffect(() => {
+      // console.log('data for this User:---------', getPlanSummary); 
+      console.log(getPurchaseData, "----------")
+   }, []);
   return (
     <View style={[styles.mainDiv_installation]}>
       <TouchableOpacity style={styles.install_touchable}>
@@ -26,13 +26,10 @@ const SubBoxOne = () => {
         <InstallBase style={styles.img_width} />
         <Text style={styles.installation_text}>Installation Base</Text>
       </TouchableOpacity>
-      <View style={styles.shadowProp}>
+      {getPurchaseData.length != 0 &&<View style={styles.shadowProp}>
         <View style={styles.location_div}>
           <Vanderberg style={styles.img_width} />
-          {/* <Text style={styles.force_base}>{data?.location?data?.location}</Text> */}
-          <Text style={styles.force_base}>{getCurrentPlan.location}</Text>
-          {/* <Text style={styles.force_base}>{data?.location}</Text> */}
-          {/* <Text style={styles.force_base}>{setBasePackage[0].location}</Text> */}
+          <Text style={styles.force_base}>{getPurchaseData.data.location}</Text>
         </View>
         <Image
           // style={styles.img_width}
@@ -42,13 +39,8 @@ const SubBoxOne = () => {
         />
         <View style={styles.mainDiv_state_zip}>
           <View style={styles.state_div}>
-            {/* <Image
-            style={styles.img_width}
-            source={require('../../assets/images/connecticut.png')}
-          /> */}
             <Connecticut style={styles.img_width} />
-            <Text style={styles.force_base}>{getCurrentPlan.pwa_state}</Text>
-            {/* <Text style={styles.force_base}>{setBasePackage[0].state}</Text> */}
+            <Text style={styles.force_base}>{getPurchaseData.data.pwa_state}</Text>
           </View>
           <View style={styles.state_div}>
             <Image
@@ -56,12 +48,11 @@ const SubBoxOne = () => {
               source={require('../../assets/images/zip_code.png')}
               style={{ width: 20, height: 20 }}
             />
-            <Text style={styles.force_base}>{getCurrentPlan.pwa_zip}</Text>
-            {/* <Text style={styles.force_base}>{setBasePackage[0].ZIP_code}</Text> */}
+            <Text style={styles.force_base}>{getPurchaseData.data.pwa_zip}</Text>
 
           </View>
         </View>
-      </View>
+      </View>}
     </View>
 
   );

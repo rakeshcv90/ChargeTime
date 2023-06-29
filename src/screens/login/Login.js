@@ -359,7 +359,11 @@ export default function Login({navigation}) {
       .then(res => {
         setForLoading(false);
 
-        dispatch(setPurchaseData(res?.data));
+        if (res.data.error == 'Package details not found') {
+          dispatch(setPurchaseData([]));
+        } else {
+          dispatch(setPurchaseData(res?.data));
+        }
         // dispatch(setIsAuthorized(true));
         navigation.navigate('DrawerStack');
       })

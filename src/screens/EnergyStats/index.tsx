@@ -166,6 +166,7 @@ export default function EnergyStats() {
           // }, 10000);
         } else {
 
+          setIsLoading(false)
           // getPlanCurrent(res.data?.user_id);
         }
       })
@@ -182,7 +183,7 @@ export default function EnergyStats() {
       .get(`${API}/dailyusagegraph/${userID}`)
       .then(res => {
         console.log("GRAPH.........", res.data)
-        dispatch(setGraphData(res?.data));
+        dispatch(setGraphData(res?.data.Usage));
 
         dailyUsuagekwh(getUserID);
         // navigation.navigate('DrawerStack');
@@ -398,6 +399,7 @@ fetchWeekGraphData(getUserID);
                 </Text>
               </TouchableOpacity>
               <TouchableOpacity
+              onPress={() => navigationRef.navigate('Contact')}
                 style={{
                   width: mobileW * 0.3,
                   borderRadius: 10,
