@@ -1,10 +1,20 @@
-import {View, Text, StyleSheet, TouchableOpacity, Image} from 'react-native';
-import React from 'react';
+import {View, Text, StyleSheet, TouchableOpacity, Image, BackHandler} from 'react-native';
+import React, { useEffect } from 'react';
 import {Dolllar} from '../../assets/images/Dollar';
 import {navigationRef} from '../../App';
 
 const PurchseButton = ({data}) => {
-  console.log(data, 'gg');
+  useEffect(() => {
+    const backHandler = BackHandler.addEventListener(
+      'hardwareBackPress',
+      handleBackButton
+    );
+
+    return () => backHandler.remove();
+  }, []);
+  const handleBackButton = () => {
+    return true;
+  };
 
   return (
     <View style={[styles.mainDiv_purchage_dollar, styles.shadowProp]}>
@@ -17,7 +27,7 @@ const PurchseButton = ({data}) => {
             justifyContent: 'center',
             flexDirection: 'row',
           }}>
-          <Text style={styles.per_month}>${data?.total_price}</Text>
+          <Text style={styles.per_month}>${data[0]==undefined?data?.total_price:data[0].total_price}</Text>
           <Text
             style={{
               fontSize: 12,
@@ -32,7 +42,7 @@ const PurchseButton = ({data}) => {
       <View>
         <TouchableOpacity
           style={styles.btn_purchage}
-          onPress={() => navigationRef.navigate('PlanSummary', {data: data})}>
+          onPress={() => navigationRef.navigate('PlanSummary', {data: data[0]==undefined?data:data[0]})}>
           <Text style={styles.purchage_text}>PURCHASE</Text>
         </TouchableOpacity>
       </View>

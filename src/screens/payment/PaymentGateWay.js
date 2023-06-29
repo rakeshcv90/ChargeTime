@@ -12,10 +12,8 @@ import {
   KeyboardAvoidingView,
 } from 'react-native';
 import AnimatedLottieView from 'lottie-react-native';
-
-import React, {useState, useRef, useEffect} from 'react';
-import {SafeAreaView} from 'react-native-safe-area-context';
-
+import React, { useState, useRef, useEffect } from 'react';
+import { SafeAreaView } from 'react-native-safe-area-context'
 import Input from '../../Components/Input';
 import COLORS from '../../constants/COLORS';
 import { Card } from '../../../assets/svgs/Card';
@@ -24,10 +22,9 @@ import { DIMENSIONS } from '../../constants/DIMENSIONS';
 import { LeftIcon } from '../../../assets/images/LeftIcon';
 import { Formik } from 'formik';
 import * as Yup from 'yup';
-import {Admin} from '../../../assets/images/Admin';
-import {Message} from '../../../assets/images/Message';
-import {useDispatch, useSelector} from 'react-redux';
-
+import { Admin } from '../../../assets/images/Admin';
+import { Message } from '../../../assets/images/Message';
+import { useDispatch, useSelector } from 'react-redux';
 import axios from 'axios';
 import { API } from '../../api/API';
 import { navigationRef } from '../../../App';
@@ -105,15 +102,12 @@ export default function PaymentGateWay({ navigation, route }) {
   const [validity, setValidity] = useState(
     String(
       getCardDetails[0]?.card_exp_month +
-        '/' +
-        getCardDetails[0]?.card_exp_year,
+      '/' +
+      getCardDetails[0]?.card_exp_year,
     ) ?? '',
   );
 
-  // const [savedCard, setSavedCard] = useState(cardDetails.cardHolderName ?? '');
-  useEffect(() => {
-    console.log('9999999999999', cardDetails);
-  }, []);
+ 
 
   // console.log(savedCard,"------------")
 
@@ -123,8 +117,6 @@ export default function PaymentGateWay({ navigation, route }) {
 
     let exp_month = cardDetails?.validTill?.split('/')[0];
     let exp_year = cardDetails?.validTill?.split('/')[1];
-
-
     payload.append('kwh_unit', route.params.data.kwh);
     payload.append('card_number', cardDetails.card_number);
     payload.append('card_cvc', cardDetails.card_cvv);
@@ -141,7 +133,7 @@ export default function PaymentGateWay({ navigation, route }) {
           'Content-Type': 'multipart/form-data',
         },
       });
-      console.log('PAYMENT', response.data);
+
       if ((response.data.status = 'success')) {
         setLoader(false);
         setModalVisible(true);
@@ -164,7 +156,6 @@ export default function PaymentGateWay({ navigation, route }) {
     let exp_year = values?.validTill?.split('/')[1];
 
     payload.append('kwh_unit', route.params.data.kwh);
-
     payload.append('card_number', values.cardNumber.replace(/\s/g, ''));
     payload.append('card_cvc', values.cvv);
     payload.append('card_exp_month', exp_month);
@@ -182,6 +173,8 @@ export default function PaymentGateWay({ navigation, route }) {
       });
       console.log('PAYMENT', response.data);
       if ((response.data.status = 'success')) {
+      
+       
         setLoader(false);
         setModalVisible(true);
       }
@@ -571,7 +564,7 @@ export default function PaymentGateWay({ navigation, route }) {
                         ...Platform.select({
                           ios: {
                             shadowColor: '#000000',
-                            shadowOffset: {width: 0, height: 2},
+                            shadowOffset: { width: 0, height: 2 },
                             shadowOpacity: 0.3,
                             shadowRadius: 4,
                           },
@@ -580,7 +573,7 @@ export default function PaymentGateWay({ navigation, route }) {
                           },
                         }),
                       }}>
-                      {cardDetails.card_cvv ?<TouchableOpacity onPress={newPAYMENT}>
+                      {cardDetails.card_cvv ? <TouchableOpacity onPress={newPAYMENT}>
                         <Text
                           style={{
                             fontSize: 14,
@@ -589,17 +582,17 @@ export default function PaymentGateWay({ navigation, route }) {
                           }}>
                           Make Payment
                         </Text>
-                      </TouchableOpacity>:
-                      <TouchableOpacity onPress={handleSubmit}>
-                        <Text
-                          style={{
-                            fontSize: 14,
-                            fontWeight: '700',
-                            color: COLORS.BLACK,
-                          }}>
-                          Make Payment
-                        </Text>
-                      </TouchableOpacity>}
+                      </TouchableOpacity> :
+                        <TouchableOpacity onPress={handleSubmit}>
+                          <Text
+                            style={{
+                              fontSize: 14,
+                              fontWeight: '700',
+                              color: COLORS.BLACK,
+                            }}>
+                            Make Payment
+                          </Text>
+                        </TouchableOpacity>}
                     </View>
                   </View>
                 </KeyboardAvoidingView>
@@ -638,7 +631,7 @@ const styles = StyleSheet.create({
     ...Platform.select({
       ios: {
         shadowColor: '#000000',
-        shadowOffset: {width: 0, height: 2},
+        shadowOffset: { width: 0, height: 2 },
         shadowOpacity: 0.3,
         shadowRadius: 4,
       },
@@ -717,18 +710,4 @@ const styles = StyleSheet.create({
   },
 });
 
-// //customerName: values.cardHolderName,
 
-// // customerZipcode: getDataForPayment.ZIP_code,
-// // customerState: getDataForPayment.state,
-// // customerCountry: getDataForPayment.location,
-// kwh_unit:route.params.data.kwh,
-// card_number: values.cardNumber,
-// card_cvc: values.cvv,
-// card_exp_month: exp_month,
-// card_exp_year: exp_year,
-// item_details: getDataForPayment.package_name,
-// price: getDataForPayment.total_price,
-// // total_amount: getDataForPayment.totalSalexTax,
-// price_stripe_id: getDataForPayment.price_stripe_id,
-// cust_id: getUserID,

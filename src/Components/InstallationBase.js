@@ -7,6 +7,7 @@ import {
   Dimensions,
   Platform,
   SafeAreaView,
+  BackHandler,
 } from 'react-native';
 import React, { useEffect } from 'react';
 // import { Address } from '../../assets/images/Address';
@@ -21,9 +22,22 @@ import { DIMENSIONS } from '../constants/DIMENSIONS';
 const mobileW = Math.round(Dimensions.get('screen').width);
 const InstallationBase = ({ data }) => {
   // const {navigation, route} = props;
+
   const setBasePackage = useSelector(state => state.setBasePackage);
+  useEffect(() => {
+    const backHandler = BackHandler.addEventListener(
+      'hardwareBackPress',
+      handleBackButton
+    );
+
+    return () => backHandler.remove();
+  }, []);
+  const handleBackButton = () => {
+    return true;
+  };
 
   return (
+
     <View style={Platform.OS == 'android' ? styles.mainDiv_installation1 : styles.mainDiv_installation}>
       <View style={styles.install_touchable}>
         {/* <Address style={styles.img_width} /> */}
@@ -33,8 +47,8 @@ const InstallationBase = ({ data }) => {
       <View >
         <View style={styles.location_div}>
           <Vanderberg style={styles.img_width} />
-          <Text style={styles.force_base}>{data?.location}</Text>
-          {/* <Text style={styles.force_base}>{setBasePackage[0].location}</Text> */}
+          <Text style={styles.force_base}>{data[0]==undefined?data?.location:data[0].location}</Text>
+          {/* <Text style={styles.force_base}>{data[0]=="undefined"?setBasePackage[0].location}</Text> */}
         </View>
         <Image
           // style={styles.img_width}
@@ -49,7 +63,7 @@ const InstallationBase = ({ data }) => {
             source={require('../../assets/images/connecticut.png')}
           /> */}
             <Connecticut style={styles.img_width} />
-            <Text style={styles.force_base}>{data?.state}</Text>
+            <Text style={styles.force_base}>{data[0]==undefined?data?.state:data[0].state}</Text>
             {/* <Text style={styles.force_base}>{setBasePackage[0].state}</Text> */}
           </View>
           <View style={styles.state_div}>
@@ -58,7 +72,7 @@ const InstallationBase = ({ data }) => {
               source={require('../../assets/images/zip_code.png')}
               style={{ width: 20, height: 20 }}
             />
-            <Text style={styles.force_base}>{data?.ZIP_code}</Text>
+            <Text style={styles.force_base}>{data[0]==undefined?data?.ZIP_code:data[0].ZIP_code}</Text>
             {/* <Text style={styles.force_base}>{setBasePackage[0].ZIP_code}</Text> */}
           </View>
         </View>
