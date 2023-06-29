@@ -39,7 +39,7 @@ const Account = ({ navigation }) => {
   useEffect(() => {
     //  console.log('data for this User:---------', userRegisterData); 
     userDetails();
-    userSubscription();
+    // userSubscription();
     //  userSubsEnergy();
   }, []);
   useEffect(() => {
@@ -102,19 +102,18 @@ const Account = ({ navigation }) => {
     //   });
     // },300)
 
-    navigation.dispatch(
-      CommonActions.reset({
-        index: 0,
-        routes: [
-          {
-            name: 'LoginStack',
-            params: {screen: 'Login'},
-          },
-        ],
-      }),
-    );
-
-    console.log('Log out successfully');
+    // navigation.dispatch(
+    //   CommonActions.reset({
+    //     index: 0,
+    //     routes: [
+    //       {
+    //         name: 'LoginStack',
+    //         params: {screen: 'Login'},
+    //       },
+    //     ],
+    //   }),
+    // );
+navigationRef.navigate('LoginStack')
   };
 
 
@@ -140,28 +139,28 @@ const Account = ({ navigation }) => {
   };
 
 
-  const userSubscription = async () => {
-    try {
-      const response = await fetch(`${API}/currentplan/${user_ID}`);
-      const result = await response.json();
-      console.log("-------------",user_ID)
+  // const userSubscription = async () => {
+  //   try {
+  //     const response = await fetch(`${API}/currentplan/${user_ID}`);
+  //     const result = await response.json();
+  //     console.log("-------------",user_ID)
 
       
-      if (result.data) {
-        console.log("-------------",result.data)
-        // setGetSubscription(result[0]);
-        // console.log("======ytytytytyyt=====", result[0].data);
-       dispatch(getCurrentPlan(result.data)); 
+  //     if (result.data) {
+  //       console.log("-------------",result.data)
+  //       // setGetSubscription(result[0]);
+  //       // console.log("======ytytytytyyt=====", result[0].data);
+  //      dispatch(getCurrentPlan(result.data)); 
 
-      } else {
-       dispatch(getCurrentPlan(result));
+  //     } else {
+  //      dispatch(getCurrentPlan(result));
        
-      }
-    } catch (error) {
+  //     }
+  //   } catch (error) {
 
-      console.error(error);
-    }
-  }
+  //     console.error(error);
+  //   }
+  // }
 
   //   const userSubsEnergy = async () => {
 

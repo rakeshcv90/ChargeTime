@@ -88,7 +88,7 @@ export const setDeviceId = (data) => {
 } 
 
 //store the default card details for make payment screen
-export const getCardDetails = (data) => {
+export const setCardDetails = (data) => {
   return {type:types.GET_CARD_DETAILS,payload:data}
 } 
 // store the details of current plan details for subscription screen

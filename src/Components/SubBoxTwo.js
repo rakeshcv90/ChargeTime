@@ -1,18 +1,17 @@
-import { View, Text, StyleSheet, TouchableOpacity, Image } from 'react-native';
-import React, { useEffect } from 'react';
+import {View, Text, StyleSheet, TouchableOpacity, Image} from 'react-native';
+import React, {useEffect} from 'react';
 import COLORS from '../constants/COLORS';
-import { Unit } from '../../assets/images/Unit';
-import { Mieq } from '../../assets/images/Mieq';
-import { useSelector } from 'react-redux';
-
+import {Unit} from '../../assets/images/Unit';
+import {Mieq} from '../../assets/images/Mieq';
+import {useSelector} from 'react-redux';
 
 const SubBoxTwo = () => {
-  const getCurrentPlan = useSelector((state) => state.getCurrentPlan);
+  const getPurchaseData = useSelector(state => state.getPurchaseData);
 
-  // useEffect(() => {
-  //   // console.log('data for this User:---------', getPlanSummary); 
-  //   // console.log(getCurrentPlan, "----------")
-  // }, []);
+  useEffect(() => {
+    // console.log('data for this User:---------', getPlanSummary);
+    console.log(getPurchaseData, "----------")
+  }, []);
   return (
     <View style={styles.mainDiv_installation}>
       <TouchableOpacity style={styles.install_touchable}>
@@ -22,31 +21,35 @@ const SubBoxTwo = () => {
         />
         <Text style={styles.installation_text}>Plan Details</Text>
       </TouchableOpacity>
-      <View style={[styles.mainDiv_plan_details, styles.shadowProp]}>
-        <View style={styles.second_main_div_kwh}>
-          {/* <Image source={require('../../assets/images/kwh.png')} /> */}
-          <Unit />
-          <Text style={styles.kwh_mieq_text}>{getCurrentPlan.kwh} kWh</Text>
-          <Text style={styles.unit_allowed}>Units Alloted</Text>
+      {getPurchaseData.length != 0 && (
+        <View style={[styles.mainDiv_plan_details, styles.shadowProp]}>
+          <View style={styles.second_main_div_kwh}>
+            <Unit />
+            <Text style={styles.kwh_mieq_text}>
+              {getPurchaseData.data.kwh} kWh
+            </Text>
+            <Text style={styles.unit_allowed}>Units Alloted</Text>
+          </View>
+          <View style={styles.second_main_div_kwh}>
+           
+            <Mieq />
+            <Text style={styles.kwh_mieq_text}>
+              ~ {getPurchaseData.data.mi_eq}
+            </Text>
+            <Text style={styles.unit_allowed}>Mi Eq</Text>
+          </View>
+          <View style={styles.second_main_div_kwh}>
+            <Image
+              source={require('../../assets/images/kwh_dollar.png')}
+              style={{width: 20, height: 20}}
+            />
+            <Text style={styles.kwh_mieq_text}>
+              {getPurchaseData.data.dollar_mi}
+            </Text>
+            <Text style={styles.unit_allowed}>$ / Mile</Text>
+          </View>
         </View>
-        <View style={styles.second_main_div_kwh}>
-          {/* <Image
-                  source={require('../../assets/images/kwh_icon_one.png')}
-                /> */}
-          <Mieq />
-          <Text style={styles.kwh_mieq_text}>~ {getCurrentPlan.mi_eq}</Text>
-          <Text style={styles.unit_allowed}>Mi Eq</Text>
-        </View>
-        <View style={styles.second_main_div_kwh}>
-          <Image
-            source={require('../../assets/images/kwh_dollar.png')}
-            style={{ width: 20, height: 20 }}
-          />
-          {/* <MileOne /> */}
-          <Text style={styles.kwh_mieq_text}>{getCurrentPlan.dollar_mi}</Text>
-          <Text style={styles.unit_allowed}>$ / Mile</Text>
-        </View>
-      </View>
+      )}
     </View>
   );
 };
@@ -65,19 +68,19 @@ const styles = StyleSheet.create({
   // },
   // shadowProp: {
   //   //backgroundColor: 'white',
-  //   shadowColor: '#000000', 
+  //   shadowColor: '#000000',
   //   shadowOffset: {
-  //     width: 4, 
-  //     height: 6, 
+  //     width: 4,
+  //     height: 6,
   //   },
-  //   shadowOpacity: 1, 
-  //   shadowRadius:  4, 
+  //   shadowOpacity: 1,
+  //   shadowRadius:  4,
   //   elevation: Platform.OS === 'android' ? 8 : 0,
   // },
   mainDiv_installation: {
     overflow: 'hidden',
     borderRadius: 10,
-    marginTop: Platform.OS === "ios" ? 20 : 20,
+    marginTop: Platform.OS === 'ios' ? 20 : 20,
     shadowColor: '#000000',
     shadowOffset: {
       width: 4,
@@ -97,7 +100,7 @@ const styles = StyleSheet.create({
     marginLeft: 20,
   },
   installation_text: {
-    fontWeight: "700",
+    fontWeight: '700',
     fontSize: 12,
     paddingLeft: 10,
     color: COLORS.BLACK,
@@ -125,13 +128,13 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     // alignItems:'center',
     paddingVertical: 20,
-    backgroundColor: COLORS.GRAY
+    backgroundColor: COLORS.GRAY,
   },
   kwh_mieq_text: {
     fontWeight: 700,
     fontSize: 16,
     paddingTop: 8,
-    color: COLORS.BLACK
+    color: COLORS.BLACK,
   },
   second_main_div_kwh: {
     flexDirection: 'column',
@@ -139,8 +142,6 @@ const styles = StyleSheet.create({
     // alignSelf: 'center',
     alignContent: 'center',
     paddingHorizontal: 10,
-
-
   },
 
   dollar_div: {

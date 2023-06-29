@@ -6,13 +6,25 @@ import {
   Image,
   Dimensions,
   Platform,
+  BackHandler,
 } from 'react-native';
-import React from 'react';
+import React, { useEffect } from 'react';
 import {Address} from '../../assets/images/Address';
 import {Vanderberg} from '../../assets/images/Vanderberg';
 import {Connecticut} from '../../assets/images/Connecticut';
 const mobileW = Math.round(Dimensions.get('screen').width);
 const BoxFour = ({data}) => {
+  useEffect(() => {
+    const backHandler = BackHandler.addEventListener(
+      'hardwareBackPress',
+      handleBackButton
+    );
+
+    return () => backHandler.remove();
+  }, []);
+  const handleBackButton = () => {
+    return true;
+  };
   return (
     <View
       style={[
@@ -37,7 +49,7 @@ const BoxFour = ({data}) => {
       <View style={styles.shadowProp}>
         <View style={styles.location_div}>
           <Vanderberg style={styles.img_width} />
-          <Text style={styles.force_base}>{data[0]?.package_name}</Text>
+          <Text style={styles.force_base}>{data[0]==undefined?data.package_name:data[0].package_name}</Text>
         </View>
         <Image
           // style={styles.img_width}
@@ -55,6 +67,7 @@ const BoxFour = ({data}) => {
             <Text style={styles.force_base}>
               {data[0]?.date} - {data[0]?.thirty_days_ago}
             </Text>
+      
           </View>
         </View>
       </View>

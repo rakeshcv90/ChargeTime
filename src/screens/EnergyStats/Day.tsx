@@ -52,14 +52,27 @@ const Day = (props: any) => {
     // fetchStatusdata(getUserID);
     // console.log(getkwhData)
   }, []);
+  const fetchGraphData = () => {
+    axios
+      .get(`${API}/dailyusagegraph/${getUserID}`)
+      .then(res => {
+        console.log("DAY GRAPH", res.data)
+        dispatch(setGraphData(res?.data));
 
+        // navigation.navigate('DrawerStack');
+      })
+      .catch(err => {
+        console.log(err);
+      });
+  };
   const handleRefresh = () => {
     setRefresh(true);
     setTimeout(() => {
       setRefresh(false);
     }, 2000);
     remainigUsuageData();
-    dailyUsuagekwh(getUserID)
+    dailyUsuagekwh(getUserID);
+    fetchGraphData()
   };
 
   const remainigUsuageData = () => {
@@ -103,7 +116,7 @@ const Day = (props: any) => {
       .get(`${API}/dailyusage/${userId}`)
       .then(res => {
         if (res?.data) {
-          console.log(res.data,"TOALASD")
+          console.log(res.data, 'TOALASD');
           dispatch(setKwhData(res?.data));
         }
       })
@@ -212,20 +225,21 @@ const Day = (props: any) => {
           </View>
 
           <View style={{marginHorizontal: 20}}>
-            {getGraphData.Usage.length >= 1 ? (
-              <Graph dataOne={getGraphData} />
-            ) : (
-              <Text
-                style={{
-                  color: COLORS.BLACK,
-                  fontWeight: 'bold',
-                  alignSelf: 'center',
-                  fontSize: 14,
-                  marginVertical: 10,
-                }}>
-                No Graph Data available
-              </Text>
-            )}
+            {getGraphData.msg != 'No usage data available' ? (
+                <Graph dataOne={getGraphData} />
+              ) : (
+                <Text
+                  style={{
+                    color: COLORS.BLACK,
+                    fontWeight: 'bold',
+                    alignSelf: 'center',
+                    fontSize: 14,
+                    marginVertical: 10,
+                  }}>
+                  No Graph Data available
+                </Text>
+              
+            ) }
             <BoxTwo data={getBoxTwoDataForDashboard[0]} />
           </View>
           <View style={{marginBottom: 120}}>

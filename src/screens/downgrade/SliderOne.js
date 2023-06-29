@@ -36,6 +36,7 @@ export default function SliderOne(props) {
 
   useEffect(() => {
     getPlanCurrent();
+    console.log(props.route.params.purchageData)
   }, []);
   const handleRefresh = () => {
     setRefresh(true);
@@ -50,7 +51,12 @@ export default function SliderOne(props) {
       .get(`${API}/currentplan/${getUserID}`)
       .then(res => {
         console.log(res.data)
-        dispatch(setPurchaseData(res.data));
+        
+        if (res.data.error == 'Package details not found') {
+          dispatch(setPurchaseData([]));
+        } else {
+          dispatch(setPurchaseData(res?.data));
+        }
         PlanStatus();
       })
       .catch(err => {
@@ -89,11 +95,11 @@ export default function SliderOne(props) {
 
       <View style={styles.managing_width}>
         <BoxTwo data={props.route.params.item} />
-        {getPurchaseData.data.energy_plan.toLowerCase() ===
+        {getPurchaseData.length != 0 &&getPurchaseData.data.energy_plan.toLowerCase() ===
           props.route.params.item.package_name.toLowerCase() && (
           <Remaining RemainingFill={50} KWH={400} data={'energy'} />
         )}
-        {getPurchaseData.data.energy_plan.toLowerCase() ===
+        {getPurchaseData.length != 0&& getPurchaseData.data.energy_plan.toLowerCase() ===
           props.route.params.item.package_name.toLowerCase() && (
           <View style={{marginBottom: 20}}>
             <PriceBox data={getPurchaseData.data} />
@@ -102,15 +108,15 @@ export default function SliderOne(props) {
         <View
           style={{
             marginBottom:
-              getPurchaseData.data.energy_plan.toLowerCase() ===
+            getPurchaseData.length != 0&&getPurchaseData.data.energy_plan.toLowerCase() ===
               props.route.params.item.package_name.toLowerCase()
                 ? 20
-                : null,
+                : 0,
           }}>
           <InstallationBase data={props.route.params.item} />
         </View>
 
-        {getPurchaseData.data.energy_plan.toLowerCase() !==
+        {getPurchaseData.length != 0&&getPurchaseData.data.energy_plan.toLowerCase() !==
           props.route.params.item.package_name.toLowerCase() && (
           <BoxFive
             data={props.route.params.item}

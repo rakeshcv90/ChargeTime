@@ -10,30 +10,29 @@ import {
   Pressable,
   Alert,
   KeyboardAvoidingView,
+  ToastAndroid,
 } from 'react-native';
 import AnimatedLottieView from 'lottie-react-native';
-
-import React, {useState, useRef, useEffect} from 'react';
-import {SafeAreaView} from 'react-native-safe-area-context';
-
+import React, { useState, useRef, useEffect } from 'react';
+import { SafeAreaView } from 'react-native-safe-area-context'
 import Input from '../../Components/Input';
 import COLORS from '../../constants/COLORS';
 import { Card } from '../../../assets/svgs/Card';
 import { Name } from '../../../assets/svgs/Name';
-import { DIMENSIONS } from '../../constants/DIMENSIONS';
+import { DIMENSIONS, PLATFORM_IOS } from '../../constants/DIMENSIONS';
 import { LeftIcon } from '../../../assets/images/LeftIcon';
 import { Formik } from 'formik';
 import * as Yup from 'yup';
-import {Admin} from '../../../assets/images/Admin';
-import {Message} from '../../../assets/images/Message';
-import {useDispatch, useSelector} from 'react-redux';
-
+import { Admin } from '../../../assets/images/Admin';
+import { Message } from '../../../assets/images/Message';
+import { useDispatch, useSelector } from 'react-redux';
 import axios from 'axios';
 import { API } from '../../api/API';
 import { navigationRef } from '../../../App';
 import ActivityLoader from '../../Components/ActivityLoader';
 
 import {
+  setCardDetails,
   setDeviceId,
   setPackageStatus,
   setPlanStatus,
@@ -75,6 +74,7 @@ export default function PaymentGateWay({navigation, route}) {
   const [modalVisible, setModalVisible] = useState(false);
   const [loader, setLoader] = useState(false);
   const inputRef = useRef(null);
+<<<<<<< HEAD
 const dispatch = useDispatch();
 const getCardDetails = useSelector((state) => state.getCardDetails)
 const [cardDetails, setCardDetails] = useState({
@@ -94,6 +94,44 @@ const [validity, setValidity]=useState((String(getCardDetails[0]?.card_exp_month
 useEffect(() => {
  console.log("9999999999999",cardDetails)
 }, []);
+=======
+  const dispatch = useDispatch();
+
+  const getCardDetails = useSelector(state => state.getCardDetails);
+const [cardId, setCardId]=useState('');
+  const [cardDetails, setCardDetails1] = useState({
+    cardHolderName: getCardDetails[0]?.cust_name,
+    card_number: getCardDetails[0]?.card_number,
+    card_cvv: getCardDetails[0]?.card_cvc,
+
+    validTill:
+      getCardDetails[0]?.card_exp_month +
+      '/' +
+      getCardDetails[0]?.card_exp_year,
+    // card_exp_year:'',
+  });
+  const [card_name, setCard_Name] = useState(
+    getCardDetails[0]?.cust_name ?? '',
+  );
+  const [card_Number, setCard_Number] = useState(
+    String(getCardDetails[0]?.card_number).replace(
+      /^(\d{4})(\d{4})(\d{4})(\d{4})$/,
+      '$1 $2 $3 $4',
+    ) ?? '',
+  );
+  const [card_cvv, setCard_Cvv] = useState(
+    String(getCardDetails[0]?.card_cvc) ?? '',
+  );
+  const [validity, setValidity] = useState(
+    String(
+      getCardDetails[0]?.card_exp_month +
+      '/' +
+      getCardDetails[0]?.card_exp_year,
+    ) ?? '',
+  );
+
+ 
+>>>>>>> 35468b57937448ef0b0bb8cbed08ed3566588a16
 
   // console.log(savedCard,"------------")
 
@@ -103,8 +141,6 @@ useEffect(() => {
 
     let exp_month = cardDetails?.validTill?.split('/')[0];
     let exp_year = cardDetails?.validTill?.split('/')[1];
-
-
     payload.append('kwh_unit', route.params.data.kwh);
     payload.append('card_number', cardDetails.card_number);
     payload.append('card_cvc', cardDetails.card_cvv);
@@ -121,7 +157,7 @@ useEffect(() => {
           'Content-Type': 'multipart/form-data',
         },
       });
-      console.log('PAYMENT', response.data);
+
       if ((response.data.status = 'success')) {
         setLoader(false);
         setModalVisible(true);
@@ -144,7 +180,6 @@ useEffect(() => {
     let exp_year = values?.validTill?.split('/')[1];
 
     payload.append('kwh_unit', route.params.data.kwh);
-
     payload.append('card_number', values.cardNumber.replace(/\s/g, ''));
     payload.append('card_cvc', values.cvv);
     payload.append('card_exp_month', exp_month);
@@ -162,8 +197,13 @@ useEffect(() => {
       });
       console.log('PAYMENT', response.data);
       if ((response.data.status = 'success')) {
-        setLoader(false);
+
+
+        // handleAddCard(values)
+
         setModalVisible(true);
+
+        setLoader(false);
       }
     } catch (err) {
       setLoader(false);
@@ -176,6 +216,144 @@ useEffect(() => {
     }
   };
 
+  // const handleMakeDefaultCard = async () => {
+
+  //   try {
+  //     const response = await fetch(`${API}/defaultcard`, {
+  //       method: 'POST',
+  //       headers: {
+  //         'Content-Type': 'application/json',
+  //       },
+  //       body: JSON.stringify({
+  //         id: cardId,
+  //         user_id: getUserID,
+  //       }),
+  //     });
+  //     // console.log("999999999999",response)
+  //     const result = await response.json();
+  //     // console.log("---------------",result)
+  //     if (result.msg === "sucessfull") {
+  //       handleGetCard();
+  //       // handleGetCard();
+  //       console.log("Default card set successfully");
+  //       PLATFORM_IOS
+  //         ? Toast.show({
+  //           type: 'success',
+  //           text1: ' Default card set successfully',
+  //         })
+  //         : ToastAndroid.show(
+  //           'Default card set successfully',
+  //           ToastAndroid.SHORT,
+  //         );
+
+  //     } else {
+  //       // console.log("Error deleting card");
+  //       PLATFORM_IOS
+  //         ? Toast.show({
+  //           type: 'success',
+  //           text1: "Default card  not set",
+  //         })
+  //         : ToastAndroid.show(
+  //           "Default card not set",
+  //           ToastAndroid.SHORT,
+  //         );
+  //     }
+  //   } catch (error) {
+  //     console.error("Error Making default card", error);
+  //   }
+  // };
+ 
+  // const handleGetCard = async () => {
+
+  //   try {
+  //     const response = await fetch(`${API}/getcarddetails/${getUserID}`);
+  //     const result = await response.json();
+  //     // console.log("Result", result[0].sort((b, a) => a.status - b.status))
+  //     if (result[0]?.length > 0) {
+  //       // console.log("defaultCard",defaultCard[0])
+  //       // setSavedCard(result[0].sort((b, a) => a.status - b.status))
+  //       setCardId(result[0].id)
+  //       if (result[0].status===0){
+  //       handleMakeDefaultCard()}
+  //       else{
+  //       const statusOneObjects = result[0].filter(item => item.status === 1);
+  //       // // console.log("-----------------",statusOneObjects);
+  //       dispatch(setCardDetails(statusOneObjects))
+  //       }
+  //     } else {
+  //       console.log("iiiiiiiiiiii")
+  //     }
+
+  //   } catch (error) {
+  //     PLATFORM_IOS
+  //       ? Toast.show({
+  //         type: 'success',
+  //         text1: ' Your card details not saved.',
+  //       })
+  //       : ToastAndroid.show(
+  //         ' Your card details not saved.',
+  //         ToastAndroid.SHORT,
+  //       );
+  //   }
+  // }
+
+  const handleAddCard = async (values) => {
+    console.log("--------",values)
+    let exp_month = values?.validTill?.split('/')[0];
+    let exp_year = values?.validTill?.split('/')[1];
+    // let cust_number = values?.cardNumber.split(" ").join("");
+    // setGetCard_Number(values?.cardNumber)
+    try {
+
+      const response = await axios.post(`${API}/addcarddetail`, {
+
+        "user_id": getUserID,
+        "cust_name": values.cardHolderName,
+        "card_number": values.cardNumber.replace(/\s/g, ''),
+        "card_cvc": values.cvv,
+        "card_exp_month": exp_month,
+        "card_exp_year": exp_year,
+      });
+      if (response.data.message === 'Your Card Detail Save') {
+        // cb();
+
+        console.log("card add success")
+        // setCardDetails({
+        //   cardHolderName: '',
+        //   card_number: '',
+        //   card_cvv: '',
+        //   validTill: '',
+        //   // card_exp_year:'',
+        // });
+        // handleGetCard()
+        PLATFORM_IOS
+          ? Toast.show({
+            type: 'success',
+            text1: ' Your Card Detail Save.',
+          })
+          : ToastAndroid.show(
+            'Your Card Detail Save.',
+            ToastAndroid.SHORT,
+          );
+      }
+      else {
+        // cb();
+        PLATFORM_IOS
+          ? Toast.show({
+            type: 'success',
+            text1: ' Your Card Detail Not Save.',
+          })
+          : ToastAndroid.show(
+            'Your Card Detail Not Save.',
+            ToastAndroid.SHORT,
+          );
+      }
+    } catch (error) {
+      console.error(error);
+    }
+
+  };
+  
   const getDeviceIDData = () => {
     axios
       .get(`${API}/devicecheck/${getUserID}}`)
@@ -214,7 +392,12 @@ useEffect(() => {
       .get(`${API}/currentplan/${getUserID}`)
       .then(res => {
         console.log(res.data);
-        dispatch(setPurchaseData(res?.data));
+      
+        if (res.data.error == 'Package details not found') {
+          dispatch(setPurchaseData([]));
+        } else {
+          dispatch(setPurchaseData(res?.data));
+        }
         dispatch(setPackageStatus(true));
         navigationRef.navigate('HomeOne');
       })
@@ -568,7 +751,7 @@ useEffect(() => {
                         ...Platform.select({
                           ios: {
                             shadowColor: '#000000',
-                            shadowOffset: {width: 0, height: 2},
+                            shadowOffset: { width: 0, height: 2 },
                             shadowOpacity: 0.3,
                             shadowRadius: 4,
                           },
@@ -577,7 +760,7 @@ useEffect(() => {
                           },
                         }),
                       }}>
-                      {cardDetails.card_cvv ?<TouchableOpacity onPress={newPAYMENT}>
+                      {cardDetails.card_cvv ? <TouchableOpacity onPress={newPAYMENT}>
                         <Text
                           style={{
                             fontSize: 14,
@@ -586,17 +769,17 @@ useEffect(() => {
                           }}>
                           Make Payment
                         </Text>
-                      </TouchableOpacity>:
-                      <TouchableOpacity onPress={handleSubmit}>
-                        <Text
-                          style={{
-                            fontSize: 14,
-                            fontWeight: '700',
-                            color: COLORS.BLACK,
-                          }}>
-                          Make Payment
-                        </Text>
-                      </TouchableOpacity>}
+                      </TouchableOpacity> :
+                        <TouchableOpacity onPress={handleSubmit}>
+                          <Text
+                            style={{
+                              fontSize: 14,
+                              fontWeight: '700',
+                              color: COLORS.BLACK,
+                            }}>
+                            Make Payment
+                          </Text>
+                        </TouchableOpacity>}
                     </View>
                   </View>
                 </KeyboardAvoidingView>
@@ -635,7 +818,7 @@ const styles = StyleSheet.create({
     ...Platform.select({
       ios: {
         shadowColor: '#000000',
-        shadowOffset: {width: 0, height: 2},
+        shadowOffset: { width: 0, height: 2 },
         shadowOpacity: 0.3,
         shadowRadius: 4,
       },
@@ -714,18 +897,4 @@ const styles = StyleSheet.create({
   },
 });
 
-// //customerName: values.cardHolderName,
 
-// // customerZipcode: getDataForPayment.ZIP_code,
-// // customerState: getDataForPayment.state,
-// // customerCountry: getDataForPayment.location,
-// kwh_unit:route.params.data.kwh,
-// card_number: values.cardNumber,
-// card_cvc: values.cvv,
-// card_exp_month: exp_month,
-// card_exp_year: exp_year,
-// item_details: getDataForPayment.package_name,
-// price: getDataForPayment.total_price,
-// // total_amount: getDataForPayment.totalSalexTax,
-// price_stripe_id: getDataForPayment.price_stripe_id,
-// cust_id: getUserID,

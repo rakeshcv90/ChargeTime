@@ -134,12 +134,6 @@ export default function PaymentGateWay({ navigation }) {
     let exp_year = values?.validTill?.split('/')[1];
     let cust_number = values?.cardNumber.split(" ").join("");
     setGetCard_Number(values?.cardNumber)
-   console.log ("user_id",getUserID);
-  console.log ( "cust_name", values?.cardHolderName);
-  console.log ( "card_number", cust_number);
-    console.log("card_cvc", values?.cvv);
-    console.log("card_exp_month", exp_month);
-   console.log ("card_exp_year", exp_year);
     try {
 
       const response = await axios.post(`${API}/addcarddetail`, {
@@ -195,9 +189,9 @@ export default function PaymentGateWay({ navigation }) {
     try {
       const response = await fetch(`${API}/getcarddetails/${user_ID}`);
       const result = await response.json();
-      //console.log("Result", result[0].sort((b, a) => a.status - b.status))
+      console.log("Result", result[0].sort((b, a) => a.status - b.status))
       if (result[0]?.length > 0) {
-        console.log("-------------------",result[0])
+        // console.log("defaultCard",defaultCard[0])
         setSavedCard(result[0].sort((b, a) => a.status - b.status))
 
         const statusOneObjects = result[0].filter(item => item.status === 1);
@@ -205,7 +199,6 @@ export default function PaymentGateWay({ navigation }) {
         dispatch(setCardDetails(statusOneObjects))
 
       } else {
-        dispatch(getCardDetails({}))
         console.log("iiiiiiiiiiii")
       }
 
@@ -224,7 +217,7 @@ export default function PaymentGateWay({ navigation }) {
   const card_id = cardId;
 
   const handleDeleteCard = async (value) => {
-    console.log("-------rrrr",cardID)
+    // console.log("-------rrrr",cardID)
     try {
       const response = await fetch(`${API}/deletecard/${value}`, {
         method: 'DELETE',
@@ -270,7 +263,6 @@ export default function PaymentGateWay({ navigation }) {
 
 
   const handleMakeDefaultCard = async (values) => {
-    console.log("-----43242423--------",values)
 
     try {
       const response = await fetch(`${API}/defaultcard`, {
@@ -469,25 +461,24 @@ export default function PaymentGateWay({ navigation }) {
                     marginBottom: 35,
                   }}>
                   <TouchableOpacity
-                    onPress={() => 
-                      {
-                        if (savedCard && savedCard[0].status === 1 && (!currentCard || currentCard.status === 1)) {
-                        //  console.log("In if------",savedCard[0].id)
-                          navigationRef.navigate('PaymentGateWay');
-                         }
-                        else if(savedCard && savedCard.length ===1 && savedCard[0].status === 0){
-                          console.log("In else if------",savedCard[0].id)
-                          handleMakeDefaultCard(savedCard[0].id)
-                        }
-                        else if(savedCard && savedCard.length >1 && (currentCard.status === 0)){
-                          console.log("In else------",currentCard.id)
-                          handleMakeDefaultCard(currentCard.id)
-                         
-                        }
-                      
-                      }}
+                    onPress={() => {
+                      if (savedCard && savedCard[0].status === 1 && (!currentCard || currentCard.status === 1)) {
+
+                        // console.log("------",savedCard[0])
+                        // navigationRef.navigate('PaymentGateWay');
+                      } else if(savedCard && savedCard.length ===1 && savedCard[0].status === 0){
+                        console.log("In else if------",savedCard[0].id)
+                        handleMakeDefaultCard(savedCard[0].id)
+                      }
+                      else if(savedCard && savedCard.length >1 && (currentCard.status === 0)){
+                        console.log("In else------",currentCard.id)
+                        handleMakeDefaultCard(currentCard.id)
+                       
+                      }
+                   
+                    }}
                     style={savedCard && savedCard[0].status === 1 && (!currentCard || currentCard.status === 1) ? styles.default : styles.makeDefault}
-                     disabled = {savedCard && savedCard[0].status === 1 && (!currentCard || currentCard.status === 1)?true:false}>
+                    disabled = {savedCard && savedCard[0].status === 1 && (!currentCard || currentCard.status === 1)?true:false}>
                     <Text
                       style={savedCard && savedCard[0].status === 1 && (!currentCard || currentCard.status === 1) ? styles.makeDefaultText : styles.defaultText}>
 
@@ -644,7 +635,6 @@ export default function PaymentGateWay({ navigation }) {
                       value={values.cvv}
                       onChangeText={(text) => {
                         handleChange('cvv')(text),
-                          // setCardDetails('');
                           setSavedCard('')
                         setCardDetails1({ ...cardDetails, ['card_cvv']: text })
                       }}

@@ -304,7 +304,7 @@ import Animated, {
   interpolateColor,
   runOnJS,
 } from 'react-native-reanimated';
-import {useState} from 'react';
+import {useState, useEffect} from 'react';
 import { DIMENSIONS } from '../constants/DIMENSIONS';
 import COLORS from '../constants/COLORS';
 
@@ -327,7 +327,7 @@ const AnimatedLinearGradient = Animated.createAnimatedComponent(LinearGradient);
 
 const ButtonSlider = ({onToggle}) => {
   const dispatch = useDispatch();
-  const {getUserID} = useSelector((state:any)=> state)
+  const {getUserID,getChargerStatus} = useSelector((state:any)=> state)
   const [isLoading, setIsLoading] = useState(false)
   const [showText,setShowText] = useState(false)
   
@@ -335,7 +335,9 @@ const ButtonSlider = ({onToggle}) => {
   const X = useSharedValue(0);
   // Toggled State
   const [toggled, setToggled] = useState(false);
-
+useEffect(() =>{
+  console.log(getChargerStatus)
+},[])
   // Fires when animation ends
   const handleComplete = (isToggled:any) => {
 
@@ -358,8 +360,8 @@ navigationRef.dispatch(DrawerActions.closeDrawer())
                 console.log(err);
                 setIsLoading(false)
               });
-          } else {
-            axios
+            } else {
+              axios
               .post(`${API}/charger_OFF/${getUserID}`)
               .then((res) => {
                 setShowText(false)
@@ -389,7 +391,7 @@ navigationRef.dispatch(DrawerActions.closeDrawer())
       } else {
         newValue = e.translationX;
       }
-
+      
       if (newValue >= 0 && newValue <= H_SWIPE_RANGE) {
         X.value = newValue;
       }
@@ -501,7 +503,7 @@ navigationRef.dispatch(DrawerActions.closeDrawer())
       </PanGestureHandler>
       <Text style={[styles.swipeText]}>
       
-        {showText ? 'Swipe left to stop charging' : 'Swipe right to start charging'}
+        {getChargerStatus == 'Online' ? 'Swipe left to stop charging' : 'Swipe right to start charging'}
       </Text>
       
     </Animated.View>
@@ -552,7 +554,7 @@ const styles = StyleSheet.create({
         fontSize: 16,
     fontWeight: '400',
      zIndex: 2,
-     paddingLeft:30
+    //  paddingLeft:30
     // backgroundColor:'white'
     
   },

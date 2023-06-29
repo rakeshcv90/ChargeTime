@@ -93,7 +93,7 @@ const Contact = () => {
             fontSize: 14,
             //fontFamily: 'Roboto',
 
-            fontWeight: '100',
+            fontWeight: '500',
             paddingLeft: 10,
             paddingTop: 10,
             textAlignVertical: 'top',
