@@ -189,7 +189,7 @@ export default function PaymentGateWay({ navigation }) {
     try {
       const response = await fetch(`${API}/getcarddetails/${user_ID}`);
       const result = await response.json();
-      console.log("Result", result[0].sort((b, a) => a.status - b.status))
+      //console.log("Result", result[0].sort((b, a) => a.status - b.status))
       if (result[0]?.length > 0) {
         // console.log("defaultCard",defaultCard[0])
         setSavedCard(result[0].sort((b, a) => a.status - b.status))
@@ -199,6 +199,7 @@ export default function PaymentGateWay({ navigation }) {
         dispatch(getCardDetails(statusOneObjects))
 
       } else {
+        dispatch(getCardDetails({}))
         console.log("iiiiiiiiiiii")
       }
 
@@ -263,6 +264,7 @@ export default function PaymentGateWay({ navigation }) {
 
 
   const handleMakeDefaultCard = async (values) => {
+    console.log("-------------",values)
 
     try {
       const response = await fetch(`${API}/defaultcard`, {
@@ -461,18 +463,29 @@ export default function PaymentGateWay({ navigation }) {
                     marginBottom: 35,
                   }}>
                   <TouchableOpacity
-                    onPress={() => {
-                      if (savedCard && savedCard[0].status === 1 && (!currentCard || currentCard.status === 1)) {
-
-                        // console.log("------",savedCard[0])
-                        // navigationRef.navigate('PaymentGateWay');
-                      } else {
-                        handleMakeDefaultCard(currentCard.id)
-                      }
-                   
-                    }}
-                    style={savedCard && savedCard[0].status === 1 && (!currentCard || currentCard.status === 1) ? styles.default : styles.makeDefault}
-                    disabled = {savedCard && savedCard[0].status === 1 && (!currentCard || currentCard.status === 1)?true:false}>
+                    onPress={() => 
+                      {
+                        if (savedCard && savedCard[0].status === 1 && (!currentCard || currentCard.status === 1)) {
+                         console.log("In if------",savedCard[0].id)
+                          navigationRef.navigate('PaymentGateWay');
+                         }
+                        // else if (currentCard.status === 0 || currentCard.status === 0) {
+                        //   // setCardID(currentCard.id)
+                        //   handleMakeDefaultCard(currentCard.id)
+                        // }
+                        else if(savedCard && savedCard.length ===1 && savedCard[0].status === 0){
+                          console.log("In else if------",savedCard[0].id)
+                          handleMakeDefaultCard(savedCard[0].id)
+                        }
+                        else {
+                          console.log("In else------",savedCard[0].id)
+                          // console.log("------------",currentCard)
+                         // handleMakeDefaultCard(currentCard.id)
+                        }
+                     
+                      }}
+                    style={savedCard && savedCard[0].status === 1 && (!currentCard || currentCard.status === 1) ? styles.default : styles.makeDefault}>
+                    {/* // disabled = {savedCard && savedCard[0].status === 1 && (!currentCard || currentCard.status === 1)?true:false} */}
                     <Text
                       style={savedCard && savedCard[0].status === 1 && (!currentCard || currentCard.status === 1) ? styles.makeDefaultText : styles.defaultText}>
 

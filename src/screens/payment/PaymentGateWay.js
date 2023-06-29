@@ -68,10 +68,10 @@ export default function PaymentGateWay({navigation, route}) {
 const dispatch = useDispatch();
 const getCardDetails = useSelector((state) => state.getCardDetails)
 const [cardDetails, setCardDetails] = useState({
-  cardHolderName: getCardDetails[0]?.cust_name,
-  card_number: getCardDetails[0]?.card_number,
-  card_cvv: getCardDetails[0]?.card_cvc,
-  validTill: getCardDetails[0]?.card_exp_month + '/' + getCardDetails[0]?.card_exp_year
+  cardHolderName: getCardDetails[0]?.cust_name??'',
+  card_number: getCardDetails[0]?.card_number??'',
+  card_cvv: getCardDetails[0]?.card_cvc??'',
+  validTill:getCardDetails[0]?.card_exp_month ? getCardDetails[0]?.card_exp_month + '/' + getCardDetails[0]?.card_exp_year:''
   // card_exp_year:'',
 });
 const [card_name, setCard_Name]=useState(getCardDetails[0]?.cust_name ?? '')
@@ -239,11 +239,11 @@ const cardNumberDetail=(value)=>{
            
             <Formik
               initialValues={{
-                cardHolderName: getCardDetails[0]?.cust_name,
+                cardHolderName: getCardDetails[0]?.cust_name ?? '',
                 // cardNumber: getCardDetails[0]?.card_number,
-                cardNumber : card_Number,
-                 cvv: getCardDetails[0]?.card_cvc,
-                validTill: getCardDetails[0]?.card_exp_month + '/' + getCardDetails[0]?.card_exp_year
+                cardNumber : card_Number ?? '',
+                 cvv: getCardDetails[0]?.card_cvc??'',
+                validTill:getCardDetails[0]?.card_exp_month? getCardDetails[0]?.card_exp_month + '/' + getCardDetails[0]?.card_exp_year :''
               }}
               onSubmit={values => handlePaymentSubmit(values)}
               validationSchema={validationSchema}>
@@ -268,7 +268,7 @@ const cardNumberDetail=(value)=>{
                     <Text
                       style={{color: '#fff', fontWeight: '600', fontSize: 18}}>
                       {/* {values.cardNumber} */}
-                      {String(cardDetails.card_number).replace(/^(\d{12})(\d{4})$/, 'xxxx xxxx xxxx $2')}
+                      {String(cardDetails.card_number??'').replace(/^(\d{12})(\d{4})$/, 'xxxx xxxx xxxx $2')}
                       {/* {setCard_Number(String(cardDetails.card_number))} */}
                     </Text>
                     <View style={styles.text_div}>
@@ -287,7 +287,7 @@ const cardNumberDetail=(value)=>{
                             fontWeight: '600',
                             fontSize: 13,
                           }}>
-                            {String(cardDetails.cardHolderName)}
+                            {String(cardDetails.cardHolderName??'')}
                         </Text>
                       </View>
                       <View style={{gap: 5}}>
@@ -305,7 +305,7 @@ const cardNumberDetail=(value)=>{
                             fontWeight: '600',
                             fontSize: 13,
                           }}>
-                            {String(cardDetails.validTill)}
+                            {cardDetails.validTill.split('/')[0]=='undefined'?'': String(cardDetails.validTill)}
                         </Text>
                       </View>
                       <View style={{gap: 5}}>
@@ -323,7 +323,7 @@ const cardNumberDetail=(value)=>{
                             fontWeight: '600',
                             fontSize: 13,
                           }}>
-                            {String(cardDetails.card_cvv)}
+                            {String(cardDetails.card_cvv??'')}
                         </Text>
                       </View>
                     </View>
@@ -349,7 +349,7 @@ const cardNumberDetail=(value)=>{
                     IconLeft={null}
                     errors={errors.cardNumber}
                     touched={errors.cardNumber}
-                    value={card_Number}
+                    value={card_Number??''}
                     // onChangeText={(card_Number)=> setCard_Number(card_Number)}
                     onChangeText={text => {
                       
@@ -382,7 +382,7 @@ const cardNumberDetail=(value)=>{
                         IconLeft={null}
                         errors={errors.validTill}
                         touched={touched.validTill}
-                        value={validity}
+                        value={validity??''}
                         //
                         onChangeText={text => {
                           // Remove non-digit characters from the input
@@ -416,7 +416,7 @@ const cardNumberDetail=(value)=>{
                         IconLeft={null}
                         errors={errors.cvv}
                         touched={touched.cvv}
-                        value={card_cvv}
+                        value={card_cvv??''}
                         onChangeText={(card_cvv)=> setCard_Cvv(card_cvv)}
                         onBlur={handleBlur('cvv')}
                         text="CVV"

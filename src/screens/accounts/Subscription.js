@@ -129,7 +129,7 @@ const PlanCancel = async () => {
       //            </Text>
       //    {/* <SubBoxOne /> */}
       //  </View>
-      // 'Your Account is not currently linked with a TRO Charger. Please contact customer service if you believe this is an error.' ? (
+      //'Your Account is not currently linked with a TRO Charger. Please contact customer service if you believe this is an error.' ? (
       <View
       style={{
         justifyContent: 'center',
@@ -166,7 +166,9 @@ const PlanCancel = async () => {
           textAlign: 'center',
           paddingHorizontal: 30,
         }}>
-        {getDeviceID}
+      {'Your Account is not currently linked with a TRO Charger. Please contact customer service if you believe this is an error.' }
+
+        {/* {getDeviceID} */}
       </Text>
       <View
         style={{
