@@ -37,7 +37,7 @@ import { navigationRef } from '../../../App';
 import creditCardType, { types as CardType } from 'credit-card-type';
 import { FlatList } from 'react-native-gesture-handler';
 import { mvs, ms } from 'react-native-size-matters';
-import { getCardDetails } from '../../redux/action';
+import { setCardDetails } from '../../redux/action';
 import { useDispatch } from 'react-redux';
 import Carousel from 'react-native-reanimated-carousel';
 
@@ -82,7 +82,7 @@ export default function PaymentGateWay({ navigation }) {
   const [error, setError] = useState('');
   const [error1, setError1] = useState('');
   const [cardID, setCardID] = useState('');
-  const [cardDetails, setCardDetails] = useState({
+  const [cardDetails, setCardDetails1] = useState({
     cardHolderName: '',
     card_number: '',
     card_cvv: '',
@@ -134,6 +134,12 @@ export default function PaymentGateWay({ navigation }) {
     let exp_year = values?.validTill?.split('/')[1];
     let cust_number = values?.cardNumber.split(" ").join("");
     setGetCard_Number(values?.cardNumber)
+   console.log ("user_id",getUserID);
+  console.log ( "cust_name", values?.cardHolderName);
+  console.log ( "card_number", cust_number);
+    console.log("card_cvc", values?.cvv);
+    console.log("card_exp_month", exp_month);
+   console.log ("card_exp_year", exp_year);
     try {
 
       const response = await axios.post(`${API}/addcarddetail`, {
@@ -149,7 +155,7 @@ export default function PaymentGateWay({ navigation }) {
         cb();
 
         console.log("card add success")
-        setCardDetails({
+        setCardDetails1({
           cardHolderName: '',
           card_number: '',
           card_cvv: '',
@@ -191,12 +197,12 @@ export default function PaymentGateWay({ navigation }) {
       const result = await response.json();
       //console.log("Result", result[0].sort((b, a) => a.status - b.status))
       if (result[0]?.length > 0) {
-        // console.log("defaultCard",defaultCard[0])
+        console.log("-------------------",result[0])
         setSavedCard(result[0].sort((b, a) => a.status - b.status))
 
         const statusOneObjects = result[0].filter(item => item.status === 1);
         // console.log("-----------------",statusOneObjects);
-        dispatch(getCardDetails(statusOneObjects))
+        dispatch(setCardDetails(statusOneObjects))
 
       } else {
         dispatch(getCardDetails({}))
@@ -218,7 +224,7 @@ export default function PaymentGateWay({ navigation }) {
   const card_id = cardId;
 
   const handleDeleteCard = async (value) => {
-    // console.log("-------rrrr",cardID)
+    console.log("-------rrrr",cardID)
     try {
       const response = await fetch(`${API}/deletecard/${value}`, {
         method: 'DELETE',
@@ -227,7 +233,7 @@ export default function PaymentGateWay({ navigation }) {
       if (result.success === "Your card is deleted") {
         setSavedCard('')
         handleGetCard()
-        setCardDetails({
+        setCardDetails1({
           cardHolderName: '',
           card_number: '',
           card_cvv: '',
@@ -264,7 +270,7 @@ export default function PaymentGateWay({ navigation }) {
 
 
   const handleMakeDefaultCard = async (values) => {
-    console.log("-------------",values)
+    console.log("-----43242423--------",values)
 
     try {
       const response = await fetch(`${API}/defaultcard`, {
@@ -466,26 +472,22 @@ export default function PaymentGateWay({ navigation }) {
                     onPress={() => 
                       {
                         if (savedCard && savedCard[0].status === 1 && (!currentCard || currentCard.status === 1)) {
-                         console.log("In if------",savedCard[0].id)
+                        //  console.log("In if------",savedCard[0].id)
                           navigationRef.navigate('PaymentGateWay');
                          }
-                        // else if (currentCard.status === 0 || currentCard.status === 0) {
-                        //   // setCardID(currentCard.id)
-                        //   handleMakeDefaultCard(currentCard.id)
-                        // }
                         else if(savedCard && savedCard.length ===1 && savedCard[0].status === 0){
                           console.log("In else if------",savedCard[0].id)
                           handleMakeDefaultCard(savedCard[0].id)
                         }
-                        else {
-                          console.log("In else------",savedCard[0].id)
-                          // console.log("------------",currentCard)
-                         // handleMakeDefaultCard(currentCard.id)
+                        else if(savedCard && savedCard.length >1 && (currentCard.status === 0)){
+                          console.log("In else------",currentCard.id)
+                          handleMakeDefaultCard(currentCard.id)
+                         
                         }
-                     
+                      
                       }}
-                    style={savedCard && savedCard[0].status === 1 && (!currentCard || currentCard.status === 1) ? styles.default : styles.makeDefault}>
-                    {/* // disabled = {savedCard && savedCard[0].status === 1 && (!currentCard || currentCard.status === 1)?true:false} */}
+                    style={savedCard && savedCard[0].status === 1 && (!currentCard || currentCard.status === 1) ? styles.default : styles.makeDefault}
+                     disabled = {savedCard && savedCard[0].status === 1 && (!currentCard || currentCard.status === 1)?true:false}>
                     <Text
                       style={savedCard && savedCard[0].status === 1 && (!currentCard || currentCard.status === 1) ? styles.makeDefaultText : styles.defaultText}>
 
@@ -542,7 +544,7 @@ export default function PaymentGateWay({ navigation }) {
                   onChangeText={(text) => {
                     handleChange('cardHolderName')(text);
                     setSavedCard('')
-                    setCardDetails({ ...cardDetails, ['cardHolderName']: text })
+                    setCardDetails1({ ...cardDetails, ['cardHolderName']: text })
                   }}
                   onBlur={handleBlur('cardHolderName')}
                   text="Card Holder Name"
@@ -564,7 +566,6 @@ export default function PaymentGateWay({ navigation }) {
 
 
                     setSavedCard('')
-                    setCardDetails({ ...cardDetails, ['card_number']: text })
                     var num = /[^0-9]/g;
                     const cardNumbers = text.replace(/\s/g, ''); // Remove spaces from card number
                     const cardNumber = cardNumbers.replace(num, '');
@@ -576,6 +577,8 @@ export default function PaymentGateWay({ navigation }) {
                     formattedCardNumber = formattedCardNumber.trim();
 
                     handleChange('cardNumber')(formattedCardNumber);
+                    setCardDetails1({ ...cardDetails, ['card_number']: formattedCardNumber })
+
                   }}
                   onBlur={handleBlur('cardNumber')}
                   maxLength={19}
@@ -601,7 +604,6 @@ export default function PaymentGateWay({ navigation }) {
                       //
                       onChangeText={text => {
                         setSavedCard('')
-                        setCardDetails({ ...cardDetails, validTill: formattedValidTill });
 
                         // Remove non-digit characters from the input
                         const validTill = text.replace(/\D/g, '');
@@ -615,6 +617,8 @@ export default function PaymentGateWay({ navigation }) {
                         console.log(formattedValidTill, 'asd');
                         // Update the valid till value
                         handleChange('validTill')(formattedValidTill);
+                        setCardDetails1({ ...cardDetails, validTill: formattedValidTill });
+
                       }}
                       onBlur={handleBlur('validTill')}
                       text="Valid Till"
@@ -642,7 +646,7 @@ export default function PaymentGateWay({ navigation }) {
                         handleChange('cvv')(text),
                           // setCardDetails('');
                           setSavedCard('')
-                        setCardDetails({ ...cardDetails, ['card_cvv']: text })
+                        setCardDetails1({ ...cardDetails, ['card_cvv']: text })
                       }}
                       onBlur={handleBlur('cvv')}
                       text="CVV"

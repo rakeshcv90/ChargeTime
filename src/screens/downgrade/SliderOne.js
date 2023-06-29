@@ -27,7 +27,7 @@ import {setPlanStatus, setPurchaseData} from '../../redux/action';
 
 export default function SliderOne(props) {
   const [forLoading, setForLoading] = useState(false);
-  const [planStatus, setPlanStatus] = useState(false);
+  const [planStatus, setPlanStatuss] = useState(false);
   // const [schedulePackageName, setSchedulePackageName] = useState('');
   const dispatch = useDispatch();
   const {getUserID, getPurchaseData, getPlanStatus} = useSelector(
@@ -36,7 +36,6 @@ export default function SliderOne(props) {
 
   useEffect(() => {
     getPlanCurrent();
-    console.log('getPlanStatus', getPlanStatus);
   }, []);
   const handleRefresh = () => {
     setRefresh(true);
@@ -50,7 +49,7 @@ export default function SliderOne(props) {
     axios
       .get(`${API}/currentplan/${getUserID}`)
       .then(res => {
-        console.log('PLADSAADSASDAD', res.data)
+        console.log(res.data)
         dispatch(setPurchaseData(res.data));
         PlanStatus();
       })
@@ -65,7 +64,7 @@ export default function SliderOne(props) {
       .get(`${API}/planstatus/${getUserID}`)
       .then(res => {
         const name = res.data.subscriptions.filter(
-          item => item.subscription_status == 'scheduled',
+          item => item.subscription_status == 'scheduled' || item.subscription_status == 'notActive',
         );
         if (name.length != 0) {
           dispatch(setPlanStatus(name[0]));
@@ -74,7 +73,7 @@ export default function SliderOne(props) {
           dispatch(setPlanStatus([]));
           setForLoading(false);
         }
-        console.log('STATUSSSS', getPlanStatus);
+        console.log('STATUSSSS', name[0]);
       })
       .catch(err => {
         console.log(err);
@@ -118,7 +117,7 @@ export default function SliderOne(props) {
             purchageData={props.route.params.purchageData}
             disabled={
               getPlanStatus.length != 0
-                ? getPlanStatus.toLowerCase() ==
+                ? getPlanStatus.item_name.toLowerCase() ==
                   props.route.params.item.package_name.toLowerCase()
                   ? true
                   : false

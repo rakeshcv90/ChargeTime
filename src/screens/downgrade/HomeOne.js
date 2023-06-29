@@ -7,6 +7,7 @@ import {
   Animated,
   Image,
   Dimensions,
+  BackHandler,
 } from 'react-native';
 import {useNavigationState} from '@react-navigation/native';
 import {SafeAreaView} from 'react-native-safe-area-context';
@@ -116,7 +117,17 @@ export default function HomeOne(route) {
   }, []);
   
   
-  
+  useEffect(() => {
+    const backHandler = BackHandler.addEventListener(
+      'hardwareBackPress',
+      handleBackButton
+    );
+
+    return () => backHandler.remove();
+  }, []);
+  const handleBackButton = () => {
+    return true;
+  };
   
   const populateNumArray = () => {
     const numArray = [];

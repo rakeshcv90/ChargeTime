@@ -12,24 +12,34 @@ import {
   KeyboardAvoidingView,
 } from 'react-native';
 import AnimatedLottieView from 'lottie-react-native';
-import React, {useState, useRef,useEffect} from 'react';
+
+import React, {useState, useRef, useEffect} from 'react';
 import {SafeAreaView} from 'react-native-safe-area-context';
+
 import Input from '../../Components/Input';
 import COLORS from '../../constants/COLORS';
-import {Card} from '../../../assets/svgs/Card';
-import {Name} from '../../../assets/svgs/Name';
-import {DIMENSIONS} from '../../constants/DIMENSIONS';
-import {LeftIcon} from '../../../assets/images/LeftIcon';
-import {Formik} from 'formik';
+import { Card } from '../../../assets/svgs/Card';
+import { Name } from '../../../assets/svgs/Name';
+import { DIMENSIONS } from '../../constants/DIMENSIONS';
+import { LeftIcon } from '../../../assets/images/LeftIcon';
+import { Formik } from 'formik';
 import * as Yup from 'yup';
 import {Admin} from '../../../assets/images/Admin';
-import { CardNumber } from '../../../assets/svgs/CardNumber';
+import {Message} from '../../../assets/images/Message';
 import {useDispatch, useSelector} from 'react-redux';
+
 import axios from 'axios';
-import {API} from '../../api/API';
-import {navigationRef} from '../../../App';
+import { API } from '../../api/API';
+import { navigationRef } from '../../../App';
 import ActivityLoader from '../../Components/ActivityLoader';
-import {setDeviceId, setPackageStatus, setPlanStatus, setPurchaseData} from '../../redux/action';
+
+import {
+  setDeviceId,
+  setPackageStatus,
+  setPlanStatus,
+  setPurchaseData,
+} from '../../redux/action';
+
 const mobileW = Math.round(Dimensions.get('screen').width);
 const mobileH = Math.round(Dimensions.get('window').height);
 const validationSchema = Yup.object().shape({
@@ -85,18 +95,58 @@ useEffect(() => {
  console.log("9999999999999",cardDetails)
 }, []);
 
-// console.log(savedCard,"------------")
+  // console.log(savedCard,"------------")
 
+  const newPAYMENT = async values => {
+    setLoader(true);
+    let payload = new FormData();
+
+    let exp_month = cardDetails?.validTill?.split('/')[0];
+    let exp_year = cardDetails?.validTill?.split('/')[1];
+
+
+    payload.append('kwh_unit', route.params.data.kwh);
+    payload.append('card_number', cardDetails.card_number);
+    payload.append('card_cvc', cardDetails.card_cvv);
+    payload.append('card_exp_month', exp_month);
+    payload.append('card_exp_year', exp_year);
+    payload.append('item_details', getDataForPayment.package_name);
+    payload.append('price', getDataForPayment.total_price);
+    payload.append('price_stripe_id', getDataForPayment.price_stripe_id);
+    payload.append('user_id', getUserID);
+    console.log(payload, 'object');
+    try {
+      const response = await axios.post(`${API}/checkout`, payload, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      });
+      console.log('PAYMENT', response.data);
+      if ((response.data.status = 'success')) {
+        setLoader(false);
+        setModalVisible(true);
+      }
+    } catch (err) {
+      setLoader(false);
+      if (err.response) {
+        console.log(err.response.data);
+        console.log(err.response.status);
+      } else {
+        console.log(err);
+      }
+    }
+  };
   const handlePaymentSubmit = async values => {
     setLoader(true);
     let payload = new FormData();
 
-    let exp_month = validity?.split('/')[0];
-    let exp_year = validity?.split('/')[1];
+    let exp_month = values?.validTill?.split('/')[0];
+    let exp_year = values?.validTill?.split('/')[1];
 
     payload.append('kwh_unit', route.params.data.kwh);
-    payload.append('card_number',card_Number.replace(/\s/g, ''));
-    payload.append('card_cvc', card_cvv);
+
+    payload.append('card_number', values.cardNumber.replace(/\s/g, ''));
+    payload.append('card_cvc', values.cvv);
     payload.append('card_exp_month', exp_month);
     payload.append('card_exp_year', exp_year);
     payload.append('item_details', getDataForPayment.package_name);
@@ -134,17 +184,25 @@ useEffect(() => {
         console.log(res.data, 'tt');
         if (res.data.status == 'True') {
           // dispatch(setDeviceId(res.data.message));
-          console.log(route.params.purchageData)
-          if(route.params.purchageData == 'DOWNGRADE'){
-            PlanStatus()
-          }else{
+          console.log(route.params.purchageData);
+          if (route.params.purchageData == 'DOWNGRADE') {
+            PlanStatus();
+          } else {
             getPlanCurrent();
           }
         } else {
           getPlanCurrent();
           dispatch(setDeviceId(res.data.message));
-          navigationRef.navigate('DrawerStack')
+          navigationRef.navigate('DrawerStack');
 
+          // fetchGraphData(res.data?.user_id);
+          // fetchWeekGraphData(res.data?.user_id);
+          // fetchMonthGraphData(res.data?.user_id);
+          // fetchQuarterGraphData(res.data.user_id);
+          // fetchYearGraphData(res.data?.user_id);
+          // fetchBoxTwoDashboardData(res.data?.user_id);
+          // fetchStatusdata(res.data?.user_id);
+          // getPlanCurrent(res.data?.user_id);
         }
       })
       .catch(err => {
@@ -155,10 +213,10 @@ useEffect(() => {
     axios
       .get(`${API}/currentplan/${getUserID}`)
       .then(res => {
-        console.log(res.data)
+        console.log(res.data);
         dispatch(setPurchaseData(res?.data));
         dispatch(setPackageStatus(true));
-        navigationRef.navigate('HomeOne')
+        navigationRef.navigate('HomeOne');
       })
       .catch(err => {
         console.log(err);
@@ -173,25 +231,18 @@ useEffect(() => {
           item => item.subscription_status == 'scheduled',
         );
         dispatch(setPlanStatus(name[0].item_name));
-        navigationRef.navigate('HomeOne')
+        navigationRef.navigate('HomeOne');
       })
       .catch(err => {
         console.log(err);
       });
   };
-const cardNumberDetail=(value)=>{
-  let formattedCardNumber = '';
-  for (let i = 0; i < value.length; i += 4) {
-    formattedCardNumber += value.substr(i, 4) + ' ';
-  }
-  console.log("----------",formattedCardNumber)
-  return formattedCardNumber
-}
+
   return (
-    <SafeAreaView style={{backgroundColor: COLORS.CREAM, flex: 1}}>
+    <SafeAreaView style={{ backgroundColor: COLORS.CREAM, flex: 1 }}>
       {loader && <ActivityLoader />}
       <ScrollView>
-        <View style={{marginHorizontal: 20, paddingTop: 20}}>
+        <View style={{ marginHorizontal: 20, paddingTop: 20 }}>
           <Text style={styles.complete_profile}>Payment Details</Text>
         </View>
         <View style={styles.centeredView}>
@@ -212,7 +263,7 @@ const cardNumberDetail=(value)=>{
                   }} // Replace with your animation file
                   autoPlay
                   loop
-                  style={{width: 50, height: 50}}
+                  style={{ width: 50, height: 50 }}
                 />
                 <Text
                   style={{
@@ -236,7 +287,7 @@ const cardNumberDetail=(value)=>{
 
         <View style={styles.mainDiv_container}>
           <View>
-           
+
             <Formik
               initialValues={{
                 cardHolderName: getCardDetails[0]?.cust_name ?? '',
@@ -265,14 +316,27 @@ const cardNumberDetail=(value)=>{
                     }}
                   />
                   <View style={styles.cardNumber_position}>
-                    <Text
-                      style={{color: '#fff', fontWeight: '600', fontSize: 18}}>
-                      {/* {values.cardNumber} */}
-                      {String(cardDetails.card_number??'').replace(/^(\d{12})(\d{4})$/, 'xxxx xxxx xxxx $2')}
-                      {/* {setCard_Number(String(cardDetails.card_number))} */}
-                    </Text>
+                    {cardDetails.card_number ? (
+                      <Text
+                        style={{
+                          color: '#fff',
+                          fontWeight: '600',
+                          fontSize: 13,
+                        }}>
+                        {cardDetails.card_number}
+                      </Text>
+                    ) : (
+                      <Text
+                        style={{
+                          color: '#fff',
+                          fontWeight: '600',
+                          fontSize: 13,
+                        }}>
+                        {values.cardNumber}
+                      </Text>
+                    )}
                     <View style={styles.text_div}>
-                      <View style={{gap: 5, width: 100}}>
+                      <View style={{ gap: 5, width: 100 }}>
                         <Text
                           style={{
                             color: 'gray',
@@ -281,15 +345,36 @@ const cardNumberDetail=(value)=>{
                           }}>
                           Card Holder
                         </Text>
+
+                        {cardDetails.cardHolderName ? (
+                          <Text
+                            style={{
+                              color: '#fff',
+                              fontWeight: '600',
+                              fontSize: 13,
+                            }}>
+                            {cardDetails.cardHolderName}
+                          </Text>
+                        ) : (
+                          <Text
+                            style={{
+                              color: '#fff',
+                              fontWeight: '600',
+                              fontSize: 13,
+                            }}>
+                            {values.cardHolderName}
+                          </Text>
+                        )}
+                         {/* {cardDetails.validTill ?(
                         <Text
                           style={{
                             color: '#fff',
                             fontWeight: '600',
                             fontSize: 13,
                           }}>
-                            {String(cardDetails.cardHolderName??'')}
-                        </Text>
-                      </View>
+                            {cardDetails.validTill.split('/')[0]=='undefined'?' ': String(cardDetails.validTill)}
+                        </Text> */}
+                        </View>
                       <View style={{gap: 5}}>
                         <Text
                           style={{
@@ -299,14 +384,25 @@ const cardNumberDetail=(value)=>{
                           }}>
                           Expires
                         </Text>
-                        <Text
-                          style={{
-                            color: '#fff',
-                            fontWeight: '600',
-                            fontSize: 13,
-                          }}>
-                            {cardDetails.validTill.split('/')[0]=='undefined'?'': String(cardDetails.validTill)}
-                        </Text>
+                        {cardDetails.validTill !== 'undefined/undefined' ? (
+                          <Text
+                            style={{
+                              color: '#fff',
+                              fontWeight: '600',
+                              fontSize: 13,
+                            }}>
+                            {cardDetails.validTill}
+                          </Text>
+                        ) : (
+                          <Text
+                            style={{
+                              color: '#fff',
+                              fontWeight: '600',
+                              fontSize: 13,
+                            }}>
+                            {values.validTill}
+                          </Text>
+                        )}
                       </View>
                       <View style={{gap: 5}}>
                         <Text
@@ -317,14 +413,34 @@ const cardNumberDetail=(value)=>{
                           }}>
                           CVV
                         </Text>
-                        <Text
+                        {/* <Text
                           style={{
                             color: '#fff',
                             fontWeight: '600',
                             fontSize: 13,
                           }}>
                             {String(cardDetails.card_cvv??'')}
-                        </Text>
+                        </Text> */}
+
+                        {cardDetails.card_cvv ? (
+                          <Text
+                            style={{
+                              color: '#fff',
+                              fontWeight: '600',
+                              fontSize: 13,
+                            }}>
+                            {cardDetails.card_cvv}
+                          </Text>
+                        ) : (
+                          <Text
+                            style={{
+                              color: '#fff',
+                              fontWeight: '600',
+                              fontSize: 13,
+                            }}>
+                            {values.cvv}
+                          </Text>
+                        )}
                       </View>
                     </View>
                   </View>
@@ -349,10 +465,10 @@ const cardNumberDetail=(value)=>{
                     IconLeft={null}
                     errors={errors.cardNumber}
                     touched={errors.cardNumber}
+
                     value={card_Number??''}
                     // onChangeText={(card_Number)=> setCard_Number(card_Number)}
                     onChangeText={text => {
-                      
                       var num = /[^0-9]/g;
                       const cardNumbers = text.replace(/\s/g, ''); // Remove spaces from card number
                       const cardNumber = cardNumbers.replace(num, '');
@@ -363,12 +479,12 @@ const cardNumberDetail=(value)=>{
 
                       formattedCardNumber = formattedCardNumber.trim();
 
-                      setCard_Number(formattedCardNumber);
+                      handleChange('cardNumber')(formattedCardNumber);
                     }}
                     onBlur={handleBlur('cardNumber')}
                     maxLength={19}
                     text="Card Number"
-                    IconRight={() => <CardNumber />}
+                    IconRight={() => <Message />}
                     mV={15}
                     placeholder="1234  5678  xxxx  xxxx"
                     bW={1}
@@ -383,7 +499,6 @@ const cardNumberDetail=(value)=>{
                         errors={errors.validTill}
                         touched={touched.validTill}
                         value={validity??''}
-                        //
                         onChangeText={text => {
                           // Remove non-digit characters from the input
                           const validTill = text.replace(/\D/g, '');
@@ -396,7 +511,7 @@ const cardNumberDetail=(value)=>{
                           }
                           console.log(formattedValidTill, 'asd');
                           // Update the valid till value
-                         setValidity(formattedValidTill);
+                          handleChange('validTill')(formattedValidTill);
                         }}
                         onBlur={handleBlur('validTill')}
                         text="Valid Till"
@@ -427,7 +542,7 @@ const cardNumberDetail=(value)=>{
                         textWidth={'50%'}
                         placeholderTextColor={COLORS.BLACK}
                         w="half"
-                        // secureTextEntry={true}
+                        secureTextEntry={true}
                         maxLength={3}
                         keyboardType="numeric"
                       />
@@ -453,7 +568,7 @@ const cardNumberDetail=(value)=>{
                         ...Platform.select({
                           ios: {
                             shadowColor: '#000000',
-                            shadowOffset: { width: 0, height: 2 },
+                            shadowOffset: {width: 0, height: 2},
                             shadowOpacity: 0.3,
                             shadowRadius: 4,
                           },
@@ -462,6 +577,16 @@ const cardNumberDetail=(value)=>{
                           },
                         }),
                       }}>
+                      {cardDetails.card_cvv ?<TouchableOpacity onPress={newPAYMENT}>
+                        <Text
+                          style={{
+                            fontSize: 14,
+                            fontWeight: '700',
+                            color: COLORS.BLACK,
+                          }}>
+                          Make Payment
+                        </Text>
+                      </TouchableOpacity>:
                       <TouchableOpacity onPress={handleSubmit}>
                         <Text
                           style={{
@@ -471,7 +596,7 @@ const cardNumberDetail=(value)=>{
                           }}>
                           Make Payment
                         </Text>
-                      </TouchableOpacity>
+                      </TouchableOpacity>}
                     </View>
                   </View>
                 </KeyboardAvoidingView>
@@ -510,7 +635,7 @@ const styles = StyleSheet.create({
     ...Platform.select({
       ios: {
         shadowColor: '#000000',
-        shadowOffset: { width: 0, height: 2 },
+        shadowOffset: {width: 0, height: 2},
         shadowOpacity: 0.3,
         shadowRadius: 4,
       },
