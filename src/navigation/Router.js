@@ -486,8 +486,10 @@ const AccountStack = () => {
       <Stack.Screen name="deleteAccount" component={deleteAccount} />
       <Stack.Screen name="Login" component={Login} />
       <Stack.Screen name="LoginStack" component={LoginStack} />
-      <Stack.Screen name="EnergyStats" component={EnergyStats} />
-      {/* <Stack.Screen name="Home" component={Home} /> */}
+
+      {/* <Stack.Screen name="DrawerStack" component={DrawerNavigation} /> */}
+      <Stack.Screen name="Home" component={Home} />
+
       <Stack.Screen name="PaymentGateWay" component={PaymentGateWay} />
       <Stack.Screen name="HomeOne" component={HomeOne} />
       <Stack.Screen name="DownGradeData" component={ForDownGrade} />
