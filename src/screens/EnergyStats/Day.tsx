@@ -225,7 +225,7 @@ const Day = (props: any) => {
           </View>
 
           <View style={{marginHorizontal: 20}}>
-            {/* {getGraphData.length >= 1 ? (
+            {getGraphData.msg != 'No usage data available' ? (
                 <Graph dataOne={getGraphData} />
               ) : (
                 <Text
@@ -239,7 +239,7 @@ const Day = (props: any) => {
                   No Graph Data available
                 </Text>
               
-            ) } */}
+            ) }
             <BoxTwo data={getBoxTwoDataForDashboard[0]} />
           </View>
           <View style={{marginBottom: 120}}>

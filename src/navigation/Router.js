@@ -491,9 +491,6 @@ const AccountStack = () => {
       <Stack.Screen name="Home" component={Home} />
 
       <Stack.Screen name="PaymentGateWay" component={PaymentGateWay} />
-      <Stack.Screen name="HomeOne" component={HomeOne} />
-      <Stack.Screen name="DownGradeData" component={ForDownGrade} />
-      {/* <Stack.Screen name="PaymentGateWay" component={PaymentGateWay} /> */}
 
       <Stack.Screen name="PlanSummary" component={PlanSummary} />
 
