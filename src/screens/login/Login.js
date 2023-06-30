@@ -410,7 +410,7 @@ export default function Login({navigation}) {
             placeholder="Enter your Email"
             bW={1}
             textWidth={'22%'}
-            placeholderTextColor={COLORS.BLACK}
+            placeholderTextColor={COLORS.HALFBLACK}
             autoCapitalize="none"
           />
 
@@ -418,7 +418,7 @@ export default function Login({navigation}) {
             IconLeft={null}
             errors={undefined}
             touched={false}
-            placeholderTextColor={COLORS.BLACK}
+            placeholderTextColor={COLORS.HALFBLACK}
             text="Password"
             passwordInput={true}
             pasButton={() => setShowPassword(!showPassword)}

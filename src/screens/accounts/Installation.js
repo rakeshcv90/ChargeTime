@@ -138,8 +138,8 @@ const InstalltionUpdate = async () => {
         if (data) {
           const updatedData = [{
             ...userProfileData[0],
-          name: name,
-            mobile: number,
+            pwa_add1:addlineone,
+            pwa_add2:addlinetwo,
           }];
           console.log(updatedData,"------")
           dispatch(updatePersionalDetail(updatedData));

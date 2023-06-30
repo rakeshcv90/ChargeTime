@@ -93,8 +93,8 @@ const Account = ({ navigation }) => {
   ];
 
   const handleLogOut = async () => {
-    AsyncStorage.clear();
-    persistor.purge();
+   await AsyncStorage.clear();
+   await persistor.purge();
     // navigation.popToTop();
     // setTimeout(()=>{
     //   navigation.navigate('AccountStack',{
