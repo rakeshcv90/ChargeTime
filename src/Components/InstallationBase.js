@@ -18,6 +18,9 @@ import COLORS from '../constants/COLORS';
 import { useSelector } from 'react-redux';
 import { navigationRef } from '../../App';
 import { DIMENSIONS } from '../constants/DIMENSIONS';
+import Line from '../../assets/svgs/Line';
+
+
 
 const mobileW = Math.round(Dimensions.get('screen').width);
 const InstallationBase = ({ data }) => {
@@ -51,11 +54,12 @@ const InstallationBase = ({ data }) => {
           {/* <Text style={styles.force_base}>{data[0]=="undefined"?setBasePackage[0].location}</Text> */}
         </View>
         <Image
-          // style={styles.img_width}
+       
           source={require('../../assets/images/dotted.png')}
           resizeMode="stretch"
-          style={{ alignSelf: 'center', width: mobileW }}
+          style={{  width: mobileW,}}
         />
+      
         <View style={styles.mainDiv_state_zip}>
           <View style={styles.state_div}>
             {/* <Image
@@ -66,11 +70,13 @@ const InstallationBase = ({ data }) => {
             <Text style={styles.force_base}>{data[0]==undefined?data?.state:data[0].state}</Text>
             {/* <Text style={styles.force_base}>{setBasePackage[0].state}</Text> */}
           </View>
+          
           <View style={styles.state_div}>
             <Image
               //style={styles.img_width}
               source={require('../../assets/images/zip_code.png')}
-              style={{ width: 20, height: 20 }}
+              resizeMode="stretch"
+              style={{ width: 25, height: 25, }}
             />
             <Text style={styles.force_base}>{data[0]==undefined?data?.ZIP_code:data[0].ZIP_code}</Text>
             {/* <Text style={styles.force_base}>{setBasePackage[0].ZIP_code}</Text> */}
@@ -218,7 +224,8 @@ const styles = StyleSheet.create({
     fontWeight: 700,
     fontSize: 14,
     color: COLORS.WHITE,
-  }, mainDiv_installation1: {
+  }, 
+  mainDiv_installation1: {
     overflow: 'hidden',
     borderRadius: 10,
 

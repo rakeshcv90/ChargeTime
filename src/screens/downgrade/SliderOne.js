@@ -23,7 +23,7 @@ import axios from 'axios';
 import {API} from '../../api/API';
 import ActivityLoader from '../../Components/ActivityLoader';
 import AnimatedLottieView from 'lottie-react-native';
-import {setPlanStatus, setPurchaseData} from '../../redux/action';
+import {setPackageStatus, setPlanStatus, setPurchaseData} from '../../redux/action';
 
 export default function SliderOne(props) {
   const [forLoading, setForLoading] = useState(false);
@@ -52,40 +52,42 @@ export default function SliderOne(props) {
       .then(res => {
         console.log(res.data)
         
-        if (res.data.error == 'Package details not found') {
-          dispatch(setPurchaseData([]));
+        if (res.data.data == 'Package details not found') {
+          dispatch(setPurchaseData(res.data));
+          dispatch(setPackageStatus(false));
         } else {
           dispatch(setPurchaseData(res?.data));
         }
-        PlanStatus();
+        // PlanStatus();
       })
       .catch(err => {
         console.log(err);
       });
   };
 
-  const PlanStatus = () => {
-    setForLoading(true);
-    axios
-      .get(`${API}/planstatus/${getUserID}`)
-      .then(res => {
-        const name = res.data.subscriptions.filter(
-          item => item.subscription_status == 'scheduled' || item.subscription_status == 'notActive',
-        );
-        if (name.length != 0) {
-          dispatch(setPlanStatus(name[0]));
-          setForLoading(false);
-        } else {
-          dispatch(setPlanStatus([]));
-          setForLoading(false);
-        }
-        console.log('STATUSSSS', name[0]);
-      })
-      .catch(err => {
-        console.log(err);
-        setForLoading(false);
-      });
-  };
+  // const PlanStatus = () => {
+  //   setForLoading(true);
+  //   axios
+  //     .get(`${API}/planstatus/${getUserID}`)
+  //     .then(res => {
+  //       console.log('asdsadasdsadasdasd', res.data);
+  //       const name = res.data.subscriptions.filter(
+  //         item => item.subscription_status == 'scheduled' || item.subscription_status == 'notActive',
+  //       );
+  //       if (name.length != 0) {
+  //         dispatch(setPlanStatus(name[0]));
+  //         setForLoading(false);
+  //       } else {
+  //         dispatch(setPlanStatus([]));
+  //         setForLoading(false);
+  //       }
+  //       console.log('STATUSSSS', name[0]);
+  //     })
+  //     .catch(err => {
+  //       console.log(err);
+  //       setForLoading(false);
+  //     });
+  // };
 
   return (
     <ScrollView
@@ -95,11 +97,11 @@ export default function SliderOne(props) {
 
       <View style={styles.managing_width}>
         <BoxTwo data={props.route.params.item} />
-        {getPurchaseData.length != 0 &&getPurchaseData.data.energy_plan.toLowerCase() ===
+        {getPurchaseData.data != 'Package details not found' &&getPurchaseData.data.energy_plan.toLowerCase() ===
           props.route.params.item.package_name.toLowerCase() && (
           <Remaining RemainingFill={50} KWH={400} data={'energy'} />
         )}
-        {getPurchaseData.length != 0&& getPurchaseData.data.energy_plan.toLowerCase() ===
+        {getPurchaseData.data != 'Package details not found'&& getPurchaseData.data.energy_plan.toLowerCase() ===
           props.route.params.item.package_name.toLowerCase() && (
           <View style={{marginBottom: 20}}>
             <PriceBox data={getPurchaseData.data} />
@@ -108,7 +110,7 @@ export default function SliderOne(props) {
         <View
           style={{
             marginBottom:
-            getPurchaseData.length != 0&&getPurchaseData.data.energy_plan.toLowerCase() ===
+            getPurchaseData.data != 'Package details not found'&&getPurchaseData.data.energy_plan.toLowerCase() ===
               props.route.params.item.package_name.toLowerCase()
                 ? 20
                 : 0,
@@ -116,22 +118,22 @@ export default function SliderOne(props) {
           <InstallationBase data={props.route.params.item} />
         </View>
 
-        {getPurchaseData.length != 0&&getPurchaseData.data.energy_plan.toLowerCase() !==
+        {getPurchaseData.data != 'Package details not found'&&getPurchaseData.data.energy_plan.toLowerCase() !==
           props.route.params.item.package_name.toLowerCase() && (
           <BoxFive
             data={props.route.params.item}
             purchageData={props.route.params.purchageData}
-            disabled={
-              getPlanStatus.length != 0
-                ? getPlanStatus.item_name.toLowerCase() ==
-                  props.route.params.item.package_name.toLowerCase()
-                  ? true
-                  : false
-                : false
+            disabled={false
+              // getPlanStatus.length != 0
+              //   ? getPlanStatus.item_name.toLowerCase() ==
+              //     props.route.params.item.package_name.toLowerCase()
+              //     ? true
+              //     : false
+              //   : false
             }
           />
         )}
-        {!forLoading &&
+        {/* {!forLoading &&
           getPlanStatus.length !== 0 &&
           getPlanStatus.item_name.toLowerCase() ==
             props.route.params.item.package_name.toLowerCase() && (
@@ -143,10 +145,9 @@ export default function SliderOne(props) {
                 color: COLORS.RED,
                 lineHeight: 20,
               }}>
-              {/* {planStatus.message} */}
               This package is already purchased, and it will be activated at the end of your billing cycle.
             </Text>
-          )}
+          )} */}
       </View>
     </ScrollView>
   );

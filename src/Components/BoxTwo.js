@@ -11,6 +11,7 @@ const BoxTwo = ({ data }) => {
       <View style={styles.install_touchable}>
         <Image
           style={styles.img_width}
+          resizeMode='contain'
           source={require('../../assets/images/details.png')}
         />
         <Text style={styles.installation_text}>Plan Details</Text>
@@ -23,17 +24,20 @@ const BoxTwo = ({ data }) => {
           <Text style={styles.unit_allowed}>Units Alloted</Text>
         </View>
         <View style={styles.second_main_div_kwh}>
-          {/* <Image
+          <Image
                   source={require('../../assets/images/kwh_icon_one.png')}
-                /> */}
-          <Mieq />
+                  resizeMode='contain'
+                  style={{ width: 30, height: 30}}
+                />
+          {/* <Mieq /> */}
           <Text style={styles.kwh_mieq_text}>~ {data?.mi_eq ? data?.mi_eq : "1500"}</Text>
           <Text style={styles.unit_allowed}>Mi Eq</Text>
         </View>
         <View style={styles.second_main_div_kwh}>
           <Image
             source={require('../../assets/images/kwh_dollar.png')}
-            style={{ width: 20, height: 20 }}
+            resizeMode='contain'
+            style={{ width: 30, height: 30}}
           />
           {/* <MileOne /> */}
           <Text style={styles.kwh_mieq_text}>{data?.dollar_mi ? data?.dollar_mi : '0.11'}</Text>
@@ -73,7 +77,9 @@ const styles = StyleSheet.create({
 
   },
   img_width: {
-    marginLeft: 20,
+    marginLeft: 15,
+    width: 20,
+    height: 20,
   },
   installation_text: {
     fontWeight: "700",
@@ -101,7 +107,7 @@ const styles = StyleSheet.create({
   },
   mainDiv_plan_details: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
+    justifyContent: 'space-around',
     // alignItems:'center',
     paddingVertical: 20,
     backgroundColor: COLORS.GRAY,

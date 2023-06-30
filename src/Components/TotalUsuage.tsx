@@ -1,39 +1,39 @@
 import {Dimensions, StyleSheet, Text, View} from 'react-native';
-import React, { useCallback, useEffect } from 'react';
+import React, {useCallback, useEffect} from 'react';
 import COLORS from '../constants/COLORS';
 import LinearGradient from 'react-native-linear-gradient';
 import {DIMENSIONS} from '../constants/DIMENSIONS';
-import { useDispatch, useSelector } from 'react-redux';
-import { useFocusEffect } from '@react-navigation/native';
+import {useDispatch, useSelector} from 'react-redux';
+import {useFocusEffect} from '@react-navigation/native';
 import axios from 'axios';
-import { API } from '../api/API';
-import { setKwhData } from '../redux/action';
+import {API} from '../api/API';
+import {setKwhData} from '../redux/action';
 
-const TotalUsage = ({...props}) => {
-  const dispatch = useDispatch();
-  const {getRemainingData, getUserID, getkwhData} = useSelector(
-    (state: any) => state,
-  );
-  useFocusEffect(
-    // overusage && setModalVisible(true);
-    useCallback(() => {
-      dailyUsuagekwh();
-    }, []),
-  );
-  
-  const dailyUsuagekwh = () => {
-    axios
-      .get(`${API}/dailyusage/${getUserID}`)
-      .then(res => {
-        if (res?.data) {
-          console.log("DAILTYRWTEW", res.data)
-          dispatch(setKwhData(res?.data));
-        }
-      })
-      .catch(err => {
-        console.log(err);
-      });
-  };
+const TotalUsage = (props: any) => {
+  // const dispatch = useDispatch();
+  // const {getRemainingData, getUserID, getkwhData} = useSelector(
+  //   (state: any) => state,
+  // );
+  // useFocusEffect(
+  //   // overusage && setModalVisible(true);
+  //   useCallback(() => {
+  //     dailyUsuagekwh();
+  //   }, []),
+  // );
+
+  // const dailyUsuagekwh = () => {
+  //   axios
+  //     .get(`${API}/dailyusage/${getUserID}`)
+  //     .then(res => {
+  //       if (res?.data) {
+  //         console.log("DAILTYRWTEW", res.data)
+  //         dispatch(setKwhData(res?.data));
+  //       }
+  //     })
+  //     .catch(err => {
+  //       console.log(err);
+  //     });
+  // };
   return (
     <View
       style={{
@@ -43,7 +43,7 @@ const TotalUsage = ({...props}) => {
         marginVertical: DIMENSIONS.SCREEN_HEIGHT * 0.02,
         flexDirection: 'column-reverse',
         shadowColor: '#000000',
-        shadowOffset: { width: 0, height: 2 },
+        shadowOffset: {width: 0, height: 2},
         shadowOpacity: 0.8,
         shadowRadius: 5,
         elevation: 5,
@@ -68,7 +68,8 @@ const TotalUsage = ({...props}) => {
         style={{
           width: '100%',
         }}>
-        <View style={{marginBottom: 50, marginLeft: 30,alignContent:'center',}}>
+        <View
+          style={{marginBottom: 50, alignContent: 'center', alignSelf: 'center',}}>
           <Text
             style={{
               fontWeight: '800',
@@ -76,8 +77,7 @@ const TotalUsage = ({...props}) => {
               lineHeight: 20,
               color: COLORS.BLACK,
             }}>
-            
-            {getkwhData.Totalusedkwhs ? getkwhData.Totalusedkwhs?.toFixed(2) + ' kWh' : 0 + ' kWh'}
+            {props.data ? props.data?.toFixed(2) + ' kWh' : 0 + ' kWh'}
           </Text>
           <Text
             style={{
@@ -86,7 +86,7 @@ const TotalUsage = ({...props}) => {
               lineHeight: 12,
               color: 'rgba(61, 61, 61, 0.6)',
             }}>
-            Total Weekly Usage
+            Total {props.location} Usage
           </Text>
         </View>
       </View>

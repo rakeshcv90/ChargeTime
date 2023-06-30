@@ -37,11 +37,11 @@ export default function Month() {
             style={{
               flexDirection: 'row',
               justifyContent: 'space-between',
-              marginHorizontal: 20,
+              marginHorizontal: 30,
               marginTop: 10,
             }}>
             <Remaining RemainingFill={50} KWH={400} />
-            <TotalUsage data={getMonthData?.Totalusedkwhs} />
+            <TotalUsage data={getMonthData?.Totalusedkwhs} location={'Monthly'} />
           </View>
 
           <View style={{marginHorizontal: 20}}>

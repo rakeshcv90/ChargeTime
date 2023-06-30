@@ -56,7 +56,7 @@ const Subscription = () => {
 
   const dispatch = useDispatch();
   useEffect(() => {
-    getPlanCurrent()
+    getPlanCurrent();
   }, []);
 
   const user_id = getUserID;
@@ -131,13 +131,13 @@ const Subscription = () => {
       .then(res => {
         setForLoading(false);
         setModalVisible(false);
-        if (res.data.error == 'Package details not found') {
-          dispatch(setPurchaseData([]));
-          setGetData(res.data)
+        if (res.data.data == 'Package details not found') {
+          dispatch(setPurchaseData(res.data));
+          setGetData(res.data);
           dispatch(setPackageStatus(false));
         } else {
           dispatch(setPurchaseData(res?.data));
-          setGetData(res.data)
+          setGetData(res.data);
         }
       })
       .catch(err => {
@@ -230,20 +230,86 @@ const Subscription = () => {
             />
           </View>
         )}
-        <ScrollView showsVerticalScrollIndicator={false}>
-          {getData.length !==0 && getData?.error !== 'Package details not found' ? (
-            <View>
+
+        {getPurchaseData.data == 'Package details not found' ? (
+          <View
+            style={{
+              justifyContent: 'center',
+              alignItems: 'center',
+              flex: 1,
+              marginBottom: DIMENSIONS.SCREEN_HEIGHT * 0.25,
+            }}>
+            <View
+              style={{
+                flexDirection: 'row',
+                justifyContent: 'center',
+
+                alignItems: 'center',
+              }}>
+              <AnimatedLottieView
+                source={{
+                  uri: 'https://assets5.lottiefiles.com/packages/lf20_v4UB4ch6dZ.json',
+                }} // Replace with your animation file
+                autoPlay
+                loop
+                style={{
+                  width: DIMENSIONS.SCREEN_WIDTH * 0.4,
+                  height: DIMENSIONS.SCREEN_HEIGHT * 0.25,
+                }}
+              />
+              <AnimatedLottieView
+                source={{
+                  uri: 'https://assets7.lottiefiles.com/packages/lf20_qgq2nqsy.json',
+                }} // Replace with your animation file
+                autoPlay
+                loop
+                style={{width: 50, height: 50}}
+              />
+            </View>
+            <Text
+              style={{
+                fontSize: 14,
+                lineHeight: 25,
+                textAlign: 'center',
+                paddingHorizontal: 30,
+                color: COLORS.HALFBLACK
+              }}>
+              No Subscription Package Available
+            </Text>
+            {/* <TouchableOpacity
+                  onPress={() => navigationRef.navigate('EnergyStats')}
+
+                  style={{
+                    color: COLORS.WHITE,
+                    fontSize: 14,
+                    fontWeight: '700',
+                  }}>
+                  <Text
+                    style={{
+                      color: '#263238',
+                      fontWeight: '700',
+                      fontSize: 14,
+                      lineHeight: 17,
+                      textTransform: 'capitalize',
+                    }}>
+                    Purchase Plan
+                  </Text>
+                </TouchableOpacity> */}
+          </View>
+        ) : (
+          <ScrollView showsVerticalScrollIndicator={false}>
             <View style={styles.managing_width}>
               <SubBoxOne />
               <SubBoxTwo />
               <Remaining data={'energy'} />
             </View>
             {/* <View style={styles.mainDiv_installation}>
-            <WaveAnimation />
-          </View> */}
+              <WaveAnimation />
+            </View> */}
             <View style={styles.managing_width}>
               <PriceBox data={getPurchaseData.data} />
             </View>
+
             <View
               style={{
                 flexDirection: 'row',
@@ -274,92 +340,8 @@ const Subscription = () => {
                 </Text>
               </TouchableOpacity>
             </View>
-          </View>
-          ) : (
-           
-            <View
-            style={{
-              justifyContent: 'center',
-              alignItems: 'center',
-              flex: 1,
-            }}>
-            <View
-              style={{
-                flexDirection: 'row',
-                justifyContent: 'center',
-                alignItems: 'center',
-              }}>
-              <AnimatedLottieView
-                source={{
-                  uri: 'https://assets5.lottiefiles.com/packages/lf20_v4UB4ch6dZ.json',
-                }} // Replace with your animation file
-                autoPlay
-                loop
-                style={{width: 150, height: 150}}
-              />
-              <AnimatedLottieView
-                source={{
-                  uri: 'https://assets7.lottiefiles.com/packages/lf20_qgq2nqsy.json',
-                }} // Replace with your animation file
-                autoPlay
-                loop
-                style={{width: 50, height: 50}}
-              />
-            </View>
-            <Text
-              style={{
-                fontSize: 14,
-                lineHeight: 25,
-                textAlign: 'center',
-                paddingHorizontal: 30,
-              }}>
-              {
-                'No (Active / Scheduled ) Subscription Available.'
-              }
-            </Text>
-            <View
-              style={{
-                flexDirection: 'row',
-                justifyContent: 'center',
-                alignItems: 'center',
-              }}>
-              <TouchableOpacity
-                onPress={() => navigationRef.navigate('Home1')}
-                style={{
-                  width: mobileW * 0.3,
-                  borderRadius: 10,
-                  backgroundColor: COLORS.WHITE,
-                  padding: 10,
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  margin: 10,
-                  ...Platform.select({
-                    ios: {
-                      shadowColor: '#000000',
-                      shadowOffset: {width: 0, height: 2},
-                      shadowOpacity: 0.3,
-                      shadowRadius: 4,
-                    },
-                    android: {
-                      elevation: 4,
-                    },
-                  }),
-                }}>
-                <Text
-                  style={{
-                    color: '#263238',
-                    fontWeight: '700',
-                    fontSize: 14,
-                    lineHeight: 17,
-                    textTransform: 'capitalize',
-                  }}>
-                  Purchase Plan
-                </Text>
-              </TouchableOpacity>
-            </View>
-          </View>
-          )}
-        </ScrollView>
+          </ScrollView>
+        )}
       </SafeAreaView>
       <CancelModal />
       {forLoading && <ActivityLoader />}

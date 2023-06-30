@@ -234,7 +234,7 @@ export default function Register({navigation}) {
             
             errors={errors.name}
             touched={touched.name}
-            placeholderTextColor={COLORS.BLACK}
+            placeholderTextColor={COLORS.HALFBLACK}
             text="Password"
             
             passwordInput={true}

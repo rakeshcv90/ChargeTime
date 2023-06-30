@@ -5,7 +5,7 @@ import HorizontalLine from '../../Components/HorizontalLine'
 import Input from '../../Components/Input'
 import { Install } from '../../../assets/svgs/Install'
 import { Location } from '../../../assets/svgs/Location'
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import COLORS from '../../constants/COLORS';
 // import DropDownPicker from 'react-native-dropdown-picker';
 import {Dropdown} from 'react-native-element-dropdown';
@@ -15,7 +15,7 @@ import axios from 'axios';
 import { FONTS } from '../../constants/FONTS'
 import { navigationRef } from '../../../App'
 import { ms } from 'react-native-size-matters';
-import { userProfileData as updatePersionalDetail } from '../../redux/action';
+import { getLocationID, setBasePackage, setPackageStatus, userProfileData as updatePersionalDetail } from '../../redux/action';
 
 
 
@@ -23,7 +23,7 @@ import { userProfileData as updatePersionalDetail } from '../../redux/action';
 const Installation = () => {
   // const getCompleteData = useSelector((state)=> state.getCompleteData)
     const userProfileData = useSelector((state)=> state.userProfileData)
-
+const dispatch = useDispatch()
   const getUserID = useSelector((state)=> state.getUserID)
   const [isModalVisible, setModalVisible] = useState(false);
   const [isEditable, setIsEditable] = useState(false);
@@ -40,7 +40,7 @@ const Installation = () => {
   const [forLoading,setForLoading] = useState(false)
   const mobileW = Math.round(Dimensions.get('screen').width);
   useEffect(() => {
-    // console.log('data for this User:---------', userProfileData); 
+    console.log('data for this User:---------', userProfileData); 
     setAddLineTwo(userProfileData[0]?.pwa_add2);
     setAddLineOne(userProfileData[0]?.pwa_add1);
     // console.log('userrrrrrrrr',getUserID)
@@ -55,10 +55,10 @@ const user_id= getUserID;
  
  const fetchOptions = async () => {
    try {
-     const response = await fetch(`${API}/locations`);
-     const result = await response.json();
+     const response = await axios(`${API}/locations`);
+    //  const result = await response.json();
 // console.log(result,'ttt');
-     setLocationMap(result);
+     setLocationMap(response.data);
    } catch (error) {
      console.error(error);
    }
@@ -110,6 +110,27 @@ console.log(result,'ttt');
     console.error(error);
   }
 };
+const userDetails = async () => {
+  // const response = await fetch(`${API}/userexisting/${user_ID}`);
+  try {
+    const response = await fetch(`${API}/userexisting/${getUserID}`);
+    const result = await response.json();
+    if (result[0].message == "sucess") {
+
+      console.log('wwwwww', result);
+      //  setUserData(result);
+      dispatch(updatePersionalDetail(result));
+      fetchData()
+      //  console.log(result)
+
+    } else {
+      console.log("iiiiiiiiiiii")
+    }
+    // setLocationMap(result);
+  } catch (error) {
+    console.error(error);
+  }
+};
 const InstalltionUpdate = async () => {
     
   setForLoading(true)
@@ -133,26 +154,30 @@ const InstalltionUpdate = async () => {
       .then(res => res.json())
       .then(data => {
 
-        console.log(data, 'fff');
-
+        
         if (data) {
-          const updatedData = [{
-            ...userProfileData[0],
-            pwa_add1:addlineone,
-            pwa_add2:addlinetwo,
-          }];
-          console.log(updatedData,"------")
-          dispatch(updatePersionalDetail(updatedData));
+
+          dispatch(getLocationID(parseInt(locationId)))
+          console.log(data, 'fff');
+          userDetails()
+          // const updatedData = [{
+          //   ...userProfileData[0],
+          // pwa_add1: addlineone,
+          //   pwa_add2: addlinetwo,
+          //   location: locationId
+          // }];
+          // console.log(updatedData,"------")
+          // dispatch(updatePersionalDetail(updatedData));
+
           PLATFORM_IOS
             ? Toast.show({
                 type: 'success',
-                text1: 'Profile has benn updated successfully.',
+                text1: 'Profile has been updated successfully.',
               })
             : ToastAndroid.show(
-                'Profile has benn updated successfully.',
+                'Profile has been updated successfully.',
                 ToastAndroid.SHORT,
               );
-          navigationRef.navigate('Account');
           setForLoading(false)
         } else {
           PLATFORM_IOS
@@ -169,6 +194,30 @@ const InstalltionUpdate = async () => {
     console.log(err);
     setForLoading(false)
   }}
+};
+
+
+const fetchData = async () => {
+  //  loginData = await AsyncStorage.getItem('loginDataOne');
+
+  console.log(locationId, 'fff');
+  try {
+    const response = await axios.get(`${API}/packagePlan/${locationId}`);
+console.log(`${API}/packagePlan/${locationId}`)
+    if (response?.data?.locations.length == 0) {
+      setForLoading(true);
+      // setShowPackage(true);
+    } else {
+      // setApiData(response?.data?.locations);
+      dispatch(setBasePackage(response.data.locations));
+      dispatch(setPackageStatus(false));
+      setForLoading(false);
+      navigationRef.navigate('HomeStack');
+    }
+  } catch (error) {
+    console.error('Error fetching data:', error);
+    setForLoading(false);
+  }
 };
 
   const handleOk = () => {
@@ -207,6 +256,15 @@ const InstalltionUpdate = async () => {
             Change Location Base?
             </Text>
             <Text style={styles.selectedEmail}>Doing so will cancel your current plan. {'\n'}Are you sure?</Text>
+            <Text
+              style={{
+                fontSize: 14,
+                fontWeight: '400',
+                color: COLORS.RED,
+                marginVertical: 5,
+              }}>
+              All your (Active / Scheduled ) Subscriptions will be Cancelled
+            </Text>
             <View style={styles.modalButtonsContainer}>
               <TouchableOpacity
                 style={styles.cancelButton}
@@ -248,6 +306,7 @@ const InstalltionUpdate = async () => {
                 iconStyle={styles.iconStyle}
                 data={locationMap}
                 search
+                disable={!isEditable}
                 maxHeight={ms(500)}
                 labelField="location"
                 valueField="location"
@@ -390,7 +449,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: 'rgba(0, 0, 0, 0.5)',
-    borderRadius: 28,
+    // borderRadius: 28,
   },
   modalContent: {
     backgroundColor: '#F5F5F5',
@@ -435,7 +494,7 @@ const styles = StyleSheet.create({
   okButton: {
     backgroundColor: '#B1D34F',
     paddingVertical: 10,
-    paddingHorizontal: 10,
+    paddingHorizontal: 20,
     borderRadius: 20,
   
   },
