@@ -11,6 +11,7 @@ import {
   Alert,
   KeyboardAvoidingView,
   ToastAndroid,
+  Platform,
 } from 'react-native';
 import AnimatedLottieView from 'lottie-react-native';
 import React, { useState, useRef, useEffect } from 'react';
@@ -30,6 +31,9 @@ import axios from 'axios';
 import { API } from '../../api/API';
 import { navigationRef } from '../../../App';
 import ActivityLoader from '../../Components/ActivityLoader';
+import HorizontalLine from '../../Components/HorizontalLine';
+import { mvs, ms } from 'react-native-size-matters';
+
 
 import {
   setCardDetails,
@@ -46,6 +50,8 @@ const validationSchema = Yup.object().shape({
   cardNumber: Yup.string()
     .required('Invalid Card Number')
     .min(19, 'Card number must be 16 digits'),
+   
+    
   // .matches(/^[0-9]{16}$/, 'Card number must be 16 digits'),
   validTill: Yup.string()
     .required('expiry date required')
@@ -77,7 +83,7 @@ export default function PaymentGateWay({ navigation, route }) {
   const dispatch = useDispatch();
 
   const getCardDetails = useSelector(state => state.getCardDetails);
-const [cardId, setCardId]=useState('');
+  const [cardId, setCardId] = useState('');
   const [cardDetails, setCardDetails1] = useState({
     cardHolderName: getCardDetails[0]?.cust_name,
     card_number: getCardDetails[0]?.card_number,
@@ -109,11 +115,12 @@ const [cardId, setCardId]=useState('');
     ) ?? '',
   );
 
- 
+
 
   // console.log(savedCard,"------------")
 
   const newPAYMENT = async values => {
+   
     setLoader(true);
     let payload = new FormData();
 
@@ -140,9 +147,19 @@ const [cardId, setCardId]=useState('');
         setLoader(false);
         setModalVisible(true);
       }
+    
     } catch (err) {
       setLoader(false);
       if (err.response) {
+        PLATFORM_IOS
+        ? Toast.show({
+          type: 'success',
+          text1: "NO CARD ADDED !",
+        })
+        : ToastAndroid.show(
+          "NO CARD ADDED !",
+          ToastAndroid.SHORT,
+        );
         console.log(err.response.data);
         console.log(err.response.status);
       } else {
@@ -240,7 +257,7 @@ const [cardId, setCardId]=useState('');
   //     console.error("Error Making default card", error);
   //   }
   // };
- 
+
   // const handleGetCard = async () => {
 
   //   try {
@@ -276,7 +293,7 @@ const [cardId, setCardId]=useState('');
   // }
 
   const handleAddCard = async (values) => {
-    console.log("--------",values)
+    console.log("--------", values)
     let exp_month = values?.validTill?.split('/')[0];
     let exp_year = values?.validTill?.split('/')[1];
     // let cust_number = values?.cardNumber.split(" ").join("");
@@ -331,7 +348,7 @@ const [cardId, setCardId]=useState('');
     }
 
   };
-  
+
   const getDeviceIDData = () => {
     axios
       .get(`${API}/devicecheck/${getUserID}}`)
@@ -403,11 +420,14 @@ const [cardId, setCardId]=useState('');
 
   return (
     <SafeAreaView style={{ backgroundColor: COLORS.CREAM, flex: 1 }}>
-      {loader && <ActivityLoader />}
-      <ScrollView>
-        <View style={{ marginHorizontal: 20, paddingTop: 20 }}>
+       <View style={{ marginHorizontal: 20, paddingTop: 20 }}>
           <Text style={styles.complete_profile}>Payment Details</Text>
         </View>
+        <ScrollView showsVerticalScrollIndicator={false} style={{ flexGrow: 1, }} >
+      {loader && <ActivityLoader />}
+    
+       
+       
         <View style={styles.centeredView}>
           <Modal
             animationType="slide"
@@ -592,6 +612,42 @@ const [cardId, setCardId]=useState('');
                       </View>
                     </View>
                   </View>
+                  <View
+                    style={{
+                      backgroundColor: COLORS.GREEN,
+                      //width:DIMENSIONS.SCREEN_WIDTH*0.3,
+                      height:DIMENSIONS.SCREEN_HEIGHT*0.05,                     
+                      marginBottom:35,
+                      justifyContent:'center',
+                      alignItems:'center',
+                      borderRadius: 12,
+                      ...Platform.select({
+                        ios: {
+                          shadowColor: '#000000',
+                          shadowOffset: { width: 0, height: 2 },
+                          shadowOpacity: 0.3,
+                          shadowRadius: 4,
+                        },
+                        android: {
+                          elevation: 4,
+                        },
+                      }),
+                    }}>
+                    <TouchableOpacity onPress={newPAYMENT}>
+                      <Text
+                        style={{
+                          fontSize: 14,
+                          fontWeight: '700',
+                          color: COLORS.BLACK,
+                        }}>
+                        Make Payment By Default Card
+                      </Text>
+                    </TouchableOpacity>
+                  </View>
+                  {Platform.OS == 'android' ? <HorizontalLine style={styles.line} /> : <View>
+                    <Image source={require('../../../assets/images/dotted.png')} style={{ width: mobileW * 0.98 }} />
+                  </View>}
+
                   <Input
                     IconLeft={null}
                     errors={errors.cardHolderName}
@@ -604,8 +660,8 @@ const [cardId, setCardId]=useState('');
                     mV={15}
                     placeholder="John Doe"
                     bW={1}
-                    textWidth={'45%'}
-                    placeholderTextColor={COLORS.BLACK}
+                    textWidth={ms(110)}
+                    placeholderTextColor={COLORS.HALFBLACK}
                   />
                   <Input
                     IconLeft={null}
@@ -633,8 +689,8 @@ const [cardId, setCardId]=useState('');
                     mV={15}
                     placeholder="1234  5678  xxxx  xxxx"
                     bW={1}
-                    textWidth={'35%'}
-                    placeholderTextColor={COLORS.BLACK}
+                    textWidth={ms(85)}
+                    placeholderTextColor={COLORS.HALFBLACK}
                     keyboardType="number-pad"
                   />
                   <View style={styles.mainDiv_state_ZIP}>
@@ -665,8 +721,8 @@ const [cardId, setCardId]=useState('');
                         mV={15}
                         placeholder="07/23"
                         bW={1}
-                        textWidth={'70%'}
-                        placeholderTextColor={COLORS.BLACK}
+                        textWidth={ms(62)}
+                        placeholderTextColor={COLORS.HALFBLACK}
                         w="half"
                         keyboardType="numeric"
                         maxLength={5}
@@ -685,8 +741,8 @@ const [cardId, setCardId]=useState('');
                         mV={15}
                         placeholder="***"
                         bW={1}
-                        textWidth={'50%'}
-                        placeholderTextColor={COLORS.BLACK}
+                        textWidth={ms(38)}
+                        placeholderTextColor={COLORS.HALFBLACK}
                         w="half"
                         secureTextEntry={true}
                         maxLength={3}
@@ -723,16 +779,6 @@ const [cardId, setCardId]=useState('');
                           },
                         }),
                       }}>
-                      {cardDetails.card_cvv ? <TouchableOpacity onPress={newPAYMENT}>
-                        <Text
-                          style={{
-                            fontSize: 14,
-                            fontWeight: '700',
-                            color: COLORS.BLACK,
-                          }}>
-                          Make Payment
-                        </Text>
-                      </TouchableOpacity> :
                         <TouchableOpacity onPress={handleSubmit}>
                           <Text
                             style={{
@@ -742,7 +788,7 @@ const [cardId, setCardId]=useState('');
                             }}>
                             Make Payment
                           </Text>
-                        </TouchableOpacity>}
+                        </TouchableOpacity>
                     </View>
                   </View>
                 </KeyboardAvoidingView>
@@ -750,6 +796,7 @@ const [cardId, setCardId]=useState('');
             </Formik>
           </View>
         </View>
+        
       </ScrollView>
     </SafeAreaView>
   );
@@ -859,5 +906,4 @@ const styles = StyleSheet.create({
     color: '#000000',
   },
 });
-
 

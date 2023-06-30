@@ -134,6 +134,12 @@ export default function PaymentGateWay({ navigation }) {
     let exp_year = values?.validTill?.split('/')[1];
     let cust_number = values?.cardNumber.split(" ").join("");
     setGetCard_Number(values?.cardNumber)
+    // console.log(" exp_month ",  exp_month );
+    // console.log("exp_year",exp_year);
+    // console.log("cust_number",cust_number)
+    // console.log("user_id",getUserID);
+    // console.log("card_name",values?.cardHolderName)
+    // console.log("card_cvv",values?.cvv)
     try {
 
       const response = await axios.post(`${API}/addcarddetail`, {
@@ -145,7 +151,9 @@ export default function PaymentGateWay({ navigation }) {
         "card_exp_month": exp_month,
         "card_exp_year": exp_year,
       });
-      if (response.data.message === 'Your Card Detail Save') {
+      console.log("------",response);
+      if (response.data.message ) {
+
         cb();
 
         console.log("card add success")
@@ -159,22 +167,22 @@ export default function PaymentGateWay({ navigation }) {
         PLATFORM_IOS
           ? Toast.show({
             type: 'success',
-            text1: ' Your Card Detail Save.',
+            text1: 'Card Details Saved.',
           })
           : ToastAndroid.show(
-            'Your Card Detail Save.',
+            'Card Details Saved.',
             ToastAndroid.SHORT,
           );
       }
-      else {
-        // cb();
+      else if(response.data.error) {
+        cb();
         PLATFORM_IOS
           ? Toast.show({
             type: 'success',
-            text1: ' Your Card Detail Not Save.',
+            text1: 'Card Number Is Already Exist.',
           })
           : ToastAndroid.show(
-            'Your Card Detail Not Save.',
+            'Card Number Is Already Exist.',
             ToastAndroid.SHORT,
           );
       }
@@ -189,35 +197,26 @@ export default function PaymentGateWay({ navigation }) {
     try {
       const response = await fetch(`${API}/getcarddetails/${user_ID}`);
       const result = await response.json();
-      console.log("Result", result[0].sort((b, a) => a.status - b.status))
+      // console.log("Result", result[0].sort((b, a) => a.status - b.status))
+      console.log(result);
       if (result[0]?.length > 0) {
-        // console.log("defaultCard",defaultCard[0])
         setSavedCard(result[0].sort((b, a) => a.status - b.status))
-
+console.log(result[0])
         const statusOneObjects = result[0].filter(item => item.status === 1);
-        // console.log("-----------------",statusOneObjects);
         dispatch(setCardDetails(statusOneObjects))
 
-      } else {
-        console.log("iiiiiiiiiiii")
+      }
+      else {
+
       }
 
     } catch (error) {
-      PLATFORM_IOS
-        ? Toast.show({
-          type: 'success',
-          text1: ' Your card details not saved.',
-        })
-        : ToastAndroid.show(
-          ' Your card details not saved.',
-          ToastAndroid.SHORT,
-        );
+      console.log("ERROR", error)
     }
   }
   const card_id = cardId;
 
   const handleDeleteCard = async (value) => {
-    // console.log("-------rrrr",cardID)
     try {
       const response = await fetch(`${API}/deletecard/${value}`, {
         method: 'DELETE',
@@ -233,28 +232,18 @@ export default function PaymentGateWay({ navigation }) {
           validTill: '',
           // card_exp_year:'',
         })
-        // console.log("MY CARD DETAIS", cardDetails)
-        // console.log("Your card is deleted");
         PLATFORM_IOS
           ? Toast.show({
             type: 'success',
-            text1: ' Your card is deleted.',
+            text1: ' Card Deleted Successfully.',
           })
           : ToastAndroid.show(
-            'Your card is deleted.',
+            'Card Deleted Successfully.',
             ToastAndroid.SHORT,
           );
       } else {
         // console.log("Error deleting card");
-        PLATFORM_IOS
-          ? Toast.show({
-            type: 'success',
-            text1: "Your card is not exist",
-          })
-          : ToastAndroid.show(
-            "Your card is not exist",
-            ToastAndroid.SHORT,
-          );
+
       }
     } catch (error) {
       console.error("Error deleting card", error);
@@ -275,12 +264,9 @@ export default function PaymentGateWay({ navigation }) {
           user_id: user_ID,
         }),
       });
-      // console.log("999999999999",response)
       const result = await response.json();
-      // console.log("---------------",result)
       if (result.msg === "sucessfull") {
         handleGetCard();
-        console.log("Default card set successfully");
         PLATFORM_IOS
           ? Toast.show({
             type: 'success',
@@ -295,10 +281,10 @@ export default function PaymentGateWay({ navigation }) {
         PLATFORM_IOS
           ? Toast.show({
             type: 'success',
-            text1: "Default card  not set",
+            text1: "Card Details Not Exist.",
           })
           : ToastAndroid.show(
-            "Default card not set",
+            "Card Details Not Exist.",
             ToastAndroid.SHORT,
           );
       }
@@ -320,7 +306,7 @@ export default function PaymentGateWay({ navigation }) {
 
 
 
-      
+
         <Image source={require('../../../assets/images/dotted.png')} style={{ width: mobileW * 0.97 }} />
       </View>}
       <ScrollView showsVerticalScrollIndicator={false} style={{ flexGrow: 1, flex: 1 }} >
@@ -466,19 +452,29 @@ export default function PaymentGateWay({ navigation }) {
 
                         // console.log("------",savedCard[0])
                         // navigationRef.navigate('PaymentGateWay');
-                      } else if(savedCard && savedCard.length ===1 && savedCard[0].status === 0){
-                        console.log("In else if------",savedCard[0].id)
+                      } else if (savedCard && savedCard.length === 1 && savedCard[0].status === 0) {
+                        console.log("In else if------", savedCard[0].id)
                         handleMakeDefaultCard(savedCard[0].id)
                       }
-                      else if(savedCard && savedCard.length >1 && (currentCard.status === 0)){
-                        console.log("In else------",currentCard.id)
+                      else if (savedCard && savedCard.length > 1 && (currentCard.status === 0)) {
+                        console.log("In else------", currentCard.id)
                         handleMakeDefaultCard(currentCard.id)
-                       
+
                       }
-                   
+                      else {
+                        PLATFORM_IOS
+                          ? Toast.show({
+                            type: 'success',
+                            text1: "NO CARD ADDED !",
+                          })
+                          : ToastAndroid.show(
+                            "NO CARD ADDED !",
+                            ToastAndroid.SHORT,
+                          );
+                      }
                     }}
                     style={savedCard && savedCard[0].status === 1 && (!currentCard || currentCard.status === 1) ? styles.default : styles.makeDefault}
-                    disabled = {savedCard && savedCard[0].status === 1 && (!currentCard || currentCard.status === 1)?true:false}>
+                   disabled={savedCard && savedCard[0].status === 1 && (!currentCard || currentCard.status === 1) ? true : false}>
                     <Text
                       style={savedCard && savedCard[0].status === 1 && (!currentCard || currentCard.status === 1) ? styles.makeDefaultText : styles.defaultText}>
 
@@ -492,13 +488,21 @@ export default function PaymentGateWay({ navigation }) {
                       if (currentCard.status === 1 || currentCard.status === 0) {
                         // setCardID(currentCard.id)
                         handleDeleteCard(currentCard.id)
-                      } else if (savedCard.length == 1) {
+                      } else if (savedCard.length > 0) {
                         // console.log("------",savedCard[0]?.id)
                         // setCardID(savedCard[0]?.id)
                         handleDeleteCard(savedCard[0]?.id)
                       }
                       else {
-                        console.log("delete.........")
+                        PLATFORM_IOS
+                          ? Toast.show({
+                            type: 'success',
+                            text1: "NO CARD ADDED !",
+                          })
+                          : ToastAndroid.show(
+                            "NO CARD ADDED !",
+                            ToastAndroid.SHORT,
+                          );
                       }
                     }}
                     style={{
@@ -680,6 +684,7 @@ export default function PaymentGateWay({ navigation }) {
 
 
                   }}>
+                    
                   <TouchableOpacity onPress={handleSubmit} style={{
 
                   }}>

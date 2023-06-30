@@ -102,7 +102,7 @@ const DeleteAccountScreen = () => {
             height: ms(150),
             color: COLORS.BLACK,
             //fontFamily: 'Roboto',
-            fontWeight: '100',
+            fontWeight: '500',
             // paddingLeft: 10,
             // paddingTop: 10,
             textAlignVertical: 'top',
