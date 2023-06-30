@@ -35,7 +35,7 @@ const SubBoxOne = () => {
           // style={styles.img_width}
           source={require('../../assets/images/dotted.png')}
           resizeMode="stretch"
-          style={{ alignSelf: 'center', width: mobileW }}
+          style={{  width: mobileW,}}
         />
         <View style={styles.mainDiv_state_zip}>
           <View style={styles.state_div}>
@@ -46,7 +46,8 @@ const SubBoxOne = () => {
             <Image
               //style={styles.img_width}
               source={require('../../assets/images/zip_code.png')}
-              style={{ width: 20, height: 20 }}
+              resizeMode="stretch"
+              style={{ width: 22, height: 22, }}
             />
             <Text style={styles.force_base}>{getPurchaseData.data.pwa_zip}</Text>
 

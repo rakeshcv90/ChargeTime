@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   DrawerActions,
   NavigationContainer,
@@ -18,13 +18,13 @@ import {
 } from 'react-native';
 import CompleteProfile from '../screens/register/CompleteProfile';
 import Home from '../screens/purchasePlan/Home';
-import {createDrawerNavigator} from '@react-navigation/drawer';
+import { createDrawerNavigator } from '@react-navigation/drawer';
 import ForgetPassword from '../screens/register/ForgetPassword';
 import Account from '../screens/accounts/Account';
 import ResetPassword from '../screens/register/ResetPassword';
 import Toast from 'react-native-toast-message';
 import CustomDrawerContent from './CustomDrawer';
-import {createNativeStackNavigator} from '@react-navigation/native-stack';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import PlanSummary from '../screens/purchasePlan/PlanSummary';
 import Testing from '../screens/testing/Testing';
@@ -36,7 +36,7 @@ import Theme from '../screens/accounts/Theme';
 import Subscription from '../screens/accounts/Subscription';
 import deleteAccount from '../screens/accounts/deleteAccount';
 import EnergyStats from '../screens/EnergyStats';
-import {useSelector} from 'react-redux';
+import { useSelector } from 'react-redux';
 import PaymentGateWay from '../screens/payment/PaymentGateWay';
 import Splash from '../splash/Splash';
 import Introduction from '../splash/Introduction';
@@ -47,10 +47,10 @@ import ContactUs from '../screens/drawerPart/ContactUs';
 import Privacy from '../screens/drawerPart/Privacy';
 import Terms from '../screens/drawerPart/Terms';
 import Charging from '../Components/Charging';
-import {OnlineCharge} from '../../assets/images/OnlineCharge';
-import {NoCharge} from '../../assets/images/NoCharge';
+import { OnlineCharge } from '../../assets/images/OnlineCharge';
+import { NoCharge } from '../../assets/images/NoCharge';
 import COLORS from '../constants/COLORS';
-import {DIMENSIONS} from '../constants/DIMENSIONS';
+import { DIMENSIONS } from '../constants/DIMENSIONS';
 import Contact from '../screens/accounts/Contact';
 import ForDownGrade from '../Components/ForDownGrade';
 
@@ -60,7 +60,7 @@ const Stack = createNativeStackNavigator();
 const screenOptions = {
   headerShown: false, // Hide the header for all screens
 };
-export const DrawerScreenPart = ({navigation}) => {
+export const DrawerScreenPart = ({ navigation }) => {
   const getEmailData = useSelector(state => state.getEmailData);
   useEffect(() => {
     handleLinkPress();
@@ -97,7 +97,7 @@ const DrawerNavigation = () => {
   const [focus, setFocus] = useState();
   const [focusOne, setFocusOne] = useState();
   const [focusTwo, setFocusTwo] = useState();
-  const {getPackageStatus, getChargerStatus, getDeviceID} = useSelector(
+  const { getPackageStatus, getChargerStatus, getDeviceID } = useSelector(
     state => state,
   );
 
@@ -116,7 +116,7 @@ const DrawerNavigation = () => {
           <Drawer.Screen
             options={{
               drawerActiveBackgroundColor: '#fff',
-              drawerIcon: ({focused, color, size}) => {
+              drawerIcon: ({ focused, color, size }) => {
                 setFocus(focused);
                 return (
                   <Image
@@ -125,7 +125,7 @@ const DrawerNavigation = () => {
                         ? require('../../assets/images/home_white.png')
                         : require('../../assets/images/home_green.png')
                     }
-                    style={{width: 25, height: 30, padding: 0, margin: -10}}
+                    style={{ width: 25, height: 30, padding: 0, margin: -10 }}
                   />
                 );
               },
@@ -145,7 +145,7 @@ const DrawerNavigation = () => {
           <Drawer.Screen
             options={{
               drawerActiveBackgroundColor: '#fff',
-              drawerIcon: ({focused, color, size}) => {
+              drawerIcon: ({ focused, color, size }) => {
                 setFocusOne(focused);
                 return (
                   <Image
@@ -183,7 +183,7 @@ const DrawerNavigation = () => {
         <Drawer.Screen
           options={{
             drawerActiveBackgroundColor: '#fff',
-            drawerIcon: ({focused, color, size}) => {
+            drawerIcon: ({ focused, color, size }) => {
               setFocus(focused);
               return (
                 <Image
@@ -192,7 +192,7 @@ const DrawerNavigation = () => {
                       ? require('../../assets/images/home_white.png')
                       : require('../../assets/images/home_green.png')
                   }
-                  style={{width: 25, height: 30, margin: -10, marginTop: -30}}
+                  style={{ width: 25, height: 30, margin: -10, marginTop: -30 }}
                 />
               );
             },
@@ -243,7 +243,7 @@ const DrawerNavigation = () => {
       <Drawer.Screen
         options={{
           drawerActiveBackgroundColor: '#fff',
-          drawerIcon: ({focused, color, size}) => {
+          drawerIcon: ({ focused, color, size }) => {
             setFocusTwo(focused);
             return (
               <Image
@@ -280,16 +280,16 @@ const DrawerNavigation = () => {
       <Drawer.Screen
         options={{
           drawerActiveBackgroundColor: '#fff',
-          drawerIcon: ({focused, color, size}) => {
+          drawerIcon: ({ focused, color, size }) => {
             return (
               <Image
                 source={require('../../assets/images/contact_us.png')}
                 resizeMode="center"
-                style={{width: 25, height: 25, padding: 0, margin: -7}}
+                style={{ width: 25, height: 25, padding: 0, margin: -7 }}
               />
             );
           },
-          drawerItemStyle: {marginTop: (DIMENSIONS.SCREEN_HEIGHT * 5) / 100},
+          drawerItemStyle: { marginTop: (DIMENSIONS.SCREEN_HEIGHT * 15) / 100 },
           drawerLabelStyle: {
             backgroundColor: '#fff',
             marginLeft: -17,
@@ -303,12 +303,12 @@ const DrawerNavigation = () => {
       <Drawer.Screen
         options={{
           drawerActiveBackgroundColor: '#fff',
-          drawerIcon: ({focused, color, size}) => {
+          drawerIcon: ({ focused, color, size }) => {
             return (
               <Image
                 source={require('../../assets/images/privacy.png')}
                 resizeMode="stretch"
-                style={{width: 17, height: 17, padding: 0, margin: -5}}
+                style={{ width: 17, height: 17, padding: 0, margin: -5 }}
               />
             );
           },
@@ -324,12 +324,12 @@ const DrawerNavigation = () => {
       <Drawer.Screen
         options={{
           drawerActiveBackgroundColor: '#fff',
-          drawerIcon: ({focused, color, size}) => {
+          drawerIcon: ({ focused, color, size }) => {
             return (
               <Image
                 source={require('../../assets/images/terms.png')}
                 resizeMode="stretch"
-                style={{width: 17, height: 17, padding: 0, margin: -5}}
+                style={{ width: 17, height: 17, padding: 0, margin: -5 }}
               />
             );
           },
@@ -354,18 +354,18 @@ const DrawerNavigation = () => {
                 marginLeft: (DIMENSIONS.SCREEN_HEIGHT * 3) / 100,
               },
               headerInteractionEnabled: false,
-              drawerIcon: ({focused, color, size}) => {
+              drawerIcon: ({ focused, color, size }) => {
                 let iconComponent = null;
 
                 if (getChargerStatus?.message === 'Charging') {
                   iconComponent = <Charging />;
                 } else if (getChargerStatus?.message === 'Online') {
                   iconComponent = (
-                    <OnlineCharge style={{marginTop: 10, marginLeft: 5}} />
+                    <OnlineCharge style={{ marginTop: 10, marginLeft: 5 }} />
                   );
                 } else if (getChargerStatus?.message === 'Offline') {
                   iconComponent = (
-                    <NoCharge style={{marginTop: 10, marginLeft: 5}} />
+                    <NoCharge style={{ marginTop: 10, marginLeft: 5 }} />
                   );
                 }
 
@@ -387,9 +387,9 @@ const DrawerNavigation = () => {
                         width: 0,
                         height: 5,
                       },
-                      shadowOpacity: 0.29,
-                      shadowRadius: 4.65,
-                      elevation: Platform.OS === 'android' ? 10 : 0,
+                      //shadowOpacity: 0.29,
+                      //shadowRadius: 4.65,
+                      elevation: Platform.OS === 'android' ? 5 : 0,
                     }}>
                     {iconComponent}
                   </View>
@@ -425,8 +425,8 @@ const DrawerNavigation = () => {
 const LoginStack = () => {
   return (
     <Stack.Navigator screenOptions={screenOptions}>
-    <Stack.Screen name="Splash" component={Splash} />
-    <Stack.Screen name="Introduction" component={Introduction} />
+      <Stack.Screen name="Splash" component={Splash} />
+      <Stack.Screen name="Introduction" component={Introduction} />
       <Stack.Screen name="Login" component={Login} />
       <Stack.Screen name="Register" component={Register} />
       <Stack.Screen name="VerifyEmail" component={VerifyEmail} />
@@ -524,7 +524,7 @@ export default function Router() {
     try {
       //loginDataString = await AsyncStorage.getItem('loginDataOne');
       isFirstTime = await AsyncStorage.getItem('isFirstTime');
-console.log('isFirstTime',isFirstTime)
+
       // if (loginDataString !== null) {
       //   const loginData = JSON.parse(loginDataString);
       //   setIsAuthorized(true);

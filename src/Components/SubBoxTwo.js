@@ -17,6 +17,7 @@ const SubBoxTwo = () => {
       <TouchableOpacity style={styles.install_touchable}>
         <Image
           style={styles.img_width}
+          resizeMode='contain'
           source={require('../../assets/images/details.png')}
         />
         <Text style={styles.installation_text}>Plan Details</Text>
@@ -32,17 +33,22 @@ const SubBoxTwo = () => {
           </View>
           <View style={styles.second_main_div_kwh}>
            
-            <Mieq />
+          <Image
+                  source={require('../../assets/images/kwh_icon_one.png')}
+                  resizeMode='contain'
+                  style={{ width: 30, height: 30}}
+                />
             <Text style={styles.kwh_mieq_text}>
               ~ {getPurchaseData.data.mi_eq}
             </Text>
             <Text style={styles.unit_allowed}>Mi Eq</Text>
           </View>
           <View style={styles.second_main_div_kwh}>
-            <Image
-              source={require('../../assets/images/kwh_dollar.png')}
-              style={{width: 20, height: 20}}
-            />
+          <Image
+            source={require('../../assets/images/kwh_dollar.png')}
+            resizeMode='contain'
+            style={{ width: 30, height: 30}}
+          />
             <Text style={styles.kwh_mieq_text}>
               {getPurchaseData.data.dollar_mi}
             </Text>
@@ -97,7 +103,9 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
   },
   img_width: {
-    marginLeft: 20,
+    marginLeft:10,
+    width: 20,
+    height: 20,
   },
   installation_text: {
     fontWeight: '700',
@@ -114,7 +122,7 @@ const styles = StyleSheet.create({
   mainDiv_state_zip: {
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'space-between',
+   justifyContent: 'space-around',
     paddingRight: 10,
     paddingVertical: 10,
     // backgroundColor: COLORS.GRAY,
@@ -125,7 +133,7 @@ const styles = StyleSheet.create({
   },
   mainDiv_plan_details: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
+    justifyContent: 'space-around',
     // alignItems:'center',
     paddingVertical: 20,
     backgroundColor: COLORS.GRAY,

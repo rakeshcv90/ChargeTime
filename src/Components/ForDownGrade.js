@@ -6,22 +6,22 @@ import {
   Image,
   ScrollView,
 } from 'react-native';
-import React, {useEffect, useState} from 'react';
+import React, { useEffect, useState } from 'react';
 
 import COLORS from '../constants/COLORS';
-import {Unit} from '../../assets/images/Unit';
-import {Mieq} from '../../assets/images/Mieq';
-import {PlanPricing} from '../../assets/images/PlanPricing';
-import {useDispatch, useSelector} from 'react-redux';
-import {navigationRef} from '../../App';
+import { Unit } from '../../assets/images/Unit';
+import { Mieq } from '../../assets/images/Mieq';
+import { PlanPricing } from '../../assets/images/PlanPricing';
+import { useDispatch, useSelector } from 'react-redux';
+import { navigationRef } from '../../App';
 import axios from 'axios';
-import {API} from '../api/API';
-import {SafeAreaView} from 'react-native-safe-area-context';
+import { API } from '../api/API';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { setDataForPayment } from '../redux/action';
 
-export default function ForDownGrade({route, navigation}) {
-  const {dataOne, purchageData, message} = route.params;
-  const {getPurchaseData, getUserID,getLocationID} = useSelector(state => state);
+export default function ForDownGrade({ route, navigation }) {
+  const { dataOne, purchageData, message } = route.params;
+  const { getPurchaseData, getUserID, getLocationID } = useSelector(state => state);
   const [tax, setTax] = useState('');
   const [totalSalexTax, setTotalSalextax] = useState('');
 
@@ -42,7 +42,7 @@ export default function ForDownGrade({route, navigation}) {
       .post(`${API}/upgrade_downgrade/${getUserID}`)
       .then(res => {
         console.log('DOWNGRADE', res.data);
-        navigationRef.navigate('PaymentGateWay', {data: dataOne, purchageData:purchageData});
+        navigationRef.navigate('PaymentGateWay', { data: dataOne, purchageData: purchageData });
       })
       .catch(err => {
         console.log(err.response.data.message);
@@ -66,15 +66,15 @@ export default function ForDownGrade({route, navigation}) {
       });
   };
   return (
-    <SafeAreaView style={{backgroundColor: COLORS.CREAM, flex: 1}}>
+    <SafeAreaView style={{ backgroundColor: COLORS.CREAM, flex: 1 }}>
       <ScrollView showsVerticalScrollIndicator={false} >
         <View
-          style={{paddingHorizontal: 20, paddingTop: 30, paddingBottom: 20}}>
-          <View style={{marginBottom: 20}}>
+          style={{ paddingHorizontal: 20, paddingTop: 30, paddingBottom: 20 }}>
+          <View style={{ marginBottom: 20 }}>
             <Image
               source={require('../../assets/images/upgarde.png')}
               resizeMode="contain"
-              style={{width: 40, height: 40}}
+              style={{ width: 40, height: 40 }}
             />
             <Text
               style={{
@@ -87,7 +87,7 @@ export default function ForDownGrade({route, navigation}) {
                 ? 'Downgrade Package'
                 : 'UPGRADE Package'}
             </Text>
-            {purchageData == 'DOWNGRADE'&&<Text
+            {purchageData == 'DOWNGRADE' && <Text
               style={{
                 fontWeight: '600',
                 fontSize: 16,
@@ -106,8 +106,8 @@ export default function ForDownGrade({route, navigation}) {
               style={{
                 flexDirection: 'column',
                 justifyContent: 'space-between',
-                borderBottomLeftRadius:10,
-                borderBottomRightRadius:10,
+                borderBottomLeftRadius: 10,
+                borderBottomRightRadius: 10,
                 paddingVertical: 15,
                 backgroundColor: COLORS.GRAY,
               }}>
@@ -121,8 +121,10 @@ export default function ForDownGrade({route, navigation}) {
                 <Text style={styles.text_formating_part}>
                   {getPurchaseData.data.kwh}kwh
                 </Text>
-                <View style={{alignItems: 'center', gap: 5, paddingTop: 5,
-                    alignSelf: 'center',}}>
+                <View style={{
+                  alignItems: 'center', gap: 5, paddingTop: 5,
+                  alignSelf: 'center',
+                }}>
                   <Unit />
                   <Text
                     style={{
@@ -141,7 +143,7 @@ export default function ForDownGrade({route, navigation}) {
                 // style={styles.img_width}
                 source={require('../../assets/images/dotted.png')}
                 resizeMode="stretch"
-                style={{alignSelf: 'center', width: '100%', marginTop: 15}}
+                style={{ alignSelf: 'center', width: '100%', marginTop: 15 }}
               />
               <View
                 style={{
@@ -151,7 +153,7 @@ export default function ForDownGrade({route, navigation}) {
                   paddingHorizontal: 18,
                 }}>
                 <Text style={styles.text_formating_part}>
-                ~ {getPurchaseData.data.mi_eq}
+                  ~ {getPurchaseData.data.mi_eq}
                 </Text>
                 <View
                   style={{
@@ -161,7 +163,11 @@ export default function ForDownGrade({route, navigation}) {
                     paddingTop: 15,
                     paddingBottom: 8,
                   }}>
-                  <Mieq />
+                  <Image
+                    source={require('../../assets/images/kwh_icon_one.png')}
+                    resizeMode='contain'
+                    style={{ width: 30, height: 30 }}
+                  />
                   <Text
                     style={{
                       fontSize: 10,
@@ -172,14 +178,14 @@ export default function ForDownGrade({route, navigation}) {
                     }}>Mi Eq</Text>
                 </View>
                 <Text style={styles.text_formating_part}>
-                ~ {dataOne.mi_eq}
+                  ~ {dataOne.mi_eq}
                 </Text>
               </View>
               <Image
                 // style={styles.img_width}
                 source={require('../../assets/images/dotted.png')}
                 resizeMode="stretch"
-                style={{alignSelf: 'center', width: '100%', marginVertical: 10}}
+                style={{ alignSelf: 'center', width: '100%', marginVertical: 10 }}
               />
               <View
                 style={{
@@ -192,11 +198,14 @@ export default function ForDownGrade({route, navigation}) {
                   {getPurchaseData.data.dollar_mi}
                 </Text>
                 <View
-                  style={{alignItems: 'center', paddingVertical: 10, gap: 5,
-                  alignSelf: 'center',}}>
+                  style={{
+                    alignItems: 'center', paddingVertical: 10, gap: 5,
+                    alignSelf: 'center',
+                  }}>
                   <Image
                     source={require('../../assets/images/kwh_dollar.png')}
-                    style={{width: 22, height: 20}}
+                    resizeMode='contain'
+                    style={{ width: 30, height: 30 }}
                   />
                   <Text
                     style={{
@@ -215,12 +224,12 @@ export default function ForDownGrade({route, navigation}) {
           </View>
           <View style={Platform.OS == 'android' ? styles.plan_pricing_div1 : styles.plan_pricing_div}>
             <View>
-                <TouchableOpacity style={styles.install_touchable}>
-                  <PlanPricing style={styles.img_width} />
-                  <Text style={styles.installation_text}>
-                    New Plan Pricing
-                  </Text>
-                </TouchableOpacity>
+              <TouchableOpacity style={styles.install_touchable}>
+                <PlanPricing style={styles.img_width} />
+                <Text style={styles.installation_text}>
+                  New Plan Pricing
+                </Text>
+              </TouchableOpacity>
               <View
                 style={{
                   display: 'flex',
@@ -229,8 +238,8 @@ export default function ForDownGrade({route, navigation}) {
                   backgroundColor: COLORS.GRAY,
                   paddingHorizontal: 10,
                   paddingVertical: 20,
-                  borderBottomLeftRadius:10,
-                  borderBottomRightRadius:10
+                  borderBottomLeftRadius: 10,
+                  borderBottomRightRadius: 10
                 }}>
                 <View>
                   <Text
@@ -238,12 +247,12 @@ export default function ForDownGrade({route, navigation}) {
                       fontSize: 12,
                       fontWeight: '400',
                       paddingVertical: 5,
-                      
+
                     }}>
                     Price (excl.taxes):
                   </Text>
                   <Text
-                    style={{fontSize: 12, fontWeight: '400', paddingBottom: 5}}>
+                    style={{ fontSize: 12, fontWeight: '400', paddingBottom: 5 }}>
                     Taxes:
                   </Text>
                   <Text
@@ -265,7 +274,7 @@ export default function ForDownGrade({route, navigation}) {
                     ${dataOne?.total_price}
                   </Text>
                   <Text
-                    style={{fontSize: 12, fontWeight: '400', paddingBottom: 5}}>
+                    style={{ fontSize: 12, fontWeight: '400', paddingBottom: 5 }}>
                     ${dataOne?.salesTax}
                   </Text>
                   <Text
@@ -309,7 +318,7 @@ export default function ForDownGrade({route, navigation}) {
                 }),
               }}>
               <Text
-                style={{fontWeight: '700', color: COLORS.BLACK, fontSize: 14}}>
+                style={{ fontWeight: '700', color: COLORS.BLACK, fontSize: 14 }}>
                 CANCEL
               </Text>
             </TouchableOpacity>
@@ -335,7 +344,7 @@ export default function ForDownGrade({route, navigation}) {
                 }),
               }}>
               <Text
-                style={{fontWeight: '700', color: COLORS.WHITE, fontSize: 14}}>
+                style={{ fontWeight: '700', color: COLORS.WHITE, fontSize: 14 }}>
                 {purchageData}
               </Text>
             </TouchableOpacity>
@@ -360,7 +369,7 @@ const styles = StyleSheet.create({
     elevation: 8,
   },
   mainDiv_installation1: {
-   // overflow: 'hidden',
+    // overflow: 'hidden',
     borderRadius: 10,
     marginTop: Platform.OS === 'ios' ? 10 : 10,
     shadowColor: '#000000',
@@ -379,8 +388,8 @@ const styles = StyleSheet.create({
     paddingVertical: 15,
     justifyContent: 'space-between',
     paddingHorizontal: 18,
-    borderTopLeftRadius:10,
-    borderTopRightRadius:10
+    borderTopLeftRadius: 10,
+    borderTopRightRadius: 10
   },
   cuurent_plan: {
     fontSize: 14,
@@ -394,7 +403,7 @@ const styles = StyleSheet.create({
     paddingVertical: 7,
   },
   plan_pricing_div: {
-   // overflow: 'hidden',
+    // overflow: 'hidden',
 
     borderRadius: 10,
     marginTop: Platform.OS === 'ios' ? 20 : 30,
@@ -407,14 +416,14 @@ const styles = StyleSheet.create({
     shadowRadius: 5.62,
     elevation: 8,
   },
-  
+
   install_touchable: {
     flexDirection: 'row',
     backgroundColor: COLORS.GREEN,
     alignItems: 'center',
     paddingVertical: 15,
-    borderTopLeftRadius:10,
-    borderTopRightRadius:10
+    borderTopLeftRadius: 10,
+    borderTopRightRadius: 10
   },
   img_width: {
     marginHorizontal: 20,
@@ -427,18 +436,18 @@ const styles = StyleSheet.create({
     color: COLORS.BLACK,
   },
   plan_pricing_div1: {
-  
- 
-     borderRadius: 10,
-     marginTop: Platform.OS === 'ios' ? 20 : 30,
-     shadowColor: '#000000',
-     shadowOffset: {
-       width: 4,
-       height: 6,
-     },
-     shadowOpacity: 0.2,
-     shadowRadius: 5.62,
-     elevation: 8,
-   },
-  
+
+
+    borderRadius: 10,
+    marginTop: Platform.OS === 'ios' ? 20 : 30,
+    shadowColor: '#000000',
+    shadowOffset: {
+      width: 4,
+      height: 6,
+    },
+    shadowOpacity: 0.2,
+    shadowRadius: 5.62,
+    elevation: 8,
+  },
+
 });

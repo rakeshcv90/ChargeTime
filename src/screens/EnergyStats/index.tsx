@@ -46,7 +46,7 @@ function MyTabBar({ state, descriptors, navigation }) {
         marginHorizontal: 20,
         backgroundColor: '#EEEEEE',
         borderRadius: 20,
-        // overflow: 'hidden',
+        overflow: 'hidden',
         ...Platform.select({
           ios: {
             shadowColor: '#000000',
@@ -97,7 +97,7 @@ function MyTabBar({ state, descriptors, navigation }) {
               backgroundColor: isFocused ? COLORS.GREEN : '#EEEEEE',
               paddingHorizontal: index == 2 ? 10 : 0,
               paddingVertical: 10,
-              borderRadius: isFocused ? 20 : 0,
+              borderRadius: isFocused ? 20 : 20,
               alignItems: 'center',
               justifyContent: 'center',
               //   elevation: isFocused ? 10 : 0,

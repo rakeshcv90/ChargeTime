@@ -31,7 +31,8 @@ const PriceBox = ({ data }) => {
         style={[styles.install_touchable,{ borderTopLeftRadius:10,
           borderTopRightRadius:10,}]}>
         <Image
-          // style={styles.img_width}
+           style={styles.img_width}
+           resizeMode='contain'
           source={require('../../assets/images/details.png')}
         />
         <Text style={styles.installation_text}>Price & Validity</Text>
@@ -52,12 +53,12 @@ const PriceBox = ({ data }) => {
           <Text style={styles.installation_text2}>Package Name:</Text>
           <Text style={styles.force_base}>{data?.energy_plan}</Text>
         </View>
-        <Image
+        {/* <Image
           // style={styles.img_width}
           source={require('../../assets/images/dotted.png')}
           resizeMode="stretch"
           style={{ alignSelf: 'center', width: mobileW }}
-        />
+        /> */}
         <View style={styles.location_div}>
           <Text style={styles.installation_text2}>Price: </Text>
           <Text style={styles.force_base}>{data?.energy_price}</Text>
@@ -75,12 +76,7 @@ const PriceBox = ({ data }) => {
           <Text style={styles.installation_text2}>Valid Till:</Text>
           <Text style={styles.force_base}>{data?.End_validity}</Text>
         </View>
-        <Image
-          // style={styles.img_width}
-          source={require('../../assets/images/dotted.png')}
-          resizeMode="stretch"
-          style={{ alignSelf: 'center', width: mobileW }}
-        />
+       
       </>
 
     </View>
@@ -112,7 +108,7 @@ const styles = StyleSheet.create({
     paddingLeft: 20
   },
   img_width: {
-    marginLeft: 20,
+    marginLeft:-5,
     width: 20,
     height: 20,
   },
@@ -142,7 +138,7 @@ const styles = StyleSheet.create({
     fontWeight: '400',
     fontSize: 14,
     paddingLeft: 10,
-    color: COLORS.BLACK
+    color: COLORS.HALFBLACK
   },
   mainDiv_state_zip: {
     flexDirection: 'row',
