@@ -135,7 +135,7 @@ export default function HomeOne(route) {
     if (getBasePackage?.length >= 1 && getBasePackage) {
       getBasePackage.forEach(item => {
         const num =
-          getPurchaseData.length != 0
+          getPurchaseData.data != 'Package details not found'
             ? item.package_name.toLowerCase() ===
               getPurchaseData.data.energy_plan.toLowerCase()
             : '';
@@ -255,7 +255,7 @@ export default function HomeOne(route) {
 
   return (
     <SafeAreaView style={{backgroundColor: COLORS.CREAM, flex: 1}}>
-      {getPurchaseData.length != 0 &&
+      {getPurchaseData.data != 'Package details not found' &&
         getPurchaseData.data.energy_plan.toLowerCase() ===
           myTest.toLowerCase() && (
           <View
@@ -328,7 +328,7 @@ export default function HomeOne(route) {
           {getBasePackage?.length >= 1 &&
             getBasePackage &&
             getBasePackage.map((item, ind) => {
-              let purchageData = getPurchaseData.length != 0 ?
+              let purchageData = getPurchaseData.data != 'Package details not found' ?
                 item.kwh > getPurchaseData.data.kwh 
                   ? 'UPGRADE'
                   : 'DOWNGRADE':'';

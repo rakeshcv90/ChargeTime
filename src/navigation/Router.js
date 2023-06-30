@@ -115,6 +115,7 @@ const DrawerNavigation = () => {
         <>
           <Drawer.Screen
             options={{
+              // sw: 20,
               drawerActiveBackgroundColor: '#fff',
               drawerIcon: ({ focused, color, size }) => {
                 setFocus(focused);
@@ -416,7 +417,7 @@ const DrawerNavigation = () => {
               drawerActiveTintColor: 'black',
             }}
             name={getChargerStatus?.message == 'Online' ? `Online` : `Offline`}
-            component={ChargerStatus}
+            component={EnergyStats}
           />
         )}
     </Drawer.Navigator>
@@ -514,8 +515,7 @@ export default function Router() {
     id = await AsyncStorage.getItem('locationID');
   };
 
-  console.log(isAuthorized, 'getLocationId');
-  let isFirstTime;
+  let isFirstTime, authorized;
 
   useEffect(() => {
     retrieveLoginData();
@@ -524,6 +524,10 @@ export default function Router() {
     try {
       //loginDataString = await AsyncStorage.getItem('loginDataOne');
       isFirstTime = await AsyncStorage.getItem('isFirstTime');
+
+      authorized = await AsyncStorage.getItem('isAuthorized');
+console.log('isFirstTime',isFirstTime)
+console.log(authorized, 'getLocationId');
 
       // if (loginDataString !== null) {
       //   const loginData = JSON.parse(loginDataString);
@@ -543,7 +547,7 @@ export default function Router() {
           <Stack.Screen name="SplashStack" component={SplashStack} />
         </>
       )} */}
-      {!isAuthorized ? (
+      {(authorized == null || authorized == undefined) ? (
         <>
           <Stack.Screen name="LoginStack" component={LoginStack} />
         </>

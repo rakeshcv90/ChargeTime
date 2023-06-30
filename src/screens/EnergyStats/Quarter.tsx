@@ -38,11 +38,11 @@ export default function Quarter() {
             style={{
               flexDirection: 'row',
               justifyContent: 'space-between',
-              marginHorizontal: 20,
+              marginHorizontal: 30,
               marginTop: 10,
             }}>
             <Remaining RemainingFill={50} KWH={400} />
-            <TotalUsage data={getQuarterData?.Totalusedkwhs} />
+            <TotalUsage data={getQuarterData?.Totalusedkwhs} location={'Quarterly'} />
           </View>
 
           <View style={{marginHorizontal: 20}}>

@@ -167,7 +167,7 @@ export default function Register({navigation}) {
                     placeholder="Ex. John Doe"
                     bW={1}
                     textWidth={'30%'}
-                    placeholderTextColor={COLORS.BLACK}
+                    placeholderTextColor={COLORS.HALFBLACK}
                   />
 
                   <Input
@@ -183,7 +183,7 @@ export default function Register({navigation}) {
                     placeholder="Ex. johnd@xyz.com"
                     bW={1}
                     textWidth={'30%'}
-                    placeholderTextColor={COLORS.BLACK}
+                    placeholderTextColor={COLORS.HALFBLACK}
                     autoCapitalize="none"
                     keyboardType="email-address"
                   />
@@ -208,7 +208,7 @@ export default function Register({navigation}) {
                     placeholder="Ex. 89xxxxxxxx"
                     bW={1}
                     textWidth={'30%'}
-                    placeholderTextColor={COLORS.BLACK}
+                    placeholderTextColor={COLORS.HALFBLACK}
                   />
 
                   <Input
@@ -227,14 +227,14 @@ export default function Register({navigation}) {
                     placeholder="Create a strong password"
                     bW={1}
                     textWidth={'30%'}
-                    placeholderTextColor={COLORS.BLACK}
+                    placeholderTextColor={COLORS.HALFBLACK}
                     secureTextEntry={showPassword}
                   />
                   {/* IconLeft={null}
             
             errors={errors.name}
             touched={touched.name}
-            placeholderTextColor={COLORS.BLACK}
+            placeholderTextColor={COLORS.HALFBLACK}
             text="Password"
             
             passwordInput={true}

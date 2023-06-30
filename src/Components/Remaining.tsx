@@ -16,10 +16,11 @@ import {API} from '../api/API';
 import {setOverUsage, setRemainingData} from '../redux/action';
 import AnimatedLottieView from 'lottie-react-native';
 import {useFocusEffect} from '@react-navigation/native';
-import { navigationRef } from '../../App';
+import {navigationRef} from '../../App';
 
 const Remaining = ({...props}) => {
   const dispatch = useDispatch();
+  const [totalAllowed, setTotalAllowed] = useState(0);
   const {getRemainingData, getUserID, overusage} = useSelector(
     (state: any) => state,
   );
@@ -37,6 +38,7 @@ const Remaining = ({...props}) => {
     axios
       .get(`${API}/remainingusage/${getUserID}`)
       .then(res => {
+        setTotalAllowed(res.data?.total_kwhunit);
         if (res.data?.kwh_unit_remaining > 0) {
           remaingData = res.data?.kwh_unit_remaining;
           dispatch(setOverUsage(false));
@@ -45,18 +47,18 @@ const Remaining = ({...props}) => {
           dispatch(setOverUsage(true));
           setModalVisible(true);
         }
-        console.log('first')
+        console.log('first',res.data);
         dispatch(setRemainingData(remaingData));
       })
       .catch(err => {
         console.log(err);
       });
   };
-const nav = () => {
-  setModalVisible(!modalVisible);
-  navigationRef.navigate('HomeOne')
-  // console.log(navigationRef.current?.getState().key)
-}
+  const nav = () => {
+    setModalVisible(!modalVisible);
+    navigationRef.navigate('HomeOne');
+    // console.log(navigationRef.current?.getState().key)
+  };
   const OverusageModal = () => {
     return (
       <Modal
@@ -89,7 +91,8 @@ const nav = () => {
               <Pressable
                 style={{
                   borderRadius: 20,
-                  padding: 10,}}
+                  padding: 10,
+                }}
                 onPress={() => setModalVisible(false)}>
                 <Text style={styles.textStyle}>Cancel</Text>
               </Pressable>
@@ -108,34 +111,34 @@ const nav = () => {
     <>
       <View
         style={{
-        //   backgroundColor: '#F5F5F5',
-        // width: props?.data !== "energy" ? DIMENSIONS.SCREEN_WIDTH * 0.4 : DIMENSIONS.SCREEN_WIDTH * 0.9,
-        // height: DIMENSIONS.SCREEN_WIDTH * 0.35,
-        // marginVertical: 20,
-        // flexDirection: 'column-reverse',
-        // //  shadowColor: '#000000',
-        // //   shadowOffset: {
-        // //     width: 0,
-        // //     height: 6,
-        // //   },
-        // //   shadowOpacity: 0.2,
-        // //   shadowRadius: 5.62,
-        // //  elevation: 8,
-        // shadowColor: '#000000',
-        // shadowOffset: { width: 0, height: 6 },
-        // shadowOpacity: 0.2,
-        // shadowRadius: 2,
-        // elevation: 5,
-        // borderWidth: 0,
-        // borderRadius: 10,
-        // overflow: 'hidden',
+          //   backgroundColor: '#F5F5F5',
+          // width: props?.data !== "energy" ? DIMENSIONS.SCREEN_WIDTH * 0.4 : DIMENSIONS.SCREEN_WIDTH * 0.9,
+          // height: DIMENSIONS.SCREEN_WIDTH * 0.35,
+          // marginVertical: 20,
+          // flexDirection: 'column-reverse',
+          // //  shadowColor: '#000000',
+          // //   shadowOffset: {
+          // //     width: 0,
+          // //     height: 6,
+          // //   },
+          // //   shadowOpacity: 0.2,
+          // //   shadowRadius: 5.62,
+          // //  elevation: 8,
+          // shadowColor: '#000000',
+          // shadowOffset: { width: 0, height: 6 },
+          // shadowOpacity: 0.2,
+          // shadowRadius: 2,
+          // elevation: 5,
+          // borderWidth: 0,
+          // borderRadius: 10,
+          // overflow: 'hidden',
           backgroundColor: '#F5F5F5',
           width:
             props?.data !== 'energy'
               ? DIMENSIONS.SCREEN_WIDTH * 0.4
               : DIMENSIONS.SCREEN_WIDTH * 0.9,
           height: DIMENSIONS.SCREEN_WIDTH * 0.35,
-          marginVertical: 20,
+          marginVertical: DIMENSIONS.SCREEN_HEIGHT * 0.02,
           flexDirection: 'column-reverse',
           shadowColor: '#000000',
           shadowOffset: {
@@ -209,8 +212,9 @@ const nav = () => {
             end={{x: 0, y: 1}}
             style={{
               width: '100%',
-              borderRadius:10,
-              height: getRemainingData >= 1000 ? '100%' : getRemainingData < 1000 ?`${getRemainingData / 10}%` : '1%',
+              borderRadius: 10,
+              // height:  getRemainingData < totalAllowed ?`${getRemainingData / totalAllowed}%` : '1%',
+              height: `${(getRemainingData / totalAllowed) * 100}%`,
               flexDirection: 'column-reverse',
               zIndex: -1,
             }}
@@ -294,7 +298,7 @@ const styles = StyleSheet.create({
     marginTop: 20,
     alignItems: 'center',
     justifyContent: 'space-between',
-    flexDirection: 'row'
+    flexDirection: 'row',
   },
   button: {
     borderRadius: 20,
