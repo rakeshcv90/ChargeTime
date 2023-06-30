@@ -138,6 +138,7 @@ export default function Login({navigation}) {
           // }else if(data.status == "false"){
 
           // }
+          await AsyncStorage.setItem('isAuthorized', res.data.user_id+'')
           if (res.data.status == 'All details available') {
             dispatch(setEmailData(res.data?.email));
             dispatch(setPackageStatus(true));

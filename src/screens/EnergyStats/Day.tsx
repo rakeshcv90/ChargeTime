@@ -217,7 +217,7 @@ const Day = (props: any) => {
             style={{
               flexDirection: 'row',
               justifyContent: 'space-between',
-              marginHorizontal: 20,
+              marginHorizontal: 30,
               marginTop: 10,
             }}>
             <Remaining RemainingFill={10} KWH={400} data={'home'} />

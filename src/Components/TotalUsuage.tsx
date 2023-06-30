@@ -69,7 +69,7 @@ const TotalUsage = (props: any) => {
           width: '100%',
         }}>
         <View
-          style={{marginBottom: 50, marginLeft: 30, alignContent: 'center'}}>
+          style={{marginBottom: 50, alignContent: 'center', alignSelf: 'center',}}>
           <Text
             style={{
               fontWeight: '800',
