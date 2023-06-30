@@ -107,7 +107,7 @@ function MyTabBar({state, descriptors, navigation}) {
               backgroundColor: isFocused ? COLORS.GREEN : '#EEEEEE',
               paddingHorizontal: index == 2 ? 10 : 0,
               paddingVertical: 10,
-              borderRadius: isFocused ? 20 : 0,
+              borderRadius: isFocused ? 20 : 20,
               alignItems: 'center',
               justifyContent: 'center',
               //   elevation: isFocused ? 10 : 0,

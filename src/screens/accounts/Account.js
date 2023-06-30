@@ -215,7 +215,8 @@ navigationRef.navigate('LoginStack')
                 justifyContent: 'center',
                 width: mobileW,
               }}>
-              <Image source={require('../../../assets/images/dotted.png')} style={{ width: mobileW * 0.97 }} />
+              <Image source={require('../../../assets/images/dotted.png')} style={{ width: mobileW ,height:3 }}
+                 resizeMode="stretch" />
             </View>
 
           </TouchableOpacity>

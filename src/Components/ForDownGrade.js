@@ -6,14 +6,14 @@ import {
   Image,
   ScrollView,
 } from 'react-native';
-import React, {useEffect, useState} from 'react';
+import React, { useEffect, useState } from 'react';
 
 import COLORS from '../constants/COLORS';
-import {Unit} from '../../assets/images/Unit';
-import {Mieq} from '../../assets/images/Mieq';
-import {PlanPricing} from '../../assets/images/PlanPricing';
-import {useDispatch, useSelector} from 'react-redux';
-import {navigationRef} from '../../App';
+import { Unit } from '../../assets/images/Unit';
+import { Mieq } from '../../assets/images/Mieq';
+import { PlanPricing } from '../../assets/images/PlanPricing';
+import { useDispatch, useSelector } from 'react-redux';
+import { navigationRef } from '../../App';
 import axios from 'axios';
 import {API} from '../api/API';
 import {SafeAreaView} from 'react-native-safe-area-context';
@@ -24,6 +24,7 @@ export default function ForDownGrade({route, navigation}) {
   const {getPurchaseData, getUserID, getLocationID} = useSelector(
     state => state,
   );
+
   const [tax, setTax] = useState('');
   const [totalSalexTax, setTotalSalextax] = useState('');
 
@@ -48,6 +49,7 @@ export default function ForDownGrade({route, navigation}) {
           data: dataOne,
           purchageData: purchageData,
         });
+
       })
       .catch(err => {
         console.log(err.response.data.message);
@@ -89,6 +91,7 @@ export default function ForDownGrade({route, navigation}) {
                 style={{width: 40, height: 40}}
               />
             )}
+
             <Text
               style={{
                 fontWeight: '600',
@@ -111,6 +114,7 @@ export default function ForDownGrade({route, navigation}) {
                 {message}
               </Text>
             )}
+
           </View>
           <View
             style={
@@ -141,6 +145,7 @@ export default function ForDownGrade({route, navigation}) {
                 <Text style={styles.text_formating_part}>
                   {getPurchaseData.data.kwh}kwh
                 </Text>
+
                 <View
                   style={{
                     alignItems: 'center',
@@ -166,7 +171,7 @@ export default function ForDownGrade({route, navigation}) {
                 // style={styles.img_width}
                 source={require('../../assets/images/dotted.png')}
                 resizeMode="stretch"
-                style={{alignSelf: 'center', width: '100%', marginTop: 15}}
+                style={{ alignSelf: 'center', width: '100%', marginTop: 15 }}
               />
               <View
                 style={{
@@ -186,7 +191,11 @@ export default function ForDownGrade({route, navigation}) {
                     paddingTop: 15,
                     paddingBottom: 8,
                   }}>
-                  <Mieq />
+                  <Image
+                    source={require('../../assets/images/kwh_icon_one.png')}
+                    resizeMode='contain'
+                    style={{ width: 30, height: 30 }}
+                  />
                   <Text
                     style={{
                       fontSize: 10,
@@ -206,7 +215,7 @@ export default function ForDownGrade({route, navigation}) {
                 // style={styles.img_width}
                 source={require('../../assets/images/dotted.png')}
                 resizeMode="stretch"
-                style={{alignSelf: 'center', width: '100%', marginVertical: 10}}
+                style={{ alignSelf: 'center', width: '100%', marginVertical: 10 }}
               />
               <View
                 style={{
@@ -227,7 +236,8 @@ export default function ForDownGrade({route, navigation}) {
                   }}>
                   <Image
                     source={require('../../assets/images/kwh_dollar.png')}
-                    style={{width: 22, height: 20}}
+                    resizeMode='contain'
+                    style={{ width: 30, height: 30 }}
                   />
                   <Text
                     style={{
@@ -255,7 +265,10 @@ export default function ForDownGrade({route, navigation}) {
             <View>
               <TouchableOpacity style={styles.install_touchable}>
                 <PlanPricing style={styles.img_width} />
-                <Text style={styles.installation_text}>New Plan Pricing</Text>
+                <Text style={styles.installation_text}>
+                  New Plan Pricing
+                </Text>
+
               </TouchableOpacity>
               <View
                 style={{
@@ -266,7 +279,9 @@ export default function ForDownGrade({route, navigation}) {
                   paddingHorizontal: 10,
                   paddingVertical: 20,
                   borderBottomLeftRadius: 10,
-                  borderBottomRightRadius: 10,
+
+                  borderBottomRightRadius: 10
+
                 }}>
                 <View>
                   <Text
@@ -274,11 +289,12 @@ export default function ForDownGrade({route, navigation}) {
                       fontSize: 12,
                       fontWeight: '400',
                       paddingVertical: 5,
+
                     }}>
                     Price (excl.taxes):
                   </Text>
                   <Text
-                    style={{fontSize: 12, fontWeight: '400', paddingBottom: 5}}>
+                    style={{ fontSize: 12, fontWeight: '400', paddingBottom: 5 }}>
                     Taxes:
                   </Text>
                   <Text
@@ -300,7 +316,7 @@ export default function ForDownGrade({route, navigation}) {
                     ${dataOne?.total_price}
                   </Text>
                   <Text
-                    style={{fontSize: 12, fontWeight: '400', paddingBottom: 5}}>
+                    style={{ fontSize: 12, fontWeight: '400', paddingBottom: 5 }}>
                     ${dataOne?.salesTax}
                   </Text>
                   <Text
@@ -344,7 +360,7 @@ export default function ForDownGrade({route, navigation}) {
                 }),
               }}>
               <Text
-                style={{fontWeight: '700', color: COLORS.BLACK, fontSize: 14}}>
+                style={{ fontWeight: '700', color: COLORS.BLACK, fontSize: 14 }}>
                 CANCEL
               </Text>
             </TouchableOpacity>
@@ -370,7 +386,7 @@ export default function ForDownGrade({route, navigation}) {
                 }),
               }}>
               <Text
-                style={{fontWeight: '700', color: COLORS.WHITE, fontSize: 14}}>
+                style={{ fontWeight: '700', color: COLORS.WHITE, fontSize: 14 }}>
                 {purchageData}
               </Text>
             </TouchableOpacity>
@@ -415,7 +431,8 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     paddingHorizontal: 18,
     borderTopLeftRadius: 10,
-    borderTopRightRadius: 10,
+    borderTopRightRadius: 10
+
   },
   cuurent_plan: {
     fontSize: 14,
@@ -449,7 +466,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingVertical: 15,
     borderTopLeftRadius: 10,
-    borderTopRightRadius: 10,
+    borderTopRightRadius: 10
+
   },
   img_width: {
     marginHorizontal: 20,
