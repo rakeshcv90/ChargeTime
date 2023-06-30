@@ -43,7 +43,7 @@ const Day = (props: any) => {
 
   useEffect(() => {
     setShowSlider(true);
-    // fetchGraphData(getUserID);
+    fetchGraphData();
     // fetchWeekGraphData(getUserID);
     // fetchMonthGraphData(getUserID);
     // fetchQuarterGraphData(getUserID);
@@ -221,11 +221,11 @@ const Day = (props: any) => {
               marginTop: 10,
             }}>
             <Remaining RemainingFill={10} KWH={400} data={'home'} />
-            <TotalUsage data={getkwhData.Totalusedkwhs} />
+            <TotalUsage data={getkwhData.Totalusedkwhs} location={'Daily'} />
           </View>
 
           <View style={{marginHorizontal: 20}}>
-            {getGraphData.msg != 'No usage data available' ? (
+            {getGraphData.message != 'No usage data available' ? (
                 <Graph dataOne={getGraphData} />
               ) : (
                 <Text

@@ -82,8 +82,11 @@ export default function Login({navigation}) {
 
       if (response?.data?.locations.length == 0) {
         setForLoading(true);
-        setShowPackage(true);
+        // setShowPackage(true);
         dispatch(setBasePackage([]));
+        dispatch(setIsAuthorized(true));
+        setForLoading(false);
+        navigation.navigate('DrawerStack');
       } else {
         console.log(response.data, 'Packaagessssss');
         dispatch(setBasePackage(response.data.locations));
@@ -336,7 +339,12 @@ export default function Login({navigation}) {
     axios
       .get(`${API}/currentplan/${userId}`)
       .then(res => {
-        dispatch(setBoxTwoDataForDashboard(res?.data));
+        if (res.data.data == 'Package details not found') {
+        dispatch(setBoxTwoDataForDashboard(res.data));
+        }else{
+
+          dispatch(setBoxTwoDataForDashboard(res?.data));
+        }
       })
       .catch(err => {
         console.log(err);
@@ -359,11 +367,11 @@ export default function Login({navigation}) {
       .then(res => {
         setForLoading(false);
 
-        if (res.data.error == 'Package details not found') {
-          dispatch(setPurchaseData([]));
-        } else {
-          dispatch(setPurchaseData(res?.data));
-        }
+        // if (res.data.data == 'Package details not found') {
+        //   dispatch(setPurchaseData([]));
+        // } else {
+        // }
+        dispatch(setPurchaseData(res?.data));
         // dispatch(setIsAuthorized(true));
         navigation.navigate('DrawerStack');
       })
@@ -410,7 +418,7 @@ export default function Login({navigation}) {
             placeholder="Enter your Email"
             bW={1}
             textWidth={'22%'}
-            placeholderTextColor={COLORS.BLACK}
+            placeholderTextColor={COLORS.HALFBLACK}
             autoCapitalize="none"
           />
 
@@ -418,7 +426,7 @@ export default function Login({navigation}) {
             IconLeft={null}
             errors={undefined}
             touched={false}
-            placeholderTextColor={COLORS.BLACK}
+            placeholderTextColor={COLORS.HALFBLACK}
             text="Password"
             passwordInput={true}
             pasButton={() => setShowPassword(!showPassword)}

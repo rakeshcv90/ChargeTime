@@ -56,7 +56,7 @@ const Subscription = () => {
 
   const dispatch = useDispatch();
   useEffect(() => {
-    getPlanCurrent()
+    getPlanCurrent();
   }, []);
 
   const user_id = getUserID;
@@ -131,13 +131,13 @@ const Subscription = () => {
       .then(res => {
         setForLoading(false);
         setModalVisible(false);
-        if (res.data.error == 'Package details not found') {
-          dispatch(setPurchaseData([]));
-          setGetData(res.data)
+        if (res.data.data == 'Package details not found') {
+          dispatch(setPurchaseData(res.data));
+          setGetData(res.data);
           dispatch(setPackageStatus(false));
         } else {
           dispatch(setPurchaseData(res?.data));
-          setGetData(res.data)
+          setGetData(res.data);
         }
       })
       .catch(err => {
@@ -230,57 +230,51 @@ const Subscription = () => {
             />
           </View>
         )}
-        <ScrollView showsVerticalScrollIndicator={false}>
-          { getData.error == 'Package details not found' ? (
+        {getPurchaseData.data == 'Package details not found' ? (
+          <View
+            style={{
+              justifyContent: 'center',
+              alignItems: 'center',
+              flex: 1,
+              marginBottom: DIMENSIONS.SCREEN_HEIGHT * 0.25,
+            }}>
             <View
               style={{
+                flexDirection: 'row',
                 justifyContent: 'center',
                 alignItems: 'center',
-                flex: 1,
               }}>
-              <View
+              <AnimatedLottieView
+                source={{
+                  uri: 'https://assets5.lottiefiles.com/packages/lf20_v4UB4ch6dZ.json',
+                }} // Replace with your animation file
+                autoPlay
+                loop
                 style={{
-                  flexDirection: 'row',
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                }}>
-                <AnimatedLottieView
-                  source={{
-                    uri: 'https://assets5.lottiefiles.com/packages/lf20_v4UB4ch6dZ.json',
-                  }} // Replace with your animation file
-                  autoPlay
-                  loop
-                  style={{width: 150, height: 150}}
-                />
-                <AnimatedLottieView
-                  source={{
-                    uri: 'https://assets7.lottiefiles.com/packages/lf20_qgq2nqsy.json',
-                  }} // Replace with your animation file
-                  autoPlay
-                  loop
-                  style={{width: 50, height: 50}}
-                />
-              </View>
-              <Text
-                style={{
-                  fontSize: 14,
-                  lineHeight: 25,
-                  textAlign: 'center',
-                  paddingHorizontal: 30,
-                }}>
-                {
-                  'Your Account is not currently linked with a TRO Charger. Please contact customer service if you believe this is an error.'
-                }
-
-                {/* {getDeviceID} */}
-              </Text>
-              <View
-                style={{
-                  flexDirection: 'row',
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                }}>
-                {/* <TouchableOpacity
+                  width: DIMENSIONS.SCREEN_WIDTH * 0.4,
+                  height: DIMENSIONS.SCREEN_HEIGHT * 0.25,
+                }}
+              />
+              <AnimatedLottieView
+                source={{
+                  uri: 'https://assets7.lottiefiles.com/packages/lf20_qgq2nqsy.json',
+                }} // Replace with your animation file
+                autoPlay
+                loop
+                style={{width: 50, height: 50}}
+              />
+            </View>
+            <Text
+              style={{
+                fontSize: 14,
+                lineHeight: 25,
+                textAlign: 'center',
+                paddingHorizontal: 30,
+                color: COLORS.HALFBLACK
+              }}>
+              No Subscription Package Available
+            </Text>
+            {/* <TouchableOpacity
                   onPress={() => navigationRef.navigate('EnergyStats')}
                   style={{
                     width: mobileW * 0.3,
@@ -313,54 +307,52 @@ const Subscription = () => {
                     Purchase Plan
                   </Text>
                 </TouchableOpacity> */}
-              </View>
+          </View>
+        ) : (
+          <ScrollView showsVerticalScrollIndicator={false}>
+            <View style={styles.managing_width}>
+              <SubBoxOne />
+              <SubBoxTwo />
+              <Remaining data={'energy'} />
             </View>
-          ) : (
-            <View>
-              <View style={styles.managing_width}>
-                <SubBoxOne />
-                <SubBoxTwo />
-                <Remaining data={'energy'} />
-              </View>
-              {/* <View style={styles.mainDiv_installation}>
+            {/* <View style={styles.mainDiv_installation}>
               <WaveAnimation />
             </View> */}
-              <View style={styles.managing_width}>
-                <PriceBox data={getPurchaseData.data} />
-              </View>
-              <View
-                style={{
-                  flexDirection: 'row',
-                  justifyContent: 'center',
-                  marginHorizontal: 20,
-                  paddingBottom: 30,
-                }}>
-                <TouchableOpacity
-                  onPress={() => {
-                    setModalVisible(true);
-                  }}
-                  style={{
-                    marginTop: 15,
-                    marginRight: 170,
-                    backgroundColor: '#F84E4E',
-                    alignItems: 'center',
-                    padding: 13,
-                    borderRadius: 10,
-                    width: '50%',
-                  }}>
-                  <Text
-                    style={{
-                      color: COLORS.WHITE,
-                      fontSize: 14,
-                      fontWeight: '700',
-                    }}>
-                    Cancel Subscription
-                  </Text>
-                </TouchableOpacity>
-              </View>
+            <View style={styles.managing_width}>
+              <PriceBox data={getPurchaseData.data} />
             </View>
-          )}
-        </ScrollView>
+            <View
+              style={{
+                flexDirection: 'row',
+                justifyContent: 'center',
+                marginHorizontal: 20,
+                paddingBottom: 30,
+              }}>
+              <TouchableOpacity
+                onPress={() => {
+                  setModalVisible(true);
+                }}
+                style={{
+                  marginTop: 15,
+                  marginRight: 170,
+                  backgroundColor: '#F84E4E',
+                  alignItems: 'center',
+                  padding: 13,
+                  borderRadius: 10,
+                  width: '50%',
+                }}>
+                <Text
+                  style={{
+                    color: COLORS.WHITE,
+                    fontSize: 14,
+                    fontWeight: '700',
+                  }}>
+                  Cancel Subscription
+                </Text>
+              </TouchableOpacity>
+            </View>
+          </ScrollView>
+        )}
       </SafeAreaView>
       <CancelModal />
       {forLoading && <ActivityLoader />}

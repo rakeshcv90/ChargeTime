@@ -280,9 +280,9 @@ const styles = StyleSheet.create({
     width: DIMENSIONS.SCREEN_WIDTH * 0.8,
   },
   button_one: {
-    marginLeft: 80,
+    // marginLeft: 80,
     marginTop: 20,
-    alignItems: 'flex-end',
+    alignItems: 'center',
     justifyContent: 'flex-end',
   },
   button: {

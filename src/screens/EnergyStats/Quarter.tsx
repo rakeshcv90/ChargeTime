@@ -42,7 +42,7 @@ export default function Quarter() {
               marginTop: 10,
             }}>
             <Remaining RemainingFill={50} KWH={400} />
-            <TotalUsage data={getQuarterData?.Totalusedkwhs} />
+            <TotalUsage data={getQuarterData?.Totalusedkwhs} location={'Quarterly'} />
           </View>
 
           <View style={{marginHorizontal: 20}}>

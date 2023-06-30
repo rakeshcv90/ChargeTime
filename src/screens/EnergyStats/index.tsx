@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, {useEffect, useState} from 'react';
 import {
   ScrollView,
   View,
@@ -11,34 +11,46 @@ import {
   StatusBar,
   BackHandler,
   Alert,
-  Platform
+  Platform,
 } from 'react-native';
-import { useDispatch, useSelector } from 'react-redux';
-import { SafeAreaView } from 'react-native-safe-area-context';
-import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
+import {useDispatch, useSelector} from 'react-redux';
+import {SafeAreaView} from 'react-native-safe-area-context';
+import {createMaterialTopTabNavigator} from '@react-navigation/material-top-tabs';
 import COLORS from '../../constants/COLORS';
 import Day from './Day';
 import Month from './Month';
 import Week from './Week';
 import Quarter from './Quarter';
 import Year from './Year';
-import { DIMENSIONS, PLATFORM_IOS } from '../../constants/DIMENSIONS';
+import {DIMENSIONS, PLATFORM_IOS} from '../../constants/DIMENSIONS';
 import ButtonSlider from '../../Components/ButtonSlider';
-import { NoCharge } from '../../../assets/images/NoCharge';
-import { OnlineCharge } from '../../../assets/images/OnlineCharge';
+import {NoCharge} from '../../../assets/images/NoCharge';
+import {OnlineCharge} from '../../../assets/images/OnlineCharge';
 import Charging from '../../Components/Charging';
 import axios from 'axios';
-import { API } from '../../api/API';
+import {API} from '../../api/API';
 import ActivityLoader from '../../Components/ActivityLoader';
-import DayOne from './DayOne';
 import DrawerOpen from '../../Components/DrawerOpen';
-import { navigationRef } from '../../../App';
-import { DrawerActions } from '@react-navigation/native';
+import {navigationRef} from '../../../App';
+import {DrawerActions} from '@react-navigation/native';
 import AnimatedLottieView from 'lottie-react-native';
-import { setBoxTwoDataForDashboard, setChargerStatus, setDeviceId, setGraphData, setIsAuthorized, setKwhData, setMonthGraphData, setOverUsage, setQuarterGraphData, setRemainingData, setWeekGraphData, setYearGraphData } from '../../redux/action';
+import {
+  setBoxTwoDataForDashboard,
+  setChargerStatus,
+  setDeviceId,
+  setGraphData,
+  setIsAuthorized,
+  setKwhData,
+  setMonthGraphData,
+  setOverUsage,
+  setQuarterGraphData,
+  setRemainingData,
+  setWeekGraphData,
+  setYearGraphData,
+} from '../../redux/action';
 const mobileW = Math.round(Dimensions.get('screen').width);
 
-function MyTabBar({ state, descriptors, navigation }) {
+function MyTabBar({state, descriptors, navigation}) {
   return (
     <View
       style={{
@@ -46,32 +58,30 @@ function MyTabBar({ state, descriptors, navigation }) {
         marginHorizontal: 20,
         backgroundColor: '#EEEEEE',
         borderRadius: 20,
-        // overflow: 'hidden',
         ...Platform.select({
           ios: {
             shadowColor: '#000000',
-            shadowOffset: { width: 0, height: 2 },
+            shadowOffset: {width: 0, height: 2},
             shadowOpacity: 0.3,
             shadowRadius: 4,
           },
           android: {
             elevation: 4,
+            overflow: 'hidden',
           },
         }),
         borderWidth: 1,
         borderColor: '#EEEEEE',
         zIndex: 1,
-
-
       }}>
       {state.routes.map((route, index) => {
-        const { options } = descriptors[route.key];
+        const {options} = descriptors[route.key];
         const label =
           options.tabBarLabel !== undefined
             ? options.tabBarLabel
             : options.title !== undefined
-              ? options.title
-              : route.name;
+            ? options.title
+            : route.name;
 
         const isFocused = state.index === index;
 
@@ -84,7 +94,7 @@ function MyTabBar({ state, descriptors, navigation }) {
 
           if (!isFocused && !event.defaultPrevented) {
             // The `merge: true` option makes sure that the params inside the tab screen are preserved
-            navigation.navigate({ name: route.name, merge: true });
+            navigation.navigate({name: route.name, merge: true});
           }
         };
 
@@ -127,15 +137,17 @@ export default function EnergyStats() {
   const [deviceIdTemp, setDeviceIdTemp] = useState('');
 
   const [isLoading, setIsLoading] = useState(false);
-  const { getGraphData } = useSelector((state: any) => state);
+  const {getGraphData} = useSelector((state: any) => state);
 
-  const { getChargerStatus, getDeviceID, getUserID } = useSelector((state: any) => state);
+  const {getChargerStatus, getDeviceID, getUserID} = useSelector(
+    (state: any) => state,
+  );
   const [toggleState, setToggleState] = useState(false);
-  const dispatch = useDispatch()
+  const dispatch = useDispatch();
   useEffect(() => {
     const backHandler = BackHandler.addEventListener(
       'hardwareBackPress',
-      handleBackButton
+      handleBackButton,
     );
 
     return () => backHandler.remove();
@@ -150,7 +162,7 @@ export default function EnergyStats() {
   };
 
   const getDeviceIDData = () => {
-    setIsLoading(true)
+    setIsLoading(true);
     axios
       .get(`${API}/devicecheck/${getUserID}}`)
       .then(res => {
@@ -165,31 +177,29 @@ export default function EnergyStats() {
           // setTimeout(() => {
           // }, 10000);
         } else {
-
-          setIsLoading(false)
+          setIsLoading(false);
           // getPlanCurrent(res.data?.user_id);
         }
       })
       .catch(err => {
-        setIsLoading(false)
+        setIsLoading(false);
         console.log(err);
       });
   };
-
 
   //day data start
   const fetchGraphData = (userID: string) => {
     axios
       .get(`${API}/dailyusagegraph/${userID}`)
       .then(res => {
-        console.log("GRAPH.........", res.data)
+        console.log('GRAPH.........', res.data);
         dispatch(setGraphData(res?.data.Usage));
 
         dailyUsuagekwh(getUserID);
         // navigation.navigate('DrawerStack');
       })
       .catch(err => {
-        setIsLoading(false)
+        setIsLoading(false);
         console.log(err);
       });
   };
@@ -198,7 +208,7 @@ export default function EnergyStats() {
       .get(`${API}/dailyusage/${userId}`)
       .then(res => {
         if (res?.data) {
-          console.log("DAILTYRWTEW", res.data)
+          // console.log("DAILTYRWTEW", res.data)
           dispatch(setKwhData(res?.data));
         }
 
@@ -223,11 +233,11 @@ export default function EnergyStats() {
         }
         console.log('first', res.data);
         dispatch(setRemainingData(remaingData));
-setIsLoading(false)
-fetchWeekGraphData(getUserID);
-})
-.catch(err => {
-        setIsLoading(false)
+        setIsLoading(false);
+        fetchWeekGraphData(getUserID);
+      })
+      .catch(err => {
+        setIsLoading(false);
         console.log(err);
       });
   };
@@ -239,7 +249,7 @@ fetchWeekGraphData(getUserID);
       .get(`${API}/weeklyusage/${userID}`)
       .then(res => {
         if (res?.data) {
-          console.log(res.data)
+          console.log('WEqwewqe', res.data);
           dispatch(setWeekGraphData(res?.data));
           fetchYearGraphData(getUserID);
         }
@@ -254,8 +264,9 @@ fetchWeekGraphData(getUserID);
       .get(`${API}/monthlyusage/${userID}`)
       .then(res => {
         if (res?.data) {
+          console.log('Month GRAPH', res.data);
           dispatch(setMonthGraphData(res?.data));
-          fetchQuarterGraphData(getUserID)
+          fetchQuarterGraphData(getUserID);
         }
       })
       .catch(err => {
@@ -267,9 +278,10 @@ fetchWeekGraphData(getUserID);
       .get(`${API}/threemonthusage/${userID}`)
       .then(res => {
         if (res?.data) {
+          console.log('Qurewrsdfds GRAPH', res.data);
           dispatch(setQuarterGraphData(res?.data));
           dispatch(setDeviceId(deviceIdTemp));
-          setIsLoading(false)
+          setIsLoading(false);
         }
       })
       .catch(err => {
@@ -281,13 +293,13 @@ fetchWeekGraphData(getUserID);
       .get(`${API}/yearlyusage/${userID}`)
       .then(res => {
         if (res?.data) {
-          // console.log("Year GRAPH", res.data)
+          console.log('Year GRAPH', res.data);
           dispatch(setYearGraphData(res?.data));
-          fetchMonthGraphData(getUserID)
+          fetchMonthGraphData(getUserID);
         }
       })
       .catch(err => {
-        setIsLoading(false)
+        setIsLoading(false);
         console.log(err);
       });
   };
@@ -315,12 +327,12 @@ fetchWeekGraphData(getUserID);
 
   return (
     <>
-      <SafeAreaView style={{ backgroundColor: COLORS.CREAM, flex: 1 }}>
+      <SafeAreaView style={{backgroundColor: COLORS.CREAM, flex: 1}}>
         <StatusBar backgroundColor={COLORS.CREAM2} barStyle={'dark-content'} />
 
         <DrawerOpen top={PLATFORM_IOS ? 70 : 30} />
         {getDeviceID ==
-          'Your Account is not currently linked with a TRO Charger. Please contact customer service if you believe this is an error.' ? (
+        'Your Account is not currently linked with a TRO Charger. Please contact customer service if you believe this is an error.' ? (
           <View
             style={{
               justifyContent: 'center',
@@ -339,7 +351,7 @@ fetchWeekGraphData(getUserID);
                 }} // Replace with your animation file
                 autoPlay
                 loop
-                style={{ width: 150, height: 150 }}
+                style={{width: 150, height: 150}}
               />
               <AnimatedLottieView
                 source={{
@@ -347,7 +359,7 @@ fetchWeekGraphData(getUserID);
                 }} // Replace with your animation file
                 autoPlay
                 loop
-                style={{ width: 50, height: 50 }}
+                style={{width: 50, height: 50}}
               />
             </View>
             <Text
@@ -378,7 +390,7 @@ fetchWeekGraphData(getUserID);
                   ...Platform.select({
                     ios: {
                       shadowColor: '#000000',
-                      shadowOffset: { width: 0, height: 2 },
+                      shadowOffset: {width: 0, height: 2},
                       shadowOpacity: 0.3,
                       shadowRadius: 4,
                     },
@@ -399,7 +411,7 @@ fetchWeekGraphData(getUserID);
                 </Text>
               </TouchableOpacity>
               <TouchableOpacity
-              onPress={() => navigationRef.navigate('Contact')}
+                onPress={() => navigationRef.navigate('Contact')}
                 style={{
                   width: mobileW * 0.3,
                   borderRadius: 10,
@@ -411,7 +423,7 @@ fetchWeekGraphData(getUserID);
                   ...Platform.select({
                     ios: {
                       shadowColor: '#000000',
-                      shadowOffset: { width: 0, height: 2 },
+                      shadowOffset: {width: 0, height: 2},
                       shadowOpacity: 0.3,
                       shadowRadius: 4,
                     },
@@ -435,8 +447,8 @@ fetchWeekGraphData(getUserID);
           </View>
         ) : (
           <View>
-            <View style={{ backgroundColor: COLORS.CREAM2 }}>
-              <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+            <View style={{backgroundColor: COLORS.CREAM2}}>
+              <View style={{flexDirection: 'row', alignItems: 'center'}}>
                 {getChargerStatus?.message == 'Charging' ? (
                   <Charging />
                 ) : (
@@ -460,9 +472,9 @@ fetchWeekGraphData(getUserID);
                         elevation: 7,
                       }}>
                       {getChargerStatus?.message == 'Online' ? (
-                        <OnlineCharge style={{ marginTop: 8, marginLeft: 5 }} />
+                        <OnlineCharge style={{marginTop: 8, marginLeft: 5}} />
                       ) : (
-                        <NoCharge style={{ marginTop: 8, marginLeft: 5 }} />
+                        <NoCharge style={{marginTop: 8, marginLeft: 5}} />
                       )}
                     </View>
                     <View>
@@ -527,7 +539,7 @@ fetchWeekGraphData(getUserID);
         )}
 
         {getDeviceID ==
-          'Your Account is not currently linked with a TRO Charger. Please contact customer service if you believe this is an error.' ? (
+        'Your Account is not currently linked with a TRO Charger. Please contact customer service if you believe this is an error.' ? (
           <View
             style={{
               justifyContent: 'center',
@@ -552,7 +564,7 @@ fetchWeekGraphData(getUserID);
           </Tab.Navigator>
         )}
         {getDeviceID ==
-          'Your Account is not currently linked with a TRO Charger. Please contact customer service if you believe this is an error.' ? (
+        'Your Account is not currently linked with a TRO Charger. Please contact customer service if you believe this is an error.' ? (
           <View>
             <Text></Text>
           </View>

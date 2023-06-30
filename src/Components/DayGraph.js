@@ -6,7 +6,6 @@ import {DIMENSIONS} from '../constants/DIMENSIONS';
 
 
 const Graph = ({ dataOne }) => {
-  console.log("MY graph Data =-=-=-=-=-= is",dataOne)
 
 //  let num = (dataOne || []).map(item => (item?.Usage === undefined || item?.Usage === [] || item?.Usage === '') ? [0, 0, 0] : item?.Usage);
  let num = dataOne.length >= 1 ? dataOne.map(item => item?.Usage): [];

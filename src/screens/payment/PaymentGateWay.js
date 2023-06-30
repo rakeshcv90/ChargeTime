@@ -342,7 +342,9 @@ const [cardId, setCardId]=useState('');
           // dispatch(setDeviceId(res.data.message));
           console.log(route.params.purchageData);
           if (route.params.purchageData == 'DOWNGRADE') {
-            PlanStatus();
+            // PlanStatus();
+
+        navigationRef.navigate('HomeOne');
           } else {
             getPlanCurrent();
           }
@@ -371,8 +373,8 @@ const [cardId, setCardId]=useState('');
       .then(res => {
         console.log(res.data);
       
-        if (res.data.error == 'Package details not found') {
-          dispatch(setPurchaseData([]));
+        if (res.data.data == 'Package details not found') {
+          dispatch(setPurchaseData(res.data));
         } else {
           dispatch(setPurchaseData(res?.data));
         }
@@ -384,20 +386,20 @@ const [cardId, setCardId]=useState('');
       });
   };
 
-  const PlanStatus = () => {
-    axios
-      .get(`${API}/planstatus/${getUserID}`)
-      .then(res => {
-        const name = res.data.subscriptions.filter(
-          item => item.subscription_status == 'scheduled',
-        );
-        dispatch(setPlanStatus(name[0].item_name));
-        navigationRef.navigate('HomeOne');
-      })
-      .catch(err => {
-        console.log(err);
-      });
-  };
+  // const PlanStatus = () => {
+  //   axios
+  //     .get(`${API}/planstatus/${getUserID}`)
+  //     .then(res => {
+  //       const name = res.data.subscriptions.filter(
+  //         item => item.subscription_status == 'scheduled',
+  //       );
+  //       dispatch(setPlanStatus(name[0].item_name));
+  //       navigationRef.navigate('HomeOne');
+  //     })
+  //     .catch(err => {
+  //       console.log(err);
+  //     });
+  // };
 
   return (
     <SafeAreaView style={{ backgroundColor: COLORS.CREAM, flex: 1 }}>

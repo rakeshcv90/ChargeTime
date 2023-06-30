@@ -41,7 +41,7 @@ export default function Month() {
               marginTop: 10,
             }}>
             <Remaining RemainingFill={50} KWH={400} />
-            <TotalUsage data={getMonthData?.Totalusedkwhs} />
+            <TotalUsage data={getMonthData?.Totalusedkwhs} location={'Monthly'} />
           </View>
 
           <View style={{marginHorizontal: 20}}>

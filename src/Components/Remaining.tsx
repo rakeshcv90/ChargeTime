@@ -135,7 +135,7 @@ const nav = () => {
               ? DIMENSIONS.SCREEN_WIDTH * 0.4
               : DIMENSIONS.SCREEN_WIDTH * 0.9,
           height: DIMENSIONS.SCREEN_WIDTH * 0.35,
-          marginVertical: 20,
+          marginVertical: DIMENSIONS.SCREEN_HEIGHT * 0.02,
           flexDirection: 'column-reverse',
           shadowColor: '#000000',
           shadowOffset: {

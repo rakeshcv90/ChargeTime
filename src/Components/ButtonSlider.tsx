@@ -503,7 +503,7 @@ navigationRef.dispatch(DrawerActions.closeDrawer())
       </PanGestureHandler>
       <Text style={[styles.swipeText]}>
       
-        {getChargerStatus == 'Online' ? 'Swipe left to stop charging' : 'Swipe right to start charging'}
+        {getChargerStatus.message == 'Online' || getChargerStatus.message == 'Charging' ? 'Swipe left to stop charging' : 'Swipe right to start charging'}
       </Text>
       
     </Animated.View>

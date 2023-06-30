@@ -10,7 +10,6 @@ const Graph = ({ dataOne }) => {
   
   // let num = (dataOne || []).map(item => (item?.Usage === undefined || item?.Usage === [] || item?.Usage === '') ? [0, 0, 0] : item?.Usage);
   // let numOne = (dataOne || []).map(item => (item?.date === undefined || item?.date === [] || item?.date === '') ? ["sun", "mon", "tues"] : item?.date);
-  console.log("MY graph Data is",dataOne.Usage)
 
 
   const data = {

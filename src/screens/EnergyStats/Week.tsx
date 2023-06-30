@@ -42,7 +42,7 @@ export default function Week() {
               marginTop: 10,
             }}>
             <Remaining RemainingFill={50} KWH={400} />
-            <TotalUsage data={getWeekGraphData?.Totalusedkwhs} />
+            <TotalUsage data={getWeekGraphData?.Totalusedkwhs} location={'Weekly'} />
           </View>
 
           <View style={{marginHorizontal: 20}}>
