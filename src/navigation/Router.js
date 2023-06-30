@@ -416,7 +416,7 @@ const DrawerNavigation = () => {
               drawerActiveTintColor: 'black',
             }}
             name={getChargerStatus?.message == 'Online' ? `Online` : `Offline`}
-            component={ChargerStatus}
+            component={EnergyStats}
           />
         )}
     </Drawer.Navigator>
