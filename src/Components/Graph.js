@@ -7,12 +7,12 @@ import {DIMENSIONS} from '../constants/DIMENSIONS';
 const Graph = ({dataOne}) => {
   // let num = (dataOne || []).map(item => (item?.Usage === undefined || item?.Usage === [] || item?.Usage === '') ? [0, 0, 0] : item?.Usage);
   // let numOne = (dataOne || []).map(item => (item?.date === undefined || item?.date === [] || item?.date === '') ? ["sun", "mon", "tues"] : item?.date);
-
+let convertedData = dataOne?.Usage?.map(item => item/1000)
   const data = {
     labels: dataOne.Date,
     datasets: [
       {
-        data: dataOne.Usage,
+        data: convertedData,
       },
     ],
   };

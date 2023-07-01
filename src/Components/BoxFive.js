@@ -135,14 +135,14 @@ const styles = StyleSheet.create({
   },
   shadowProp: {
     backgroundColor: 'white',
-    shadowColor: 'rgba(0, 0, 0, 1)',
-    shadowOffset: {
-      width: 6,
-      height: 4,
-    },
-    shadowOpacity: 1,
-    shadowRadius: 4,
-    elevation: Platform.OS === 'android' ? 8 : 0,
+    // shadowColor: 'rgba(0, 0, 0, 1)',
+    // shadowOffset: {
+    //   width: 6,
+    //   height: 4,
+    // },
+    // shadowOpacity: 1,
+    // shadowRadius: 4,
+    // elevation: Platform.OS === 'android' ? 8 : 0,
   },
   mainDiv_installation: {
     borderWidth: 1,

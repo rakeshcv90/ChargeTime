@@ -527,7 +527,7 @@ export default function Router() {
 
       authorized = await AsyncStorage.getItem('isAuthorized');
 console.log('isFirstTime',isFirstTime)
-console.log(authorized, 'getLocationId');
+console.log(isAuthorized, 'getLocationId');
 
       // if (loginDataString !== null) {
       //   const loginData = JSON.parse(loginDataString);
@@ -547,7 +547,7 @@ console.log(authorized, 'getLocationId');
           <Stack.Screen name="SplashStack" component={SplashStack} />
         </>
       )} */}
-      {(authorized == null || authorized == undefined) ? (
+      {!isAuthorized ? (
         <>
           <Stack.Screen name="LoginStack" component={LoginStack} />
         </>

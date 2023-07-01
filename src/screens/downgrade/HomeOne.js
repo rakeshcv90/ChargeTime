@@ -395,6 +395,6 @@ const styles = StyleSheet.create({
     },
     shadowOpacity: 1,
     shadowRadius: 4,
-    elevation: Platform.OS === 'android' ? 8 : 0,
+    // elevation: Platform.OS === 'android' ? 8 : 0,
   },
 });

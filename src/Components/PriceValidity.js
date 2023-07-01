@@ -7,7 +7,6 @@ import { useSelector } from 'react-redux';
 const mobileW = Math.round(Dimensions.get('screen').width);
 
 const PriceValidity = ({data}) => {
-  const setBasePackage = useSelector((state)=> state.setBasePackage)
   
   return (
     <View style={[styles.mainDiv_installation]}>

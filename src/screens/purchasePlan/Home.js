@@ -104,7 +104,7 @@ export default function Home(route) {
   const [changePage, setChangePage] = useState('');
   const Tab = createMaterialTopTabNavigator();
 
-  const {getLocationID, getBasePackage} = useSelector(state => state);
+  const {getLocationID, getBasePackage, getPackageStatus} = useSelector(state => state);
   const [apiData, setApiData] = useState(getBasePackage || []);
 
   useEffect(() => {
@@ -204,7 +204,7 @@ export default function Home(route) {
   return (
     <SafeAreaView style={{backgroundColor: COLORS.CREAM, flex: 1}}>
     <DrawerOpen top={ PLATFORM_IOS ? 70 : 30}/>
-      <View style={styles.charging_imag_style}>
+      {getPackageStatus &&<View style={styles.charging_imag_style}>
         {changePage == 0 ? (
           <Image
             source={require('../../../assets/images/bp_one.png')}
@@ -224,7 +224,7 @@ export default function Home(route) {
             style={{width: mobileW, height: mobileH / 4}}
           />
         )}
-      </View>
+      </View>}
 
       {getBasePackage?.length > 1 ? (
         <Tab.Navigator
@@ -251,7 +251,119 @@ export default function Home(route) {
       ) : getBasePackage.length == 1 ? (
         <TabOne item={getBasePackage[0]}/>
           ) : (
-            <Text>No Package available for you location</Text>
+            <View
+            style={{
+              justifyContent: 'center',
+              alignItems: 'center',
+              flex: 1,
+            }}>
+            <View
+              style={{
+                flexDirection: 'row',
+                justifyContent: 'center',
+                alignItems: 'center',
+              }}>
+              <AnimatedLottieView
+                source={{
+                  uri: 'https://assets5.lottiefiles.com/packages/lf20_v4UB4ch6dZ.json',
+                }} // Replace with your animation file
+                autoPlay
+                loop
+                style={{width: 150, height: 150}}
+              />
+              <AnimatedLottieView
+                source={{
+                  uri: 'https://assets7.lottiefiles.com/packages/lf20_qgq2nqsy.json',
+                }} // Replace with your animation file
+                autoPlay
+                loop
+                style={{width: 50, height: 50}}
+              />
+            </View>
+            <Text
+              style={{
+                fontSize: 14,
+                lineHeight: 25,
+                textAlign: 'center',
+                paddingHorizontal: 30,
+                color: COLORS.BLACK
+              }}>
+              No Package Available for this Location
+            </Text>
+            {/* <View
+              style={{
+                flexDirection: 'row',
+                justifyContent: 'center',
+                alignItems: 'center',
+              }}>
+              <TouchableOpacity
+                onPress={getDeviceIDData}
+                style={{
+                  width: mobileW * 0.3,
+                  borderRadius: 10,
+                  backgroundColor: COLORS.WHITE,
+                  padding: 10,
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  margin: 10,
+                  ...Platform.select({
+                    ios: {
+                      shadowColor: '#000000',
+                      shadowOffset: {width: 0, height: 2},
+                      shadowOpacity: 0.3,
+                      shadowRadius: 4,
+                    },
+                    android: {
+                      elevation: 4,
+                    },
+                  }),
+                }}>
+                <Text
+                  style={{
+                    color: '#263238',
+                    fontWeight: '700',
+                    fontSize: 14,
+                    lineHeight: 17,
+                    textTransform: 'capitalize',
+                  }}>
+                  Refresh
+                </Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                onPress={() => navigationRef.navigate('Contact')}
+                style={{
+                  width: mobileW * 0.3,
+                  borderRadius: 10,
+                  backgroundColor: COLORS.GREEN,
+                  padding: 10,
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  margin: 10,
+                  ...Platform.select({
+                    ios: {
+                      shadowColor: '#000000',
+                      shadowOffset: {width: 0, height: 2},
+                      shadowOpacity: 0.3,
+                      shadowRadius: 4,
+                    },
+                    android: {
+                      elevation: 4,
+                    },
+                  }),
+                }}>
+                <Text
+                  style={{
+                    color: '#263238',
+                    fontWeight: '700',
+                    fontSize: 14,
+                    lineHeight: 17,
+                    textTransform: 'capitalize',
+                  }}>
+                  Contact Us
+                </Text>
+              </TouchableOpacity> */}
+            {/* </View> */}
+          </View>
             )}
             {/* </Tab.Navigator> */}
     </SafeAreaView>

@@ -62,11 +62,11 @@ export default function Login({navigation}) {
   const dispatch = useDispatch();
   const {getDeviceID, getGraphData} = useSelector(state => state);
   // console.log(getUserID,"object")
- 
+
   useEffect(() => {
     const backHandler = BackHandler.addEventListener(
       'hardwareBackPress',
-      handleBackButton
+      handleBackButton,
     );
 
     return () => backHandler.remove();
@@ -84,7 +84,7 @@ export default function Login({navigation}) {
         setForLoading(true);
         // setShowPackage(true);
         dispatch(setBasePackage([]));
-        dispatch(setIsAuthorized(true));
+        // dispatch(setIsAuthorized(true));
         setForLoading(false);
         navigation.navigate('DrawerStack');
       } else {
@@ -136,15 +136,15 @@ export default function Login({navigation}) {
           // if(data.status == "true"){
           //   navigation.navigate('EnergyStats');
           // }else if(data.status == "false"){
-
+          setTimeout(() => {
+          }, 15000);
           // }
-          await AsyncStorage.setItem('isAuthorized', res.data.user_id+'')
+          await AsyncStorage.setItem('isAuthorized', res.data.user_id + '');
           if (res.data.status == 'All details available') {
             dispatch(setEmailData(res.data?.email));
             dispatch(setPackageStatus(true));
             // dispatch(setUserID(res.data?.user_id));
             dispatch(getLocationID(res.data?.locationid));
-            // dispatch(setIsAuthorized(true));
             fetchGraphData(res.data?.user_id);
             fetchWeekGraphData(res.data?.user_id);
             fetchMonthGraphData(res.data?.user_id);
@@ -193,7 +193,10 @@ export default function Login({navigation}) {
                 type: 'error',
                 text1: 'Username or Password is incorrect',
               })
-            : ToastAndroid.show('Username or Password is incorrect', ToastAndroid.SHORT);
+            : ToastAndroid.show(
+                'Username or Password is incorrect',
+                ToastAndroid.SHORT,
+              );
           setForLoading(false);
         }
       }
@@ -232,16 +235,18 @@ export default function Login({navigation}) {
   //day data start
   const fetchGraphData = userID => {
     console.log(userID, 'object');
+    const message = 'No usage data available';
     axios
       .get(`${API}/dailyusagegraph/${userID}`)
       .then(res => {
-        console.log("DAY GRAPH", res.data)
+        console.log('DAY GRAPH', res.data);
         dispatch(setGraphData(res?.data));
 
         dailyUsuagekwh(userID);
         // navigation.navigate('DrawerStack');
       })
       .catch(err => {
+        dispatch(setGraphData({message}));
         console.log(err);
       });
   };
@@ -288,12 +293,12 @@ export default function Login({navigation}) {
       .get(`${API}/weeklyusage/${userID}`)
       .then(res => {
         if (res?.data) {
-          console.log("WEEKGRAPHDATA", res.data)
+          console.log('WEEKGRAPHDATA', res.data);
           dispatch(setWeekGraphData(res?.data));
         }
       })
       .catch(err => {
-        console.log('Week ERRRR',err);
+        console.log('Week ERRRR', err);
       });
   };
   const fetchMonthGraphData = userID => {
@@ -301,12 +306,12 @@ export default function Login({navigation}) {
       .get(`${API}/monthlyusage/${userID}`)
       .then(res => {
         if (res?.data) {
-          console.log("MONTH GRAPH", res.data)
+          console.log('MONTH GRAPH', res.data);
           dispatch(setMonthGraphData(res?.data));
         }
       })
       .catch(err => {
-        console.log('MONTHS ERRRR',err);
+        console.log('MONTHS ERRRR', err);
       });
   };
   const fetchQuarterGraphData = userID => {
@@ -314,12 +319,12 @@ export default function Login({navigation}) {
       .get(`${API}/threemonthusage/${userID}`)
       .then(res => {
         if (res?.data) {
-          console.log("QUARTER GRAPH", res.data)
+          console.log('QUARTER GRAPH', res.data);
           dispatch(setQuarterGraphData(res?.data));
         }
       })
       .catch(err => {
-        console.log('QUar ERRRR',err);
+        console.log('QUar ERRRR', err);
       });
   };
   const fetchYearGraphData = userID => {
@@ -327,12 +332,12 @@ export default function Login({navigation}) {
       .get(`${API}/yearlyusage/${userID}`)
       .then(res => {
         if (res?.data) {
-          console.log("Year GRAPH", res.data)
+          console.log('Year GRAPH', res.data);
           dispatch(setYearGraphData(res?.data));
         }
       })
       .catch(err => {
-        console.log('Year ERRRR',err);
+        console.log('Year ERRRR', err);
       });
   };
 
@@ -341,9 +346,8 @@ export default function Login({navigation}) {
       .get(`${API}/currentplan/${userId}`)
       .then(res => {
         if (res.data.data == 'Package details not found') {
-        dispatch(setBoxTwoDataForDashboard(res.data));
-        }else{
-
+          dispatch(setBoxTwoDataForDashboard(res.data));
+        } else {
           dispatch(setBoxTwoDataForDashboard(res?.data));
         }
       })
@@ -472,7 +476,7 @@ export default function Login({navigation}) {
                 ...Platform.select({
                   ios: {
                     shadowColor: '#000000',
-                    shadowOffset: { width: 0, height: 2 },
+                    shadowOffset: {width: 0, height: 2},
                     shadowOpacity: 0.3,
                     shadowRadius: 4,
                   },

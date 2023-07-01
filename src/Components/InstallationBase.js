@@ -26,7 +26,6 @@ const mobileW = Math.round(Dimensions.get('screen').width);
 const InstallationBase = ({ data }) => {
   // const {navigation, route} = props;
 
-  const setBasePackage = useSelector(state => state.setBasePackage);
   useEffect(() => {
     const backHandler = BackHandler.addEventListener(
       'hardwareBackPress',
