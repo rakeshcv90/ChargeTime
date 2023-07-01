@@ -130,9 +130,12 @@ export default function PaymentGateWay({ navigation }) {
   }, [creditCard, cardDetails, cardId])
 
   const handleAddCard = async (values, cb) => {
+    
     let exp_month = values?.validTill?.split('/')[0];
     let exp_year = values?.validTill?.split('/')[1];
-    let cust_number = values?.cardNumber.split(" ").join("");
+    // let customer_number = values?.cardNumber.split(" ").join("");
+    let cust_number =  values?.cardNumber.replace(/\s/g, '').slice(0, 16);
+    
     setGetCard_Number(values?.cardNumber)
     // console.log(" exp_month ",  exp_month );
     // console.log("exp_year",exp_year);
@@ -151,8 +154,8 @@ export default function PaymentGateWay({ navigation }) {
         "card_exp_month": exp_month,
         "card_exp_year": exp_year,
       });
-      console.log("------",response);
-      if (response.data.message ) {
+      console.log("------", response);
+      if (response.data.message) {
 
         cb();
 
@@ -174,7 +177,7 @@ export default function PaymentGateWay({ navigation }) {
             ToastAndroid.SHORT,
           );
       }
-      else if(response.data.error) {
+      else if (response.data.error) {
         cb();
         PLATFORM_IOS
           ? Toast.show({
@@ -201,7 +204,7 @@ export default function PaymentGateWay({ navigation }) {
       console.log(result);
       if (result[0]?.length > 0) {
         setSavedCard(result[0].sort((b, a) => a.status - b.status))
-console.log(result[0])
+        console.log(result[0])
         const statusOneObjects = result[0].filter(item => item.status === 1);
         dispatch(setCardDetails(statusOneObjects))
 
@@ -216,6 +219,20 @@ console.log(result[0])
   }
   const card_id = cardId;
 
+  function formatCreditCardNumber(cardNumber) {
+    const digitsOnly = cardNumber.replace(/\D/g, '');
+
+    // If the number is less than 16 digits, return the original input
+    if (digitsOnly.length < 16) {
+      return cardNumber;
+    }
+
+    // Mask the first 12 digits and display the last 4 digits
+    const maskedNumber = "xxxx xxxx xxxx " + digitsOnly.substring(12, 16);
+
+    return maskedNumber;
+  }
+
   const handleDeleteCard = async (value) => {
     try {
       const response = await fetch(`${API}/deletecard/${value}`, {
@@ -223,7 +240,7 @@ console.log(result[0])
       });
       const result = await response.json();
       if (result.success === "Your card is deleted") {
-        setSavedCard('')
+        //setSavedCard('')
         handleGetCard()
         setCardDetails1({
           cardHolderName: '',
@@ -329,7 +346,8 @@ console.log(result[0])
             }) => (
               <>
 
-                {savedCard && savedCard.length > 0 ?
+                {savedCard && savedCard.length > 0 && !(cardDetails?.cardHolderName || cardDetails?.card_cvv || cardDetails?.card_number || cardDetails?.validTill.split('/')[0]) ?
+                  <>
                   <Carousel
                     //ref={(c) => { this._carousel = c; }}
                     style={{ flexGrow: 0 }}
@@ -376,12 +394,16 @@ console.log(result[0])
                                   <Text style={{ fontWeight: '600', fontSize: 8, color: 'gray' }}>CVV</Text>
                                   <Text
                                     style={{ color: '#fff', fontWeight: '600', fontSize: 13 }}>
-                                    {String(item.card_cvc)}
+                                    {/* {String(item.card_cvc)} */}
+                                    {item.card_cvc ? '*'.repeat(String(item.card_cvc).length) : null}
+
+
                                   </Text>
                                 </View>
                               </View>
                             </View>
                           </ImageBackground>
+                          
                         </View>
                       )
                     }}
@@ -391,7 +413,20 @@ console.log(result[0])
                     onSnapToItem={(index) => {
                       setCurrentCard(savedCard[index])
                     }}
-                  /> : <View>
+                  />
+                  
+                <View style={styles.dotsContainer}>
+                <FlatList
+                  data={savedCard}
+                  renderItem={({ item,index }) => {
+                    return  <View style={[styles.dot, (item.id === currentCard.id || index ==0) && styles.activeDot]} />
+                  }}
+                  horizontal
+                 
+                  showsHorizontalScrollIndicator={false}
+                />
+                </View>
+                  </> : <View>
                     <Image
                       source={cardTypeImage}
                       style={{
@@ -406,7 +441,8 @@ console.log(result[0])
                       <Text
                         style={{ color: '#fff', fontWeight: '600', fontSize: 20 }}>
 
-                        {String(cardDetails.card_number).replace(/^(\d{12})(\d{4})$/, 'xxxx xxxx xxxx $2')}
+                        {/* {String(cardDetails.card_number).replace(/^(\d{12})(\d{4})$/, 'xxxx xxxx xxxx $2')} */}
+                        {formatCreditCardNumber(cardDetails.card_number)}
                       </Text>
                       <View style={styles.text_div}>
                         <View style={{ gap: 5, width: 100 }}>
@@ -428,14 +464,25 @@ console.log(result[0])
                           <Text style={{ fontWeight: '600', fontSize: 8, color: 'gray' }}>CVV</Text>
                           <Text
                             style={{ color: '#fff', fontWeight: '600', fontSize: 13 }}>
-                            {String(cardDetails.card_cvv)}
-                            {/* {cardDetails ? '*'.repeat(String(cardDetails.card_cvc).length) : values.cvv} */}
+                            {/* {String(cardDetails.card_cvv).length} */}
+                            {cardDetails.card_cvv ? '*'.repeat(String(cardDetails.card_cvv).length) : values.cvv}
                           </Text>
                         </View>
                       </View>
                     </View>
                   </View>}
-
+                  
+                {/* <View
+                  style={{
+                    flexDirection: 'row',
+                    justifyContent: 'center',
+                    // width: '100%',
+                    marginHorizontal: 30,
+                    marginTop: 30,
+                    marginBottom: 35,
+                  }}>
+                    
+                    </View> */}
 
                 <View
                   style={{
@@ -473,8 +520,11 @@ console.log(result[0])
                           );
                       }
                     }}
-                    style={savedCard && savedCard[0].status === 1 && (!currentCard || currentCard.status === 1) ? styles.default : styles.makeDefault}
-                   disabled={savedCard && savedCard[0].status === 1 && (!currentCard || currentCard.status === 1) ? true : false}>
+                    style={savedCard && savedCard[0].status === 1 && (!currentCard || currentCard.status === 1) ? styles.default : {
+                      ...styles.makeDefault,
+                      backgroundColor: (savedCard.length > 0 && savedCard[0].status === 0) || currentCard.length >0   ? COLORS.GREEN : '#CCCCCC'
+                    }}
+                    disabled={savedCard && savedCard[0].status === 1 && (!currentCard || currentCard.status === 1) ? true : false}>
                     <Text
                       style={savedCard && savedCard[0].status === 1 && (!currentCard || currentCard.status === 1) ? styles.makeDefaultText : styles.defaultText}>
 
@@ -572,6 +622,7 @@ console.log(result[0])
                     formattedCardNumber = formattedCardNumber.trim();
 
                     handleChange('cardNumber')(formattedCardNumber);
+                    //setCardDetails1({ ...cardDetails, ['card_number']: formattedCardNumber })
                     setCardDetails1({ ...cardDetails, ['card_number']: formattedCardNumber })
 
                   }}
@@ -580,7 +631,7 @@ console.log(result[0])
                   text="Card Number"
                   IconRight={() => <CardNumber />}
                   mV={15}
-                  placeholder="1234  5678  xxxx  xxxx"
+                  placeholder="xxxx xxxx xxxx 5678  "
                   bW={1}
                   textWidth={ms(85)}
                   placeholderTextColor={COLORS.HALFBLACK}
@@ -684,7 +735,7 @@ console.log(result[0])
 
 
                   }}>
-                    
+
                   <TouchableOpacity onPress={handleSubmit} style={{
 
                   }}>
@@ -713,6 +764,26 @@ console.log(result[0])
 }
 
 const styles = StyleSheet.create({
+  dotsContainer: {
+    flexDirection: 'row',
+    marginHorizontal:150,
+    justifyContent: 'center',
+    alignItems:'center',
+    marginTop: 40,
+  },
+  activeDot: {
+    backgroundColor: COLORS.GREEN, // Customize the active dot color as desired
+  },
+  dot: {
+    width: 10,
+    height: 10,
+    borderRadius: 5,
+    backgroundColor: '#CCCCCC',
+    // justifyContent: 'center',
+    alignItems:'center',
+    marginHorizontal: 5,
+
+  },
   complete_profile: {
     textAlign: 'left',
     fontSize: 24,
