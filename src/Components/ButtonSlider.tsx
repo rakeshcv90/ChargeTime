@@ -523,12 +523,7 @@ const ButtonSlider = ({onToggle}) => {
                   : 'Swipe right to start charging'}
               </Text>
             ) : (
-              <Text style={[styles.swipeText]}>
-                {getChargerStatus.message !== 'Online' ||
-                getChargerStatus.message !== 'Charging'
-                  ? 'Swipe left to stop charging'
-                  : 'Swipe right to start charging'}
-              </Text>
+              <Text style={[styles.swipeText]}/>
             )}
           </Animated.View>
         </LinearGradient>
