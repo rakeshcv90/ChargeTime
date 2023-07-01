@@ -204,7 +204,7 @@ export default function Home(route) {
   return (
     <SafeAreaView style={{backgroundColor: COLORS.CREAM, flex: 1}}>
     <DrawerOpen top={ PLATFORM_IOS ? 70 : 30}/>
-      {getPackageStatus &&<View style={styles.charging_imag_style}>
+      {getBasePackage.length != 0 &&<View style={styles.charging_imag_style}>
         {changePage == 0 ? (
           <Image
             source={require('../../../assets/images/bp_one.png')}

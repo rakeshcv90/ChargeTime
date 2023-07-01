@@ -494,8 +494,8 @@ const ButtonSlider = ({onToggle}) => {
                       marginTop: -14,
                       marginLeft: -5,
                     }}>
-                    {getChargerStatus.message !== 'Online' ||
-                    getChargerStatus.message !== 'Charging' ? (
+                    {getChargerStatus.message == 'Online' ||
+                    getChargerStatus.message == 'Charging' ? (
                       <Image
                         source={require('../../assets/images/PowerButton.png')}
                         style={{width: 20, height: 20}}
@@ -517,8 +517,8 @@ const ButtonSlider = ({onToggle}) => {
 
             {showText ? (
               <Text style={[styles.swipeText]}>
-                {getChargerStatus.message !== 'Online' ||
-                getChargerStatus.message !== 'Charging'
+                {getChargerStatus.message == 'Online' ||
+                getChargerStatus.message == 'Charging'
                   ? 'Swipe left to stop charging'
                   : 'Swipe right to start charging'}
               </Text>

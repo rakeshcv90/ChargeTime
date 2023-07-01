@@ -117,43 +117,43 @@ const Remaining = ({...props}) => {
     );
   };
 
-  const animatedValue = useRef(new Animated.Value(0)).current;
+  // const animatedValue = useRef(new Animated.Value(0)).current;
 
-  useEffect(() => {
-    startAnimation();
-    const subscription = gyroscope.subscribe(({x, timestamp}) => {
-      const normalizedX = Math.max(Math.min(x, 1), -1); // Normalize the gyroscope data
+  // useEffect(() => {
+  //   startAnimation();
+  //   const subscription = gyroscope.subscribe(({x, timestamp}) => {
+  //     const normalizedX = Math.max(Math.min(x, 1), -1); // Normalize the gyroscope data
 
-      // if (timestamp > 5000) {
-      console.log('normalizedX', normalizedX);
-      animatedValue.setValue(normalizedX);
-      // }
-    });
+  //     // if (timestamp > 5000) {
+  //     console.log('normalizedX', normalizedX);
+  //     animatedValue.setValue(normalizedX);
+  //     // }
+  //   });
 
-    return () => subscription.unsubscribe();
-  }, [animatedValue]);
+  //   return () => subscription.unsubscribe();
+  // }, [animatedValue]);
 
-  const startAnimation = () => {
-    Animated.timing(animatedValue, {
-      toValue: 1,
-      duration: 100,
-      useNativeDriver: true, // Add this line for better performance
-    }).start();
-  };
+  // const startAnimation = () => {
+  //   Animated.timing(animatedValue, {
+  //     toValue: 1,
+  //     duration: 100,
+  //     useNativeDriver: true, // Add this line for better performance
+  //   }).start();
+  // };
 
-  const translateX = animatedValue.interpolate({
-    inputRange: [0, 1],
-    outputRange: [-200, 200], // Adjust the range to determine the movement distance
-    // extrapolate: 'clamp', // Prevent values beyond the range from causing color patches
-  });
+  // const translateX = animatedValue.interpolate({
+  //   inputRange: [0, 1],
+  //   outputRange: [-200, 200], // Adjust the range to determine the movement distance
+  //   // extrapolate: 'clamp', // Prevent values beyond the range from causing color patches
+  // });
 
-  const rotate = animatedValue.interpolate({
-    inputRange: [-1, 0, 1],
-    outputRange: ['-45deg', `0deg`, `45deg`], // Adjust the range to determine the rotation angle
-    extrapolateLeft: 'clamp',
-    extrapolateRight: 'clamp',
-    // easing: () => 10
-  });
+  // const rotate = animatedValue.interpolate({
+  //   inputRange: [-1, 0, 1],
+  //   outputRange: ['-45deg', `0deg`, `45deg`], // Adjust the range to determine the rotation angle
+  //   extrapolateLeft: 'clamp',
+  //   extrapolateRight: 'clamp',
+  //   // easing: () => 10
+  // });
 
   return (
     <>
@@ -254,12 +254,6 @@ const Remaining = ({...props}) => {
             }}
           />
         ) : (
-          <Animated.View
-            style={{
-              transform: [animatedValue ? {rotate} : null],
-              zIndex: -1,
-              flexDirection: 'column-reverse',
-            }}>
             <LinearGradient
               colors={['rgba(177, 211, 79, 0.7) 0%,', 'rgb(177, 211, 79) 0%,']}
               start={{x: 0, y: 0}}
@@ -269,9 +263,10 @@ const Remaining = ({...props}) => {
                 borderRadius: 10,
                 // height:  getRemainingData < totalAllowed ?`${getRemainingData / totalAllowed}%` : '1%',
                 height: `${(getRemainingData / totalAllowed) * 100}%`,
+                zIndex: -1,
+                flexDirection: 'column-reverse',
               }}
             />
-          </Animated.View>
         )}
         {/* <View
         style={{
