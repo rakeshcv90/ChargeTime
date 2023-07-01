@@ -94,20 +94,20 @@ const Subscription = () => {
       // const result = await response.json();
       console.log(response.data, 'ttt');
       if (response.data.message == 'Plan Cancelled Successfully') {
-        // const updatedData = [
-        //   {
-        //     ...getPurchaseData[0],
-        //     End_validity: null,
-        //     dollar_mi: null,
-        //     energy_plan: null,
-        //     energy_price: null,
-        //     kwh: null,
-        //     mi_eq: null,
-        //     remaining_package: null,
-        //     total_package: null,
-        //   },
-        // ];
-        // dispatch(UpdatedCurrentPlan(updatedData));
+        const updatedData = [
+          {
+            ...getPurchaseData[0],
+            End_validity: null,
+            dollar_mi: null,
+            energy_plan: null,
+            energy_price: null,
+            kwh: null,
+            mi_eq: null,
+            remaining_package: null,
+            total_package: null,
+          },
+        ];
+        dispatch(UpdatedCurrentPlan(updatedData));
         getPlanCurrent();
         // PlanStatus()
         PLATFORM_IOS
@@ -230,6 +230,7 @@ const Subscription = () => {
             />
           </View>
         )}
+
         {getPurchaseData.data == 'Package details not found' ? (
           <View
             style={{
@@ -242,6 +243,7 @@ const Subscription = () => {
               style={{
                 flexDirection: 'row',
                 justifyContent: 'center',
+
                 alignItems: 'center',
               }}>
               <AnimatedLottieView
@@ -276,25 +278,11 @@ const Subscription = () => {
             </Text>
             {/* <TouchableOpacity
                   onPress={() => navigationRef.navigate('EnergyStats')}
+
                   style={{
-                    width: mobileW * 0.3,
-                    borderRadius: 10,
-                    backgroundColor: COLORS.WHITE,
-                    padding: 10,
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    margin: 10,
-                    ...Platform.select({
-                      ios: {
-                        shadowColor: '#000000',
-                        shadowOffset: {width: 0, height: 2},
-                        shadowOpacity: 0.3,
-                        shadowRadius: 4,
-                      },
-                      android: {
-                        elevation: 4,
-                      },
-                    }),
+                    color: COLORS.WHITE,
+                    fontSize: 14,
+                    fontWeight: '700',
                   }}>
                   <Text
                     style={{
@@ -321,6 +309,7 @@ const Subscription = () => {
             <View style={styles.managing_width}>
               <PriceBox data={getPurchaseData.data} />
             </View>
+
             <View
               style={{
                 flexDirection: 'row',

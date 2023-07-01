@@ -156,6 +156,7 @@ const InstalltionUpdate = async () => {
 
         
         if (data) {
+
           dispatch(getLocationID(parseInt(locationId)))
           console.log(data, 'fff');
           userDetails()
@@ -167,6 +168,7 @@ const InstalltionUpdate = async () => {
           // }];
           // console.log(updatedData,"------")
           // dispatch(updatePersionalDetail(updatedData));
+
           PLATFORM_IOS
             ? Toast.show({
                 type: 'success',

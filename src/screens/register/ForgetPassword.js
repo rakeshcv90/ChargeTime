@@ -201,7 +201,7 @@ const ForgetPassword = ({navigation}) => {
                         placeholder="Enter your Email"
                         bW={1}
                         textWidth={'22%'}
-                        placeholderTextColor={COLORS.BLACK}
+                        placeholderTextColor={COLORS.HALFBLACK}
                         autoCapitalize="none"
                       />
                       {errors.email && touched.email && (

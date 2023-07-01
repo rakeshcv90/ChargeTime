@@ -11,6 +11,7 @@ import {
   Alert,
   KeyboardAvoidingView,
   ToastAndroid,
+  Platform,
 } from 'react-native';
 import AnimatedLottieView from 'lottie-react-native';
 import React, { useState, useRef, useEffect } from 'react';
@@ -30,6 +31,9 @@ import axios from 'axios';
 import { API } from '../../api/API';
 import { navigationRef } from '../../../App';
 import ActivityLoader from '../../Components/ActivityLoader';
+import HorizontalLine from '../../Components/HorizontalLine';
+import { mvs, ms } from 'react-native-size-matters';
+
 
 import {
   setCardDetails,
@@ -46,6 +50,8 @@ const validationSchema = Yup.object().shape({
   cardNumber: Yup.string()
     .required('Invalid Card Number')
     .min(19, 'Card number must be 16 digits'),
+   
+    
   // .matches(/^[0-9]{16}$/, 'Card number must be 16 digits'),
   validTill: Yup.string()
     .required('expiry date required')
@@ -77,7 +83,7 @@ export default function PaymentGateWay({ navigation, route }) {
   const dispatch = useDispatch();
 
   const getCardDetails = useSelector(state => state.getCardDetails);
-const [cardId, setCardId]=useState('');
+  const [cardId, setCardId] = useState('');
   const [cardDetails, setCardDetails1] = useState({
     cardHolderName: getCardDetails[0]?.cust_name,
     card_number: getCardDetails[0]?.card_number,
@@ -109,11 +115,12 @@ const [cardId, setCardId]=useState('');
     ) ?? '',
   );
 
- 
+
 
   // console.log(savedCard,"------------")
 
   const newPAYMENT = async values => {
+   
     setLoader(true);
     let payload = new FormData();
 
@@ -128,7 +135,7 @@ const [cardId, setCardId]=useState('');
     payload.append('price', getDataForPayment.total_price);
     payload.append('price_stripe_id', getDataForPayment.price_stripe_id);
     payload.append('user_id', getUserID);
-    console.log(payload, 'object');
+    console.log("----------------",payload);
     try {
       const response = await axios.post(`${API}/checkout`, payload, {
         headers: {
@@ -140,9 +147,19 @@ const [cardId, setCardId]=useState('');
         setLoader(false);
         setModalVisible(true);
       }
+    
     } catch (err) {
       setLoader(false);
       if (err.response) {
+        PLATFORM_IOS
+        ? Toast.show({
+          type: 'success',
+          text1: "NO CARD ADDED !",
+        })
+        : ToastAndroid.show(
+          "NO CARD ADDED !",
+          ToastAndroid.SHORT,
+        );
         console.log(err.response.data);
         console.log(err.response.status);
       } else {
@@ -150,6 +167,7 @@ const [cardId, setCardId]=useState('');
       }
     }
   };
+  
   const handlePaymentSubmit = async values => {
     setLoader(true);
     let payload = new FormData();
@@ -194,144 +212,8 @@ const [cardId, setCardId]=useState('');
     }
   };
 
-  // const handleMakeDefaultCard = async () => {
-
-  //   try {
-  //     const response = await fetch(`${API}/defaultcard`, {
-  //       method: 'POST',
-  //       headers: {
-  //         'Content-Type': 'application/json',
-  //       },
-  //       body: JSON.stringify({
-  //         id: cardId,
-  //         user_id: getUserID,
-  //       }),
-  //     });
-  //     // console.log("999999999999",response)
-  //     const result = await response.json();
-  //     // console.log("---------------",result)
-  //     if (result.msg === "sucessfull") {
-  //       handleGetCard();
-  //       // handleGetCard();
-  //       console.log("Default card set successfully");
-  //       PLATFORM_IOS
-  //         ? Toast.show({
-  //           type: 'success',
-  //           text1: ' Default card set successfully',
-  //         })
-  //         : ToastAndroid.show(
-  //           'Default card set successfully',
-  //           ToastAndroid.SHORT,
-  //         );
-
-  //     } else {
-  //       // console.log("Error deleting card");
-  //       PLATFORM_IOS
-  //         ? Toast.show({
-  //           type: 'success',
-  //           text1: "Default card  not set",
-  //         })
-  //         : ToastAndroid.show(
-  //           "Default card not set",
-  //           ToastAndroid.SHORT,
-  //         );
-  //     }
-  //   } catch (error) {
-  //     console.error("Error Making default card", error);
-  //   }
-  // };
- 
-  // const handleGetCard = async () => {
-
-  //   try {
-  //     const response = await fetch(`${API}/getcarddetails/${getUserID}`);
-  //     const result = await response.json();
-  //     // console.log("Result", result[0].sort((b, a) => a.status - b.status))
-  //     if (result[0]?.length > 0) {
-  //       // console.log("defaultCard",defaultCard[0])
-  //       // setSavedCard(result[0].sort((b, a) => a.status - b.status))
-  //       setCardId(result[0].id)
-  //       if (result[0].status===0){
-  //       handleMakeDefaultCard()}
-  //       else{
-  //       const statusOneObjects = result[0].filter(item => item.status === 1);
-  //       // // console.log("-----------------",statusOneObjects);
-  //       dispatch(setCardDetails(statusOneObjects))
-  //       }
-  //     } else {
-  //       console.log("iiiiiiiiiiii")
-  //     }
-
-  //   } catch (error) {
-  //     PLATFORM_IOS
-  //       ? Toast.show({
-  //         type: 'success',
-  //         text1: ' Your card details not saved.',
-  //       })
-  //       : ToastAndroid.show(
-  //         ' Your card details not saved.',
-  //         ToastAndroid.SHORT,
-  //       );
-  //   }
-  // }
-
-  const handleAddCard = async (values) => {
-    console.log("--------",values)
-    let exp_month = values?.validTill?.split('/')[0];
-    let exp_year = values?.validTill?.split('/')[1];
-    // let cust_number = values?.cardNumber.split(" ").join("");
-    // setGetCard_Number(values?.cardNumber)
-    try {
-
-      const response = await axios.post(`${API}/addcarddetail`, {
-
-        "user_id": getUserID,
-        "cust_name": values.cardHolderName,
-        "card_number": values.cardNumber.replace(/\s/g, ''),
-        "card_cvc": values.cvv,
-        "card_exp_month": exp_month,
-        "card_exp_year": exp_year,
-      });
-      if (response.data.message === 'Your Card Detail Save') {
-        // cb();
-
-        console.log("card add success")
-        // setCardDetails({
-        //   cardHolderName: '',
-        //   card_number: '',
-        //   card_cvv: '',
-        //   validTill: '',
-        //   // card_exp_year:'',
-        // });
-        // handleGetCard()
-        PLATFORM_IOS
-          ? Toast.show({
-            type: 'success',
-            text1: ' Your Card Detail Save.',
-          })
-          : ToastAndroid.show(
-            'Your Card Detail Save.',
-            ToastAndroid.SHORT,
-          );
-      }
-      else {
-        // cb();
-        PLATFORM_IOS
-          ? Toast.show({
-            type: 'success',
-            text1: ' Your Card Detail Not Save.',
-          })
-          : ToastAndroid.show(
-            'Your Card Detail Not Save.',
-            ToastAndroid.SHORT,
-          );
-      }
-    } catch (error) {
-      console.error(error);
-    }
-
-  };
   
+
   const getDeviceIDData = () => {
     axios
       .get(`${API}/devicecheck/${getUserID}}`)
@@ -386,6 +268,19 @@ const [cardId, setCardId]=useState('');
       });
   };
 
+  function formatCreditCardNumber(cardNumber) {
+    const digitsOnly = cardNumber.replace(/\D/g, '');
+
+    // If the number is less than 16 digits, return the original input
+    if (digitsOnly.length < 16) {
+      return cardNumber;
+    }
+  
+    // Mask the first 12 digits and display the last 4 digits
+    const maskedNumber = "xxxx xxxx xxxx " + digitsOnly.substring(12,16);
+  
+    return maskedNumber;
+  }
   // const PlanStatus = () => {
   //   axios
   //     .get(`${API}/planstatus/${getUserID}`)
@@ -403,11 +298,14 @@ const [cardId, setCardId]=useState('');
 
   return (
     <SafeAreaView style={{ backgroundColor: COLORS.CREAM, flex: 1 }}>
-      {loader && <ActivityLoader />}
-      <ScrollView>
-        <View style={{ marginHorizontal: 20, paddingTop: 20 }}>
+       <View style={{ marginHorizontal: 20, paddingTop: 20 }}>
           <Text style={styles.complete_profile}>Payment Details</Text>
         </View>
+        <ScrollView showsVerticalScrollIndicator={false} style={{ flexGrow: 1, }} >
+      {loader && <ActivityLoader />}
+    
+       
+       
         <View style={styles.centeredView}>
           <Modal
             animationType="slide"
@@ -485,18 +383,19 @@ const [cardId, setCardId]=useState('');
                         style={{
                           color: '#fff',
                           fontWeight: '600',
-                          fontSize: 13,
+                          fontSize: 20,
                         }}>
-                        {cardDetails.card_number}
+                         
+                        {cardDetails?.card_number >0 && formatCreditCardNumber(cardDetails.card_number+'')}
                       </Text>
                     ) : (
                       <Text
                         style={{
                           color: '#fff',
                           fontWeight: '600',
-                          fontSize: 13,
+                          fontSize: 20,
                         }}>
-                        {values.cardNumber}
+                        {values?.cardNumber > 0 && formatCreditCardNumber(values.cardNumber+'')}
                       </Text>
                     )}
                     <View style={styles.text_div}>
@@ -577,7 +476,8 @@ const [cardId, setCardId]=useState('');
                               fontWeight: '600',
                               fontSize: 13,
                             }}>
-                            {cardDetails.card_cvv}
+                          {cardDetails.card_cvv ? '*'.repeat(String(cardDetails.card_cvv).length) : null}
+
                           </Text>
                         ) : (
                           <Text
@@ -586,12 +486,49 @@ const [cardId, setCardId]=useState('');
                               fontWeight: '600',
                               fontSize: 13,
                             }}>
-                            {values.cvv}
+                            {values.cvv? '*'.repeat(String(values.cvv).length) : null }
+
                           </Text>
                         )}
                       </View>
                     </View>
                   </View>
+                  <View
+                    style={{
+                      backgroundColor: COLORS.GREEN,
+                      //width:DIMENSIONS.SCREEN_WIDTH*0.3,
+                      height:DIMENSIONS.SCREEN_HEIGHT*0.05,                     
+                      marginBottom:35,
+                      justifyContent:'center',
+                      alignItems:'center',
+                      borderRadius: 12,
+                      ...Platform.select({
+                        ios: {
+                          shadowColor: '#000000',
+                          shadowOffset: { width: 0, height: 2 },
+                          shadowOpacity: 0.3,
+                          shadowRadius: 4,
+                        },
+                        android: {
+                          elevation: 4,
+                        },
+                      }),
+                    }}>
+                    <TouchableOpacity onPress={newPAYMENT}>
+                      <Text
+                        style={{
+                          fontSize: 14,
+                          fontWeight: '700',
+                          color: COLORS.BLACK,
+                        }}>
+                        Make Payment By Default Card 
+                      </Text>
+                    </TouchableOpacity>
+                  </View>
+                  {Platform.OS == 'android' ? <HorizontalLine style={styles.line} /> : <View>
+                    <Image source={require('../../../assets/images/dotted.png')} style={{ width: mobileW * 0.98 }} />
+                  </View>}
+
                   <Input
                     IconLeft={null}
                     errors={errors.cardHolderName}
@@ -604,8 +541,8 @@ const [cardId, setCardId]=useState('');
                     mV={15}
                     placeholder="John Doe"
                     bW={1}
-                    textWidth={'45%'}
-                    placeholderTextColor={COLORS.BLACK}
+                    textWidth={ms(110)}
+                    placeholderTextColor={COLORS.HALFBLACK}
                   />
                   <Input
                     IconLeft={null}
@@ -631,10 +568,10 @@ const [cardId, setCardId]=useState('');
                     text="Card Number"
                     IconRight={() => <Message />}
                     mV={15}
-                    placeholder="1234  5678  xxxx  xxxx"
+                    placeholder="xxxx  xxxx 1234 5678"
                     bW={1}
-                    textWidth={'35%'}
-                    placeholderTextColor={COLORS.BLACK}
+                    textWidth={ms(85)}
+                    placeholderTextColor={COLORS.HALFBLACK}
                     keyboardType="number-pad"
                   />
                   <View style={styles.mainDiv_state_ZIP}>
@@ -665,8 +602,8 @@ const [cardId, setCardId]=useState('');
                         mV={15}
                         placeholder="07/23"
                         bW={1}
-                        textWidth={'70%'}
-                        placeholderTextColor={COLORS.BLACK}
+                        textWidth={ms(62)}
+                        placeholderTextColor={COLORS.HALFBLACK}
                         w="half"
                         keyboardType="numeric"
                         maxLength={5}
@@ -685,8 +622,8 @@ const [cardId, setCardId]=useState('');
                         mV={15}
                         placeholder="***"
                         bW={1}
-                        textWidth={'50%'}
-                        placeholderTextColor={COLORS.BLACK}
+                        textWidth={ms(38)}
+                        placeholderTextColor={COLORS.HALFBLACK}
                         w="half"
                         secureTextEntry={true}
                         maxLength={3}
@@ -723,16 +660,6 @@ const [cardId, setCardId]=useState('');
                           },
                         }),
                       }}>
-                      {cardDetails.card_cvv ? <TouchableOpacity onPress={newPAYMENT}>
-                        <Text
-                          style={{
-                            fontSize: 14,
-                            fontWeight: '700',
-                            color: COLORS.BLACK,
-                          }}>
-                          Make Payment
-                        </Text>
-                      </TouchableOpacity> :
                         <TouchableOpacity onPress={handleSubmit}>
                           <Text
                             style={{
@@ -742,7 +669,7 @@ const [cardId, setCardId]=useState('');
                             }}>
                             Make Payment
                           </Text>
-                        </TouchableOpacity>}
+                        </TouchableOpacity>
                     </View>
                   </View>
                 </KeyboardAvoidingView>
@@ -750,6 +677,7 @@ const [cardId, setCardId]=useState('');
             </Formik>
           </View>
         </View>
+        
       </ScrollView>
     </SafeAreaView>
   );
@@ -859,5 +787,4 @@ const styles = StyleSheet.create({
     color: '#000000',
   },
 });
-
 
