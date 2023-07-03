@@ -301,7 +301,7 @@ export default function PaymentGateWay({ navigation, route }) {
        <View style={{ marginHorizontal: 20, paddingTop: 20 }}>
           <Text style={styles.complete_profile}>Payment Details</Text>
         </View>
-        <ScrollView showsVerticalScrollIndicator={false} style={{ flexGrow: 1, }} >
+        <ScrollView showsVerticalScrollIndicator={false} style={{ flex: 1 }} >
       {loader && <ActivityLoader />}
     
        
