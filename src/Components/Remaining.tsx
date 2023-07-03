@@ -158,7 +158,6 @@ const Remaining = ({ ...props }) => {
           }}>
           {overusage ? 'Overusage' : 'Remaining Usage'}
         </Text>
-        {console.log("TOTAL DATA",getRemainingData,totalAllowed)}
         <View
           style={{
             top: '40%',

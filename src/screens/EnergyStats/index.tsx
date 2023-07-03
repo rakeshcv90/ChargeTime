@@ -169,12 +169,13 @@ export default function EnergyStats() {
       .then(res => {
         console.log(res.data, 'tt');
         if (res.data.status == 'True') {
-          dispatch(setDeviceId(res.data.message));
+          // dispatch(setDeviceId(res.data.message));
+          setDeviceIdTemp(res.data.message)
           fetchGraphData(getUserID);
-          fetchMonthGraphData(res.data?.user_id);
-          fetchQuarterGraphData(res.data.user_id);
-          fetchBoxTwoDashboardData(res.data?.user_id);
-          fetchStatusdata(res.data?.user_id);
+          // fetchMonthGraphData(res.data?.user_id);
+          // fetchQuarterGraphData(res.data.user_id);
+          fetchBoxTwoDashboardData(getUserID);
+          fetchStatusdata(getUserID);
           // setTimeout(() => {
           // }, 10000);
         } else {
@@ -281,7 +282,7 @@ export default function EnergyStats() {
         if (res?.data) {
           console.log('Qurewrsdfds GRAPH', res.data);
           dispatch(setQuarterGraphData(res?.data));
-          // dispatch(setDeviceId(deviceIdTemp));
+          dispatch(setDeviceId(deviceIdTemp));
           setIsLoading(false);
         }
       })
@@ -309,6 +310,7 @@ export default function EnergyStats() {
     axios
       .get(`${API}/currentplan/${userId}`)
       .then(res => {
+        console.log("DASHBOARDSADASASDASDASDASDSDA",res.data)
         dispatch(setBoxTwoDataForDashboard(res?.data));
       })
       .catch(err => {

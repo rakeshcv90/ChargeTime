@@ -136,8 +136,8 @@ export default function Login({navigation}) {
           // if(data.status == "true"){
           //   navigation.navigate('EnergyStats');
           // }else if(data.status == "false"){
-          setTimeout(() => {
-          }, 15000);
+          // setTimeout(() => {
+          // }, 15000);
           // }
           await AsyncStorage.setItem('isAuthorized', res.data.user_id + '');
           if (res.data.status == 'All details available') {
