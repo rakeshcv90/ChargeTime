@@ -15,7 +15,7 @@ export default function Quarter() {
   const ScrollRef = useRef(null);
   useEffect(() => {
     setShowSlider(true);
-    console.log("QUARAR",getQuarterData.Usage)
+    console.log("QUARAR",getQuarterData)
   }, []);
   const {getQuarterData, getBoxTwoDataForDashboard} = useSelector(
     (state: any) => state,
@@ -46,7 +46,7 @@ export default function Quarter() {
           </View>
 
           <View style={{marginHorizontal: 20}}>
-            {getQuarterData.Date.length >= 1 ? (
+            {getQuarterData.message != 'No threemonthusageusage data available' ? (
             <Graph dataOne={getQuarterData} />
               
             ) : (

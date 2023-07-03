@@ -168,10 +168,10 @@ export default function EnergyStats() {
       .then(res => {
         console.log(res.data, 'tt');
         if (res.data.status == 'True') {
-          setDeviceIdTemp(res.data.message);
+          dispatch(setDeviceId(res.data.message));
           fetchGraphData(getUserID);
-          // fetchMonthGraphData(res.data?.user_id);
-          // fetchQuarterGraphData(res.data.user_id);
+          fetchMonthGraphData(res.data?.user_id);
+          fetchQuarterGraphData(res.data.user_id);
           fetchBoxTwoDashboardData(res.data?.user_id);
           fetchStatusdata(res.data?.user_id);
           // setTimeout(() => {
@@ -193,7 +193,7 @@ export default function EnergyStats() {
       .get(`${API}/dailyusagegraph/${userID}`)
       .then(res => {
         console.log('GRAPH.........', res.data);
-        dispatch(setGraphData(res?.data.Usage));
+        dispatch(setGraphData(res?.data));
 
         dailyUsuagekwh(getUserID);
         // navigation.navigate('DrawerStack');
@@ -280,7 +280,7 @@ export default function EnergyStats() {
         if (res?.data) {
           console.log('Qurewrsdfds GRAPH', res.data);
           dispatch(setQuarterGraphData(res?.data));
-          dispatch(setDeviceId(deviceIdTemp));
+          // dispatch(setDeviceId(deviceIdTemp));
           setIsLoading(false);
         }
       })

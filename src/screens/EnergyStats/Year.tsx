@@ -15,6 +15,7 @@ export default function Year() {
   const ScrollRef = useRef(null);
   useEffect(() => {
     setShowSlider(true);
+    console.log("MONTHRasdsadsadasdasdasdasdasd",getYearData)
   }, []);
   const {getYearData, getBoxTwoDataForDashboard} = useSelector(
     (state: any) => state,
@@ -45,7 +46,7 @@ export default function Year() {
           </View>
 
           <View style={{marginHorizontal: 20}}>
-            {getYearData.Date.length >= 1 ? (
+            {getYearData.message != 'No yearly usage data available' ? (
             <Graph dataOne={getYearData} />
               
             ) : (

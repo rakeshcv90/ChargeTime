@@ -62,7 +62,7 @@ export default function Week() {
           </View>
 
           <View style={{marginHorizontal: 20}}>
-            {getWeekGraphData.Date.length >= 1 ? (
+            {getWeekGraphData.message != 'No weeklyusage data available' ? (
             <Graph dataOne={getWeekGraphData} />
               
             ) : (

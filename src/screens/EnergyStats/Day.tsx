@@ -43,7 +43,8 @@ const Day = (props: any) => {
 
   useEffect(() => {
     setShowSlider(true);
-    fetchGraphData();
+    console.log("DAY GRAPH", getGraphData)
+    // fetchGraphData();
     // fetchWeekGraphData(getUserID);
     // fetchMonthGraphData(getUserID);
     // fetchQuarterGraphData(getUserID);
@@ -56,7 +57,6 @@ const Day = (props: any) => {
     axios
       .get(`${API}/dailyusagegraph/${getUserID}`)
       .then(res => {
-        console.log("DAY GRAPH", res.data)
         dispatch(setGraphData(res?.data));
 
         // navigation.navigate('DrawerStack');
