@@ -1,11 +1,11 @@
-import { View, Text,SafeAreaView, ToastAndroid,Button, TextInput,StyleSheet, Modal,TouchableOpacity, Platform, Image,Dimensions } from 'react-native'
+import { View, Text,SafeAreaView, ToastAndroid,Button, TextInput,StyleSheet, Modal,TouchableOpacity } from 'react-native'
 import React, { useState, useEffect } from 'react'
 import Header from '../../Components/Header'
 import HorizontalLine from '../../Components/HorizontalLine'
 import Input from '../../Components/Input'
 import { Install } from '../../../assets/svgs/Install'
 import { Location } from '../../../assets/svgs/Location'
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import COLORS from '../../constants/COLORS';
 // import DropDownPicker from 'react-native-dropdown-picker';
 import {Dropdown} from 'react-native-element-dropdown';
@@ -15,7 +15,7 @@ import axios from 'axios';
 import { FONTS } from '../../constants/FONTS'
 import { navigationRef } from '../../../App'
 import { ms } from 'react-native-size-matters';
-import { getLocationID, setBasePackage, setPackageStatus, userProfileData as updatePersionalDetail } from '../../redux/action';
+import { userProfileData as updatePersionalDetail } from '../../redux/action';
 
 
 
@@ -23,7 +23,7 @@ import { getLocationID, setBasePackage, setPackageStatus, userProfileData as upd
 const Installation = () => {
   // const getCompleteData = useSelector((state)=> state.getCompleteData)
     const userProfileData = useSelector((state)=> state.userProfileData)
-const dispatch = useDispatch()
+
   const getUserID = useSelector((state)=> state.getUserID)
   const [isModalVisible, setModalVisible] = useState(false);
   const [isEditable, setIsEditable] = useState(false);
@@ -38,12 +38,12 @@ const dispatch = useDispatch()
   const [locationId, setLocationId] = useState('');
   const [isFocus, setIsFocus] = useState(false);
   const [forLoading,setForLoading] = useState(false)
-  const mobileW = Math.round(Dimensions.get('screen').width);
+  
   useEffect(() => {
     console.log('data for this User:---------', userProfileData); 
     setAddLineTwo(userProfileData[0]?.pwa_add2);
     setAddLineOne(userProfileData[0]?.pwa_add1);
-    // console.log('userrrrrrrrr',getUserID)
+    // console.log('userrrrrrrrr',location)
     fetchOptions();
  }, [userProfileData]);
 const user_id= getUserID;
@@ -55,10 +55,10 @@ const user_id= getUserID;
  
  const fetchOptions = async () => {
    try {
-     const response = await axios(`${API}/locations`);
-    //  const result = await response.json();
+     const response = await fetch(`${API}/locations`);
+     const result = await response.json();
 // console.log(result,'ttt');
-     setLocationMap(response.data);
+     setLocationMap(result);
    } catch (error) {
      console.error(error);
    }
@@ -110,27 +110,6 @@ console.log(result,'ttt');
     console.error(error);
   }
 };
-const userDetails = async () => {
-  // const response = await fetch(`${API}/userexisting/${user_ID}`);
-  try {
-    const response = await fetch(`${API}/userexisting/${getUserID}`);
-    const result = await response.json();
-    if (result[0].message == "sucess") {
-
-      console.log('wwwwww', result);
-      //  setUserData(result);
-      dispatch(updatePersionalDetail(result));
-      fetchData()
-      //  console.log(result)
-
-    } else {
-      console.log("iiiiiiiiiiii")
-    }
-    // setLocationMap(result);
-  } catch (error) {
-    console.error(error);
-  }
-};
 const InstalltionUpdate = async () => {
     
   setForLoading(true)
@@ -154,30 +133,27 @@ const InstalltionUpdate = async () => {
       .then(res => res.json())
       .then(data => {
 
-        
+        console.log(data, 'fff');
+
         if (data) {
-
-          dispatch(getLocationID(parseInt(locationId)))
-          console.log(data, 'fff');
-          userDetails()
-          // const updatedData = [{
-          //   ...userProfileData[0],
-          // pwa_add1: addlineone,
-          //   pwa_add2: addlinetwo,
-          //   location: locationId
-          // }];
-          // console.log(updatedData,"------")
-          // dispatch(updatePersionalDetail(updatedData));
-
+          const updatedData = [{
+            ...userProfileData[0],
+          name: name,
+            mobile: number,
+            location : locationId,
+          }];
+          console.log(updatedData,"------")
+          dispatch(updatePersionalDetail(updatedData));
           PLATFORM_IOS
             ? Toast.show({
                 type: 'success',
-                text1: 'Profile has been updated successfully.',
+                text1: 'Profile has benn updated successfully.',
               })
             : ToastAndroid.show(
-                'Profile has been updated successfully.',
+                'Profile has benn updated successfully.',
                 ToastAndroid.SHORT,
               );
+          navigationRef.navigate('Account');
           setForLoading(false)
         } else {
           PLATFORM_IOS
@@ -194,30 +170,6 @@ const InstalltionUpdate = async () => {
     console.log(err);
     setForLoading(false)
   }}
-};
-
-
-const fetchData = async () => {
-  //  loginData = await AsyncStorage.getItem('loginDataOne');
-
-  console.log(locationId, 'fff');
-  try {
-    const response = await axios.get(`${API}/packagePlan/${locationId}`);
-console.log(`${API}/packagePlan/${locationId}`)
-    if (response?.data?.locations.length == 0) {
-      setForLoading(true);
-      // setShowPackage(true);
-    } else {
-      // setApiData(response?.data?.locations);
-      dispatch(setBasePackage(response.data.locations));
-      dispatch(setPackageStatus(false));
-      setForLoading(false);
-      navigationRef.navigate('HomeStack');
-    }
-  } catch (error) {
-    console.error('Error fetching data:', error);
-    setForLoading(false);
-  }
 };
 
   const handleOk = () => {
@@ -256,15 +208,6 @@ console.log(`${API}/packagePlan/${locationId}`)
             Change Location Base?
             </Text>
             <Text style={styles.selectedEmail}>Doing so will cancel your current plan. {'\n'}Are you sure?</Text>
-            <Text
-              style={{
-                fontSize: 14,
-                fontWeight: '400',
-                color: COLORS.RED,
-                marginVertical: 5,
-              }}>
-              All your (Active / Scheduled ) Subscriptions will be Cancelled
-            </Text>
             <View style={styles.modalButtonsContainer}>
               <TouchableOpacity
                 style={styles.cancelButton}
@@ -288,13 +231,7 @@ console.log(`${API}/packagePlan/${locationId}`)
   return (
     <SafeAreaView style={{backgroundColor: COLORS.CREAM, flex: 1}}>
      <Header headerName="Installation" editShow={true} onPress={onPress} enableEdit ={enableEdit} editButton={isEditable} />
-     {Platform.OS=='android'? <HorizontalLine style={styles.line} />:<View
-              style={{
-             
-             
-              }}>
-              <Image source={require('../../../assets/images/dotted.png')} style={{ width: mobileW * 0.97}} />
-            </View> }
+    <HorizontalLine style={styles.line}/>
      <View style={styles.mainDiv_container}>
      <View style={styles.postCodeContainer}>
               {renderLabel()}
@@ -306,7 +243,6 @@ console.log(`${API}/packagePlan/${locationId}`)
                 iconStyle={styles.iconStyle}
                 data={locationMap}
                 search
-                disable={!isEditable}
                 maxHeight={ms(500)}
                 labelField="location"
                 valueField="location"
@@ -341,8 +277,8 @@ console.log(`${API}/packagePlan/${locationId}`)
           style={{
             color: COLORS.BLACK,
             // fontFamily: FONTS.ROBOTO_REGULAR,
-            fontWeight: '200',
-            fontSize:14,
+            fontWeight: '100',
+            fontSize:12,
           }}
         />
          <Input
@@ -365,9 +301,9 @@ console.log(`${API}/packagePlan/${locationId}`)
           placeholderTextColor={COLORS.BLACK}
           style={{
             color: COLORS.BLACK,
-            fontFamily: 'Roboto',
+            // fontFamily: 'Roboto',
             fontWeight: '200',
-            fontSize:14,
+            fontSize:12,
           }}
         />
          <View style={styles.mainDiv_state_ZIP}>
@@ -449,7 +385,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: 'rgba(0, 0, 0, 0.5)',
-    // borderRadius: 28,
+    borderRadius: 28,
   },
   modalContent: {
     backgroundColor: '#F5F5F5',
@@ -494,7 +430,7 @@ const styles = StyleSheet.create({
   okButton: {
     backgroundColor: '#B1D34F',
     paddingVertical: 10,
-    paddingHorizontal: 20,
+    paddingHorizontal: 10,
     borderRadius: 20,
   
   },

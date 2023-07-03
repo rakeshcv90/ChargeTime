@@ -201,16 +201,15 @@ export default function PaymentGateWay({ navigation }) {
       const response = await fetch(`${API}/getcarddetails/${user_ID}`);
       const result = await response.json();
       // console.log("Result", result[0].sort((b, a) => a.status - b.status))
-      console.log(result);
+      // console.log(result);
       if (result[0]?.length > 0) {
         setSavedCard(result[0].sort((b, a) => a.status - b.status))
-        console.log(result[0])
+        // console.log(result[0])
         const statusOneObjects = result[0].filter(item => item.status === 1);
         dispatch(setCardDetails(statusOneObjects))
-
+        
       }
       else {
-
       }
 
     } catch (error) {
@@ -241,14 +240,8 @@ export default function PaymentGateWay({ navigation }) {
       const result = await response.json();
       if (result.success === "Your card is deleted") {
         //setSavedCard('')
-        handleGetCard()
-        setCardDetails1({
-          cardHolderName: '',
-          card_number: '',
-          card_cvv: '',
-          validTill: '',
-          // card_exp_year:'',
-        })
+        handleGetCard();
+        
         PLATFORM_IOS
           ? Toast.show({
             type: 'success',
@@ -766,7 +759,7 @@ export default function PaymentGateWay({ navigation }) {
 const styles = StyleSheet.create({
   dotsContainer: {
     flexDirection: 'row',
-    marginHorizontal:mobileW * 0.3 ,
+    marginHorizontal:mobileW * 0.37 ,
     justifyContent: 'center',
     alignItems:'center',
     marginTop: 30,
