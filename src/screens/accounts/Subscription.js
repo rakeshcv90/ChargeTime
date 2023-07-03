@@ -131,8 +131,9 @@ const Subscription = () => {
       .then(res => {
         setForLoading(false);
         setModalVisible(false);
-        if (res.data.data == 'Package details not found') {
+        if (res.data.error == 'Package details not found') {
           dispatch(setPurchaseData(res.data));
+          console.log("-------------------",res.data)
           setGetData(res.data);
           dispatch(setPackageStatus(false));
         } else {
@@ -231,7 +232,7 @@ const Subscription = () => {
           </View>
         )}
 
-        {getPurchaseData.data == 'Package details not found' ? (
+        {getPurchaseData.error == 'Package details not found' ? (
           <View
             style={{
               justifyContent: 'center',
@@ -272,29 +273,52 @@ const Subscription = () => {
                 lineHeight: 25,
                 textAlign: 'center',
                 paddingHorizontal: 30,
-                color: COLORS.HALFBLACK
+                color: COLORS.BLACK,
               }}>
-              No Subscription Package Available
+              No (Active / Scheduled ) Package Available.
+            </Text>
+            <Text
+              style={{
+                fontSize: 14,
+                // fontWeight: '500',
+                color: COLORS.BLACK,
+                marginVertical: 5,
+              }}>
+              Please Purchase Package from Home.
             </Text>
             {/* <TouchableOpacity
-                  onPress={() => navigationRef.navigate('EnergyStats')}
-
+                onPress={() => navigationRef.navigate('Home')}
+                style={{
+                  width: mobileW * 0.3,
+                  borderRadius: 10,
+                  backgroundColor: COLORS.WHITE,
+                  padding: 10,
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  margin: 10,
+                  ...Platform.select({
+                    ios: {
+                      shadowColor: '#000000',
+                      shadowOffset: {width: 0, height: 2},
+                      shadowOpacity: 0.3,
+                      shadowRadius: 4,
+                    },
+                    android: {
+                      elevation: 4,
+                    },
+                  }),
+                }}>
+                <Text
                   style={{
-                    color: COLORS.WHITE,
-                    fontSize: 14,
+                    color: '#263238',
                     fontWeight: '700',
+                    fontSize: 14,
+                    lineHeight: 17,
+                    textTransform: 'capitalize',
                   }}>
-                  <Text
-                    style={{
-                      color: '#263238',
-                      fontWeight: '700',
-                      fontSize: 14,
-                      lineHeight: 17,
-                      textTransform: 'capitalize',
-                    }}>
-                    Purchase Plan
-                  </Text>
-                </TouchableOpacity> */}
+                Purchase Plan
+                </Text>
+              </TouchableOpacity> */}
           </View>
         ) : (
           <ScrollView showsVerticalScrollIndicator={false}>

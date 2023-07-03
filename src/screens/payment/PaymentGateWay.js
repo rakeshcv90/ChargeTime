@@ -395,7 +395,7 @@ export default function PaymentGateWay({ navigation, route }) {
                           fontWeight: '600',
                           fontSize: 20,
                         }}>
-                        {values?.cardNumber > 0 && formatCreditCardNumber(values.cardNumber+'')}
+                        {formatCreditCardNumber(values.cardNumber+'')}
                       </Text>
                     )}
                     <View style={styles.text_div}>

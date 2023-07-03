@@ -154,7 +154,7 @@ export default function PaymentGateWay({ navigation }) {
         "card_exp_month": exp_month,
         "card_exp_year": exp_year,
       });
-      console.log("------", response);
+      // console.log("------", response);
       if (response.data.message) {
 
         cb();
@@ -419,7 +419,7 @@ export default function PaymentGateWay({ navigation }) {
                 <FlatList
                   data={savedCard}
                   renderItem={({ item,index }) => {
-                    return  <View style={[styles.dot, (item.id === currentCard.id || index ==0) && styles.activeDot]} />
+                    return  <View style={[styles.dot, (item.id === currentCard.id) && styles.activeDot]} />
                   }}
                   horizontal
                  
@@ -522,7 +522,7 @@ export default function PaymentGateWay({ navigation }) {
                     }}
                     style={savedCard && savedCard[0].status === 1 && (!currentCard || currentCard.status === 1) ? styles.default : {
                       ...styles.makeDefault,
-                      backgroundColor: (savedCard.length > 0 && savedCard[0].status === 0) || currentCard.length >0   ? COLORS.GREEN : '#CCCCCC'
+                      backgroundColor: (savedCard.length > 0 && savedCard[0].status === 0) || (currentCard.length >0 || currentCard.status === 0 ) ? COLORS.GREEN : '#CCCCCC'
                     }}
                     disabled={savedCard && savedCard[0].status === 1 && (!currentCard || currentCard.status === 1) ? true : false}>
                     <Text
@@ -766,10 +766,10 @@ export default function PaymentGateWay({ navigation }) {
 const styles = StyleSheet.create({
   dotsContainer: {
     flexDirection: 'row',
-    marginHorizontal:150,
+    marginHorizontal:mobileW * 0.3 ,
     justifyContent: 'center',
     alignItems:'center',
-    marginTop: 40,
+    marginTop: 30,
   },
   activeDot: {
     backgroundColor: COLORS.GREEN, // Customize the active dot color as desired
@@ -781,7 +781,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#CCCCCC',
     // justifyContent: 'center',
     alignItems:'center',
-    marginHorizontal: 5,
+    marginHorizontal: 3,
 
   },
   complete_profile: {

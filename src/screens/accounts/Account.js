@@ -16,7 +16,7 @@ import { persistor } from '../../redux/store';
 import { useSelector } from 'react-redux';
 import { API } from '../../api/API';
 import { useDispatch } from 'react-redux';
-import { userProfileData } from '../../redux/action';
+import { setLogout, userProfileData } from '../../redux/action';
 import { getCurrentPlan } from '../../redux/action';
 import SubBoxOne from '../../Components/SubBoxOne';
 import Privacy from '../drawerPart/Privacy';
@@ -38,6 +38,7 @@ const Account = ({ navigation }) => {
 
   useEffect(() => {
     //  console.log('data for this User:---------', userRegisterData); 
+
     userDetails();
     // userSubscription();
     //  userSubsEnergy();
@@ -95,6 +96,7 @@ const Account = ({ navigation }) => {
   const handleLogOut = async () => {
    await AsyncStorage.clear();
    await persistor.purge();
+   dispatch(setLogout());
     // navigation.popToTop();
     // setTimeout(()=>{
     //   navigation.navigate('AccountStack',{

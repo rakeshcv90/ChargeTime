@@ -445,6 +445,7 @@ const HomeStack = () => {
       <Stack.Screen name="Home" component={Home} />
       <Stack.Screen name="PlanSummary" component={PlanSummary} />
       <Stack.Screen name="PaymentGateWay" component={PaymentGateWay} />
+      
     </Stack.Navigator>
   );
 };
@@ -489,8 +490,7 @@ const AccountStack = () => {
       <Stack.Screen name="LoginStack" component={LoginStack} />
 
       {/* <Stack.Screen name="DrawerStack" component={DrawerNavigation} /> */}
-      <Stack.Screen name="Home1" component={Home} />
-
+      <Stack.Screen name="Home" component={HomeStack} />
       <Stack.Screen name="PaymentGateWay" component={PaymentGateWay} />
 
       <Stack.Screen name="PlanSummary" component={PlanSummary} />
