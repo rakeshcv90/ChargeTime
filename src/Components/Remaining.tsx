@@ -7,17 +7,17 @@ import {
   Text,
   View,
 } from 'react-native';
-import React, {useCallback, useEffect, useRef, useState} from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import COLORS from '../constants/COLORS';
 import LinearGradient from 'react-native-linear-gradient';
-import {DIMENSIONS} from '../constants/DIMENSIONS';
-import {useDispatch, useSelector} from 'react-redux';
+import { DIMENSIONS } from '../constants/DIMENSIONS';
+import { useDispatch, useSelector } from 'react-redux';
 import axios from 'axios';
-import {API} from '../api/API';
-import {setOverUsage, setRemainingData} from '../redux/action';
+import { API } from '../api/API';
+import { setOverUsage, setRemainingData } from '../redux/action';
 import AnimatedLottieView from 'lottie-react-native';
-import {useFocusEffect} from '@react-navigation/native';
-import {navigationRef} from '../../App';
+import { useFocusEffect } from '@react-navigation/native';
+import { navigationRef } from '../../App';
 import {
   accelerometer,
   gyroscope,
@@ -25,10 +25,10 @@ import {
   SensorTypes,
 } from 'react-native-sensors';
 
-const Remaining = ({...props}) => {
+const Remaining = ({ ...props }) => {
   const dispatch = useDispatch();
   const [totalAllowed, setTotalAllowed] = useState(0);
-  const {getRemainingData, getUserID, overusage} = useSelector(
+  const { getRemainingData, getUserID, overusage } = useSelector(
     (state: any) => state,
   );
   const [modalVisible, setModalVisible] = useState(false);
@@ -86,7 +86,7 @@ const Remaining = ({...props}) => {
               }} // Replace with your animation file
               autoPlay
               loop
-              style={{width: 50, height: 50}}
+              style={{ width: 50, height: 50 }}
             />
             <Text
               style={{
@@ -117,69 +117,12 @@ const Remaining = ({...props}) => {
     );
   };
 
-  // const animatedValue = useRef(new Animated.Value(0)).current;
-
-  // useEffect(() => {
-  //   startAnimation();
-  //   const subscription = gyroscope.subscribe(({x, timestamp}) => {
-  //     const normalizedX = Math.max(Math.min(x, 1), -1); // Normalize the gyroscope data
-
-  //     // if (timestamp > 5000) {
-  //     console.log('normalizedX', normalizedX);
-  //     animatedValue.setValue(normalizedX);
-  //     // }
-  //   });
-
-  //   return () => subscription.unsubscribe();
-  // }, [animatedValue]);
-
-  // const startAnimation = () => {
-  //   Animated.timing(animatedValue, {
-  //     toValue: 1,
-  //     duration: 100,
-  //     useNativeDriver: true, // Add this line for better performance
-  //   }).start();
-  // };
-
-  // const translateX = animatedValue.interpolate({
-  //   inputRange: [0, 1],
-  //   outputRange: [-200, 200], // Adjust the range to determine the movement distance
-  //   // extrapolate: 'clamp', // Prevent values beyond the range from causing color patches
-  // });
-
-  // const rotate = animatedValue.interpolate({
-  //   inputRange: [-1, 0, 1],
-  //   outputRange: ['-45deg', `0deg`, `45deg`], // Adjust the range to determine the rotation angle
-  //   extrapolateLeft: 'clamp',
-  //   extrapolateRight: 'clamp',
-  //   // easing: () => 10
-  // });
 
   return (
     <>
       <View
         style={{
-          //   backgroundColor: '#F5F5F5',
-          // width: props?.data !== "energy" ? DIMENSIONS.SCREEN_WIDTH * 0.4 : DIMENSIONS.SCREEN_WIDTH * 0.9,
-          // height: DIMENSIONS.SCREEN_WIDTH * 0.35,
-          // marginVertical: 20,
-          // flexDirection: 'column-reverse',
-          // //  shadowColor: '#000000',
-          // //   shadowOffset: {
-          // //     width: 0,
-          // //     height: 6,
-          // //   },
-          // //   shadowOpacity: 0.2,
-          // //   shadowRadius: 5.62,
-          // //  elevation: 8,
-          // shadowColor: '#000000',
-          // shadowOffset: { width: 0, height: 6 },
-          // shadowOpacity: 0.2,
-          // shadowRadius: 2,
-          // elevation: 5,
-          // borderWidth: 0,
-          // borderRadius: 10,
-          // overflow: 'hidden',
+
           backgroundColor: '#F5F5F5',
           width:
             props?.data !== 'energy'
@@ -199,7 +142,7 @@ const Remaining = ({...props}) => {
           borderWidth: 0,
           borderRadius: 10,
           overflow: 'hidden',
-          // transform: [animatedValue ? {rotate}: null],
+
         }}>
         <Text
           style={{
@@ -215,6 +158,7 @@ const Remaining = ({...props}) => {
           }}>
           {overusage ? 'Overusage' : 'Remaining Usage'}
         </Text>
+        {console.log("TOTAL DATA",getRemainingData,totalAllowed)}
         <View
           style={{
             top: '40%',
@@ -254,61 +198,23 @@ const Remaining = ({...props}) => {
             }}
           />
         ) : (
-            <LinearGradient
-              colors={['rgba(177, 211, 79, 0.7) 0%,', 'rgb(177, 211, 79) 0%,']}
-              start={{x: 0, y: 0}}
-              end={{x: 0, y: 1}}
-              style={{
-                width: '100%',
-                borderRadius: 10,
-                // height:  getRemainingData < totalAllowed ?`${getRemainingData / totalAllowed}%` : '1%',
-                height: `${(getRemainingData / totalAllowed) * 100}%`,
-                zIndex: -1,
-                flexDirection: 'column-reverse',
-              }}
-            />
-        )}
-        {/* <View
-        style={{
-          flexDirection: 'row',
-        //   flex: 0.1,
-          backgroundColor: COLORS.GREEN,
-        }}>
-        {getRemainingData > 10 && getRemainingData < 90 && (
-          <View
+          <LinearGradient
+            colors={['rgba(177, 211, 79, 0.7) 0%,', 'rgb(177, 211, 79) 0%,']}
+            start={{ x: 0, y: 0 }}
+            end={{ x: 0, y: 1 }}
             style={{
               width: '100%',
-              height: '1%',
-            }}>
-            <LinearGradient
-              colors={['#B1D34F', '#50AC3D']}
-              start={{x: 0, y: 0}}
-              end={{x: 1, y: 0}}
-              style={{
-                width: '100%',
-                height: '1%',
-              }}
-            />
-          </View>
+              borderRadius: 10,
+              // height:  getRemainingData < totalAllowed ?`${getRemainingData / totalAllowed}%` : '1%',
+              height: `${(getRemainingData / totalAllowed) * 100}%`,
+              zIndex: -1,
+              flexDirection: 'column-reverse',
+            }}
+          />
         )}
-        {getRemainingData > 10 && getRemainingData < 90 && (
-          <View
-            style={{
-              width: '100%',
-              height: '10%',
-            }}>
-            <LinearGradient
-              colors={['#B1D34F', '#50AC3D']}
-              start={{x: 0, y: 0}}
-              end={{x: 0, y: 1}}
-              style={{
-                width: '100%',
-                height: '10%',
-              }}
-            />
-          </View>
-        )}
-      </View> */}
+
+
+
       </View>
       <OverusageModal />
     </>

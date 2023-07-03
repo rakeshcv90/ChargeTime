@@ -48,6 +48,7 @@ import {
   setWeekGraphData,
   setYearGraphData,
 } from '../../redux/action';
+import ButtonSlider2 from '../../Components/ButtonSlider2';
 const mobileW = Math.round(Dimensions.get('screen').width);
 
 function MyTabBar({state, descriptors, navigation}) {
@@ -569,7 +570,12 @@ export default function EnergyStats() {
             <Text></Text>
           </View>
         ) : (
+          <>
           <ButtonSlider onToggle={handleToggle} />
+          {/* <ButtonSlider2  /> */}
+          </>
+
+
         )}
       </SafeAreaView>
       {isLoading && <ActivityLoader />}

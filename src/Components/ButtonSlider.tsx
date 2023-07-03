@@ -282,7 +282,7 @@ import {
 
 import LinearGradient from 'react-native-linear-gradient';
 
-import {PanGestureHandler} from 'react-native-gesture-handler';
+import { PanGestureHandler } from 'react-native-gesture-handler';
 import Animated, {
   useAnimatedGestureHandler,
   useSharedValue,
@@ -293,20 +293,20 @@ import Animated, {
   interpolateColor,
   runOnJS,
 } from 'react-native-reanimated';
-import {useState, useEffect} from 'react';
-import {DIMENSIONS} from '../constants/DIMENSIONS';
+import { useState, useEffect } from 'react';
+import { DIMENSIONS } from '../constants/DIMENSIONS';
 import COLORS from '../constants/COLORS';
 
 import axios from 'axios';
-import {API} from '../api/API';
-import {useDispatch, useSelector} from 'react-redux';
-import {setChargerStatus} from '../redux/action';
-import {navigationRef} from '../../App';
-import {DrawerActions} from '@react-navigation/native';
+import { API } from '../api/API';
+import { useDispatch, useSelector } from 'react-redux';
+import { setChargerStatus } from '../redux/action';
+import { navigationRef } from '../../App';
+import { DrawerActions } from '@react-navigation/native';
 import ActivityLoader from './ActivityLoader';
 import AnimatedLottieView from 'lottie-react-native';
 
-const BUTTON_WIDTH = 330;
+const BUTTON_WIDTH = DIMENSIONS.SCREEN_WIDTH * 88 / 100;
 const BUTTON_HEIGHT = 60;
 const BUTTON_PADDING =
   Platform.OS == 'ios' ? 10 : (DIMENSIONS.SCREEN_WIDTH * 1.5) / 100;
@@ -316,9 +316,9 @@ const H_WAVE_RANGE = SWIPEABLE_DIMENSIONS + 3 * BUTTON_PADDING;
 const H_SWIPE_RANGE = BUTTON_WIDTH - 3 * BUTTON_PADDING - SWIPEABLE_DIMENSIONS;
 const AnimatedLinearGradient = Animated.createAnimatedComponent(LinearGradient);
 
-const ButtonSlider = ({onToggle}) => {
+const ButtonSlider = ({ onToggle }) => {
   const dispatch = useDispatch();
-  const {getUserID, getChargerStatus} = useSelector((state: any) => state);
+  const { getUserID, getChargerStatus } = useSelector((state: any) => state);
   const [isLoading, setIsLoading] = useState(false);
   const [showText, setShowText] = useState(false);
 
@@ -329,7 +329,7 @@ const ButtonSlider = ({onToggle}) => {
   useEffect(() => {
     X.value =
       getChargerStatus.message == 'Online' ||
-      getChargerStatus.message == 'Charging'
+        getChargerStatus.message == 'Charging'
         ? 285
         : 0;
     setShowText(true);
@@ -418,7 +418,7 @@ const ButtonSlider = ({onToggle}) => {
           [0, BUTTON_WIDTH - SWIPEABLE_DIMENSIONS - BUTTON_PADDING],
           ['#50AC3D', '#50AC3D'],
         ),
-        transform: [{translateX: X.value}],
+        transform: [{ translateX: X.value }],
       };
     }),
     swipeText: useAnimatedStyle(() => {
@@ -456,15 +456,15 @@ const ButtonSlider = ({onToggle}) => {
             'rgba(141, 1, 249, 0.2) 10%)',
             'rgba(141, 1, 249, 0.2) 10%)',
           ]}
-          start={{x: 0, y: 0}}
-          end={{x: 1, y: 0}}
+          start={{ x: 0, y: 0 }}
+          end={{ x: 1, y: 0 }}
           style={styles.button}>
           <Animated.View style={[AnimatedStyles.swipeCont]}>
             <AnimatedLinearGradient
               style={[AnimatedStyles.colorWave, styles.colorWave]}
               colors={['#50AC3D', '#50AC3D']}
-              start={{x: 0.0, y: 0.5}}
-              end={{x: 1, y: 0.5}}
+              start={{ x: 0.0, y: 0.5 }}
+              end={{ x: 1, y: 0.5 }}
             />
             <Animated.View style={[styles.swipeable, AnimatedStyles.swipeable]}>
               <PanGestureHandler
@@ -481,8 +481,8 @@ const ButtonSlider = ({onToggle}) => {
                 <Animated.View style={[styles.swipeable]}>
                   <LinearGradient
                     colors={['#50AC3D', 'rgba(141, 1, 249, 0.5) 10%)']}
-                    start={{x: 0, y: 0}}
-                    end={{x: 1, y: 0}}
+                    start={{ x: 0, y: 0 }}
+                    end={{ x: 1, y: 0 }}
                     style={{
                       width: 50,
                       height: 50,
@@ -495,10 +495,10 @@ const ButtonSlider = ({onToggle}) => {
                       marginLeft: -5,
                     }}>
                     {getChargerStatus.message == 'Online' ||
-                    getChargerStatus.message == 'Charging' ? (
+                      getChargerStatus.message == 'Charging' ? (
                       <Image
                         source={require('../../assets/images/PowerButton.png')}
-                        style={{width: 20, height: 20}}
+                        style={{ width: 20, height: 20 }}
                       />
                     ) : (
                       <AnimatedLottieView
@@ -507,7 +507,7 @@ const ButtonSlider = ({onToggle}) => {
                         }} // Replace with your animation file
                         autoPlay
                         loop
-                        style={{width: 20, height: 20}}
+                        style={{ width: 20, height: 20 }}
                       />
                     )}
                   </LinearGradient>
@@ -518,12 +518,12 @@ const ButtonSlider = ({onToggle}) => {
             {showText ? (
               <Text style={[styles.swipeText]}>
                 {getChargerStatus.message == 'Online' ||
-                getChargerStatus.message == 'Charging'
+                  getChargerStatus.message == 'Charging'
                   ? 'Swipe left to stop charging'
                   : 'Swipe right to start charging'}
               </Text>
             ) : (
-              <Text style={[styles.swipeText]}/>
+              <Text style={[styles.swipeText]} />
             )}
           </Animated.View>
         </LinearGradient>
@@ -534,20 +534,15 @@ const ButtonSlider = ({onToggle}) => {
 
 const styles = StyleSheet.create({
   container: {
-    // alignItems: 'center',
-    // justifyContent: 'center',
     position: 'absolute',
     flex: 1,
-    bottom: 40,
+    bottom: DIMENSIONS.SCREEN_HEIGHT * 1 / 100,
     alignSelf: 'center',
     borderRadius: 50,
   },
   swipeCont: {
-    // height: BUTTON_HEIGHT,
-    // width: BUTTON_WIDTH,
+
     backgroundColor: '#fff',
-    //borderRadius: BUTTON_HEIGHT,
-    //padding: BUTTON_PADDING,
     display: 'flex',
     justifyContent: 'center',
     alignItems: 'center',
@@ -556,15 +551,11 @@ const styles = StyleSheet.create({
   colorWave: {
     position: 'absolute',
     left: 0,
-    // height: BUTTON_HEIGHT,
-    // borderRadius: BUTTON_HEIGHT,
+
   },
   swipeable: {
     position: 'absolute',
     left: BUTTON_PADDING,
-    // height: SWIPEABLE_DIMENSIONS,
-    // width: SWIPEABLE_DIMENSIONS,
-    // borderRadius: SWIPEABLE_DIMENSIONS,
     zIndex: 0,
   },
   swipeText: {
@@ -574,15 +565,12 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: '400',
     zIndex: 2,
-    //  paddingLeft:30
-    // backgroundColor:'white'
+
   },
   button: {
     width: DIMENSIONS.SCREEN_WIDTH * 0.9,
-    height: 70,
-    // backgroundColor: COLORS.GREEN,
+        height: DIMENSIONS.SCREEN_HEIGHT * 0.07,
     justifyContent: 'center',
-    //  alignItems: 'center',
     borderRadius: 35,
     borderWidth: 2,
     borderColor: COLORS.GREEN,
