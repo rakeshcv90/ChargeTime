@@ -126,12 +126,13 @@ const Subscription = () => {
     }
   };
   const getPlanCurrent = () => {
+    // setForLoading(true);
     axios
       .get(`${API}/currentplan/${getUserID}`)
       .then(res => {
         setForLoading(false);
         setModalVisible(false);
-        if (res.data.error == 'Package details not found') {
+        if (res.data.data == 'Package details not found') {
           dispatch(setPurchaseData(res.data));
           console.log("-------------------",res.data)
           setGetData(res.data);
@@ -231,8 +232,9 @@ const Subscription = () => {
             />
           </View>
         )}
+         
 
-        {getPurchaseData.error == 'Package details not found' ? (
+        {getPurchaseData.data == 'Package details not found' ? (
           <View
             style={{
               justifyContent: 'center',

@@ -16,10 +16,11 @@ import { persistor } from '../../redux/store';
 import { useSelector } from 'react-redux';
 import { API } from '../../api/API';
 import { useDispatch } from 'react-redux';
-import { setLogout, userProfileData } from '../../redux/action';
+import { setLogout, setPurchaseData, userProfileData } from '../../redux/action';
 import { getCurrentPlan } from '../../redux/action';
 import SubBoxOne from '../../Components/SubBoxOne';
 import Privacy from '../drawerPart/Privacy';
+import axios from 'axios';
 const mobileW = Math.round(Dimensions.get('screen').width);
 const mobileH = Math.round(Dimensions.get('screen').height);
 
@@ -28,18 +29,20 @@ const mobileH = Math.round(Dimensions.get('screen').height);
 
 const Account = ({ navigation }) => {
   const [selectedValue, setSelectedValue] = useState('');
-
+const [savedCard , setSavedCard] = useState([]);
   const getUserID = useSelector((state) => state.getUserID);
   const [getSubscription, setGetSubscription] = useState([]);
   const [getData, setGetData] = useState([]);
+  const [apiResponse, setApiResponse] = useState(null);
   const user_ID = getUserID;
   
   const dispatch = useDispatch();
 
   useEffect(() => {
     //  console.log('data for this User:---------', userRegisterData); 
-
+    // handleGetCard();
     userDetails();
+    getPlanCurrent();
     // userSubscription();
     //  userSubsEnergy();
   }, []);
@@ -97,25 +100,7 @@ const Account = ({ navigation }) => {
    await AsyncStorage.clear();
    await persistor.purge();
    dispatch(setLogout());
-    // navigation.popToTop();
-    // setTimeout(()=>{
-    //   navigation.navigate('AccountStack',{
-    //     routes:{name:"LoginStack"}
-    //   });
-    // },300)
-
-    // navigation.dispatch(
-    //   CommonActions.reset({
-    //     index: 0,
-    //     routes: [
-    //       {
-    //         name: 'LoginStack',
-    //         params: {screen: 'Login'},
-    //       },
-    //     ],
-    //   }),
-    // );
-navigationRef.navigate('LoginStack')
+navigationRef.navigate('Login')
   };
 
 
@@ -129,7 +114,7 @@ navigationRef.navigate('LoginStack')
         // console.log('wwwwww', result);
         //  setUserData(result);
         dispatch(userProfileData(result));
-        //  console.log(result)
+         console.log(result)
 
       } else {
         console.log("iiiiiiiiiiii")
@@ -139,51 +124,50 @@ navigationRef.navigate('LoginStack')
       console.error(error);
     }
   };
+  const getPlanCurrent = () => {
+    // setForLoading(true);
+    axios
+      .get(`${API}/currentplan/${getUserID}`)
+      .then(res => {
+        // setForLoading(false);
+        // setModalVisible(false);
+        if (res.data.data == 'Package details not found') {
+          dispatch(setPurchaseData(res.data));
+          console.log("-------------------",res.data)
+          // setGetData(res.data);
+          dispatch(setPackageStatus(false));
+        } else {
+          dispatch(setPurchaseData(res?.data));
+          // setGetData(res.data);
+        }
+      })
+      .catch(err => {
+        // setForLoading(false);
+        console.log(err);
+      });
+  };
+  const handleGetCard = async () => {
 
+    try {
+      const response = await fetch(`${API}/getcarddetails/${user_ID}`);
+      const result = await response.json();
+      // console.log("Result", result[0].sort((b, a) => a.status - b.status))
+      console.log(result);
+      if (result[0]?.length > 0) {
+        // setSavedCard(result[0].sort((b, a) => a.status - b.status))
+        setApiResponse(result[0])
+        // const statusOneObjects = result[0].filter(item => item.status === 1);
+        // dispatch(setCardDetails(statusOneObjects))
 
-  // const userSubscription = async () => {
-  //   try {
-  //     const response = await fetch(`${API}/currentplan/${user_ID}`);
-  //     const result = await response.json();
-  //     console.log("-------------",user_ID)
+      }
+      else {
 
-      
-  //     if (result.data) {
-  //       console.log("-------------",result.data)
-  //       // setGetSubscription(result[0]);
-  //       // console.log("======ytytytytyyt=====", result[0].data);
-  //      dispatch(getCurrentPlan(result.data)); 
+      }
 
-  //     } else {
-  //      dispatch(getCurrentPlan(result));
-       
-  //     }
-  //   } catch (error) {
-
-  //     console.error(error);
-  //   }
-  // }
-
-  //   const userSubsEnergy = async () => {
-
-  //   try {
-  //     const response = await fetch(`${API}/subscription/${user_ID}`);
-  //     const result = await response.json();
-  //     console.log("-----",result)
-  //     if(result !== null)
-  //     {
-  //     // console.log(result, "----------------")
-  //     // dispatch(userSubsData(result));
-  //     setGetData(result)
-  //     }else{
-  //       console.log("iiiiiiiiiiii")
-  //     } 
-  //   }catch (error) {
-  //     console.error(error);
-  //   }
-  // }
-
-
+    } catch (error) {
+      console.log("ERROR", error)
+    }
+  }
 
   const handleLinkPress = (screen) => {
     navigation.navigate(screen);
@@ -253,8 +237,9 @@ navigationRef.navigate('LoginStack')
             <Text style={styles.logoutbuttonText}>LOG OUT</Text>
           </TouchableOpacity>
         </View>
+      
       </View>
-
+    
     </SafeAreaView>
   );
 };
