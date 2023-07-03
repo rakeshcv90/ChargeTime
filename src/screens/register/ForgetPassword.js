@@ -263,7 +263,7 @@ const ForgetPassword = ({ navigation }) => {
                       : COLORS.GREEN,
                     alignItems: 'center',
                     padding: 13,
-                    borderRadius: 30,
+                    borderRadius: 10,
                     width: '100%',
                     ...Platform.select({
                       ios: {
@@ -457,7 +457,7 @@ const ForgetPassword = ({ navigation }) => {
                   backgroundColor: COLORS.GREEN,
                   alignItems: 'center',
                   padding: 13,
-                  borderRadius: 30,
+                  borderRadius: 10,
                   width: '100%',
                   ...Platform.select({
                     ios: {
@@ -584,5 +584,11 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
     marginVertical:10
+  },
+  resend_otp_text: {
+    color: COLORS.BLACK,
+    textAlign: 'center',
+    fontWeight: '400',
+    fontSize: 15,
   },
 });

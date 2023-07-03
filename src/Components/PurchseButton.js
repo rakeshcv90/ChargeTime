@@ -2,6 +2,7 @@ import {View, Text, StyleSheet, TouchableOpacity, Image, BackHandler} from 'reac
 import React, { useEffect } from 'react';
 import {Dolllar} from '../../assets/images/Dollar';
 import {navigationRef} from '../../App';
+import { DIMENSIONS } from '../constants/DIMENSIONS';
 
 const PurchseButton = ({data}) => {
   useEffect(() => {
@@ -138,7 +139,7 @@ const styles = StyleSheet.create({
     borderColor: COLORS.GREEN,
     borderRadius: 5,
     backgroundColor: COLORS.WHITE,
-    marginTop: 20,
+    marginTop: DIMENSIONS.SCREEN_HEIGHT*1.5/100,
     paddingHorizontal: 10,
     paddingVertical: 10,
     borderRadius: 16,

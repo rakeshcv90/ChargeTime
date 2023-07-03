@@ -396,8 +396,9 @@ const styles = StyleSheet.create({
     backgroundColor: COLORS.GREEN,
     alignItems: 'center',
     padding: 13,
-    borderRadius: 30,
+    borderRadius: 10,
     width: '100%',
+    
   },
   postCodeContainer: {
     backgroundColor: COLORS.CREAM,
