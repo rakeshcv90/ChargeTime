@@ -13,6 +13,7 @@ import {SafeAreaView} from 'react-native-safe-area-context';
 
 import {createMaterialTopTabNavigator} from '@react-navigation/material-top-tabs';
 import TabOne from './TabOne';
+import AnimatedLottieView from 'lottie-react-native';
 
 import COLORS from '../../constants/COLORS';
 import DrawerOpen from '../../Components/DrawerOpen';

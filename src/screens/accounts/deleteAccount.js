@@ -11,6 +11,8 @@ import { API } from '../../api/API';
 import { navigationRef } from '../../../App';
 import { ms } from 'react-native-size-matters';
 import { PLATFORM_IOS } from '../../constants/DIMENSIONS';
+import { resetApp } from '../../redux/action';
+import { useDispatch } from 'react-redux';
 const mobileW = Math.round(Dimensions.get('screen').width);
 const mobileH = Math.round(Dimensions.get('screen').height);
 
@@ -24,6 +26,7 @@ const DeleteAccountScreen = () => {
   const [hidePassword, setHidePassword] = useState(true);
   const [showNew, setShowNew] = useState(false);
 
+  const dispatch = useDispatch();
   const user_ID = getUserID;
  
 
@@ -48,9 +51,11 @@ const DeleteAccountScreen = () => {
         pwa_password: password,
       }),
     }).then(res => res.json())
-      .then(data => {
+      .then(async data => {
         console.log(data, 'fff');
         if (data.message === "Account deleted successfully") {
+            dispatch(resetApp());
+            
           PLATFORM_IOS ?
             Toast.show({
               type: 'success',
@@ -58,7 +63,7 @@ const DeleteAccountScreen = () => {
 
             }) : ToastAndroid.show('Account deleted successfully', ToastAndroid.SHORT);
 
-          navigationRef.navigate('Login');
+          navigationRef.navigate('LoginStack');
 
         } else {
 

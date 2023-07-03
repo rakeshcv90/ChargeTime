@@ -101,4 +101,11 @@ export const setPlanStatus= (data) => {
 export const setOverUsage = (data) => {
   return {type:types.GET_OVERUSAGE,payload:data}
 } 
-
+export const setLogout = () => {
+  return {type: types.LOG_OUT};
+};
+export const resetApp = () => {
+  return {
+    type: types.RESET_APP
+  };
+};

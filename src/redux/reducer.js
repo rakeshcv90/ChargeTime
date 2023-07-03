@@ -4,7 +4,7 @@ import types from './constants';
 const initialState = {
     userRegisterData: [],
     isAuthorized: false,
-
+    logout: null,
     getCompleteData:[],
     getPlanPurchage:[],
     getBasePackage:[],
@@ -31,7 +31,8 @@ const initialState = {
     getQuarterData: [],
     getYearData: [],
     getPlanStatus: [],
-    overusage: false
+    overusage: false,
+    restApp: null,
   };
   
   const rootReducer = (state = initialState, action) => {
@@ -100,8 +101,10 @@ const initialState = {
             return { ...state, getCurrentPlan: action.payload }
         case types.GET_PLAN_STATUS:
             return { ...state, getPlanStatus: action.payload }
-  
-
+        case types.LOG_OUT:
+            return {...initialState};
+        case types.RESET_APP:
+            return {...initialState};
       default:
         return state;
     }
