@@ -142,7 +142,7 @@ const ResetPassword = props => {
                       placeholder="Enter your new password..."
                       bW={1}
                       textWidth={'40%'}
-                      placeholderTextColor={COLORS.BLACK}
+                      placeholderTextColor={COLORS.HALFBLACK}
                       autoCapitalize="none"
                     />
                     <Input
@@ -161,7 +161,7 @@ const ResetPassword = props => {
                       placeholder="Re-enter your new password.."
                       bW={1}
                       textWidth={'50%'}
-                      placeholderTextColor={COLORS.BLACK}
+                      placeholderTextColor={COLORS.HALFBLACK}
                       autoCapitalize="none"
                     />
                     {values.password !== values.password_confirmation &&
@@ -186,7 +186,7 @@ const ResetPassword = props => {
                       backgroundColor: COLORS.GREEN,
                       alignItems: 'center',
                       padding: 13,
-                      borderRadius: 30,
+                      borderRadius: 10,
 
                       width: '100%',
                       ...Platform.select({

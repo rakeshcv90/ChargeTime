@@ -24,6 +24,7 @@ export default function TabOne(props) {
           <InstallationBase data={props?.item ||props?.route?.params?.item  } />
           <BoxTwo data={props?.item ||props?.route?.params?.item  } />
           <PurchseButton data={props?.item ||props?.route?.params?.item  } />
+         
         </View>
     //   </ScrollView>
     // </SafeAreaView>

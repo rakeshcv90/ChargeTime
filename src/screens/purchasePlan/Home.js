@@ -141,7 +141,7 @@ export default function Home(route) {
     }, []);
 
     return (
-      <View style={[styles.tabbar_part, styles.shadowProp]}>
+      <View style={[styles.tabbar_part]}>
         {state.routes.map((route, index) => {
           const {options} = descriptors[route.key];
           const label =
@@ -170,20 +170,21 @@ export default function Home(route) {
               key={index}
               onPress={onPress}
               style={{
-                flex: 1,
+               // flex: 1,
+             
                 backgroundColor: isFocused ? '#B1D34F' : '#EEEEEE',
-                paddingHorizontal: 12,
+                paddingHorizontal: 10,
                 paddingVertical: 13,
-                // borderRadius:10,
+                 borderRadius:10,
                 borderRadius: isFocused ? 10 : 0,
-                // shadowColor: 'rgba(0, 0, 0, 1)',
-                // shadowOffset: {
-                //   width: isFocused ? 6 : 0,
-                //   height: isFocused ? 4 : 0,
-                // },
-                // shadowOpacity: isFocused ? 1 : 0,
-                // shadowRadius: isFocused ? 4 : 0,
-                // elevation: Platform.OS === 'android' && isFocused ? 8 : 0,
+                shadowColor: 'rgba(0, 0, 0, 1)',
+                shadowOffset: {
+                  width: isFocused ? 6 : 0,
+                  height: isFocused ? 4 : 0,
+                },
+                shadowOpacity: isFocused ? 1 : 0,
+                shadowRadius: isFocused ? 4 : 0,
+                elevation: Platform.OS === 'android' && isFocused ? 8 : 0,
               }}>
               <Text
                 style={{

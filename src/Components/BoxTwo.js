@@ -155,7 +155,7 @@ const styles = StyleSheet.create({
   mainDiv_installation1: {
     overflow: 'hidden',
     borderRadius: 10,
-    marginTop: Platform.OS === "ios" ? 0 : 30,
+    marginTop: Platform.OS === "ios" ? 0 : DIMENSIONS.SCREEN_HEIGHT*3/100,
     marginBottom: Platform.OS === "ios" ? 0 : 15,
 
     shadowColor: '#000000',

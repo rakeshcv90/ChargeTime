@@ -232,7 +232,7 @@ const Subscription = () => {
           </View>
         )}
 
-        {getPurchaseData.error == 'Package details not found' ? (
+        {getPurchaseData.data == 'Package details not found' ? (
           <View
             style={{
               justifyContent: 'center',
