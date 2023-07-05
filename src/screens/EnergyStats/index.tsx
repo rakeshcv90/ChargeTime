@@ -12,6 +12,7 @@ import {
   BackHandler,
   Alert,
   Platform,
+  ToastAndroid,
 } from 'react-native';
 import {useDispatch, useSelector} from 'react-redux';
 import {SafeAreaView} from 'react-native-safe-area-context';
@@ -24,6 +25,8 @@ import Quarter from './Quarter';
 import Year from './Year';
 import {DIMENSIONS, PLATFORM_IOS} from '../../constants/DIMENSIONS';
 import ButtonSlider from '../../Components/ButtonSlider';
+import ButtonSlide from '../../Components/ButtonSlide';
+
 import {NoCharge} from '../../../assets/images/NoCharge';
 import {OnlineCharge} from '../../../assets/images/OnlineCharge';
 import Charging from '../../Components/Charging';
@@ -49,6 +52,7 @@ import {
   setYearGraphData,
 } from '../../redux/action';
 import ButtonSlider2 from '../../Components/ButtonSlider2';
+import Toast from 'react-native-toast-message';
 const mobileW = Math.round(Dimensions.get('screen').width);
 
 function MyTabBar({state, descriptors, navigation}) {
@@ -180,6 +184,15 @@ export default function EnergyStats() {
           // }, 10000);
         } else {
           setIsLoading(false);
+          PLATFORM_IOS
+          ? Toast.show({
+            type: 'success',
+            text1: "TimeOut Please Try Again !",
+          })
+          : ToastAndroid.show(
+            "TimeOut Please Try Again !",
+            ToastAndroid.SHORT,
+          );
           // getPlanCurrent(res.data?.user_id);
         }
       })
@@ -551,12 +564,14 @@ export default function EnergyStats() {
             }}></View>
         ) : (
           <Tab.Navigator
+          swipeEnabled={false}
             screenOptions={{
               tabBarLabelStyle: {
                 fontSize: 16,
                 fontWeight: 'bold',
               },
               tabBarScrollEnabled: true,
+              
             }}
             tabBar={props => <MyTabBar {...props} />}>
             <Tab.Screen name="Day" component={Day} />
@@ -573,8 +588,9 @@ export default function EnergyStats() {
           </View>
         ) : (
           <>
-          <ButtonSlider onToggle={handleToggle} />
-          {/* <ButtonSlider2  /> */}
+          {/* <ButtonSlider onToggle={handleToggle} /> */}
+          <ButtonSlider2  />
+          {/* < ButtonSlide /> */}
           </>
 
 

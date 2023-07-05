@@ -22,7 +22,7 @@ const PriceValidity = ({data}) => {
       </View>
       <Image
           // style={styles.img_width}
-          source={require('../../assets/images/straight.png')}
+          source={require('../../assets/images/straight2.png')}
           resizeMode='stretch' style={{alignSelf: 'center', width: mobileW,}}
         />
         <View style={styles.location_div}>

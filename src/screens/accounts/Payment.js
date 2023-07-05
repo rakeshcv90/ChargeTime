@@ -65,23 +65,18 @@ const validationSchema = Yup.object().shape({
   cvv: Yup.string().required('Cvv is required')
     .matches(/^[0-9]{3}$/, 'CVV must be 3 digits'),
 });
-export default function PaymentGateWay({ navigation }) {
+export default function PaymentGateWay({ navigation, route }) {
+  console.log("Route...",route.params)
+  const {handleAllGetCard, allSavedCard} =route.params;
   const { getUserID } = useSelector(
     state => state,
   );
-  useEffect(() => {
-
-    // console.log("Credit card...",creditCardType(creditCard))
-    getCardType(cardDetails?.card_number ?? "")
-    handleGetCard()
-  }, [creditCard, cardDetails, cardId])
 
   const [pagingEnabled, setPagingEnabled] = useState(true);
   const [getCard_Number, setGetCard_Number] = useState('');
   const [creditCard, setCreditCard] = useState('');
-  const [error, setError] = useState('');
-  const [error1, setError1] = useState('');
-  const [cardID, setCardID] = useState('');
+  const [loader, setLoader] = useState(false);
+
   const [cardDetails, setCardDetails1] = useState({
     cardHolderName: '',
     card_number: '',
@@ -90,8 +85,9 @@ export default function PaymentGateWay({ navigation }) {
     // card_exp_year:'',
   });
   const [cardId, setCardId] = useState('');
-  const [savedCard, setSavedCard] = useState('');
+  const [savedCard, setSavedCard] = useState(allSavedCard);
   const [currentCard, setCurrentCard] = useState('');
+  const [focusIndex, setFocusedIndex] = useState(0);
 
   const initialValues = {
     cardHolderName: '',
@@ -121,28 +117,24 @@ export default function PaymentGateWay({ navigation }) {
     }
   }
 
-
   useEffect(() => {
 
     // console.log("Credit card...",creditCardType(creditCard))
     getCardType(cardDetails?.card_number ?? "")
-    handleGetCard()
+    // handleGetCard()
   }, [creditCard, cardDetails, cardId])
 
+
+
+
   const handleAddCard = async (values, cb) => {
-    
+    setLoader(true)
     let exp_month = values?.validTill?.split('/')[0];
     let exp_year = values?.validTill?.split('/')[1];
     // let customer_number = values?.cardNumber.split(" ").join("");
-    let cust_number =  values?.cardNumber.replace(/\s/g, '').slice(0, 16);
-    
+    let cust_number = values?.cardNumber.replace(/\s/g, '').slice(0, 16);
+
     setGetCard_Number(values?.cardNumber)
-    // console.log(" exp_month ",  exp_month );
-    // console.log("exp_year",exp_year);
-    // console.log("cust_number",cust_number)
-    // console.log("user_id",getUserID);
-    // console.log("card_name",values?.cardHolderName)
-    // console.log("card_cvv",values?.cvv)
     try {
 
       const response = await axios.post(`${API}/addcarddetail`, {
@@ -156,10 +148,11 @@ export default function PaymentGateWay({ navigation }) {
       });
       // console.log("------", response);
       if (response.data.message) {
-
+      
         cb();
-
-        console.log("card add success")
+        handleGetCard();
+        //setFocusedIndex(focusIndex+1)
+        setLoader(false)
         setCardDetails1({
           cardHolderName: '',
           card_number: '',
@@ -178,6 +171,7 @@ export default function PaymentGateWay({ navigation }) {
           );
       }
       else if (response.data.error) {
+        setLoader(false)
         cb();
         PLATFORM_IOS
           ? Toast.show({
@@ -196,18 +190,18 @@ export default function PaymentGateWay({ navigation }) {
   };
 
   const handleGetCard = async () => {
-
     try {
       const response = await fetch(`${API}/getcarddetails/${user_ID}`);
       const result = await response.json();
       // console.log("Result", result[0].sort((b, a) => a.status - b.status))
-      // console.log(result);
+      console.log(result);
       if (result[0]?.length > 0) {
         setSavedCard(result[0].sort((b, a) => a.status - b.status))
-        // console.log(result[0])
+        //  console.log("after card  delete",result[0])
         const statusOneObjects = result[0].filter(item => item.status === 1);
+        // console.log(statusOneObjects)
         dispatch(setCardDetails(statusOneObjects))
-        
+
       }
       else {
       }
@@ -233,15 +227,20 @@ export default function PaymentGateWay({ navigation }) {
   }
 
   const handleDeleteCard = async (value) => {
+    setLoader(true)
     try {
       const response = await fetch(`${API}/deletecard/${value}`, {
         method: 'DELETE',
       });
       const result = await response.json();
       if (result.success === "Your card is deleted") {
-        //setSavedCard('')
+        setLoader(false)
+        setSavedCard((card) => {
+          return card.filter((item) => item.id !== value)
+      });
+        setFocusedIndex(focusIndex == 0? 0: focusIndex-1)
         handleGetCard();
-        
+        setLoader(true)
         PLATFORM_IOS
           ? Toast.show({
             type: 'success',
@@ -253,7 +252,7 @@ export default function PaymentGateWay({ navigation }) {
           );
       } else {
         // console.log("Error deleting card");
-
+        setLoader(false)
       }
     } catch (error) {
       console.error("Error deleting card", error);
@@ -262,7 +261,7 @@ export default function PaymentGateWay({ navigation }) {
 
 
   const handleMakeDefaultCard = async (values) => {
-
+    setLoader(true)
     try {
       const response = await fetch(`${API}/defaultcard`, {
         method: 'POST',
@@ -276,7 +275,9 @@ export default function PaymentGateWay({ navigation }) {
       });
       const result = await response.json();
       if (result.msg === "sucessfull") {
+        //handleGetCard();
         handleGetCard();
+        setLoader(false)
         PLATFORM_IOS
           ? Toast.show({
             type: 'success',
@@ -287,7 +288,7 @@ export default function PaymentGateWay({ navigation }) {
             ToastAndroid.SHORT,
           );
       } else {
-        // console.log("Error deleting card");
+        setLoader(false)
         PLATFORM_IOS
           ? Toast.show({
             type: 'success',
@@ -309,11 +310,10 @@ export default function PaymentGateWay({ navigation }) {
 
   return (
     <SafeAreaView style={{ backgroundColor: COLORS.CREAM, flex: 1 }}>
-
-
       <Header headerName="Payment Methods" editShow={false} />
       {Platform.OS == 'android' ? <HorizontalLine style={styles.line} /> : <View>
 
+      <ActivityLoader visible={loader} />
 
 
 
@@ -341,84 +341,84 @@ export default function PaymentGateWay({ navigation }) {
 
                 {savedCard && savedCard.length > 0 && !(cardDetails?.cardHolderName || cardDetails?.card_cvv || cardDetails?.card_number || cardDetails?.validTill.split('/')[0]) ?
                   <>
-                  <Carousel
-                    //ref={(c) => { this._carousel = c; }}
-                    style={{ flexGrow: 0 }}
-                    width={400}
-                    height={mvs(200)}
-                    data={savedCard}
-
-                    renderItem={({ item }) => {
-                      return (
-                        <View style={{}}>
-                          <ImageBackground
-                            source={cardTypeImage}
-                            style={{
-                              width: DIMENSIONS.SCREEN_WIDTH * 0.9,
-                              resizeMode: 'contain',
-                              height: mvs(190),
-                              // height:200,
-
-
-                            }}
-                          >
-                            <View style={styles.cardNumber_position}>
-
-                              <Text
-                                style={{ color: '#fff', fontWeight: '600', fontSize: ms(20) }}>
-                                {String(item.card_number).replace(/^(\d{12})(\d{4})$/, 'xxxx xxxx xxxx $2')}
-                              </Text>
-                              <View style={styles.text_div}>
-                                <View style={{ gap: ms(5), width: ms(100) }}>
-                                  <Text style={{ color: 'gray', fontWeight: '600', fontSize: 8 }}>Card Holder</Text>
-                                  <Text
-                                    style={{ color: '#fff', fontWeight: '600', fontSize: 13 }}>
-                                    {String(item.cust_name)}
-                                  </Text>
-                                </View>
-                                <View style={{ gap: ms(5) }}>
-                                  <Text style={{ fontWeight: '600', fontSize: 8, color: 'gray' }}>Expires</Text>
-                                  <Text
-                                    style={{ color: '#fff', fontWeight: '600', fontSize: 13 }}>
-                                    {String(item.card_exp_month + '/' + item.card_exp_year)}
-                                  </Text>
-                                </View>
-                                <View style={{ gap: 5 }}>
-                                  <Text style={{ fontWeight: '600', fontSize: 8, color: 'gray' }}>CVV</Text>
-                                  <Text
-                                    style={{ color: '#fff', fontWeight: '600', fontSize: 13 }}>
-                                    {/* {String(item.card_cvc)} */}
-                                    {item.card_cvc ? '*'.repeat(String(item.card_cvc).length) : null}
+                    <Carousel
+                      //ref={(c) => { this._carousel = c; }}
+                      style={{ flexGrow: 0 }}
+                      width={400}
+                      height={mvs(200)}
+                      data={savedCard}
+                      // defaultIndex={focusIndex >= 0 ? focusIndex :0}
+                      renderItem={({ item,index }) => {
+                        return (
+                          <View style={{}}>
+                            <ImageBackground
+                              source={getCardType(item.card_number)}
+                              style={{
+                                width: DIMENSIONS.SCREEN_WIDTH * 0.9,
+                                resizeMode: 'contain',
+                                height: mvs(190),
+                                // height:200,
 
 
-                                  </Text>
+                              }}
+                            >
+                              <View style={styles.cardNumber_position}>
+
+                                <Text
+                                  style={{ color: '#fff', fontWeight: '600', fontSize: ms(20) }}>
+                                  {String(item.card_number).replace(/^(\d{12})(\d{4})$/, 'xxxx xxxx xxxx $2')}
+                                </Text>
+                                <View style={styles.text_div}>
+                                  <View style={{ gap: ms(5), width: ms(100) }}>
+                                    <Text style={{ color: 'gray', fontWeight: '600', fontSize: 8 }}>Card Holder</Text>
+                                    <Text
+                                      style={{ color: '#fff', fontWeight: '600', fontSize: 13 }}>
+                                      {String(item.cust_name)}
+                                    </Text>
+                                  </View>
+                                  <View style={{ gap: ms(5) }}>
+                                    <Text style={{ fontWeight: '600', fontSize: 8, color: 'gray' }}>Expires</Text>
+                                    <Text
+                                      style={{ color: '#fff', fontWeight: '600', fontSize: 13 }}>
+                                      {String(item.card_exp_month + '/' + item.card_exp_year)}
+                                    </Text>
+                                  </View>
+                                  <View style={{ gap: 5 }}>
+                                    <Text style={{ fontWeight: '600', fontSize: 8, color: 'gray' }}>CVV</Text>
+                                    <Text
+                                      style={{ color: '#fff', fontWeight: '600', fontSize: 13 }}>
+                                      {/* {String(item.card_cvc)} */}
+                                      {item.card_cvc ? '*'.repeat(String(item.card_cvc).length) : null}
+
+
+                                    </Text>
+                                  </View>
                                 </View>
                               </View>
-                            </View>
-                          </ImageBackground>
-                          
-                        </View>
-                      )
-                    }}
-                    // sliderWidth={400}
-                    // itemWidth={400}
-                    loop={false}
-                    onSnapToItem={(index) => {
-                      setCurrentCard(savedCard[index])
-                    }}
-                  />
-                  
-                <View style={styles.dotsContainer}>
-                <FlatList
-                  data={savedCard}
-                  renderItem={({ item,index }) => {
-                    return  <View style={[styles.dot, (item.id === currentCard.id) && styles.activeDot]} />
-                  }}
-                  horizontal
-                 
-                  showsHorizontalScrollIndicator={false}
-                />
-                </View>
+                            </ImageBackground>
+
+                          </View>
+                        )
+                      }}
+                      // sliderWidth={400}
+                      // itemWidth={400}
+                      loop={false}
+                      onSnapToItem={(index) => {
+                        setCurrentCard(savedCard[index])
+                        setFocusedIndex(index)
+                      }}
+                    />
+
+                    <View style={styles.dotsContainer}>
+                      {savedCard && savedCard.length > 0 && savedCard.map((item, index) =>{
+                      if(index ===0 && !currentCard){
+                        return <View style={[styles.dot, styles.activeDot]} />
+                      }else {
+                       return <View style={[styles.dot, (index === focusIndex ) && styles.activeDot]} />
+                      }
+                     } )}
+
+                    </View>
                   </> : <View>
                     <Image
                       source={cardTypeImage}
@@ -464,7 +464,7 @@ export default function PaymentGateWay({ navigation }) {
                       </View>
                     </View>
                   </View>}
-                  
+
                 {/* <View
                   style={{
                     flexDirection: 'row',
@@ -488,46 +488,63 @@ export default function PaymentGateWay({ navigation }) {
                   }}>
                   <TouchableOpacity
                     onPress={() => {
-                      if (savedCard && savedCard[0].status === 1 && (!currentCard || currentCard.status === 1)) {
+                      if(savedCard && savedCard[0]!=undefined){
+                        if (savedCard && savedCard[0].status === 1 && (!currentCard || currentCard.status === 1)) {
 
-                        // console.log("------",savedCard[0])
-                        // navigationRef.navigate('PaymentGateWay');
-                      } else if (savedCard && savedCard.length === 1 && savedCard[0].status === 0) {
-                        console.log("In else if------", savedCard[0].id)
-                        handleMakeDefaultCard(savedCard[0].id)
-                      }
-                      else if (savedCard && savedCard.length > 1 && (currentCard.status === 0)) {
-                        console.log("In else------", currentCard.id)
-                        handleMakeDefaultCard(currentCard.id)
-
-                      }
-                      else {
+                          // console.log("------",savedCard[0])
+                          // navigationRef.navigate('PaymentGateWay');
+                        } else if (savedCard && savedCard.length === 1 && savedCard[0].status === 0) {
+                          console.log("In else if------", savedCard[0].id)
+                          handleMakeDefaultCard(savedCard[0].id)
+                        }
+                        else if (savedCard && savedCard.length > 1 && (currentCard.status === 0)) {
+                          console.log("In else------", currentCard.id)
+                          handleMakeDefaultCard(currentCard.id)
+  
+                        }
+                        // else {
+                        //   PLATFORM_IOS
+                        //     ? Toast.show({
+                        //       type: 'success',
+                        //       text1: "NO CARD ADDED !",
+                        //     })
+                        //     : ToastAndroid.show(
+                        //       "NO CARD ADDED !",
+                        //       ToastAndroid.SHORT,
+                        //     );
+                        // }
+                      }else{
                         PLATFORM_IOS
-                          ? Toast.show({
-                            type: 'success',
-                            text1: "NO CARD ADDED !",
-                          })
-                          : ToastAndroid.show(
-                            "NO CARD ADDED !",
-                            ToastAndroid.SHORT,
-                          );
+                            ? Toast.show({
+                              type: 'success',
+                              text1: "NO CARD ADDED !",
+                            })
+                            : ToastAndroid.show(
+                              "NO CARD ADDED !",
+                              ToastAndroid.SHORT,
+                            );
                       }
+                     
                     }}
-                    style={savedCard && savedCard[0].status === 1 && (!currentCard || currentCard.status === 1) ? styles.default : {
+                    style={savedCard && savedCard[0]!=undefined ? savedCard && savedCard[0].status === 1 && (!currentCard || currentCard.status === 1) ? styles.default : {
                       ...styles.makeDefault,
-                      backgroundColor: (savedCard.length > 0 && savedCard[0].status === 0) || (currentCard.length >0 || currentCard.status === 0 ) ? COLORS.GREEN : '#CCCCCC'
-                    }}
-                    disabled={savedCard && savedCard[0].status === 1 && (!currentCard || currentCard.status === 1) ? true : false}>
+                      backgroundColor: (savedCard.length > 0 && savedCard[0].status === 0) || (currentCard.length > 0 || currentCard.status === 0) ? COLORS.GREEN : '#CCCCCC'
+                    }
+                  :{
+                    ...styles.makeDefault,
+                    backgroundColor: (savedCard.length > 0 && savedCard[0].status === 0) || (currentCard.length > 0 || currentCard.status === 0) ? COLORS.GREEN : '#CCCCCC'
+                  }}
+                    disabled={savedCard[0]!=undefined ? savedCard && savedCard[0].status === 1 && (!currentCard || currentCard.status === 1) ? true : false:false}>
                     <Text
-                      style={savedCard && savedCard[0].status === 1 && (!currentCard || currentCard.status === 1) ? styles.makeDefaultText : styles.defaultText}>
+                      style={savedCard[0]!=undefined ? savedCard && savedCard[0].status === 1 && (!currentCard || currentCard.status === 1) ? styles.makeDefaultText : styles.defaultText:styles.defaultText}>
 
-                      {savedCard && savedCard[0].status === 1 && (!currentCard || currentCard.status === 1) ? "Current Payment Method" : "Make Default"}
+                      {savedCard[0]!=undefined ? savedCard && savedCard[0].status === 1 && (!currentCard || currentCard.status === 1) ? "Current Payment Method" : "Make Default": "Make Default"}
 
                     </Text>
                   </TouchableOpacity>
                   <TouchableOpacity
                     onPress={() => {
-                      console.log(currentCard);
+                      // console.log(currentCard);
                       if (currentCard.status === 1 || currentCard.status === 0) {
                         // setCardID(currentCard.id)
                         handleDeleteCard(currentCard.id)
@@ -759,9 +776,9 @@ export default function PaymentGateWay({ navigation }) {
 const styles = StyleSheet.create({
   dotsContainer: {
     flexDirection: 'row',
-    marginHorizontal:mobileW * 0.37 ,
+    marginHorizontal: mobileW * 0.37,
     justifyContent: 'center',
-    alignItems:'center',
+    alignItems: 'center',
     marginTop: 30,
   },
   activeDot: {
@@ -773,7 +790,7 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     backgroundColor: '#CCCCCC',
     // justifyContent: 'center',
-    alignItems:'center',
+    alignItems: 'center',
     marginHorizontal: 3,
 
   },

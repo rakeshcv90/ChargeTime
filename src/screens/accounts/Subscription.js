@@ -134,7 +134,7 @@ const Subscription = () => {
         setModalVisible(false);
         if (res.data.data == 'Package details not found') {
           dispatch(setPurchaseData(res.data));
-          console.log("-------------------",res.data)
+          // console.log("-------------------",res.data)
           setGetData(res.data);
           dispatch(setPackageStatus(false));
         } else {
@@ -279,7 +279,7 @@ const Subscription = () => {
               }}>
               No (Active / Scheduled ) Package Available.
             </Text>
-            <Text
+            {/* <Text
               style={{
                 fontSize: 14,
                 // fontWeight: '500',
@@ -287,11 +287,11 @@ const Subscription = () => {
                 marginVertical: 5,
               }}>
               Please Purchase Package from Home.
-            </Text>
-            {/* <TouchableOpacity
-                onPress={() => navigationRef.navigate('Home')}
+            </Text> */}
+            <TouchableOpacity
+                onPress={() => navigationRef.navigate('HomeStack')}
                 style={{
-                  width: mobileW * 0.3,
+                  width: mobileW * 0.45,
                   borderRadius: 10,
                   backgroundColor: COLORS.WHITE,
                   padding: 10,
@@ -320,7 +320,7 @@ const Subscription = () => {
                   }}>
                 Purchase Plan
                 </Text>
-              </TouchableOpacity> */}
+              </TouchableOpacity>
           </View>
         ) : (
           <ScrollView showsVerticalScrollIndicator={false}>
@@ -329,9 +329,11 @@ const Subscription = () => {
               <SubBoxTwo />
               <Remaining data={'energy'} />
             </View>
-            {/* <View style={styles.mainDiv_installation}>
-              <WaveAnimation />
-            </View> */}
+            {/* <View style={styles.mainDiv_installation}> */}
+              {/* <WaveAnimation /> */}
+
+              {/* < WaveLinearGradient /> */}
+            {/* </View> */}
             <View style={styles.managing_width}>
               <PriceBox data={getPurchaseData.data} />
             </View>

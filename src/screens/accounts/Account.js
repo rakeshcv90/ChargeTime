@@ -16,11 +16,13 @@ import { persistor } from '../../redux/store';
 import { useSelector } from 'react-redux';
 import { API } from '../../api/API';
 import { useDispatch } from 'react-redux';
-import { setLogout, setPurchaseData, userProfileData } from '../../redux/action';
+import { getAllCard, setLogout, setPurchaseData, userProfileData } from '../../redux/action';
 import { getCurrentPlan } from '../../redux/action';
 import SubBoxOne from '../../Components/SubBoxOne';
 import Privacy from '../drawerPart/Privacy';
 import axios from 'axios';
+import { setCardDetails } from '../../redux/action';
+
 const mobileW = Math.round(Dimensions.get('screen').width);
 const mobileH = Math.round(Dimensions.get('screen').height);
 
@@ -29,7 +31,7 @@ const mobileH = Math.round(Dimensions.get('screen').height);
 
 const Account = ({ navigation }) => {
   const [selectedValue, setSelectedValue] = useState('');
-const [savedCard , setSavedCard] = useState([]);
+const [allSavedCard , setSavedCard] = useState([]);
   const getUserID = useSelector((state) => state.getUserID);
   const [getSubscription, setGetSubscription] = useState([]);
   const [getData, setGetData] = useState([]);
@@ -39,14 +41,12 @@ const [savedCard , setSavedCard] = useState([]);
   const dispatch = useDispatch();
 
   useEffect(() => {
-    //  console.log('data for this User:---------', userRegisterData); 
-    // handleGetCard();
-    userDetails();
-    getPlanCurrent();
-    // userSubscription();
-    //  userSubsEnergy();
-  }, []);
-  useEffect(() => {
+     //  console.log('data for this User:---------', userRegisterData); 
+     handleAllGetCard();
+     userDetails();
+     getPlanCurrent();
+     // userSubscription();
+     //  userSubsEnergy();
     const backHandler = BackHandler.addEventListener(
       'hardwareBackPress',
       handleBackButton
@@ -100,7 +100,7 @@ const [savedCard , setSavedCard] = useState([]);
    await AsyncStorage.clear();
    await persistor.purge();
    dispatch(setLogout());
-navigationRef.navigate('Login')
+  navigationRef.navigate('LoginStack')
   };
 
 
@@ -132,10 +132,10 @@ navigationRef.navigate('Login')
         // setForLoading(false);
         // setModalVisible(false);
         if (res.data.data == 'Package details not found') {
-          dispatch(setPurchaseData(res.data));
+          // dispatch(setPurchaseData(res.data));
           console.log("-------------------",res.data)
           // setGetData(res.data);
-          dispatch(setPackageStatus(false));
+          // dispatch(setPackageStatus(false));
         } else {
           dispatch(setPurchaseData(res?.data));
           // setGetData(res.data);
@@ -146,21 +146,22 @@ navigationRef.navigate('Login')
         console.log(err);
       });
   };
-  const handleGetCard = async () => {
+  const handleAllGetCard = async () => {
 
     try {
       const response = await fetch(`${API}/getcarddetails/${user_ID}`);
       const result = await response.json();
       // console.log("Result", result[0].sort((b, a) => a.status - b.status))
-      console.log(result);
+      console.log("handle all card...",result);
       if (result[0]?.length > 0) {
-        // setSavedCard(result[0].sort((b, a) => a.status - b.status))
-        setApiResponse(result[0])
-        // const statusOneObjects = result[0].filter(item => item.status === 1);
-        // dispatch(setCardDetails(statusOneObjects))
+
+        setSavedCard(result[0].sort((b, a) => a.status - b.status))
+        const statusOneObjects = result[0].filter(item => item.status === 1);
+       dispatch(setCardDetails(statusOneObjects));
 
       }
       else {
+        setSavedCard([])
 
       }
 
@@ -170,7 +171,7 @@ navigationRef.navigate('Login')
   }
 
   const handleLinkPress = (screen) => {
-    navigation.navigate(screen);
+    navigation.navigate(screen,{allSavedCard, handleAllGetCard});
   };
 
   return (

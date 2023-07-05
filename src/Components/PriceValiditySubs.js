@@ -6,7 +6,7 @@ import COLORS from '../constants/COLORS';
 import { useSelector } from 'react-redux';
 import { ms } from 'react-native-size-matters';
 
-// const mobileW = Math.round(Dimensions.get('screen').width*2);
+const mobileW = Math.round(Dimensions.get('screen').width);
 
 const PriceValidity = () => {
   const getCurrentPlan = useSelector((state) => state.getCurrentPlan)
@@ -26,19 +26,20 @@ const PriceValidity = () => {
         <Text style={styles.force_base_b}>Package Name :</Text>
         <Text style={styles.force_base}>{getCurrentPlan.energy_plan}</Text>
       </View>
-      <Image
+      {/* <Image
         // style={styles.img_width}
         source={require('../../assets/images/straight2.png')}
-        resizeMode='stretch' style={{ alignSelf: 'center', width: ms(500), }}
-      />
+        resizeMode='stretch' style={{ alignSelf: 'center', width: mobileW, }}
+      /> */}
+      
       <View style={styles.location_div}>
         <Text style={styles.force_base_b}>Price :</Text>
-        <Text style={styles.force_base}>${getCurrentPlan.energy_price}</Text>
+        <Text style={styles.force_base}> $ {getCurrentPlan.energy_price}</Text>
       </View>
       <Image
         // style={styles.img_width}
         source={require('../../assets/images/straight2.png')}
-        resizeMode='stretch' style={{ alignSelf: 'center', width: ms(500), }}
+        resizeMode='stretch' style={{ alignSelf: 'center', width: mobileW, }}
       />
       <View style={styles.location_div}>
         <Text style={styles.force_base_b}>Valid Till :</Text>

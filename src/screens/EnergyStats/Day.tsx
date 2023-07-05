@@ -236,7 +236,7 @@ const Day = (props: any) => {
                     fontSize: 14,
                     marginVertical: 10,
                   }}>
-                  No Graph Data available
+                  No Graph Data Available
                 </Text>
               
             ) }

@@ -4,7 +4,7 @@ import types from './constants';
 const initialState = {
     userRegisterData: [],
     isAuthorized: false,
-    logout: null,
+    logout: '',
     getCompleteData:[],
     getPlanPurchage:[],
     getBasePackage:[],
@@ -32,7 +32,7 @@ const initialState = {
     getYearData: [],
     getPlanStatus: [],
     overusage: false,
-    restApp: null,
+    resetApp: null,
   };
   
   const rootReducer = (state = initialState, action) => {

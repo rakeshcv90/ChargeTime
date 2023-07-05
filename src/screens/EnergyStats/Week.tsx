@@ -74,7 +74,7 @@ export default function Week() {
                   fontSize: 14,
                   marginVertical: 10,
                 }}>
-                No Graph Data available
+                No Graph Data Available
               </Text>
             )}
             <BoxTwo data={getBoxTwoDataForDashboard[0]} />

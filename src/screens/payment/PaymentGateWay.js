@@ -83,6 +83,8 @@ export default function PaymentGateWay({ navigation, route }) {
   const dispatch = useDispatch();
 
   const getCardDetails = useSelector(state => state.getCardDetails);
+
+  useEffect
   const [cardId, setCardId] = useState('');
   const [cardDetails, setCardDetails1] = useState({
     cardHolderName: getCardDetails[0]?.cust_name,
@@ -142,7 +144,7 @@ export default function PaymentGateWay({ navigation, route }) {
           'Content-Type': 'multipart/form-data',
         },
       });
-
+console.log('PAYMENT', response.data);
       if ((response.data.status = 'success')) {
         setLoader(false);
         setModalVisible(true);
@@ -154,13 +156,13 @@ export default function PaymentGateWay({ navigation, route }) {
         PLATFORM_IOS
         ? Toast.show({
           type: 'success',
-          text1: "NO CARD ADDED !",
+          text1: "Invalid Card Details !",
         })
         : ToastAndroid.show(
-          "NO CARD ADDED !",
+          "Invalid Card Details !",
           ToastAndroid.SHORT,
         );
-        console.log(err.response.data);
+        console.log("-------------------------",err.response.data);
         console.log(err.response.status);
       } else {
         console.log(err);
@@ -200,6 +202,17 @@ export default function PaymentGateWay({ navigation, route }) {
         setModalVisible(true);
 
         setLoader(false);
+      }
+      else{
+        PLATFORM_IOS
+        ? Toast.show({
+          type: 'success',
+          text1: 'Server Busy Please Try Later.',
+        })
+        : ToastAndroid.show(
+          'Server Busy Please Try Later.',
+          ToastAndroid.SHORT,
+        );
       }
     } catch (err) {
       setLoader(false);

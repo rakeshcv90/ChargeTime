@@ -246,6 +246,7 @@ const InstalltionUpdate = async () => {
                 maxHeight={ms(500)}
                 labelField="location"
                 valueField="location"
+                editable={isEditable}
                 // placeholder={!isFocus ? userRegisterData[0]?.location : selectedValue}
                 // placeholder={isFocus ? userRegisterData[0]?.location : selectedValue}
                 keyboardAvoiding

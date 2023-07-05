@@ -53,15 +53,15 @@ const PriceBox = ({ data }) => {
           <Text style={styles.installation_text2}>Package Name:</Text>
           <Text style={styles.force_base}>{data?.energy_plan}</Text>
         </View>
-        {/* <Image
+        <Image
           // style={styles.img_width}
           source={require('../../assets/images/dotted.png')}
           resizeMode="stretch"
           style={{ alignSelf: 'center', width: mobileW }}
-        /> */}
+        />
         <View style={styles.location_div}>
           <Text style={styles.installation_text2}>Price: </Text>
-          <Text style={styles.force_base}>{data?.energy_price}</Text>
+          <Text style={styles.force_base}>$ {data?.energy_price}</Text>
         </View>
         <Image
           // style={styles.img_width}

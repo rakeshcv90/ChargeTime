@@ -58,7 +58,7 @@ export default function Year() {
                   fontSize: 14,
                   marginVertical: 10,
                 }}>
-                No Graph Data available
+                No Graph Data Available
               </Text>
             )}
             <BoxTwo data={getBoxTwoDataForDashboard.data} />

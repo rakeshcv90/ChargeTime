@@ -34,7 +34,7 @@ const PersonalDetails = () => {
   const [name, setName] = useState(userProfileData[0]?.name ?? '');
   const [number, setNumber] = useState(userProfileData[0]?.mobile ?? '');
   const [error, setError] = useState('');
-  //  const [userData, setUserData] = useState([]);
+  const [nameError, setNameError] = useState(false);
   const user_ID = getUserID;
 
   const dispatch = useDispatch();
@@ -129,8 +129,6 @@ const PersonalDetails = () => {
 
             }) : ToastAndroid.show("Your Profile Updated Successfully", ToastAndroid.SHORT);
           setIsEditable(false)
-          // navigationRef.navigate('Account');
-          // navigation.navigate('Home');
         } else {
           PLATFORM_IOS ?
             Toast.show({
@@ -146,25 +144,10 @@ const PersonalDetails = () => {
         console.error(error);
       })
   };
-  const handleInputChange = (text) => {
-    // Remove any non-digit characters from the input
-    const cleanedText = text.replace(/\D/g, '');
-    if (cleanedText !== text) {
-      setError('Mobile number should contain digits only');
-    } else {
-      setError('');
-    }
-    // Limit the length of the input to 10 characters
-    const limitedText = cleanedText.slice(0, 10);
-    // Update the state with the validated input
-    setNumber(limitedText);
-  };
-
 
   return (
     <SafeAreaView style={{ backgroundColor: COLORS.CREAM, flex: 1 }}>
       <Header headerName="Personal Details" editShow={true} onPress={onPress} enableEdit={enableEdit} editButton={isEditable} />
-      {/* <HorizontalLine style={styles.line} /> */}
       {Platform.OS == 'android' ? <HorizontalLine style={styles.line} /> : <View
 
       >
@@ -192,9 +175,19 @@ const PersonalDetails = () => {
             fontFamily: 'Roboto',
             fontWeight: '200',
           }}
-          onChangeText={name => setName(name)}
+          onChangeText={name =>{
+            setName(name)
+            if(!name.match(/^(?=.[a-zA-Z])([a-zA-Z0-9]+)$/)){
+              setNameError(true)
+            }
+            else{
+              setNameError(false)
+            }
+          }}
           value={name}
         />
+
+{nameError && <Text style={{ color: 'red',  }}>Name should be start with letter.</Text>}
 
         <Input
           IconLeft={null}
@@ -209,7 +202,7 @@ const PersonalDetails = () => {
           text="Phone No."
           mV={15}
           maxLength={10}
-          textWidth={ms(70)}
+          textWi   dth={ms(70)}
           placeholderTextColor={COLORS.HALFBLACK}
           style={{
             color: COLORS.BLACK,
@@ -217,17 +210,24 @@ const PersonalDetails = () => {
             fontWeight: '200',
           }}
 
-          onChangeText={(number) => {
-            handleInputChange(number);
-            setNumber(number)
+          onChangeText={(text) => {
+            const cleanedText = text.replace(/\D/g, '');
+            if (cleanedText !== text) {
+              setError(true);
+            } else {
+              setError(false);
+            }
+            // Limit the length of the input to 10 characters
+            const limitedText = cleanedText.slice(0, 10);
+            // Update the state with the validated input
+            setNumber(limitedText);
 
           }}
           value={number}
         />
-        {error && <Text style={{ color: 'red' }}>{error}</Text>}
-
-
-        <Input
+        {error && <Text style={{ color: 'red',marginTop:-15, paddingBottom:10 }}>Mobile number should contain digits only.</Text>}
+  
+       <Input
           IconLeft={null}
           editable={false}
           bgColor={COLORS.CREAM}

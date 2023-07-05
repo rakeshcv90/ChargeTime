@@ -110,7 +110,7 @@ const DrawerNavigation = () => {
         },
       }}
       gestureEnabled={false}
-      drawerContent={CustomDrawerContent}>
+      drawerContent={(props) => <CustomDrawerContent {...props} />}>
       {getPackageStatus ? (
         <>
           <Drawer.Screen
