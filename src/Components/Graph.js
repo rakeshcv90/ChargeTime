@@ -6,14 +6,14 @@ import {DIMENSIONS} from '../constants/DIMENSIONS';
 
 
 const Graph = ({ dataOne }) => {
-  let num = (dataOne || []).map(item => (item?.Usage === undefined || item?.Usage === [] || item?.Usage === '') ? [0, 0, 0] : item?.Usage);
-  let numOne = (dataOne || []).map(item => (item?.date === undefined || item?.date === [] || item?.date === '') ? ["sun", "mon", "tues"] : item?.date);
+  let num =dataOne && dataOne.length >0 && dataOne.map(item => (item?.Usage === undefined || item?.Usage === [] || item?.Usage === '') ? [0, 0, 0] : item?.Usage);
+  let numOne = dataOne&& dataOne.length >0 && dataOne.map(item => (item?.date === undefined || item?.date === [] || item?.date === '') ? ["sun", "mon", "tues"] : item?.date);
 
   const data = {
-    labels: numOne.length ? numOne : ["sun", "mon", "tues"],
+    labels: numOne?.length ? numOne : ["sun", "mon", "tues"],
     datasets: [
       {
-        data: num.length ? num : [0, 0, 0],
+        data: num?.length ? num : [0, 0, 0],
       },
     ],
   };

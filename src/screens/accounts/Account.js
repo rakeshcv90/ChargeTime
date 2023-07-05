@@ -113,10 +113,10 @@ const Account = ({ navigation }) => {
       const result = await response.json();
       if(result[0].message == "sucess")
       {
- console.log('wwwwww',result);
-//  setUserData(result);
- dispatch(userProfileData(result)); 
- console.log(result)
+      console.log('wwwwww',result);
+      //  setUserData(result);
+      dispatch(userProfileData(result)); 
+      console.log(result)
       }else{
         console.log("iiiiiiiiiiii")
       }
@@ -140,8 +140,10 @@ const Account = ({ navigation }) => {
     }else{
       console.log("iiiiiiiiiiii")
     }
-  };
-
+  }catch(err){
+    console.log("ERROR", err);
+  }
+ }
   const userSubsEnergy = async () => {
 
   try {
@@ -156,8 +158,10 @@ const Account = ({ navigation }) => {
     }else{
       console.log("iiiiiiiiiiii")
     }
+  } catch(err){
+    console.log("ERROR", err);
   }
-
+}
 
   const handleLinkPress = (screen) => {
     navigation.navigate(screen);
@@ -228,8 +232,8 @@ const Account = ({ navigation }) => {
                         </View>
        </SafeAreaView>
   );
-};
-
+  };
+ 
 const styles = StyleSheet.create({
   row: { width: DIMENSIONS.SCREEN_WIDTH * 0.95, flexDirection: 'row', alignItems: 'center' },
   main_div: {

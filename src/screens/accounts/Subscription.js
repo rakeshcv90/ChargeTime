@@ -48,8 +48,10 @@ const Subscription = () => {
     }else{
       console.log("iiiiiiiiiiii")
     }
-  };
-
+  }catch(err){
+    console.log("error",err);
+  }
+ }
 
 const userSubsEnergy = async () => {
 
@@ -80,7 +82,7 @@ const PlanCancel = async () => {
       }, 
     })
     const result = await response.json();
-console.log(result,'ttt');
+    console.log(result,'ttt');
     if(result.message == 'Plan Cancelled Successfully'){
       PLATFORM_IOS
       ? Toast.show({
@@ -93,8 +95,10 @@ console.log(result,'ttt');
         );
         
     }
-  };
-
+  }catch (error) {
+    console.log("ERROR", error)
+   }
+  }
 
   return (
     <ScrollView showsVerticalScrollIndicator={false} style={{ backgroundColor: COLORS.CREAM, flex: 1 }}>
