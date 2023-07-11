@@ -1,30 +1,38 @@
-import { View, Text,SafeAreaView, ToastAndroid,Button, TextInput,StyleSheet, Modal,TouchableOpacity } from 'react-native'
-import React, { useState, useEffect } from 'react'
-import Header from '../../Components/Header'
-import HorizontalLine from '../../Components/HorizontalLine'
-import Input from '../../Components/Input'
-import { Install } from '../../../assets/svgs/Install'
-import { Location } from '../../../assets/svgs/Location'
-import { useSelector } from 'react-redux';
+/* eslint-disable react-native/no-inline-styles */
+/* eslint-disable react/no-unstable-nested-components */
+/* eslint-disable no-undef */
+/* eslint-disable keyword-spacing */
+/* eslint-disable eqeqeq */
+/* eslint-disable no-unused-vars */
+/* eslint-disable prettier/prettier */
+import { View, Text,SafeAreaView, ToastAndroid,StyleSheet, Modal,TouchableOpacity, Dimensions ,Image} from 'react-native';
+import React, { useState, useEffect } from 'react';
+import Header from '../../Components/Header';
+import HorizontalLine from '../../Components/HorizontalLine';
+import Input from '../../Components/Input';
+import { Location } from '../../../assets/svgs/Location';
+import { useDispatch, useSelector } from 'react-redux';
 import COLORS from '../../constants/COLORS';
 // import DropDownPicker from 'react-native-dropdown-picker';
 import {Dropdown} from 'react-native-element-dropdown';
 import {DIMENSIONS, PLATFORM_IOS} from '../../constants/DIMENSIONS';
-import { API } from '../../api/API'
+import { API } from '../../api/API';
 import axios from 'axios';
-import { FONTS } from '../../constants/FONTS'
-import { navigationRef } from '../../../App'
+import { navigationRef } from '../../../App';
 import { ms } from 'react-native-size-matters';
 import { userProfileData as updatePersionalDetail } from '../../redux/action';
+import {Toast} from 'react-native-toast-message/lib/src/Toast';
+import { setBasePackage as setUpdateBasePackage } from '../../redux/action';
 
-
-
+const mobileW = Math.round(Dimensions.get('screen').width);
+const mobileH = Math.round(Dimensions.get('window').height);
 
 const Installation = () => {
   // const getCompleteData = useSelector((state)=> state.getCompleteData)
-    const userProfileData = useSelector((state)=> state.userProfileData)
+    const userProfileData = useSelector((state)=> state.userProfileData);
+    const getBasePackage = useSelector((state)=> state.getBasePackage);
 
-  const getUserID = useSelector((state)=> state.getUserID)
+  const getUserID = useSelector((state)=> state.getUserID);
   const [isModalVisible, setModalVisible] = useState(false);
   const [isEditable, setIsEditable] = useState(false);
   const [locationMap, setLocationMap] = useState([]);
@@ -35,24 +43,26 @@ const Installation = () => {
   const [addlinetwo, setAddLineTwo] = useState();
   const [value, setValue] = useState(null);
  //  const [location, setLocation] = useState();
-  const [locationId, setLocationId] = useState('');
+  const [locationId, setLocationId] = useState();
   const [isFocus, setIsFocus] = useState(false);
-  const [forLoading,setForLoading] = useState(false)
-  
+  const [forLoading,setForLoading] = useState(false);
+  const [apiData, setApiData] = useState(getBasePackage || []);
+
+  const dispatch = useDispatch();
   useEffect(() => {
-    console.log('data for this User:---------', userProfileData); 
+    console.log('data for this User:---------', userProfileData);
     setAddLineTwo(userProfileData[0]?.pwa_add2);
     setAddLineOne(userProfileData[0]?.pwa_add1);
     // console.log('userrrrrrrrr',location)
     fetchOptions();
  }, [userProfileData]);
-const user_id= getUserID;
+const user_id = getUserID;
 //  const {navigation, route} = props;
 //  const { user_id} = route?.params;
 
 
 
- 
+
  const fetchOptions = async () => {
    try {
      const response = await fetch(`${API}/locations`);
@@ -69,6 +79,7 @@ const user_id= getUserID;
  };
 
 const handleSelect = (id, item) => {
+  console.log('{{{{{{{' , id);
   setIsFocus(false);
   setSelectedValue(item.location);
   setLocationId(id);
@@ -82,17 +93,41 @@ const handleSelect = (id, item) => {
       console.log(err);
     });
 };
+
+
+const fetchData = async () => {
+  //  loginData = await AsyncStorage.getItem('loginDataOne');
+
+  try {
+    const response = await axios.get(`${API}/packagePlan/${locationId}`);
+
+    if (response?.data?.locations.length == 0) {
+      // setIsLoading(true);
+      // setShowPackage(true);
+    } else {
+      setApiData(response?.data?.locations);
+      dispatch(setUpdateBasePackage(response.data.locations));
+      // setIsLoading(false);
+    }
+  } catch (error) {
+    console.error('Error fetching data:', error);
+    // setIsLoading(false);
+  }
+};
+
 const PlanCancel = async () => {
+  setIsFocus(true);
   try {
     const response = await fetch(`${API}/plancancel/${user_id}`,{
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-      }, 
-    })
+      },
+    });
     const result = await response.json();
 console.log(result,'ttt');
     if(result.message == 'Plan Cancelled Successfully'){
+      setIsFocus(false);
       InstalltionUpdate();
       PLATFORM_IOS
       ? Toast.show({
@@ -103,58 +138,63 @@ console.log(result,'ttt');
           'Your current plan has been cancelled.',
           ToastAndroid.SHORT,
         );
-
-        // InstalltionUpdate();
+    }else{
+      InstalltionUpdate();
     }
   } catch (error) {
     console.error(error);
   }
 };
 const InstalltionUpdate = async () => {
-    
-  setForLoading(true)
-  if(locationId&& 
-    addlineone&&
-    addlinetwo&&
-    newZipcode&&
+console.log('=====' , locationId);
+  setForLoading(true);
+  if(locationId &&
+    addlineone &&
+    addlinetwo &&
+    newZipcode &&
     newState){
   try {
-    await fetch(`${API}/installation/${user_id}`, {
+   const res = await fetch(`${API}/installation/${user_id}`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-      }, 
+      },
       body:JSON.stringify({
       pwa_add1:addlineone,
       pwa_add2:addlinetwo,
-      pwa_choice:locationId,
+      pwa_state:newState,
+      pwa_zip:newZipcode,
+      location : selectedValue ,
+      pwa_choice :locationId,
       }),
-    })
-      .then(res => res.json())
-      .then(data => {
-
-        console.log(data, 'fff');
-
-        if (data) {
+    });
+    const response = await res.json();
+    if(response.msg == 'Your Profile Update'){
+        if (response) {
           const updatedData = [{
             ...userProfileData[0],
-          name: name,
-            mobile: number,
-            location : locationId,
+            pwa_add1 : addlineone,
+            pwa_add2 : addlinetwo,
+            pwa_state:newState,
+            pwa_zip:newZipcode,
+            location : selectedValue ,
+            pwa_choice : locationId,
           }];
-          console.log(updatedData,"------")
+          // console.log(updatedData,'------');
           dispatch(updatePersionalDetail(updatedData));
+          fetchData();
+          setForLoading(false);
           PLATFORM_IOS
             ? Toast.show({
                 type: 'success',
-                text1: 'Profile has benn updated successfully.',
+                text1: 'Profile has been updated successfully.',
               })
             : ToastAndroid.show(
-                'Profile has benn updated successfully.',
+                'Profile has been updated successfully.',
                 ToastAndroid.SHORT,
               );
-          navigationRef.navigate('Account');
-          setForLoading(false)
+          // navigationRef.navigate('Account');
+          setForLoading(false);
         } else {
           PLATFORM_IOS
             ? Toast.show({
@@ -163,38 +203,38 @@ const InstalltionUpdate = async () => {
                 // position: 'bottom',
               })
             : ToastAndroid.show('Profile Not Updated', ToastAndroid.SHORT);
-            setForLoading(false)
+            setForLoading(false);
         }
-      });
+      }
   } catch (err) {
     console.log(err);
-    setForLoading(false)
+    setForLoading(false);
   }}
 };
 
   const handleOk = () => {
-  
+
     PlanCancel();
     console.log('Confirmed');
-    setIsEditable(false)
+    setIsEditable(false);
     setModalVisible(false);
   };
 
   const handleCancel = () => {
     // Perform cancel logic here
     console.log('Cancelled');
-    setIsEditable(false)
+    setIsEditable(false);
     setModalVisible(false);
   };
 
   const onPress = ()=>{
-    console.log("onpress..",isModalVisible)
+    console.log('onpress..',isModalVisible);
     setModalVisible(true);
-  }
-  const enableEdit =()=>{
-    console.log("enable edit",isEditable)
-    setIsEditable(true)
-  }
+  };
+  const enableEdit = ()=>{
+    console.log('enable edit',isEditable);
+    setIsEditable(true);
+  };
   const ConfirmModal = () => {
     return (
       <Modal
@@ -231,7 +271,9 @@ const InstalltionUpdate = async () => {
   return (
     <SafeAreaView style={{backgroundColor: COLORS.CREAM, flex: 1}}>
      <Header headerName="Installation" editShow={true} onPress={onPress} enableEdit ={enableEdit} editButton={isEditable} />
-    <HorizontalLine style={styles.line}/>
+     {Platform.OS === 'android' ? <HorizontalLine style={styles.line} /> : <View>
+     <Image source={require('../../../assets/images/dotted.png')} style={{ width: mobileW * 0.97 }} />
+      </View>}
      <View style={styles.mainDiv_container}>
      <View style={styles.postCodeContainer}>
               {renderLabel()}
@@ -244,14 +286,14 @@ const InstalltionUpdate = async () => {
                 data={locationMap}
                 search
                 maxHeight={ms(500)}
+                disable={!isEditable}
                 labelField="location"
                 valueField="location"
-                editable={isEditable}
                 // placeholder={!isFocus ? userRegisterData[0]?.location : selectedValue}
                 // placeholder={isFocus ? userRegisterData[0]?.location : selectedValue}
                 keyboardAvoiding
                 searchPlaceholder="Search..."
-                value={selectedValue ? selectedValue: userProfileData[0]?.location}
+                value={selectedValue ? selectedValue : userProfileData[0]?.location}
                 // onFocus={() => setIsFocus(false)}
                 // onBlur={() => setIsFocus(false)}
                 onChange={item => handleSelect(item.id, item)}
@@ -284,7 +326,7 @@ const InstalltionUpdate = async () => {
         />
          <Input
           IconLeft={null}
-        
+
           bgColor={COLORS.CREAM}
           editable={isEditable}
           IconRight={() => (
@@ -309,7 +351,7 @@ const InstalltionUpdate = async () => {
         />
          <View style={styles.mainDiv_state_ZIP}>
               <View style={styles.zip_state_view}>
-                
+
                 <Input
                   IconLeft={null}
                   errors={undefined}
@@ -352,21 +394,21 @@ const InstalltionUpdate = async () => {
                   w="half"
                 />
               </View>
-            </View>            
+            </View>
           </View>
 
-          {isModalVisible ?  <ConfirmModal /> :null}
+          {isModalVisible ?  <ConfirmModal /> : null}
 
     </SafeAreaView>
-  )
-}
+  );
+};
 const styles = StyleSheet.create({
   mainDiv_signup: {
     paddingTop: 20,
   },
   dropdown: {
     height: 50,
-    borderColor: '#808080',
+    // borderColor: '#808080',
     borderWidth: 1,
     borderRadius: 8,
     borderColor:COLORS.GREEN,
@@ -433,7 +475,7 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
     paddingHorizontal: 10,
     borderRadius: 20,
-  
+
   },
   cancelButton: {
     backgroundColor: 'transparent',
@@ -461,14 +503,14 @@ const styles = StyleSheet.create({
   paddingBottom:100 ,
   borderRadius:4,
   border:14,
-    
+
   },
   line:{
     marginTop:50,
     marginBottom:10,
     marginHorizontal:5,
   },
-  
+
   mainDiv_complete_profile: {
     paddingHorizontal: 20,
     backgroundColor: COLORS.GRAY,
@@ -478,7 +520,7 @@ const styles = StyleSheet.create({
   },
   shadowProp: {
     backgroundColor: 'white',
-    shadowColor: Platform.OS === 'android' ?'black' :"rgba(0,0,0,.555)", // Shadow color
+    shadowColor: Platform.OS === 'android' ? 'black' : 'rgba(0,0,0,.555)', // Shadow color
     shadowOffset: {
       width: 6, // Horizontal offset
       height: 4, // Vertical offset
@@ -488,7 +530,7 @@ const styles = StyleSheet.create({
     elevation: Platform.OS === 'android' ? 8 : 0,
   },
   complete_placeholder: {
-    backgroundColor: `rgba(86, 84, 84, 0.1)`,
+    backgroundColor: 'rgba(86, 84, 84, 0.1)',
     borderRadius: 10,
     paddingHorizontal: 15,
     height: Platform.OS === 'ios' ? 50 : 50,
@@ -526,4 +568,4 @@ const styles = StyleSheet.create({
     width: 200,
   },
 });
-export default Installation
+export default Installation;

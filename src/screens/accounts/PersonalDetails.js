@@ -1,35 +1,47 @@
-import { View, Text, StyleSheet, SafeAreaView, ToastAndroid, TextInput, useColorScheme, Dimensions, Image, Platform } from 'react-native'
+/* eslint-disable prettier/prettier */
+/* eslint-disable no-shadow */
+/* eslint-disable react/no-unstable-nested-components */
+/* eslint-disable react-native/no-inline-styles */
+/* eslint-disable no-unused-vars */
+import {
+  View,
+  Text,
+  StyleSheet,
+  SafeAreaView,
+  ToastAndroid,
+  TextInput,
+  useColorScheme,
+  Dimensions,
+  Image,
+  Platform,
+} from 'react-native';;
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import React, { useState, useEffect } from 'react'
-import { useSelector } from 'react-redux';
+import React, {useState, useEffect} from 'react';;
+import {useSelector} from 'react-redux';
 import HorizontalLine from '../../Components/HorizontalLine';
-import { PLATFORM_IOS } from '../../constants/DIMENSIONS';
+import {PLATFORM_IOS} from '../../constants/DIMENSIONS';
 import Header from '../../Components/Header';
-import { State, TouchableOpacity } from 'react-native-gesture-handler';
+import {State, TouchableOpacity} from 'react-native-gesture-handler';
 import Toast from 'react-native-toast-message';
 
 import Input from '../../Components/Input';
 import COLORS from '../../constants/COLORS';
-import { DIMENSIONS } from '../../constants/DIMENSIONS';
-import { Call } from '../../../assets/svgs/Call';
-import { Message } from '../../../assets/svgs/Message';
-import { Name } from '../../../assets/svgs/Name';
-import { API } from '../../api/API';
-import { navigationRef } from '../../../App';
-import { FONTS } from '../../constants/FONTS';
-import { useDispatch } from 'react-redux';
+import {DIMENSIONS} from '../../constants/DIMENSIONS';
+import {Call} from '../../../assets/svgs/Call';
+import {Message} from '../../../assets/svgs/Message';
+import {Name} from '../../../assets/svgs/Name';
+import {API} from '../../api/API';
+import {navigationRef} from '../../../App';
+import {FONTS} from '../../constants/FONTS';
+import {useDispatch} from 'react-redux';
 import axios from 'axios';
-import { mvs, ms } from 'react-native-size-matters';
-import { userProfileData as updatePersionalDetail } from '../../redux/action';
+import {mvs, ms} from 'react-native-size-matters';
+import {userProfileData as updatePersionalDetail} from '../../redux/action';
 const mobileW = Math.round(Dimensions.get('screen').width);
 
-
-
-
 const PersonalDetails = () => {
-
-  const userProfileData = useSelector((state) => state.userProfileData)
-  const getUserID = useSelector((state) => state.getUserID)
+  const userProfileData = useSelector(state => state.userProfileData);
+  const getUserID = useSelector(state => state.getUserID);
   const [isEditable, setIsEditable] = useState(false);
   const [name, setName] = useState(userProfileData[0]?.name ?? '');
   const [number, setNumber] = useState(userProfileData[0]?.mobile ?? '');
@@ -39,13 +51,10 @@ const PersonalDetails = () => {
 
   const dispatch = useDispatch();
 
-
   useEffect(() => {
-    setName(userProfileData[0]?.name)
-    setNumber(userProfileData[0]?.mobile)
-
+    setName(userProfileData[0]?.name);
+    setNumber(userProfileData[0]?.mobile);;
   }, [userProfileData]);
-
 
   const theme = useColorScheme();
   const isDark = theme === 'dark';
@@ -54,51 +63,43 @@ const PersonalDetails = () => {
     if (name.trim().length <= 0) {
       PLATFORM_IOS
         ? Toast.show({
-          type: 'error',
-          text1: 'Please Enter Name',
-        })
+            type: 'error',
+            text1: 'Please Enter Name',
+          })
         : ToastAndroid.show('Please Enter Name', ToastAndroid.SHORT);
-    }
-    else if (name.trim().length <= 3) {
+    } else if (name.trim().length <= 3) {
       PLATFORM_IOS
         ? Toast.show({
-          type: 'error',
-          text1: 'Please Enter Full Name',
-        })
+            type: 'error',
+            text1: 'Please Enter Full Name',
+          })
         : ToastAndroid.show('Please Enter Full Name', ToastAndroid.SHORT);
-
-    }
-    else if (number.trim().length <= 0) {
+    } else if (number.trim().length <= 0) {
       PLATFORM_IOS
         ? Toast.show({
-          type: 'error',
-          text1: 'Please Enter Mobile Number',
-        })
+            type: 'error',
+            text1: 'Please Enter Mobile Number',
+          })
         : ToastAndroid.show('Please Enter Mobile Number', ToastAndroid.SHORT);
-
-    }
-    else if (number.trim().length < 10) {
+    } else if (number.trim().length < 10) {
       PLATFORM_IOS
         ? Toast.show({
-          type: 'error',
-          text1: 'Please Enter Correct Mobile Number',
-        })
-        : ToastAndroid.show('Please Enter Correct Mobile Number', ToastAndroid.SHORT);
-
-    }
-    else {
+            type: 'error',
+            text1: 'Please Enter Correct Mobile Number',
+          })
+        : ToastAndroid.show(
+            'Please Enter Correct Mobile Number',
+            ToastAndroid.SHORT,
+          );
+    } else {
       updatePersonalDetails();
     }
-
-  }
+  };
   const enableEdit = () => {
-
-    setIsEditable(true)
-  }
-
+    setIsEditable(true);;
+  };
 
   const updatePersonalDetails = async () => {
-
     // setIsEditable(true);
     await fetch(`${API}/personalInfo/${user_ID}`, {
       method: 'PUT',
@@ -112,57 +113,68 @@ const PersonalDetails = () => {
     })
       .then(res => res.json())
       .then(data => {
-        if (data.msg == "Your profile has been succesfully updated") {
-          const updatedData = [{
-            ...userProfileData[0],
+        if (data.msg == 'Your profile has been succesfully updated') {
+          const updatedData = [
+            {
+              ...userProfileData[0],
 
-            name: name,
-            mobile: number,
-          }];
+              name: name,
+              mobile: number,
+            },
+          ];
           // console.log(updatedData,"------")
 
           dispatch(updatePersionalDetail(updatedData));
-          PLATFORM_IOS ?
-            Toast.show({
-              type: 'success',
-              text1: "Your Profile Updated Successfully",
-
-            }) : ToastAndroid.show("Your Profile Updated Successfully", ToastAndroid.SHORT);
-          setIsEditable(false)
+          PLATFORM_IOS
+            ? Toast.show({
+                type: 'success',
+                text1: 'Your Profile Updated Successfully',
+              })
+            : ToastAndroid.show(
+                'Your Profile Updated Successfully',
+                ToastAndroid.SHORT,
+              );
+          setIsEditable(false);
         } else {
-          PLATFORM_IOS ?
-            Toast.show({
-              type: 'error',
-              text1: "Your Profile Not Updated",
-
-            }) : ToastAndroid.show("Your Profile Not Updated", ToastAndroid.SHORT);
-
+          PLATFORM_IOS
+            ? Toast.show({
+                type: 'error',
+                text1: 'Your Profile Not Updated',
+              })
+            : ToastAndroid.show('Your Profile Not Updated', ToastAndroid.SHORT);
         }
-
       })
       .catch(error => {
         console.error(error);
-      })
+      });
   };
 
   return (
-    <SafeAreaView style={{ backgroundColor: COLORS.CREAM, flex: 1 }}>
-      <Header headerName="Personal Details" editShow={true} onPress={onPress} enableEdit={enableEdit} editButton={isEditable} />
-      {Platform.OS == 'android' ? <HorizontalLine style={styles.line} /> : <View
-
-      >
-        <Image source={require('../../../assets/images/dotted.png')} style={{ width: mobileW * 0.97, }} />
-      </View>}
+    <SafeAreaView style={{backgroundColor: COLORS.CREAM, flex: 1}}>
+      <Header
+        headerName="Personal Details"
+        editShow={true}
+        onPress={onPress}
+        enableEdit={enableEdit}
+        editButton={isEditable}
+      />
+      {Platform.OS == 'android' ? (
+        <HorizontalLine style={styles.line} />
+      ) : (
+        <View>
+          <Image
+            source={require('../../../assets/images/dotted.png')}
+            style={{width: mobileW * 0.97}}
+          />
+        </View>
+      )}
 
       <View style={[styles.mainDiv_container]}>
-
         <Input
           IconLeft={null}
           editable={isEditable}
           bgColor={COLORS.CREAM}
-          IconRight={() => (
-            <Name />
-          )}
+          IconRight={() => <Name />}
           bR={3}
           bW={0.4}
           bColor={COLORS.BLACK}
@@ -175,42 +187,41 @@ const PersonalDetails = () => {
             fontFamily: 'Roboto',
             fontWeight: '200',
           }}
-          onChangeText={name =>{
-            setName(name)
-            if(!name.match(/^(?=.[a-zA-Z])([a-zA-Z0-9]+)$/)){
-              setNameError(true)
-            }
-            else{
-              setNameError(false)
+          onChangeText={name => {
+            setName(name);
+            if  (!name.match(/^(?=.[a-zA-Z])([a-zA-Z0-9]+)$/)) {
+              setNameError(true);
+            } else  {
+              setNameError(false);
             }
           }}
           value={name}
         />
 
-{nameError && <Text style={{ color: 'red',  }}>Name should be start with letter.</Text>}
+        {nameError && (
+          <Text style={{color: 'red'}}>Name should be start with letter.</Text>
+        )}
 
         <Input
           IconLeft={null}
           bgColor={COLORS.CREAM}
           editable={isEditable}
-          IconRight={() => (
-            <Call />
-          )}
+          IconRight={() => <Call />}
           bR={3}
           bW={0.4}
           bColor={COLORS.BLACK}
           text="Phone No."
           mV={15}
           maxLength={10}
-          textWi   dth={ms(70)}
+          textWi
+          dth={ms(70)}
           placeholderTextColor={COLORS.HALFBLACK}
           style={{
             color: COLORS.BLACK,
             //fontFamily: 'Roboto',
             fontWeight: '200',
           }}
-
-          onChangeText={(text) => {
+          onChangeText={text => {
             const cleanedText = text.replace(/\D/g, '');
             if (cleanedText !== text) {
               setError(true);
@@ -221,19 +232,20 @@ const PersonalDetails = () => {
             const limitedText = cleanedText.slice(0, 10);
             // Update the state with the validated input
             setNumber(limitedText);
-
           }}
           value={number}
         />
-        {error && <Text style={{ color: 'red',marginTop:-15, paddingBottom:10 }}>Mobile number should contain digits only.</Text>}
-  
-       <Input
+        {error && (
+          <Text style={{color: 'red', marginTop: -15, paddingBottom: 10}}>
+            Mobile number should contain digits only.
+          </Text>
+        )}
+
+        <Input
           IconLeft={null}
           editable={false}
           bgColor={COLORS.CREAM}
-          IconRight={() => (
-            <Message />
-          )}
+          IconRight={() => <Message />}
           bR={3}
           bW={0.4}
           bColor={COLORS.BLACK}
@@ -241,23 +253,22 @@ const PersonalDetails = () => {
           mV={5}
           textWidth={ms(50)}
           value={userProfileData[0]?.email}
-
           placeholderTextColor={COLORS.HALFBLACK}
-
           style={{
             color: COLORS.BLACK,
             fontFamily: 'Roboto',
             fontWeight: '200',
           }}
         />
-
-
       </View>
 
       <View style={styles.bottom}>
-        <Text style={{ fontSize: 14, color: COLORS.BLACK }}>Want to delete account?{' '}</Text>
+        <Text style={{fontSize: 14, color: COLORS.BLACK}}>
+          Want to delete account?{' '}
+        </Text>
 
-        <TouchableOpacity onPress={() => navigationRef.navigate('deleteAccount')} >
+        <TouchableOpacity
+          onPress={() => navigationRef.navigate('deleteAccount')}>
           <Text
             style={{
               fontWeight: 'bold',
@@ -265,14 +276,14 @@ const PersonalDetails = () => {
               fontSize: 14,
               height: 25,
               color: COLORS.BLACK,
-
-            }}
-          >Request here.</Text>
+            }}>
+            Request here.
+          </Text>
         </TouchableOpacity>
       </View>
     </SafeAreaView>
-  )
-}
+  );
+};
 const styles = StyleSheet.create({
   bottom: {
     marginTop: 'auto',
@@ -280,7 +291,6 @@ const styles = StyleSheet.create({
     alignContent: 'center',
     justifyContent: 'center',
     bottom: mobileW * 0.3,
-
   },
 
   mainDiv_container: {
@@ -291,7 +301,6 @@ const styles = StyleSheet.create({
     marginBottom: 40,
     width: DIMENSIONS.SCREEN_WIDTH * 0.9,
     height: DIMENSIONS.SCREEN_HEIGHT * 0.3,
-
   },
   textdata: {
     fontWeight: 'bold',
@@ -311,7 +320,7 @@ const styles = StyleSheet.create({
   },
   shadowProp: {
     backgroundColor: 'white',
-    shadowColor: Platform.OS === 'android' ? 'black' : "rgba(0,0,0,.555)",
+    shadowColor: Platform.OS === 'android' ? 'black' : 'rgba(0,0,0,.555)',
     shadowOffset: {
       width: 8,
       height: 6,
@@ -340,5 +349,5 @@ const styles = StyleSheet.create({
   },
 });
 
+export default PersonalDetails;
 
-export default PersonalDetails

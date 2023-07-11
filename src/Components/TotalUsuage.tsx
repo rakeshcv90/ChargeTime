@@ -1,3 +1,5 @@
+/* eslint-disable react-native/no-inline-styles */
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import {Dimensions, StyleSheet, Text, View} from 'react-native';
 import React, {useCallback, useEffect} from 'react';
 import COLORS from '../constants/COLORS';
@@ -69,7 +71,11 @@ const TotalUsage = (props: any) => {
           width: '100%',
         }}>
         <View
-          style={{marginBottom: 50, alignContent: 'center', alignSelf: 'center',}}>
+          style={{
+            marginBottom: 50,
+            alignContent: 'center',
+            alignSelf: 'center',
+          }}>
           <Text
             style={{
               fontWeight: '800',

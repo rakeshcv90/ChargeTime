@@ -1,3 +1,10 @@
+/* eslint-disable no-shadow */
+/* eslint-disable no-unused-vars */
+/* eslint-disable react-hooks/exhaustive-deps */
+/* eslint-disable eqeqeq */
+/* eslint-disable react-native/no-inline-styles */
+/* eslint-disable react/react-in-jsx-scope */
+/* eslint-disable react/no-unstable-nested-components */
 import {
   ScrollView,
   View,
@@ -7,6 +14,7 @@ import {
   Animated,
   Image,
   Dimensions,
+  Platform,
 } from 'react-native';
 import {useNavigationState} from '@react-navigation/native';
 import {SafeAreaView} from 'react-native-safe-area-context';
@@ -28,7 +36,7 @@ import {useDispatch} from 'react-redux';
 import {setBasePackage} from '../../redux/action';
 
 import {useSelector} from 'react-redux';
-import { PLATFORM_IOS } from '../../constants/DIMENSIONS';
+import {PLATFORM_IOS} from '../../constants/DIMENSIONS';
 
 const mobileW = Math.round(Dimensions.get('screen').width);
 const mobileH = Math.round(Dimensions.get('window').height);
@@ -105,14 +113,16 @@ export default function Home(route) {
   const [changePage, setChangePage] = useState('');
   const Tab = createMaterialTopTabNavigator();
 
-  const {getLocationID, getBasePackage, getPackageStatus} = useSelector(state => state);
+  const {getLocationID, getBasePackage, getPackageStatus} = useSelector(
+    state => state,
+  );
   const [apiData, setApiData] = useState(getBasePackage || []);
 
   useEffect(() => {
     fetchData();
     // console.log('PACKAGES', apiData);
     console.log('PACKAGES APIII', getBasePackage.length);
-    getBasePackage.length == 0 ? setShowPackage(true) : setShowPackage(false)
+    getBasePackage.length == 0 ? setShowPackage(true) : setShowPackage(false);
   }, []);
 
   const fetchData = async () => {
@@ -170,25 +180,23 @@ export default function Home(route) {
               key={index}
               onPress={onPress}
               style={{
-               // flex: 1,
-             
+                // flex: 1,
+
                 backgroundColor: isFocused ? '#B1D34F' : '#EEEEEE',
-                paddingHorizontal: 10,
+                paddingHorizontal: 15,
                 paddingVertical: 13,
-                 borderRadius:10,
-                borderRadius: isFocused ? 10 : 0,
+                borderRadius: isFocused ? 0 : 0,
                 shadowColor: 'rgba(0, 0, 0, 1)',
                 shadowOffset: {
                   width: isFocused ? 6 : 0,
                   height: isFocused ? 4 : 0,
                 },
-                shadowOpacity: isFocused ? 1 : 0,
+                shadowOpacity: isFocused ? 3 : 0,
                 shadowRadius: isFocused ? 4 : 0,
                 elevation: Platform.OS === 'android' && isFocused ? 8 : 0,
               }}>
               <Text
                 style={{
-                  color: isFocused ? 'black' : 'black',
                   fontWeight: isFocused ? '600' : '400',
                   fontSize: 12,
                   textAlign: 'center',
@@ -205,28 +213,30 @@ export default function Home(route) {
 
   return (
     <SafeAreaView style={{backgroundColor: COLORS.CREAM, flex: 1}}>
-    <DrawerOpen top={ PLATFORM_IOS ? 70 : 30}/>
-      {getBasePackage.length != 0 &&<View style={styles.charging_imag_style}>
-        {changePage == 0 ? (
-          <Image
-            source={require('../../../assets/images/bp_one.png')}
-            resizeMode="cover"
-            style={{width: mobileW, height: mobileH / 4}}
-          />
-        ) : changePage == 1 ? (
-          <Image
-            source={require('../../../assets/images/bp_two.png')}
-            resizeMode="cover"
-            style={{width: mobileW, height: mobileH / 4}}
-          />
-        ) : (
-          <Image
-            source={require('../../../assets/images/bp_three.png')}
-            resizeMode="cover"
-            style={{width: mobileW, height: mobileH / 4}}
-          />
-        )}
-      </View>}
+      <DrawerOpen top={PLATFORM_IOS ? 70 : 30} />
+      {getBasePackage.length != 0 && (
+        <View style={styles.charging_imag_style}>
+          {changePage == 0 ? (
+            <Image
+              source={require('../../../assets/images/bp_one.png')}
+              resizeMode="cover"
+              style={{width: mobileW, height: mobileH / 4}}
+            />
+          ) : changePage == 1 ? (
+            <Image
+              source={require('../../../assets/images/bp_two.png')}
+              resizeMode="cover"
+              style={{width: mobileW, height: mobileH / 4}}
+            />
+          ) : (
+            <Image
+              source={require('../../../assets/images/bp_three.png')}
+              resizeMode="cover"
+              style={{width: mobileW, height: mobileH / 4}}
+            />
+          )}
+        </View>
+      )}
 
       {getBasePackage?.length > 1 ? (
         <Tab.Navigator
@@ -251,48 +261,48 @@ export default function Home(route) {
           })}
         </Tab.Navigator>
       ) : getBasePackage.length == 1 ? (
-        <TabOne item={getBasePackage[0]}/>
-          ) : (
-            <View
+        <TabOne item={getBasePackage[0]} />
+      ) : (
+        <View
+          style={{
+            justifyContent: 'center',
+            alignItems: 'center',
+            flex: 1,
+          }}>
+          <View
             style={{
+              flexDirection: 'row',
               justifyContent: 'center',
               alignItems: 'center',
-              flex: 1,
             }}>
-            <View
-              style={{
-                flexDirection: 'row',
-                justifyContent: 'center',
-                alignItems: 'center',
-              }}>
-              <AnimatedLottieView
-                source={{
-                  uri: 'https://assets5.lottiefiles.com/packages/lf20_v4UB4ch6dZ.json',
-                }} // Replace with your animation file
-                autoPlay
-                loop
-                style={{width: 150, height: 150}}
-              />
-              <AnimatedLottieView
-                source={{
-                  uri: 'https://assets7.lottiefiles.com/packages/lf20_qgq2nqsy.json',
-                }} // Replace with your animation file
-                autoPlay
-                loop
-                style={{width: 50, height: 50}}
-              />
-            </View>
-            <Text
-              style={{
-                fontSize: 14,
-                lineHeight: 25,
-                textAlign: 'center',
-                paddingHorizontal: 30,
-                color: COLORS.BLACK
-              }}>
-              No Package Available for this Location
-            </Text>
-            {/* <View
+            <AnimatedLottieView
+              source={{
+                uri: 'https://assets5.lottiefiles.com/packages/lf20_v4UB4ch6dZ.json',
+              }} // Replace with your animation file
+              autoPlay
+              loop
+              style={{width: 150, height: 150}}
+            />
+            <AnimatedLottieView
+              source={{
+                uri: 'https://assets7.lottiefiles.com/packages/lf20_qgq2nqsy.json',
+              }} // Replace with your animation file
+              autoPlay
+              loop
+              style={{width: 50, height: 50}}
+            />
+          </View>
+          <Text
+            style={{
+              fontSize: 14,
+              lineHeight: 25,
+              textAlign: 'center',
+              paddingHorizontal: 30,
+              color: COLORS.BLACK,
+            }}>
+            No Package Available for this Location
+          </Text>
+          {/* <View
               style={{
                 flexDirection: 'row',
                 justifyContent: 'center',
@@ -364,10 +374,10 @@ export default function Home(route) {
                   Contact Us
                 </Text>
               </TouchableOpacity> */}
-            {/* </View> */}
-          </View>
-            )}
-            {/* </Tab.Navigator> */}
+          {/* </View> */}
+        </View>
+      )}
+      {/* </Tab.Navigator> */}
     </SafeAreaView>
   );
 }

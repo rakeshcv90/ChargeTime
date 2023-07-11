@@ -1,55 +1,54 @@
-
-import { Image, View, Text, StyleSheet, Dimensions, TouchableOpacity, SafeAreaView, ScrollView, BackHandler } from 'react-native';
-import React, { useState, useEffect } from 'react';
-import { createDrawerNavigator } from '@react-navigation/drawer';
-import { CommonActions, NavigationContainer } from '@react-navigation/native';
-import Picker from '@react-native-picker/picker'
-import logo from '../../../assets/images/logo.png';
+/* eslint-disable no-undef */
+/* eslint-disable react-hooks/exhaustive-deps */
+import {
+  Image,
+  View,
+  Text,
+  StyleSheet,
+  Dimensions,
+  TouchableOpacity,
+  SafeAreaView,
+  BackHandler,
+} from 'react-native';
+import React, {useState, useEffect} from 'react';
 import COLORS from '../../constants/COLORS';
-import HorizontalLine from '../../Components/HorizontalLine';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {navigationRef} from '../../../App';
-import {FONTS} from '../../constants/FONTS';
 import {DIMENSIONS, PLATFORM_IOS} from '../../constants/DIMENSIONS';
 import DrawerOpen from '../../Components/DrawerOpen';
-import { persistor } from '../../redux/store';
-import { useSelector } from 'react-redux';
-import { API } from '../../api/API';
-import { useDispatch } from 'react-redux';
-import { getAllCard, setLogout, setPurchaseData, userProfileData } from '../../redux/action';
-import { getCurrentPlan } from '../../redux/action';
-import SubBoxOne from '../../Components/SubBoxOne';
-import Privacy from '../drawerPart/Privacy';
+// eslint-disable-next-line no-unused-vars
+import ActivityLoader from '../../Components/ActivityLoader';
+import {persistor} from '../../redux/store';
+import {useSelector} from 'react-redux';
+import {API} from '../../api/API';
+import {useDispatch} from 'react-redux';
+import {setLogout, setPurchaseData, userProfileData} from '../../redux/action';
 import axios from 'axios';
-import { setCardDetails } from '../../redux/action';
+import {setCardDetails} from '../../redux/action';
+import {ScrollView} from 'react-native-gesture-handler';
 
 const mobileW = Math.round(Dimensions.get('screen').width);
 const mobileH = Math.round(Dimensions.get('screen').height);
 
-
-
-
-const Account = ({ navigation }) => {
-  const [selectedValue, setSelectedValue] = useState('');
-const [allSavedCard , setSavedCard] = useState([]);
-  const getUserID = useSelector((state) => state.getUserID);
-  const [getSubscription, setGetSubscription] = useState([]);
-  const [getData, setGetData] = useState([]);
-  const [apiResponse, setApiResponse] = useState(null);
+const Account = ({navigation}) => {
+  const [allSavedCard, setSavedCard] = useState([]);
+  const getUserID = useSelector(state => state.getUserID);
+  // const [getData, setGetData] = useState([]);
+  // const [apiResponse, setApiResponse] = useState(null);
   const user_ID = getUserID;
-  
+
   const dispatch = useDispatch();
 
   useEffect(() => {
-     //  console.log('data for this User:---------', userRegisterData); 
-     handleAllGetCard();
-     userDetails();
-     getPlanCurrent();
-     // userSubscription();
-     //  userSubsEnergy();
+    //  console.log('data for this User:---------', userRegisterData);
+    handleAllGetCard();
+    userDetails();
+    getPlanCurrent();
+    // userSubscription();
+    //  userSubsEnergy();
     const backHandler = BackHandler.addEventListener(
       'hardwareBackPress',
-      handleBackButton
+      handleBackButton,
     );
 
     return () => backHandler.remove();
@@ -95,29 +94,24 @@ const [allSavedCard , setSavedCard] = useState([]);
     //   link: 'Theme'
     // },
   ];
-
   const handleLogOut = async () => {
-   await AsyncStorage.clear();
-   await persistor.purge();
-   dispatch(setLogout());
-  navigationRef.navigate('LoginStack')
+    await AsyncStorage.clear();
+    await persistor.purge();
+    dispatch(setLogout());
+    navigationRef.navigate('LoginStack');
   };
-
-
   const userDetails = async () => {
     // const response = await fetch(`${API}/userexisting/${user_ID}`);
     try {
       const response = await fetch(`${API}/userexisting/${user_ID}`);
       const result = await response.json();
-      if (result[0].message == "sucess") {
-
+      if (result[0].message === 'sucess') {
         // console.log('wwwwww', result);
         //  setUserData(result);
         dispatch(userProfileData(result));
-         console.log(result)
-
+        console.log(result);
       } else {
-        console.log("iiiiiiiiiiii")
+        console.log('iiiiiiiiiiii');
       }
       // setLocationMap(result);
     } catch (error) {
@@ -133,7 +127,7 @@ const [allSavedCard , setSavedCard] = useState([]);
         // setModalVisible(false);
         if (res.data.data == 'Package details not found') {
           // dispatch(setPurchaseData(res.data));
-          console.log("-------------------",res.data)
+          console.log('-------------------', res.data);
           // setGetData(res.data);
           // dispatch(setPackageStatus(false));
         } else {
@@ -147,100 +141,106 @@ const [allSavedCard , setSavedCard] = useState([]);
       });
   };
   const handleAllGetCard = async () => {
-
     try {
       const response = await fetch(`${API}/getcarddetails/${user_ID}`);
       const result = await response.json();
       // console.log("Result", result[0].sort((b, a) => a.status - b.status))
-      console.log("handle all card...",result);
+      console.log('handle all card...', result);
       if (result[0]?.length > 0) {
-
-        setSavedCard(result[0].sort((b, a) => a.status - b.status))
+        setSavedCard(result[0].sort((b, a) => a.status - b.status));
         const statusOneObjects = result[0].filter(item => item.status === 1);
-       dispatch(setCardDetails(statusOneObjects));
-
+        dispatch(setCardDetails(statusOneObjects));
+      } else {
+        setSavedCard([]);
       }
-      else {
-        setSavedCard([])
-
-      }
-
     } catch (error) {
-      console.log("ERROR", error)
+      console.log('ERROR', error);
     }
-  }
-
-  const handleLinkPress = (screen) => {
-    navigation.navigate(screen,{allSavedCard, handleAllGetCard});
+  };
+  const handleLinkPress = screen => {
+    navigation.navigate(screen, {allSavedCard});
   };
 
   return (
-    <SafeAreaView style={{ backgroundColor: COLORS.CREAM, flex: 1 }}>
+    // eslint-disable-next-line react-native/no-inline-styles
+    <SafeAreaView style={{backgroundColor: COLORS.CREAM, flex: 1}}>
       <View style={styles.main_div}>
         <View style={styles.row}>
           <Text style={styles.heading}>Account</Text>
-    
-          <DrawerOpen top={ PLATFORM_IOS ? 30 : 30}/>
-        </View>
-        {Screen.map((item, index) => (
-          <TouchableOpacity
-            key={index}
-            style={styles.itemContainer}
-            onPress={() => handleLinkPress(item.link)}
-          >
-            <View style={styles.row}>
-              <Image source={item.image} style={styles.icon} />
-              <Text style={styles.title}>{item.title} </Text>
-              <View style={styles.sideImageContainer}>
-                <Image source={item.side_image} style={styles.side_icon} />
-              </View>
-            </View>
-            <View
-              style={{
-                flexDirection: 'row',
-                alignItems: 'center',
-                justifyContent: 'center',
-                width: mobileW,
-              }}>
-              <Image source={require('../../../assets/images/dotted.png')} style={{ width: mobileW ,height:3 }}
-                 resizeMode="stretch" />
-            </View>
 
-          </TouchableOpacity>
-        ))}
-        <View style={styles.row}>
-          <Image source={require('../../../assets/images/Theme.png')} style={styles.icon} />
-          <Text style={styles.title}>Theme</Text>
-          <TouchableOpacity style={styles.button} >
-            <Text style={styles.buttonText}>Follow System</Text>
-          </TouchableOpacity>
+          <DrawerOpen top={PLATFORM_IOS ? 30 : 30} />
         </View>
-        <View style={styles.addContainer}>
-          <TouchableOpacity style={styles.listItem} onPress={()=>{ navigation.navigate('Privacy Policy')}}>
-            <Text style={styles.bullet}>•</Text>
-            <Text style={styles.text}>Privacy Policy</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.listItem} >
-            <Text style={styles.bullet}>•</Text>
-            <Text style={styles.text}>Rate Us</Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            onPress={() => { navigation.navigate('Contact') }}
-            style={styles.listItem}  >
-            <Text style={styles.bullet}>•</Text>
-            <Text style={styles.text}>Contact Us</Text>
-          </TouchableOpacity>
-        </View>
-        <View style={styles.ButtonsContainer}>
-          <TouchableOpacity
-            style={styles.logoutButton}
-            onPress={() => handleLogOut()}>
-            <Text style={styles.logoutbuttonText}>LOG OUT</Text>
-          </TouchableOpacity>
-        </View>
-      
+        <ScrollView showsVerticalScrollIndicator={false} style={{flex: 1}}>
+          {Screen.map((item, index) => (
+            <TouchableOpacity
+              key={index}
+              style={styles.itemContainer}
+              onPress={() => handleLinkPress(item.link)}>
+              <View style={styles.row}>
+                <Image source={item.image} style={styles.icon} />
+                <Text style={styles.title}>{item.title} </Text>
+                <View style={styles.sideImageContainer}>
+                  <Image source={item.side_image} style={styles.side_icon} />
+                </View>
+              </View>
+              <View
+                // eslint-disable-next-line react-native/no-inline-styles
+                style={{
+                  flexDirection: 'row',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  width: mobileW,
+                }}>
+                <Image
+                  source={require('../../../assets/images/dotted.png')}
+                  // eslint-disable-next-line react-native/no-inline-styles
+                  style={{width: mobileW, height: 3}}
+                  resizeMode="stretch"
+                />
+              </View>
+            </TouchableOpacity>
+          ))}
+          <View style={styles.row}>
+            <Image
+              source={require('../../../assets/images/Theme.png')}
+              style={styles.icon}
+            />
+            <Text style={styles.title}>Theme</Text>
+            <TouchableOpacity style={styles.button}>
+              <Text style={styles.buttonText}>Follow System</Text>
+            </TouchableOpacity>
+          </View>
+          <View style={styles.addContainer}>
+            <TouchableOpacity
+              style={styles.listItem}
+              onPress={() => {
+                navigation.navigate('Privacy Policy');
+              }}>
+              <Text style={styles.bullet}>•</Text>
+              <Text style={styles.text}>Privacy Policy</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.listItem}>
+              <Text style={styles.bullet}>•</Text>
+              <Text style={styles.text}>Rate Us</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              onPress={() => {
+                navigation.navigate('Contact');
+              }}
+              style={styles.listItem}>
+              <Text style={styles.bullet}>•</Text>
+              <Text style={styles.text}>Contact Us</Text>
+            </TouchableOpacity>
+          </View>
+          <View style={styles.ButtonsContainer}>
+            <TouchableOpacity
+              style={styles.logoutButton}
+              onPress={() => handleLogOut()}>
+              <Text style={styles.logoutbuttonText}>LOG OUT</Text>
+            </TouchableOpacity>
+          </View>
+        </ScrollView>
       </View>
-    
     </SafeAreaView>
   );
 };
@@ -350,7 +350,7 @@ const styles = StyleSheet.create({
   ButtonsContainer: {
     justifyContent: 'center',
     alignItems: 'center',
-    marginTop: mobileH * 3 / 100,
+    marginTop: (mobileH * 3) / 100,
     bottom: mobileH * 0.001,
   },
   logoutButton: {
@@ -360,7 +360,7 @@ const styles = StyleSheet.create({
     ...Platform.select({
       ios: {
         shadowColor: '#000000',
-        shadowOffset: { width: 0, height: 2 },
+        shadowOffset: {width: 0, height: 2},
         shadowOpacity: 0.3,
         shadowRadius: 4,
       },

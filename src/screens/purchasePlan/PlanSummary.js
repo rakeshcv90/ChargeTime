@@ -1,3 +1,6 @@
+/* eslint-disable react-hooks/exhaustive-deps */
+/* eslint-disable no-unused-vars */
+/* eslint-disable react-native/no-inline-styles */
 import {
   View,
   Text,
@@ -150,8 +153,12 @@ export default function PlanSummary({route, navigation}) {
                     ${total_price}
                   </Text>
                   <Text
-                    style={{fontSize: 12, fontWeight: '400', paddingBottom: 5,
-                    color: COLORS.BLACK,}}>
+                    style={{
+                      fontSize: 12,
+                      fontWeight: '400',
+                      paddingBottom: 5,
+                      color: COLORS.BLACK,
+                    }}>
                     ${tax}
                   </Text>
                   <Text

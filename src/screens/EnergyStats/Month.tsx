@@ -1,3 +1,10 @@
+/* eslint-disable no-trailing-spaces */
+/* eslint-disable react-native/no-inline-styles */
+/* eslint-disable react-hooks/exhaustive-deps */
+/* eslint-disable @typescript-eslint/no-unused-vars */
+/* eslint-disable quotes */
+/* eslint-disable prettier/prettier */
+/* eslint-disable semi */
 import {View, Text, ScrollView} from 'react-native';
 import React, {useEffect, useRef, useState} from 'react';
 

@@ -1,3 +1,7 @@
+/* eslint-disable react/no-unstable-nested-components */
+/* eslint-disable eqeqeq */
+/* eslint-disable react-native/no-inline-styles */
+/* eslint-disable no-unused-vars */
 import {
   View,
   Text,
@@ -14,26 +18,25 @@ import {
   Platform,
 } from 'react-native';
 import AnimatedLottieView from 'lottie-react-native';
-import React, { useState, useRef, useEffect } from 'react';
-import { SafeAreaView } from 'react-native-safe-area-context'
+import React, {useState, useRef, useEffect} from 'react';
+import {SafeAreaView} from 'react-native-safe-area-context';
 import Input from '../../Components/Input';
 import COLORS from '../../constants/COLORS';
-import { Card } from '../../../assets/svgs/Card';
-import { Name } from '../../../assets/svgs/Name';
-import { DIMENSIONS, PLATFORM_IOS } from '../../constants/DIMENSIONS';
-import { LeftIcon } from '../../../assets/images/LeftIcon';
-import { Formik } from 'formik';
+import {Card} from '../../../assets/svgs/Card';
+import {Name} from '../../../assets/svgs/Name';
+import {DIMENSIONS, PLATFORM_IOS} from '../../constants/DIMENSIONS';
+import {LeftIcon} from '../../../assets/images/LeftIcon';
+import {Formik} from 'formik';
 import * as Yup from 'yup';
-import { Admin } from '../../../assets/images/Admin';
-import { Message } from '../../../assets/images/Message';
-import { useDispatch, useSelector } from 'react-redux';
+import {Admin} from '../../../assets/images/Admin';
+import {Message} from '../../../assets/images/Message';
+import {useDispatch, useSelector} from 'react-redux';
 import axios from 'axios';
-import { API } from '../../api/API';
-import { navigationRef } from '../../../App';
+import {API} from '../../api/API';
+import {navigationRef} from '../../../App';
 import ActivityLoader from '../../Components/ActivityLoader';
 import HorizontalLine from '../../Components/HorizontalLine';
-import { mvs, ms } from 'react-native-size-matters';
-
+import {mvs, ms} from 'react-native-size-matters';
 
 import {
   setCardDetails,
@@ -42,6 +45,7 @@ import {
   setPlanStatus,
   setPurchaseData,
 } from '../../redux/action';
+import {Toast} from 'react-native-toast-message/lib/src/Toast';
 
 const mobileW = Math.round(Dimensions.get('screen').width);
 const mobileH = Math.round(Dimensions.get('window').height);
@@ -50,8 +54,7 @@ const validationSchema = Yup.object().shape({
   cardNumber: Yup.string()
     .required('Invalid Card Number')
     .min(19, 'Card number must be 16 digits'),
-   
-    
+
   // .matches(/^[0-9]{16}$/, 'Card number must be 16 digits'),
   validTill: Yup.string()
     .required('expiry date required')
@@ -59,7 +62,9 @@ const validationSchema = Yup.object().shape({
       'expiration',
       'Expiration date must be greater than current date',
       function (value) {
-        if (!value) return false;
+        if (!value) {
+          return false;
+        }
         const currentDate = new Date();
         const [month, year] = value.split('/');
         const expirationDate = new Date(
@@ -73,8 +78,8 @@ const validationSchema = Yup.object().shape({
     .required('cvv is required')
     .matches(/^[0-9]{3}$/, 'CVV must be 3 digits'),
 });
-export default function PaymentGateWay({ navigation, route }) {
-  const { getDataForPayment, getUserID, getEmailDAta } = useSelector(
+export default function PaymentGateWay({navigation, route}) {
+  const {getDataForPayment, getUserID, getEmailDAta} = useSelector(
     state => state,
   );
   const [modalVisible, setModalVisible] = useState(false);
@@ -84,7 +89,7 @@ export default function PaymentGateWay({ navigation, route }) {
 
   const getCardDetails = useSelector(state => state.getCardDetails);
 
-  useEffect
+  useEffect;
   const [cardId, setCardId] = useState('');
   const [cardDetails, setCardDetails1] = useState({
     cardHolderName: getCardDetails[0]?.cust_name,
@@ -112,17 +117,14 @@ export default function PaymentGateWay({ navigation, route }) {
   const [validity, setValidity] = useState(
     String(
       getCardDetails[0]?.card_exp_month +
-      '/' +
-      getCardDetails[0]?.card_exp_year,
+        '/' +
+        getCardDetails[0]?.card_exp_year,
     ) ?? '',
   );
-
-
 
   // console.log(savedCard,"------------")
 
   const newPAYMENT = async values => {
-   
     setLoader(true);
     let payload = new FormData();
 
@@ -137,39 +139,35 @@ export default function PaymentGateWay({ navigation, route }) {
     payload.append('price', getDataForPayment.total_price);
     payload.append('price_stripe_id', getDataForPayment.price_stripe_id);
     payload.append('user_id', getUserID);
-    console.log("----------------",payload);
+    console.log('----------------', payload);
     try {
       const response = await axios.post(`${API}/checkout`, payload, {
         headers: {
           'Content-Type': 'multipart/form-data',
         },
       });
-console.log('PAYMENT', response.data);
+      console.log('PAYMENT', response.data);
       if ((response.data.status = 'success')) {
         setLoader(false);
         setModalVisible(true);
       }
-    
     } catch (err) {
       setLoader(false);
       if (err.response) {
         PLATFORM_IOS
-        ? Toast.show({
-          type: 'success',
-          text1: "Invalid Card Details !",
-        })
-        : ToastAndroid.show(
-          "Invalid Card Details !",
-          ToastAndroid.SHORT,
-        );
-        console.log("-------------------------",err.response.data);
+          ? Toast.show({
+              type: 'success',
+              text1: 'Invalid Card Details !',
+            })
+          : ToastAndroid.show('Invalid Card Details !', ToastAndroid.SHORT);
+        console.log('-------------------------', err.response.data);
         console.log(err.response.status);
       } else {
         console.log(err);
       }
     }
   };
-  
+
   const handlePaymentSubmit = async values => {
     setLoader(true);
     let payload = new FormData();
@@ -195,28 +193,31 @@ console.log('PAYMENT', response.data);
       });
       console.log('PAYMENT', response.data);
       if ((response.data.status = 'success')) {
-
-
         // handleAddCard(values)
 
         setModalVisible(true);
 
         setLoader(false);
-      }
-      else{
+      } else {
         PLATFORM_IOS
-        ? Toast.show({
-          type: 'success',
-          text1: 'Server Busy Please Try Later.',
-        })
-        : ToastAndroid.show(
-          'Server Busy Please Try Later.',
-          ToastAndroid.SHORT,
-        );
+          ? Toast.show({
+              type: 'success',
+              text1: 'Server Busy Please Try Later.',
+            })
+          : ToastAndroid.show(
+              'Server Busy Please Try Later.',
+              ToastAndroid.SHORT,
+            );
       }
     } catch (err) {
       setLoader(false);
       if (err.response) {
+        PLATFORM_IOS
+          ? Toast.show({
+              type: 'success',
+              text1: 'Invalid Card Details !',
+            })
+          : ToastAndroid.show('Invalid Card Details !', ToastAndroid.SHORT);
         console.log(err.response.data);
         console.log(err.response.status);
       } else {
@@ -224,8 +225,6 @@ console.log('PAYMENT', response.data);
       }
     }
   };
-
-  
 
   const getDeviceIDData = () => {
     axios
@@ -239,7 +238,7 @@ console.log('PAYMENT', response.data);
           if (route.params.purchageData == 'DOWNGRADE') {
             // PlanStatus();
 
-        navigationRef.navigate('HomeOne');
+            navigationRef.navigate('HomeOne');
           } else {
             getPlanCurrent();
           }
@@ -267,7 +266,7 @@ console.log('PAYMENT', response.data);
       .get(`${API}/currentplan/${getUserID}`)
       .then(res => {
         console.log(res.data);
-      
+
         if (res.data.data == 'Package details not found') {
           dispatch(setPurchaseData(res.data));
         } else {
@@ -288,10 +287,10 @@ console.log('PAYMENT', response.data);
     if (digitsOnly.length < 16) {
       return cardNumber;
     }
-  
+
     // Mask the first 12 digits and display the last 4 digits
-    const maskedNumber = "xxxx xxxx xxxx " + digitsOnly.substring(12,16);
-  
+    const maskedNumber = 'xxxx xxxx xxxx ' + digitsOnly.substring(12, 16);
+
     return maskedNumber;
   }
   // const PlanStatus = () => {
@@ -310,15 +309,13 @@ console.log('PAYMENT', response.data);
   // };
 
   return (
-    <SafeAreaView style={{ backgroundColor: COLORS.CREAM, flex: 1 }}>
-       <View style={{ marginHorizontal: 20, paddingTop: 20 }}>
-          <Text style={styles.complete_profile}>Payment Details</Text>
-        </View>
-        <ScrollView showsVerticalScrollIndicator={false} style={{ flex: 1 }} >
-      {loader && <ActivityLoader />}
-    
-       
-       
+    <SafeAreaView style={{backgroundColor: COLORS.CREAM, flex: 1}}>
+      <View style={{marginHorizontal: 20, paddingTop: 20}}>
+        <Text style={styles.complete_profile}>Payment Details</Text>
+      </View>
+      <ScrollView showsVerticalScrollIndicator={false} style={{flex: 1}}>
+        {loader && <ActivityLoader />}
+
         <View style={styles.centeredView}>
           <Modal
             animationType="slide"
@@ -337,7 +334,7 @@ console.log('PAYMENT', response.data);
                   }} // Replace with your animation file
                   autoPlay
                   loop
-                  style={{ width: 50, height: 50 }}
+                  style={{width: 50, height: 50}}
                 />
                 <Text
                   style={{
@@ -361,14 +358,12 @@ console.log('PAYMENT', response.data);
 
         <View style={styles.mainDiv_container}>
           <View>
-
             <Formik
               initialValues={{
                 cardHolderName: '',
                 cardNumber: '',
                 validTill: '',
                 cvv: '',
-
               }}
               onSubmit={values => handlePaymentSubmit(values)}
               validationSchema={validationSchema}>
@@ -390,7 +385,6 @@ console.log('PAYMENT', response.data);
                     }}
                   />
                   <View style={styles.cardNumber_position}>
-
                     {cardDetails.card_number ? (
                       <Text
                         style={{
@@ -398,8 +392,8 @@ console.log('PAYMENT', response.data);
                           fontWeight: '600',
                           fontSize: 20,
                         }}>
-                         
-                        {cardDetails?.card_number >0 && formatCreditCardNumber(cardDetails.card_number+'')}
+                        {cardDetails?.card_number > 0 &&
+                          formatCreditCardNumber(cardDetails.card_number + '')}
                       </Text>
                     ) : (
                       <Text
@@ -408,11 +402,11 @@ console.log('PAYMENT', response.data);
                           fontWeight: '600',
                           fontSize: 20,
                         }}>
-                        {formatCreditCardNumber(values.cardNumber+'')}
+                        {formatCreditCardNumber(values.cardNumber + '')}
                       </Text>
                     )}
                     <View style={styles.text_div}>
-                      <View style={{ gap: 5, width: 100 }}>
+                      <View style={{gap: 5, width: 100}}>
                         <Text
                           style={{
                             color: 'gray',
@@ -442,7 +436,7 @@ console.log('PAYMENT', response.data);
                           </Text>
                         )}
                       </View>
-                      <View style={{ gap: 5 }}>
+                      <View style={{gap: 5}}>
                         <Text
                           style={{
                             fontWeight: '600',
@@ -471,9 +465,8 @@ console.log('PAYMENT', response.data);
                             {values.validTill}
                           </Text>
                         )}
-
                       </View>
-                      <View style={{ gap: 5 }}>
+                      <View style={{gap: 5}}>
                         <Text
                           style={{
                             fontWeight: '600',
@@ -489,8 +482,9 @@ console.log('PAYMENT', response.data);
                               fontWeight: '600',
                               fontSize: 13,
                             }}>
-                          {cardDetails.card_cvv ? '*'.repeat(String(cardDetails.card_cvv).length) : null}
-
+                            {cardDetails.card_cvv
+                              ? '*'.repeat(String(cardDetails.card_cvv).length)
+                              : null}
                           </Text>
                         ) : (
                           <Text
@@ -499,8 +493,9 @@ console.log('PAYMENT', response.data);
                               fontWeight: '600',
                               fontSize: 13,
                             }}>
-                            {values.cvv? '*'.repeat(String(values.cvv).length) : null }
-
+                            {values.cvv
+                              ? '*'.repeat(String(values.cvv).length)
+                              : null}
                           </Text>
                         )}
                       </View>
@@ -510,15 +505,16 @@ console.log('PAYMENT', response.data);
                     style={{
                       backgroundColor: COLORS.GREEN,
                       //width:DIMENSIONS.SCREEN_WIDTH*0.3,
-                      height:DIMENSIONS.SCREEN_HEIGHT*0.05,                     
-                      marginBottom:35,
-                      justifyContent:'center',
-                      alignItems:'center',
+                      height: DIMENSIONS.SCREEN_HEIGHT * 0.05,
+                      // marginBottom: 35,
+                      marginBottom: Platform.OS == 'android' ? 35 : 10,
+                      justifyContent: 'center',
+                      alignItems: 'center',
                       borderRadius: 12,
                       ...Platform.select({
                         ios: {
                           shadowColor: '#000000',
-                          shadowOffset: { width: 0, height: 2 },
+                          shadowOffset: {width: 0, height: 2},
                           shadowOpacity: 0.3,
                           shadowRadius: 4,
                         },
@@ -534,13 +530,20 @@ console.log('PAYMENT', response.data);
                           fontWeight: '700',
                           color: COLORS.BLACK,
                         }}>
-                        Make Payment By Default Card 
+                        Make Payment By Default Card
                       </Text>
                     </TouchableOpacity>
                   </View>
-                  {Platform.OS == 'android' ? <HorizontalLine style={styles.line} /> : <View>
-                    <Image source={require('../../../assets/images/dotted.png')} style={{ width: mobileW * 0.98 }} />
-                  </View>}
+                  {Platform.OS == 'android' ? (
+                    <HorizontalLine style={styles.line} />
+                  ) : (
+                    <View style={{paddingVertical: 20}}>
+                      <Image
+                        source={require('../../../assets/images/dotted.png')}
+                        style={{width: mobileW * 0.98}}
+                      />
+                    </View>
+                  )}
 
                   <Input
                     IconLeft={null}
@@ -664,7 +667,7 @@ console.log('PAYMENT', response.data);
                         ...Platform.select({
                           ios: {
                             shadowColor: '#000000',
-                            shadowOffset: { width: 0, height: 2 },
+                            shadowOffset: {width: 0, height: 2},
                             shadowOpacity: 0.3,
                             shadowRadius: 4,
                           },
@@ -673,16 +676,16 @@ console.log('PAYMENT', response.data);
                           },
                         }),
                       }}>
-                        <TouchableOpacity onPress={handleSubmit}>
-                          <Text
-                            style={{
-                              fontSize: 14,
-                              fontWeight: '700',
-                              color: COLORS.BLACK,
-                            }}>
-                            Make Payment
-                          </Text>
-                        </TouchableOpacity>
+                      <TouchableOpacity onPress={handleSubmit}>
+                        <Text
+                          style={{
+                            fontSize: 14,
+                            fontWeight: '700',
+                            color: COLORS.BLACK,
+                          }}>
+                          Make Payment
+                        </Text>
+                      </TouchableOpacity>
                     </View>
                   </View>
                 </KeyboardAvoidingView>
@@ -690,7 +693,6 @@ console.log('PAYMENT', response.data);
             </Formik>
           </View>
         </View>
-        
       </ScrollView>
     </SafeAreaView>
   );
@@ -722,7 +724,7 @@ const styles = StyleSheet.create({
     ...Platform.select({
       ios: {
         shadowColor: '#000000',
-        shadowOffset: { width: 0, height: 2 },
+        shadowOffset: {width: 0, height: 2},
         shadowOpacity: 0.3,
         shadowRadius: 4,
       },
@@ -774,7 +776,6 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-end',
   },
   button: {
-    borderRadius: 20,
     padding: 10,
     elevation: 2,
     borderRadius: 100,
@@ -800,4 +801,3 @@ const styles = StyleSheet.create({
     color: '#000000',
   },
 });
-

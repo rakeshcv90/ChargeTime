@@ -1,83 +1,94 @@
-import React, { useState, useEffect } from 'react';
-import { View, TextInput, StyleSheet, Button, SafeAreaView, TouchableOpacity, Text, ToastAndroid, Dimensions, Image } from 'react-native';
+/* eslint-disable react-native/no-inline-styles */
+/* eslint-disable no-unused-vars */
+import React, {useState, useEffect} from 'react';
+import {
+  View,
+  TextInput,
+  StyleSheet,
+  Button,
+  SafeAreaView,
+  TouchableOpacity,
+  Text,
+  ToastAndroid,
+  Dimensions,
+  Image,
+  Platform,
+} from 'react-native';
 import Input from '../../Components/Input';
 import COLORS from '../../constants/COLORS';
-import { useSelector } from 'react-redux';
-import { DIMENSIONS } from '../../constants/DIMENSIONS';
+import {useSelector} from 'react-redux';
+import {DIMENSIONS} from '../../constants/DIMENSIONS';
 import HorizontalLine from '../../Components/HorizontalLine';
 import Header from '../../Components/Header';
-import { Eye } from '../../../assets/svgs/Eye';
-import { API } from '../../api/API';
-import { navigationRef } from '../../../App';
-import { ms } from 'react-native-size-matters';
+import {Eye} from '../../../assets/svgs/Eye';
+import {API} from '../../api/API';
+import {navigationRef} from '../../../App';
+import {ms} from 'react-native-size-matters';
 
-import { PLATFORM_IOS } from '../../constants/DIMENSIONS';
+import {PLATFORM_IOS} from '../../constants/DIMENSIONS';
 import axios from 'axios';
+import {Toast} from 'react-native-toast-message/lib/src/Toast';
 const mobileW = Math.round(Dimensions.get('screen').width);
 
-
-
 const Contact = () => {
-
-
   const [message, setMessage] = useState('');
 
-  const handleMessage = async (values) => {
-
+  const handleMessage = async values => {
     try {
-
       const response = await axios.post(`${API}/sendEmail`, {
-
-        "message": message,
+        message: message,
       });
       // console.log("update-----------",response)
       if (response.data.message === 'Email sent successfully') {
-        setMessage('')
-        console.log("hello");
+        setMessage('');
+        console.log('hello');
         PLATFORM_IOS
           ? Toast.show({
-            type: 'success',
-            text1: 'Email sent successfully.',
-          })
-          : ToastAndroid.show(
-            'Email sent successfully.',
-            ToastAndroid.SHORT,
-          );
-      }
-      else {
+              type: 'success',
+              text1: 'Email sent successfully.',
+            })
+          : ToastAndroid.show('Email sent successfully.', ToastAndroid.SHORT);
+      } else {
         // cb();
         PLATFORM_IOS
           ? Toast.show({
-            type: 'success',
-            text1: 'Email not sent ',
-          })
-          : ToastAndroid.show(
-            'Email not sent.',
-            ToastAndroid.SHORT,
-          );
+              type: 'success',
+              text1: 'Email not sent ',
+            })
+          : ToastAndroid.show('Email not sent.', ToastAndroid.SHORT);
       }
     } catch (error) {
       console.error(error);
     }
-
   };
 
-
-
   return (
-    <SafeAreaView style={{ backgroundColor: COLORS.CREAM, flex: 1 }}>
+    <SafeAreaView style={{backgroundColor: COLORS.CREAM, flex: 1}}>
       <Header headerName="Contact Us" />
-      {Platform.OS == 'android' ? <HorizontalLine style={styles.line} /> : <View>
-
-
-   
-        <Image source={require('../../../assets/images/dotted.png')} style={{ width: mobileW * 0.97, }} />
-
-      </View>
-      }
+      {Platform.OS === 'android' ? (
+        <HorizontalLine style={styles.line} />
+      ) : (
+        <View>
+          <Image
+            source={require('../../../assets/images/dotted.png')}
+            style={{width: mobileW * 0.97}}
+          />
+        </View>
+      )}
       {/* <HorizontalLine style={styles.line} /> */}
       <View style={styles.container}>
-        <View style={{ backgroundColor: COLORS.CREAM, width: 110, position: 'absolute', zIndex: 99, top: 23, left: 32, alignItems: 'center' }}><Text style={{ color: 'black' }}>Your Message</Text></View>
+        <View
+          style={{
+            backgroundColor: COLORS.CREAM,
+            width: 110,
+            position: 'absolute',
+            zIndex: 99,
+            top: 23,
+            left: 32,
+            alignItems: 'center',
+          }}>
+          <Text style={{color: 'black'}}>Your Message</Text>
+        </View>
         <TextInput
           style={{
             // flex: 1,
@@ -87,7 +98,7 @@ const Contact = () => {
             borderColor: COLORS.BLACK,
             marginVertical: 19,
 
-            width:  mobileW*0.92,
+            width: mobileW * 0.92,
             height: ms(150),
             color: COLORS.BLACK,
             fontSize: 14,
@@ -97,7 +108,6 @@ const Contact = () => {
             paddingLeft: 10,
             paddingTop: 10,
             textAlignVertical: 'top',
-
           }}
           multiline
           maxLength={550}
@@ -127,7 +137,7 @@ const Contact = () => {
               ...Platform.select({
                 ios: {
                   shadowColor: '#000000',
-                  shadowOffset: { width: 0, height: 2 },
+                  shadowOffset: {width: 0, height: 2},
                   shadowOpacity: 0.3,
                   shadowRadius: 4,
                 },
@@ -135,10 +145,7 @@ const Contact = () => {
                   elevation: 4,
                 },
               }),
-            }}
-
-          >
-
+            }}>
             <Text
               style={{
                 color: COLORS.BLACK,
@@ -169,13 +176,11 @@ const styles = StyleSheet.create({
     backgroundColor: COLORS.RED,
   },
   label: {
-    position: "absolute",
+    position: 'absolute',
     top: ' -15px',
-    left: "23px",
-    padding: " 2px",
-  }
+    left: '23px',
+    padding: ' 2px',
+  },
 });
 
 export default Contact;
-
-

@@ -1,3 +1,8 @@
+/* eslint-disable react/no-unstable-nested-components */
+/* eslint-disable react-native/no-inline-styles */
+/* eslint-disable react-hooks/exhaustive-deps */
+/* eslint-disable prettier/prettier */
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import {
   Animated,
   Dimensions,
@@ -132,16 +137,12 @@ const Remaining = ({ ...props }) => {
           marginVertical: DIMENSIONS.SCREEN_HEIGHT * 0.02,
           flexDirection: 'column-reverse',
           shadowColor: '#000000',
-          shadowOffset: {
-            width: 0,
-            height: 6,
-          },
-          shadowOpacity: 0.2,
-          shadowRadius: 5.62,
-          elevation: 8,
+          shadowOffset: {width: 0, height: 2},
+          shadowOpacity: 0.8,
+          shadowRadius: 5,
+          elevation: 5,
           borderWidth: 0,
           borderRadius: 10,
-          overflow: 'hidden',
 
         }}>
         <Text

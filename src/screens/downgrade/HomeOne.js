@@ -1,3 +1,11 @@
+/* eslint-disable no-undef */
+/* eslint-disable no-shadow */
+/* eslint-disable react/react-in-jsx-scope */
+/* eslint-disable react/no-unstable-nested-components */
+/* eslint-disable react-native/no-inline-styles */
+/* eslint-disable eqeqeq */
+/* eslint-disable react-hooks/exhaustive-deps */
+/* eslint-disable no-unused-vars */
 import {
   ScrollView,
   View,
@@ -114,7 +122,10 @@ export default function HomeOne(route) {
 
   useEffect(() => {
     fetchData();
-    console.log(getPurchaseData,'sdfjhiauvshriaeushrviuaesbvuiarsvyayvbiuabvyraiv uayse')
+    console.log(
+      getPurchaseData,
+      'sdfjhiauvshriaeushrviuaesbvuiarsvyayvbiuabvyraiv uayse',
+    );
   }, []);
 
   useEffect(() => {
@@ -154,7 +165,7 @@ export default function HomeOne(route) {
   useEffect(() => {
     const updatedNumArray = populateNumArray();
     setNumArray(updatedNumArray);
-    console.log(getPurchaseData.data)
+    console.log(getPurchaseData.data);
   }, [getBasePackage, getPurchaseData]);
 
   const fetchData = async () => {
@@ -328,10 +339,12 @@ export default function HomeOne(route) {
           {getBasePackage?.length >= 1 &&
             getBasePackage &&
             getBasePackage.map((item, ind) => {
-              let purchageData = getPurchaseData.data != 'Package details not found' ?
-                item.kwh > getPurchaseData.data.kwh 
-                  ? 'UPGRADE'
-                  : 'DOWNGRADE':'';
+              let purchageData =
+                getPurchaseData.data != 'Package details not found'
+                  ? item.kwh > getPurchaseData.data.kwh
+                    ? 'UPGRADE'
+                    : 'DOWNGRADE'
+                  : '';
               let num =
                 (item.package_name.toLowerCase() === getPurchaseData.length) !=
                   0 && getPurchaseData.data.energy_plan.toLowerCase();

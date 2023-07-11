@@ -1,3 +1,6 @@
+/* eslint-disable eqeqeq */
+/* eslint-disable no-shadow */
+/* eslint-disable react-native/no-inline-styles */
 import {
   StyleSheet,
   Text,
@@ -18,6 +21,7 @@ const Graph = ({dataOne}) => {
   const [openBox, setOpenBox] = useState(false);
   const [index, setIndex] = useState(-1);
   const [customViewPosition, setCustomViewPosition] = useState(0);
+  // console.log('jjjjjjjjjjj', dataOne);
   const data = {
     labels: dataOne.Date,
     datasets: [

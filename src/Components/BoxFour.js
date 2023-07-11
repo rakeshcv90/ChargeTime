@@ -1,3 +1,4 @@
+/* eslint-disable react-native/no-inline-styles */
 import {
   View,
   Text,
@@ -8,16 +9,17 @@ import {
   Platform,
   BackHandler,
 } from 'react-native';
-import React, { useEffect } from 'react';
+import React, {useEffect} from 'react';
 import {Address} from '../../assets/images/Address';
 import {Vanderberg} from '../../assets/images/Vanderberg';
 import {Connecticut} from '../../assets/images/Connecticut';
+import COLORS from '../constants/COLORS';
 const mobileW = Math.round(Dimensions.get('screen').width);
 const BoxFour = ({data}) => {
   useEffect(() => {
     const backHandler = BackHandler.addEventListener(
       'hardwareBackPress',
-      handleBackButton
+      handleBackButton,
     );
 
     return () => backHandler.remove();
@@ -49,7 +51,9 @@ const BoxFour = ({data}) => {
       <View style={styles.shadowProp}>
         <View style={styles.location_div}>
           <Vanderberg style={styles.img_width} />
-          <Text style={styles.force_base}>{data[0]==undefined?data.package_name:data[0].package_name}</Text>
+          <Text style={styles.force_base}>
+            {data[0] == undefined ? data.package_name : data[0].package_name}
+          </Text>
         </View>
         <Image
           // style={styles.img_width}
@@ -67,7 +71,6 @@ const BoxFour = ({data}) => {
             <Text style={styles.force_base}>
               {data[0]?.date} - {data[0]?.thirty_days_ago}
             </Text>
-      
           </View>
         </View>
       </View>
@@ -164,7 +167,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     borderWidth: 1,
     borderColor: COLORS.GREEN,
-    borderRadius: 5,
     backgroundColor: COLORS.WHITE,
     marginTop: 20,
     paddingHorizontal: 10,

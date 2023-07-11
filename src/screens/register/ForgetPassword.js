@@ -1,3 +1,9 @@
+/* eslint-disable react/no-unstable-nested-components */
+/* eslint-disable react-native/no-inline-styles */
+/* eslint-disable eqeqeq */
+/* eslint-disable no-trailing-spaces */
+/* eslint-disable prettier/prettier */
+/* eslint-disable no-unused-vars */
 import {
   View,
   Text,
@@ -56,8 +62,8 @@ const ForgetPassword = ({ navigation }) => {
           'Content-Type': 'application/json',
         },
         data: values,
-      })
-      console.log("First TIme data",values)
+      });
+      console.log('First TIme data',values);
       if (res.data) {
       
         if (res.data.success == true) {
@@ -159,8 +165,8 @@ const ForgetPassword = ({ navigation }) => {
     }
   };
   const resendOTp = async value=> {
-   const data={"email": value}
-   console.log("Data ",data);
+   const data = {'email': value};
+   console.log('Data ',data);
     setForLoading(true);
     try {
       const res = await axios(`${API}/forgetPassword`, {
@@ -169,7 +175,7 @@ const ForgetPassword = ({ navigation }) => {
           'Content-Type': 'application/json',
         },
         data: data,
-      })
+      });
      // console.log("Data ",res.data);
       if (res.data) {
         console.log(res.data);
@@ -310,7 +316,9 @@ const ForgetPassword = ({ navigation }) => {
                     style={styles.textInput_otp}
                     value={firstDigit}
                     onKeyPress={({ nativeEvent }) => {
-                      nativeEvent.key == 'Backspace' && setFirstDigit('');
+                     if (nativeEvent.key == 'Backspace' && setFirstDigit != ' ') {
+                      setFirstDigit('');
+                     }
                     }}
                   />
                   <TextInput
@@ -330,8 +338,8 @@ const ForgetPassword = ({ navigation }) => {
                     style={styles.textInput_otp}
                     value={secondDigit}
                     onKeyPress={({ nativeEvent }) => {
-                      if (nativeEvent.key == 'Backspace') {
-                        setFirstDigit('');
+                      if (nativeEvent.key == 'Backspace' && setsecondDigit != ' ') {
+                        setsecondDigit('');
                         otp1.current.focus();
                       }
                     }}
@@ -353,8 +361,8 @@ const ForgetPassword = ({ navigation }) => {
                     style={styles.textInput_otp}
                     value={thirdDigit}
                     onKeyPress={({ nativeEvent }) => {
-                      if (nativeEvent.key == 'Backspace') {
-                        setsecondDigit('');
+                      if (nativeEvent.key == 'Backspace' && setthirdDigit != ' ') {
+                        setthirdDigit('');
                         otp2.current.focus();
                       }
                     }}
@@ -376,9 +384,9 @@ const ForgetPassword = ({ navigation }) => {
                     style={styles.textInput_otp}
                     value={forthDigit}
                     onKeyPress={({ nativeEvent }) => {
-                      if (nativeEvent.key == 'Backspace') {
+                      if (nativeEvent.key == 'Backspace' && setforthDigit != '') {
+                        setforthDigit('');
                         otp3.current.focus();
-                        setthirdDigit('');
                       }
                     }}
                   />
@@ -399,9 +407,9 @@ const ForgetPassword = ({ navigation }) => {
                     style={styles.textInput_otp}
                     value={fifthDigit}
                     onKeyPress={({ nativeEvent }) => {
-                      if (nativeEvent.key == 'Backspace') {
+                      if (nativeEvent.key == 'Backspace' && setfifthDigit != ' ') {
+                        setfifthDigit('');
                         otp4.current.focus();
-                        setforthDigit('');
                       }
                     }}
                   />
@@ -421,10 +429,9 @@ const ForgetPassword = ({ navigation }) => {
                     style={styles.textInput_otp}
                     value={sixDigit}
                     onKeyPress={({ nativeEvent }) => {
-                      if (nativeEvent.key == 'Backspace') {
-                        otp5.current.focus();
-                        setfifthDigit('');
+                      if (nativeEvent.key == 'Backspace' && setSixDigit != ' ') {
                         setSixDigit('');
+                        otp5.current.focus();
                       }
                     }}
                     onSubmitEditing={verifyOTP}
@@ -518,7 +525,7 @@ const styles = StyleSheet.create({
     color: COLORS.BLACK,
   },
   email_placeholder: {
-    backgroundColor: `rgba(86, 84, 84, 0.1)`,
+    backgroundColor: 'rgba(86, 84, 84, 0.1)',
     borderRadius: 10,
     paddingHorizontal: 15,
     height: Platform.OS === 'ios' ? 50 : 50,
@@ -583,7 +590,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    marginVertical:10
+    marginVertical:10,
   },
   resend_otp_text: {
     color: COLORS.BLACK,

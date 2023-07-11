@@ -1,3 +1,14 @@
+/* eslint-disable no-sequences */
+/* eslint-disable react/no-unstable-nested-components */
+/* eslint-disable no-dupe-keys */
+/* eslint-disable eqeqeq */
+
+/* eslint-disable react-native/no-inline-styles */
+
+/* eslint-disable react-hooks/exhaustive-deps */
+/* eslint-disable quotes */
+/* eslint-disable prettier/prettier */
+/* eslint-disable no-unused-vars */
 import {
   View,
   Text,
@@ -14,6 +25,7 @@ import {
   Platform,
 
 } from 'react-native';
+import { Toast } from 'react-native-toast-message/lib/src/Toast';
 import React, { useState, useRef, useEffect } from 'react';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Input from '../../Components/Input';
@@ -28,10 +40,10 @@ import { Admin } from '../../../assets/images/Admin';
 import { CardNumber } from '../../../assets/svgs/CardNumber';
 import { useSelector } from 'react-redux';
 import axios from 'axios';
-import Header from '../../Components/Header'
-import HorizontalLine from '../../Components/HorizontalLine'
+import Header from '../../Components/Header';
+import HorizontalLine from '../../Components/HorizontalLine';
 import { API } from '../../api/API';
-import { Delete } from '../../../assets/svgs/Delete'
+import { Delete } from '../../../assets/svgs/Delete';
 import { PLATFORM_IOS } from '../../constants/DIMENSIONS';
 import { navigationRef } from '../../../App';
 import creditCardType, { types as CardType } from 'credit-card-type';
@@ -40,6 +52,7 @@ import { mvs, ms } from 'react-native-size-matters';
 import { setCardDetails } from '../../redux/action';
 import { useDispatch } from 'react-redux';
 import Carousel from 'react-native-reanimated-carousel';
+import ActivityLoader from '../../Components/ActivityLoader';
 
 const mobileW = Math.round(Dimensions.get('screen').width);
 const mobileH = Math.round(Dimensions.get('window').height);
@@ -52,7 +65,7 @@ const validationSchema = Yup.object().shape({
       'xpiration',
       'Expiration date must be greater than current date',
       function (value) {
-        if (!value) return false;
+        if (!value) {return false;}
         const currentDate = new Date();
         const [month, year] = value.split('/');
         const expirationDate = new Date(
@@ -66,8 +79,8 @@ const validationSchema = Yup.object().shape({
     .matches(/^[0-9]{3}$/, 'CVV must be 3 digits'),
 });
 export default function PaymentGateWay({ navigation, route }) {
-  console.log("Route...",route.params)
-  const {handleAllGetCard, allSavedCard} =route.params;
+  console.log("Route...",route.params);
+  const {allSavedCard} = route.params;
   const { getUserID } = useSelector(
     state => state,
   );
@@ -94,7 +107,7 @@ export default function PaymentGateWay({ navigation, route }) {
     cardNumber: '',
     validTill: '',
     cvv: '',
-  }
+  };
   // console.log("-------------",savedCard)
   const user_ID = getUserID;
   const dispatch = useDispatch();
@@ -115,26 +128,26 @@ export default function PaymentGateWay({ navigation, route }) {
     } else {
       return require('../../../assets/images/visaCard.png');
     }
-  }
+  };
 
   useEffect(() => {
 
     // console.log("Credit card...",creditCardType(creditCard))
-    getCardType(cardDetails?.card_number ?? "")
-    // handleGetCard()
-  }, [creditCard, cardDetails, cardId])
+    getCardType(cardDetails?.card_number ?? "");
+    handleGetCard();
+  }, [creditCard, cardDetails, cardId]);
 
 
 
 
   const handleAddCard = async (values, cb) => {
-    setLoader(true)
+    setLoader(true);
     let exp_month = values?.validTill?.split('/')[0];
     let exp_year = values?.validTill?.split('/')[1];
     // let customer_number = values?.cardNumber.split(" ").join("");
     let cust_number = values?.cardNumber.replace(/\s/g, '').slice(0, 16);
 
-    setGetCard_Number(values?.cardNumber)
+    setGetCard_Number(values?.cardNumber);
     try {
 
       const response = await axios.post(`${API}/addcarddetail`, {
@@ -148,11 +161,11 @@ export default function PaymentGateWay({ navigation, route }) {
       });
       // console.log("------", response);
       if (response.data.message) {
-      
+
         cb();
         handleGetCard();
         //setFocusedIndex(focusIndex+1)
-        setLoader(false)
+        setLoader(false);
         setCardDetails1({
           cardHolderName: '',
           card_number: '',
@@ -171,7 +184,7 @@ export default function PaymentGateWay({ navigation, route }) {
           );
       }
       else if (response.data.error) {
-        setLoader(false)
+        setLoader(false);
         cb();
         PLATFORM_IOS
           ? Toast.show({
@@ -196,20 +209,20 @@ export default function PaymentGateWay({ navigation, route }) {
       // console.log("Result", result[0].sort((b, a) => a.status - b.status))
       console.log(result);
       if (result[0]?.length > 0) {
-        setSavedCard(result[0].sort((b, a) => a.status - b.status))
+        setSavedCard(result[0].sort((b, a) => a.status - b.status));
         //  console.log("after card  delete",result[0])
         const statusOneObjects = result[0].filter(item => item.status === 1);
         // console.log(statusOneObjects)
-        dispatch(setCardDetails(statusOneObjects))
+        dispatch(setCardDetails(statusOneObjects));
 
       }
       else {
       }
 
     } catch (error) {
-      console.log("ERROR", error)
+      console.log("ERROR", error);
     }
-  }
+  };
   const card_id = cardId;
 
   function formatCreditCardNumber(cardNumber) {
@@ -227,20 +240,21 @@ export default function PaymentGateWay({ navigation, route }) {
   }
 
   const handleDeleteCard = async (value) => {
-    setLoader(true)
+    setLoader(true);
     try {
       const response = await fetch(`${API}/deletecard/${value}`, {
         method: 'DELETE',
       });
       const result = await response.json();
       if (result.success === "Your card is deleted") {
-        setLoader(false)
+
         setSavedCard((card) => {
-          return card.filter((item) => item.id !== value)
+          return card.filter((item) => item.id !== value);
       });
-        setFocusedIndex(focusIndex == 0? 0: focusIndex-1)
+        setFocusedIndex(focusIndex === 0 ? 0 : focusIndex - 1);
         handleGetCard();
-        setLoader(true)
+        setLoader(false);
+        // setLoader(true);
         PLATFORM_IOS
           ? Toast.show({
             type: 'success',
@@ -252,7 +266,7 @@ export default function PaymentGateWay({ navigation, route }) {
           );
       } else {
         // console.log("Error deleting card");
-        setLoader(false)
+        setLoader(false);
       }
     } catch (error) {
       console.error("Error deleting card", error);
@@ -261,7 +275,7 @@ export default function PaymentGateWay({ navigation, route }) {
 
 
   const handleMakeDefaultCard = async (values) => {
-    setLoader(true)
+    setLoader(true);
     try {
       const response = await fetch(`${API}/defaultcard`, {
         method: 'POST',
@@ -277,7 +291,7 @@ export default function PaymentGateWay({ navigation, route }) {
       if (result.msg === "sucessfull") {
         //handleGetCard();
         handleGetCard();
-        setLoader(false)
+        setLoader(false);
         PLATFORM_IOS
           ? Toast.show({
             type: 'success',
@@ -288,7 +302,7 @@ export default function PaymentGateWay({ navigation, route }) {
             ToastAndroid.SHORT,
           );
       } else {
-        setLoader(false)
+        setLoader(false);
         PLATFORM_IOS
           ? Toast.show({
             type: 'success',
@@ -312,20 +326,16 @@ export default function PaymentGateWay({ navigation, route }) {
     <SafeAreaView style={{ backgroundColor: COLORS.CREAM, flex: 1 }}>
       <Header headerName="Payment Methods" editShow={false} />
       {Platform.OS == 'android' ? <HorizontalLine style={styles.line} /> : <View>
-
-      <ActivityLoader visible={loader} />
-
-
-
         <Image source={require('../../../assets/images/dotted.png')} style={{ width: mobileW * 0.97 }} />
       </View>}
+      <ActivityLoader visible={loader} />
       <ScrollView showsVerticalScrollIndicator={false} style={{ flexGrow: 1, flex: 1 }} >
 
         <View style={styles.mainDiv_container}>
           <Formik
             initialValues={initialValues}
             onSubmit={(values, { resetForm }) => {
-              handleAddCard(values, () => resetForm({ values: initialValues }))
+              handleAddCard(values, () => resetForm({ values: initialValues }));
 
             }}
             validationSchema={validationSchema}>
@@ -347,7 +357,7 @@ export default function PaymentGateWay({ navigation, route }) {
                       width={400}
                       height={mvs(200)}
                       data={savedCard}
-                      // defaultIndex={focusIndex >= 0 ? focusIndex :0}
+                      // defaultIndex={focusIndex >= 0 ? focusIndex : 0}
                       renderItem={({ item,index }) => {
                         return (
                           <View style={{}}>
@@ -398,23 +408,23 @@ export default function PaymentGateWay({ navigation, route }) {
                             </ImageBackground>
 
                           </View>
-                        )
+                        );
                       }}
                       // sliderWidth={400}
                       // itemWidth={400}
                       loop={false}
                       onSnapToItem={(index) => {
-                        setCurrentCard(savedCard[index])
-                        setFocusedIndex(index)
+                        setCurrentCard(savedCard[index]);
+                        setFocusedIndex(index);
                       }}
                     />
 
                     <View style={styles.dotsContainer}>
                       {savedCard && savedCard.length > 0 && savedCard.map((item, index) =>{
-                      if(index ===0 && !currentCard){
-                        return <View style={[styles.dot, styles.activeDot]} />
-                      }else {
-                       return <View style={[styles.dot, (index === focusIndex ) && styles.activeDot]} />
+                      if (index === 0 && !currentCard){
+                        return <View style={[styles.dot, styles.activeDot]} />;
+                      } else {
+                       return <View style={[styles.dot, (index === focusIndex ) && styles.activeDot]} />;
                       }
                      } )}
 
@@ -474,7 +484,7 @@ export default function PaymentGateWay({ navigation, route }) {
                     marginTop: 30,
                     marginBottom: 35,
                   }}>
-                    
+
                     </View> */}
 
                 <View
@@ -488,19 +498,19 @@ export default function PaymentGateWay({ navigation, route }) {
                   }}>
                   <TouchableOpacity
                     onPress={() => {
-                      if(savedCard && savedCard[0]!=undefined){
+                      if (savedCard && savedCard[0] != undefined){
                         if (savedCard && savedCard[0].status === 1 && (!currentCard || currentCard.status === 1)) {
 
                           // console.log("------",savedCard[0])
                           // navigationRef.navigate('PaymentGateWay');
                         } else if (savedCard && savedCard.length === 1 && savedCard[0].status === 0) {
-                          console.log("In else if------", savedCard[0].id)
-                          handleMakeDefaultCard(savedCard[0].id)
+                          console.log("In else if------", savedCard[0].id);
+                          handleMakeDefaultCard(savedCard[0].id);
                         }
                         else if (savedCard && savedCard.length > 1 && (currentCard.status === 0)) {
-                          console.log("In else------", currentCard.id)
-                          handleMakeDefaultCard(currentCard.id)
-  
+                          console.log("In else------", currentCard.id);
+                          handleMakeDefaultCard(currentCard.id);
+
                         }
                         // else {
                         //   PLATFORM_IOS
@@ -513,7 +523,7 @@ export default function PaymentGateWay({ navigation, route }) {
                         //       ToastAndroid.SHORT,
                         //     );
                         // }
-                      }else{
+                      } else {
                         PLATFORM_IOS
                             ? Toast.show({
                               type: 'success',
@@ -524,21 +534,21 @@ export default function PaymentGateWay({ navigation, route }) {
                               ToastAndroid.SHORT,
                             );
                       }
-                     
-                    }}
-                    style={savedCard && savedCard[0]!=undefined ? savedCard && savedCard[0].status === 1 && (!currentCard || currentCard.status === 1) ? styles.default : {
-                      ...styles.makeDefault,
-                      backgroundColor: (savedCard.length > 0 && savedCard[0].status === 0) || (currentCard.length > 0 || currentCard.status === 0) ? COLORS.GREEN : '#CCCCCC'
-                    }
-                  :{
-                    ...styles.makeDefault,
-                    backgroundColor: (savedCard.length > 0 && savedCard[0].status === 0) || (currentCard.length > 0 || currentCard.status === 0) ? COLORS.GREEN : '#CCCCCC'
-                  }}
-                    disabled={savedCard[0]!=undefined ? savedCard && savedCard[0].status === 1 && (!currentCard || currentCard.status === 1) ? true : false:false}>
-                    <Text
-                      style={savedCard[0]!=undefined ? savedCard && savedCard[0].status === 1 && (!currentCard || currentCard.status === 1) ? styles.makeDefaultText : styles.defaultText:styles.defaultText}>
 
-                      {savedCard[0]!=undefined ? savedCard && savedCard[0].status === 1 && (!currentCard || currentCard.status === 1) ? "Current Payment Method" : "Make Default": "Make Default"}
+                    }}
+                    style={savedCard && savedCard[0] != undefined ? savedCard && savedCard[0].status === 1 && (!currentCard || currentCard.status === 1) ? styles.default : {
+                      ...styles.makeDefault,
+                      backgroundColor: (savedCard.length > 0 && savedCard[0].status === 0) || (currentCard.length > 0 || currentCard.status === 0) ? COLORS.GREEN : '#CCCCCC',
+                    }
+                  : {
+                    ...styles.makeDefault,
+                    backgroundColor: (savedCard.length > 0 && savedCard[0].status === 0) || (currentCard.length > 0 || currentCard.status === 0) ? COLORS.GREEN : '#CCCCCC',
+                  }}
+                    disabled={savedCard[0] != undefined ? savedCard && savedCard[0].status === 1 && (!currentCard || currentCard.status === 1) ? true : false : false}>
+                    <Text
+                      style={savedCard[0] != undefined ? savedCard && savedCard[0].status === 1 && (!currentCard || currentCard.status === 1) ? styles.makeDefaultText : styles.defaultText : styles.defaultText}>
+
+                      {savedCard[0] != undefined ? savedCard && savedCard[0].status === 1 && (!currentCard || currentCard.status === 1) ? "Current Payment Method" : "Make Default" : "Make Default"}
 
                     </Text>
                   </TouchableOpacity>
@@ -547,11 +557,11 @@ export default function PaymentGateWay({ navigation, route }) {
                       // console.log(currentCard);
                       if (currentCard.status === 1 || currentCard.status === 0) {
                         // setCardID(currentCard.id)
-                        handleDeleteCard(currentCard.id)
+                        handleDeleteCard(currentCard.id);
                       } else if (savedCard.length > 0) {
                         // console.log("------",savedCard[0]?.id)
                         // setCardID(savedCard[0]?.id)
-                        handleDeleteCard(savedCard[0]?.id)
+                        handleDeleteCard(savedCard[0]?.id);
                       }
                       else {
                         PLATFORM_IOS
@@ -598,8 +608,8 @@ export default function PaymentGateWay({ navigation, route }) {
                   value={values.cardHolderName}
                   onChangeText={(text) => {
                     handleChange('cardHolderName')(text);
-                    setSavedCard('')
-                    setCardDetails1({ ...cardDetails, ['cardHolderName']: text })
+                    setSavedCard('');
+                    setCardDetails1({ ...cardDetails, ['cardHolderName']: text });
                   }}
                   onBlur={handleBlur('cardHolderName')}
                   text="Card Holder Name"
@@ -620,7 +630,7 @@ export default function PaymentGateWay({ navigation, route }) {
                   onChangeText={text => {
 
 
-                    setSavedCard('')
+                    setSavedCard('');
                     var num = /[^0-9]/g;
                     const cardNumbers = text.replace(/\s/g, ''); // Remove spaces from card number
                     const cardNumber = cardNumbers.replace(num, '');
@@ -633,7 +643,7 @@ export default function PaymentGateWay({ navigation, route }) {
 
                     handleChange('cardNumber')(formattedCardNumber);
                     //setCardDetails1({ ...cardDetails, ['card_number']: formattedCardNumber })
-                    setCardDetails1({ ...cardDetails, ['card_number']: formattedCardNumber })
+                    setCardDetails1({ ...cardDetails, ['card_number']: formattedCardNumber });
 
                   }}
                   onBlur={handleBlur('cardNumber')}
@@ -659,7 +669,7 @@ export default function PaymentGateWay({ navigation, route }) {
                       value={values.validTill}
                       //
                       onChangeText={text => {
-                        setSavedCard('')
+                        setSavedCard('');
 
                         // Remove non-digit characters from the input
                         const validTill = text.replace(/\D/g, '');
@@ -700,8 +710,8 @@ export default function PaymentGateWay({ navigation, route }) {
                       value={values.cvv}
                       onChangeText={(text) => {
                         handleChange('cvv')(text),
-                          setSavedCard('')
-                        setCardDetails1({ ...cardDetails, ['card_cvv']: text })
+                          setSavedCard('');
+                        setCardDetails1({ ...cardDetails, ['card_cvv']: text });
                       }}
                       onBlur={handleBlur('cvv')}
                       text="CVV"
@@ -752,7 +762,6 @@ export default function PaymentGateWay({ navigation, route }) {
                     <Text
                       style={{
                         fontSize: 14,
-                        fontWeight: '700',
                         fontSize: 16,
                         fontWeight: 'bold',
                         textAlign: 'center',
@@ -805,7 +814,7 @@ const styles = StyleSheet.create({
     width: mobileW,
 
     height: mobileH,
-    marginVertical: '10%'
+    marginVertical: '10%',
 
     // paddingTop: 30,
   },
@@ -833,7 +842,7 @@ const styles = StyleSheet.create({
     top: 35,
     left: 10,
     flexDirection: 'row',
-    gap: 25
+    gap: 25,
   },
   centeredView: {
     flex: 1,
@@ -873,7 +882,7 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     padding: 10,
     elevation: 2,
-    borderRadius: 100
+    borderRadius: 100,
   },
   buttonOpen: {
     backgroundColor: '#F194FF',
@@ -886,14 +895,14 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     textAlign: 'center',
     paddingVertical: 5,
-    paddingHorizontal: 20
+    paddingHorizontal: 20,
   },
   modalText: {
     marginBottom: 15,
     textAlign: 'center',
     fontWeight: "400",
     fontSize: 24,
-    color: "#000000"
+    color: "#000000",
   },
   makeDefault: {
     marginLeft: 95,

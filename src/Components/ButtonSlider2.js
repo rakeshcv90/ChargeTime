@@ -1,3 +1,7 @@
+/* eslint-disable react-native/no-inline-styles */
+/* eslint-disable eqeqeq */
+/* eslint-disable no-unused-vars */
+/* eslint-disable prettier/prettier */
 import React from 'react';
 import {
     StyleSheet,
@@ -8,7 +12,7 @@ import {
     TouchableOpacity,
 } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
-import { useState, } from 'react';
+import { useState } from 'react';
 import { DIMENSIONS } from '../constants/DIMENSIONS';
 import COLORS from '../constants/COLORS';
 import axios from 'axios';
@@ -48,7 +52,7 @@ const ButtonSlider2 = () => {
 
                     dispatch(setChargerStatus(res?.data));
                     setIsLoading(false);
-                    ;
+
                 })
                 .catch(err => {
                     console.log(err);
@@ -61,9 +65,9 @@ const ButtonSlider2 = () => {
     return (
         <TouchableOpacity onPress={() => {
             if (getChargerStatus.message == 'Online' || getChargerStatus.message == 'Charging') {
-                handleComplete(1)
+                handleComplete(1);
             } else {
-                handleComplete(0)
+                handleComplete(0);
             }
         }} style={styles.container}>
             {isLoading && <ActivityLoader />}
@@ -91,10 +95,7 @@ const ButtonSlider2 = () => {
 
 
                     }}
-                >
-
-
-                </LinearGradient>
+                 />
 
 
                 <LinearGradient
@@ -116,7 +117,7 @@ const ButtonSlider2 = () => {
                         getChargerStatus.message == 'Charging' ? (
                         <Image
                             source={require('../../assets/images/PowerButton.png')}
-                            style={{ width: 32, height: 32 }}
+                            style={{ width: 20, height: 20 }}
                         />
                     ) : (
 
@@ -126,7 +127,7 @@ const ButtonSlider2 = () => {
                             }} // Replace with your animation file
                             autoPlay
                             loop
-                            style={{ width: 32, height: 32, }}
+                            style={{ width: 32, height: 32 }}
                         />
                     )}
 
@@ -161,7 +162,7 @@ const styles = StyleSheet.create({
         position: 'absolute',
         bottom: DIMENSIONS.SCREEN_HEIGHT * 0.01,
         borderColor:['rgba(22, 249, 4, 0.4)', 'rgba(138, 8, 242, 0.5)'],
-        alignItems: 'flex-end'
+        alignItems: 'flex-end',
 
     },
     swipeText: {
@@ -170,12 +171,12 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         fontSize: 16,
         fontWeight: '700',
-        left: DIMENSIONS.SCREEN_WIDTH * 0.43,
+        left: DIMENSIONS.SCREEN_WIDTH * 0.41,
         //  zIndex: 2,
         bottom: DIMENSIONS.SCREEN_HEIGHT * 0.03,
         //  paddingLeft:30
         // backgroundColor:'white'
-    }
+    },
 
 
 });

@@ -1,61 +1,85 @@
-import { View, Text, StyleSheet, TouchableOpacity, Image, Dimensions, Platform, SafeAreaView } from 'react-native';
-import React, { useEffect } from 'react';
-// import { Address } from '../../assets/images/Address';
-import { InstallBase } from '../../assets/svgs/InstallBase';
-import { Vanderberg } from '../../assets/images/Vanderberg';
-import { Connecticut } from '../../assets/images/Connecticut';
-import COLORS from '../constants/COLORS';
-import { useSelector } from 'react-redux';
+/* eslint-disable no-dupe-keys */
 
+/* eslint-disable react-native/no-inline-styles */
+/* eslint-disable react-hooks/exhaustive-deps */
+/* eslint-disable no-unused-vars */
+import {
+  View,
+  Text,
+  StyleSheet,
+  TouchableOpacity,
+  Image,
+  Dimensions,
+  Platform,
+  SafeAreaView,
+} from 'react-native';
+import React, {useEffect} from 'react';
+// import { Address } from '../../assets/images/Address';
+import {InstallBase} from '../../assets/svgs/InstallBase';
+import {Vanderberg} from '../../assets/images/Vanderberg';
+import {Connecticut} from '../../assets/images/Connecticut';
+import COLORS from '../constants/COLORS';
+import {useSelector} from 'react-redux';
+import {DIMENSIONS} from '../constants/DIMENSIONS';
 
 const mobileW = Math.round(Dimensions.get('screen').width);
 const SubBoxOne = () => {
   // const {navigation, route} = props;
 
-  const getPurchaseData = useSelector((state) => state.getPurchaseData);
+  const getPurchaseData = useSelector(state => state.getPurchaseData);
 
-    useEffect(() => {
-      // console.log('data for this User:---------', getPlanSummary); 
-      console.log(getPurchaseData, "----------")
-   }, []);
+  useEffect(() => {
+    // console.log('data for this User:---------', getPlanSummary);
+    console.log(getPurchaseData, '----------');
+  }, []);
   return (
-    <View style={[styles.mainDiv_installation]}>
+    <View
+      style={
+        Platform.OS === 'android'
+          ? styles.mainDiv_installation1
+          : styles.mainDiv_installation
+      }>
       <TouchableOpacity style={styles.install_touchable}>
-
         {/* <Address style={styles.img_width} /> */}
         <InstallBase style={styles.img_width} />
         <Text style={styles.installation_text}>Installation Base</Text>
       </TouchableOpacity>
-      {getPurchaseData.length != 0 &&<View style={styles.shadowProp}>
-        <View style={styles.location_div}>
-          <Vanderberg style={styles.img_width} />
-          <Text style={styles.force_base}>{getPurchaseData.data.location}</Text>
-        </View>
-        <Image
-          // style={styles.img_width}
-          source={require('../../assets/images/dotted.png')}
-          resizeMode="stretch"
-          style={{  width: mobileW,}}
-        />
-        <View style={styles.mainDiv_state_zip}>
-          <View style={styles.state_div}>
-            <Connecticut style={styles.img_width} />
-            <Text style={styles.force_base}>{getPurchaseData.data.pwa_state}</Text>
+      {getPurchaseData.length !== 0 && (
+        <View style={styles.shadowProp}>
+          <View style={styles.location_div}>
+            <Vanderberg style={styles.img_width} />
+            <Text style={styles.force_base}>
+              {getPurchaseData.data.location}
+            </Text>
           </View>
-          <View style={styles.state_div}>
-            <Image
-              //style={styles.img_width}
-              source={require('../../assets/images/zip_code.png')}
-              resizeMode="stretch"
-              style={{ width: 22, height: 22, }}
-            />
-            <Text style={styles.force_base}>{getPurchaseData.data.pwa_zip}</Text>
-
+          <Image
+            // style={styles.img_width}
+            source={require('../../assets/images/dotted.png')}
+            resizeMode="stretch"
+            style={{width: mobileW}}
+          />
+          <View style={styles.mainDiv_state_zip}>
+            <View style={styles.state_div}>
+              <Connecticut style={styles.img_width} />
+              <Text style={styles.force_base}>
+                {getPurchaseData.data.pwa_state}
+              </Text>
+            </View>
+            <View style={styles.state_div}>
+              <Image
+                //style={styles.img_width}
+                source={require('../../assets/images/zip_code.png')}
+                resizeMode="stretch"
+                style={{width: 22, height: 22}}
+              />
+              <Text style={styles.force_base}>
+                {getPurchaseData.data.pwa_zip}
+              </Text>
+            </View>
           </View>
         </View>
-      </View>}
+      )}
     </View>
-
   );
 };
 
@@ -67,14 +91,21 @@ const styles = StyleSheet.create({
     // paddingVertical:15
   },
   mainDiv_installation: {
+    marginTop: DIMENSIONS.SCREEN_HEIGHT * 0.03,
+    marginBottom: DIMENSIONS.SCREEN_HEIGHT * 0.01,
+    shadowColor: '#000000',
+    shadowOffset: {width: 0, height: 6},
+    shadowOpacity: 0.2,
+    shadowRadius: 5.62,
+    elevation: 8,
+  },
+  mainDiv_installation1: {
     overflow: 'hidden',
     borderRadius: 10,
-    marginTop: Platform.OS === "ios" ? 10 : 10,
+    marginTop: Platform.OS === 'ios' ? 0 : (DIMENSIONS.SCREEN_HEIGHT * 2) / 100,
+    // marginBottom: Platform.OS === 'ios' ? 0 : 10,
     shadowColor: '#000000',
-    shadowOffset: {
-      width: 4,
-      height: 6,
-    },
+    shadowOffset: {width: 0, height: 6},
     shadowOpacity: 0.2,
     shadowRadius: 5.62,
     elevation: 8,
@@ -89,10 +120,10 @@ const styles = StyleSheet.create({
     marginLeft: 20,
   },
   installation_text: {
-    fontWeight: "700",
+    fontWeight: '700',
     fontSize: 12,
     paddingLeft: 10,
-    color: COLORS.BLACK
+    color: COLORS.BLACK,
   },
   location_div: {
     flexDirection: 'row',
@@ -114,11 +145,11 @@ const styles = StyleSheet.create({
     elevation: Platform.OS === 'android' ? 8 : 0,
   },
   force_base: {
-    fontWeight: "400",
+    fontWeight: '400',
     fontSize: 14,
     paddingLeft: 10,
     paddingRight: 70,
-    color: COLORS.BLACK
+    color: COLORS.BLACK,
   },
   mainDiv_state_zip: {
     flexDirection: 'row',

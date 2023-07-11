@@ -1,3 +1,9 @@
+/* eslint-disable no-unused-vars */
+/* eslint-disable react-hooks/exhaustive-deps */
+/* eslint-disable eqeqeq */
+/* eslint-disable react/react-in-jsx-scope */
+/* eslint-disable react-native/no-inline-styles */
+/* eslint-disable no-undef */
 import {
   ScrollView,
   View,
@@ -23,7 +29,11 @@ import axios from 'axios';
 import {API} from '../../api/API';
 import ActivityLoader from '../../Components/ActivityLoader';
 import AnimatedLottieView from 'lottie-react-native';
-import {setPackageStatus, setPlanStatus, setPurchaseData} from '../../redux/action';
+import {
+  setPackageStatus,
+  setPlanStatus,
+  setPurchaseData,
+} from '../../redux/action';
 
 export default function SliderOne(props) {
   const [forLoading, setForLoading] = useState(false);
@@ -36,7 +46,7 @@ export default function SliderOne(props) {
 
   useEffect(() => {
     getPlanCurrent();
-    console.log(props.route.params.purchageData)
+    console.log(props.route.params.purchageData);
   }, []);
   const handleRefresh = () => {
     setRefresh(true);
@@ -44,14 +54,14 @@ export default function SliderOne(props) {
       setRefresh(false);
     }, 2000);
     fetchData();
-    getPlanCurrent()
+    getPlanCurrent();
   };
   const getPlanCurrent = () => {
     axios
       .get(`${API}/currentplan/${getUserID}`)
       .then(res => {
-        console.log(res.data)
-        
+        console.log(res.data);
+
         if (res.data.data == 'Package details not found') {
           dispatch(setPurchaseData(res.data));
           dispatch(setPackageStatus(false));
@@ -97,42 +107,47 @@ export default function SliderOne(props) {
 
       <View style={styles.managing_width}>
         <BoxTwo data={props.route.params.item} />
-        {getPurchaseData.data != 'Package details not found' &&getPurchaseData.data.energy_plan.toLowerCase() ===
-          props.route.params.item.package_name.toLowerCase() && (
-          <Remaining RemainingFill={50} KWH={400} data={'energy'} />
-        )}
-        {getPurchaseData.data != 'Package details not found'&& getPurchaseData.data.energy_plan.toLowerCase() ===
-          props.route.params.item.package_name.toLowerCase() && (
-          <View style={{marginBottom: 20}}>
-            <PriceBox data={getPurchaseData.data} />
-          </View>
-        )}
+        {getPurchaseData.data != 'Package details not found' &&
+          getPurchaseData.data.energy_plan.toLowerCase() ===
+            props.route.params.item.package_name.toLowerCase() && (
+            <Remaining RemainingFill={50} KWH={400} data={'energy'} />
+          )}
+        {getPurchaseData.data != 'Package details not found' &&
+          getPurchaseData.data.energy_plan.toLowerCase() ===
+            props.route.params.item.package_name.toLowerCase() && (
+            <View style={{marginBottom: 20}}>
+              <PriceBox data={getPurchaseData.data} />
+            </View>
+          )}
         <View
           style={{
             marginBottom:
-            getPurchaseData.data != 'Package details not found'&&getPurchaseData.data.energy_plan.toLowerCase() ===
-              props.route.params.item.package_name.toLowerCase()
+              getPurchaseData.data != 'Package details not found' &&
+              getPurchaseData.data.energy_plan.toLowerCase() ===
+                props.route.params.item.package_name.toLowerCase()
                 ? 20
                 : 0,
           }}>
           <InstallationBase data={props.route.params.item} />
         </View>
 
-        {getPurchaseData.data != 'Package details not found'&&getPurchaseData.data.energy_plan.toLowerCase() !==
-          props.route.params.item.package_name.toLowerCase() && (
-          <BoxFive
-            data={props.route.params.item}
-            purchageData={props.route.params.purchageData}
-            disabled={false
-              // getPlanStatus.length != 0
-              //   ? getPlanStatus.item_name.toLowerCase() ==
-              //     props.route.params.item.package_name.toLowerCase()
-              //     ? true
-              //     : false
-              //   : false
-            }
-          />
-        )}
+        {getPurchaseData.data != 'Package details not found' &&
+          getPurchaseData.data.energy_plan.toLowerCase() !==
+            props.route.params.item.package_name.toLowerCase() && (
+            <BoxFive
+              data={props.route.params.item}
+              purchageData={props.route.params.purchageData}
+              disabled={
+                false
+                // getPlanStatus.length != 0
+                //   ? getPlanStatus.item_name.toLowerCase() ==
+                //     props.route.params.item.package_name.toLowerCase()
+                //     ? true
+                //     : false
+                //   : false
+              }
+            />
+          )}
         {/* {!forLoading &&
           getPlanStatus.length !== 0 &&
           getPlanStatus.item_name.toLowerCase() ==

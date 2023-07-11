@@ -1,3 +1,6 @@
+/* eslint-disable quotes */
+/* eslint-disable no-unused-vars */
+/* eslint-disable prettier/prettier */
 import React, { useState, useEffect } from 'react';
 import { View, TextInput, StyleSheet, Button, SafeAreaView, TouchableOpacity, Text, ToastAndroid, Image, Platform, Dimensions } from 'react-native';
 import Input from '../../Components/Input';
@@ -13,13 +16,14 @@ import { ms } from 'react-native-size-matters';
 import { PLATFORM_IOS } from '../../constants/DIMENSIONS';
 import { resetApp } from '../../redux/action';
 import { useDispatch } from 'react-redux';
+import { Toast } from 'react-native-toast-message/lib/src/Toast';
 const mobileW = Math.round(Dimensions.get('screen').width);
 const mobileH = Math.round(Dimensions.get('screen').height);
 
 // import Button from '../../Components/Button';
 
 const DeleteAccountScreen = () => {
-  const userRegisterData = useSelector((state) => state.userRegisterData)
+  const userRegisterData = useSelector((state) => state.userRegisterData);
   const [reason, setReason] = useState('');
   const [password, setPassword] = useState('');
   const getUserID = useSelector((state) => state.getUserID);
@@ -28,7 +32,7 @@ const DeleteAccountScreen = () => {
 
   const dispatch = useDispatch();
   const user_ID = getUserID;
- 
+
 
   useEffect(() => {
     console.log('data for this User:---------', userRegisterData);
@@ -39,7 +43,7 @@ const DeleteAccountScreen = () => {
   const handleDelete = async () => {
     console.log(user_ID, 'user');
     console.log(reason, 'reason');
-    console.log(password, 'password')
+    console.log(password, 'password');
 
     await fetch(`${API}/deleteAccount/${user_ID}`, {
       method: 'POST',
@@ -55,7 +59,7 @@ const DeleteAccountScreen = () => {
         console.log(data, 'fff');
         if (data.message === "Account deleted successfully") {
             dispatch(resetApp());
-            
+
           PLATFORM_IOS ?
             Toast.show({
               type: 'success',
@@ -103,7 +107,7 @@ const DeleteAccountScreen = () => {
             borderWidth: 0.5,
             borderColor: COLORS.BLACK,
            marginVertical: 19,
-            width: mobileW*0.92,
+            width: mobileW * 0.92,
             height: ms(150),
             color: COLORS.BLACK,
             //fontFamily: 'Roboto',
@@ -154,8 +158,8 @@ const DeleteAccountScreen = () => {
           placeholderTextColor={COLORS.HALFBLACK}
           passwordInput={true}
           pasButton={() => {
-            setHidePassword(!hidePassword)
-            setShowNew(!showNew)
+            setHidePassword(!hidePassword);
+            setShowNew(!showNew);
           }}
           secureTextEntry={hidePassword}
           passwordInputIcon={showNew}
@@ -241,7 +245,7 @@ const styles = StyleSheet.create({
     top: ' -15px',
     left: "23px",
     padding: " 2px",
-  }
+  },
 });
 
 export default DeleteAccountScreen;

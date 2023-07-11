@@ -1,3 +1,5 @@
+/* eslint-disable react-native/no-inline-styles */
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import {
   View,
   Text,
@@ -7,32 +9,29 @@ import {
   Dimensions,
   Platform,
 } from 'react-native';
-import React, { useState } from 'react';
+import React, {useState} from 'react';
 import COLORS from '../constants/COLORS';
-import { DIMENSIONS } from '../constants/DIMENSIONS';
+import {DIMENSIONS} from '../constants/DIMENSIONS';
 
 const mobileW = Math.round(Dimensions.get('screen').width);
 
-const PriceBox = ({ data }) => {
-
+const PriceBox = ({data}) => {
   const [showBox, setShowBox] = useState(true);
   return (
     <View
-      style={[
-        Platform.OS == 'android' ? styles.mainDiv_installation1 : styles.mainDiv_installation,
-        {
-          width: DIMENSIONS.SCREEN_WIDTH * 0.9,
-          alignSelf: 'center',
-
-        },
-      ]}>
+      style={
+        Platform.OS === 'android'
+          ? styles.mainDiv_installation1 
+          : styles.mainDiv_installation
+      }>
       <TouchableOpacity
-
-        style={[styles.install_touchable,{ borderTopLeftRadius:10,
-          borderTopRightRadius:10,}]}>
+        style={[
+          styles.install_touchable,
+          {borderTopLeftRadius: 10, borderTopRightRadius: 10},
+        ]}>
         <Image
-           style={styles.img_width}
-           resizeMode='contain'
+          style={styles.img_width}
+          resizeMode="contain"
           source={require('../../assets/images/details.png')}
         />
         <Text style={styles.installation_text}>Price & Validity</Text>
@@ -47,17 +46,24 @@ const PriceBox = ({ data }) => {
           // style={styles.img_width}
           source={require('../../assets/images/dotted.png')}
           resizeMode="stretch"
-          style={{ alignSelf: 'center', width: mobileW }}
+          style={{
+            alignSelf: 'center',
+            width: Platform.OS === 'android' ? mobileW : mobileW - 40,
+          }}
         />
         <View style={styles.location_div}>
           <Text style={styles.installation_text2}>Package Name:</Text>
           <Text style={styles.force_base}>{data?.energy_plan}</Text>
         </View>
+        {}
         <Image
           // style={styles.img_width}
           source={require('../../assets/images/dotted.png')}
           resizeMode="stretch"
-          style={{ alignSelf: 'center', width: mobileW }}
+          style={{
+            alignSelf: 'center',
+            width: Platform.OS === 'android' ? mobileW : mobileW - 40,
+          }}
         />
         <View style={styles.location_div}>
           <Text style={styles.installation_text2}>Price: </Text>
@@ -67,18 +73,23 @@ const PriceBox = ({ data }) => {
           // style={styles.img_width}
           source={require('../../assets/images/dotted.png')}
           resizeMode="stretch"
-          style={{ alignSelf: 'center', width: mobileW }}
+          style={{
+            alignSelf: 'center',
+            width: Platform.OS === 'android' ? mobileW : mobileW - 40,
+          }}
         />
-        <View style={[styles.location_div, {
-          borderBottomLeftRadius: 10,
-          borderBottomRightRadius: 10,
-        }]}>
+        <View
+          style={[
+            styles.location_div,
+            {
+              borderBottomLeftRadius: 10,
+              borderBottomRightRadius: 10,
+            },
+          ]}>
           <Text style={styles.installation_text2}>Valid Till:</Text>
           <Text style={styles.force_base}>{data?.End_validity}</Text>
         </View>
-       
       </>
-
     </View>
   );
 };
@@ -90,34 +101,52 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     // paddingVertical:15
   },
-
   mainDiv_installation: {
     marginTop: DIMENSIONS.SCREEN_HEIGHT * 0.03,
-    marginBottom: DIMENSIONS.SCREEN_HEIGHT * 0.03,
+    marginBottom: DIMENSIONS.SCREEN_HEIGHT * 0.01,
     shadowColor: '#000000',
-    shadowOffset: { width: 0, height: 6 },
+    shadowOffset: {width: 0, height: 6},
+    // shadowOpacity: 0.2,
+    shadowRadius: 5.62,
+    elevation: 8,
+  },
+  mainDiv_installation1: {
+    overflow: 'hidden',
+    borderRadius: 10,
+    marginTop: Platform.OS === 'ios' ? 0 : (DIMENSIONS.SCREEN_HEIGHT * 2) / 100,
+    // marginBottom: Platform.OS === 'ios' ? 0 : 10,
+    shadowColor: '#000000',
+    shadowOffset: {width: 0, height: 6},
     shadowOpacity: 0.2,
     shadowRadius: 5.62,
     elevation: 8,
   },
+  // mainDiv_installation: {
+  //   marginTop: DIMENSIONS.SCREEN_HEIGHT * 0.03,
+  //   marginBottom: DIMENSIONS.SCREEN_HEIGHT * 0.02,
+  //   // shadowColor: '#000000',
+  //   // shadowOffset: {width: 0, height: 6},
+  //   // shadowOpacity: 0.2,
+  //   // shadowRadius: 5.62,
+  //   // elevation: 8,
+  // },
   install_touchable: {
     flexDirection: 'row',
     backgroundColor: COLORS.GREEN,
     alignItems: 'center',
     paddingVertical: 10,
-    paddingLeft: 20
+    paddingLeft: 20,
   },
   img_width: {
-    marginLeft:-5,
+    marginLeft: -5,
     width: 20,
     height: 20,
   },
   installation_text: {
-    fontWeight: "700",
+    fontWeight: '700',
     fontSize: 12,
     paddingLeft: 10,
     color: COLORS.BLACK,
-    
   },
   installation_text2: {
     fontWeight: '700',
@@ -138,7 +167,7 @@ const styles = StyleSheet.create({
     fontWeight: '400',
     fontSize: 14,
     paddingLeft: 10,
-    color: COLORS.BLACK
+    color: COLORS.BLACK,
   },
   mainDiv_state_zip: {
     flexDirection: 'row',
@@ -212,17 +241,14 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: COLORS.WHITE,
   },
-  mainDiv_installation1: {
-    overflow: 'hidden',
-    borderRadius: 10,
-    marginTop: Platform.OS === "ios" ? 10 : 10,
-    shadowColor: '#000000',
-    shadowOffset: {
-      width: 4,
-      height: 6,
-    },
-    shadowOpacity: 0.2,
-    shadowRadius: 5.62,
-    elevation: 8,
-  },
+  // mainDiv_installation1: {
+  //   overflow: 'hidden',
+  //   borderRadius: 10,
+  //   marginTop: Platform.OS === 'ios' ? 10 : 10,
+  //   shadowColor: '#000000',
+  //   shadowOffset: {width: 0, height: 6},
+  //   shadowOpacity: 0.2,
+  //   shadowRadius: 5.62,
+  //   elevation: 8,
+  // },
 });

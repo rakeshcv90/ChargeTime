@@ -1,3 +1,5 @@
+/* eslint-disable react-native/no-inline-styles */
+/* eslint-disable no-unused-vars */
 import {
   View,
   Text,
@@ -167,9 +169,11 @@ const ResetPassword = props => {
                     {values.password !== values.password_confirmation &&
                     touched.password &&
                     touched.password_confirmation ? (
-                      <Text style={{color: 'red'}}>Password does not match</Text>
+                      <Text style={{color: 'red'}}>
+                        Password does not match
+                      </Text>
                     ) : (
-                      <Text></Text>
+                      <Text />
                     )}
                   </View>
                 </View>
@@ -192,7 +196,7 @@ const ResetPassword = props => {
                       ...Platform.select({
                         ios: {
                           shadowColor: '#000000',
-                          shadowOffset: { width: 0, height: 2 },
+                          shadowOffset: {width: 0, height: 2},
                           shadowOpacity: 0.3,
                           shadowRadius: 4,
                         },
@@ -242,7 +246,7 @@ const styles = StyleSheet.create({
     color: COLORS.BLACK,
   },
   email_placeholder: {
-    backgroundColor: `rgba(86, 84, 84, 0.1)`,
+    backgroundColor: 'rgba(86, 84, 84, 0.1)',
     borderRadius: 10,
     paddingHorizontal: 15,
     height: Platform.OS === 'ios' ? 50 : 50,

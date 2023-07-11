@@ -1,3 +1,7 @@
+/* eslint-disable react-native/no-inline-styles */
+/* eslint-disable prettier/prettier */
+/* eslint-disable eqeqeq */
+/* eslint-disable no-unused-vars */
 import {
   View,
   Text,
@@ -9,27 +13,25 @@ import {
   SafeAreaView,
   BackHandler,
 } from 'react-native';
-import React, { useEffect } from 'react';
+import React, {useEffect} from 'react';
 // import { Address } from '../../assets/images/Address';
-import { InstallBase } from '../../assets/svgs/InstallBase';
-import { Vanderberg } from '../../assets/images/Vanderberg';
-import { Connecticut } from '../../assets/images/Connecticut';
+import {InstallBase} from '../../assets/svgs/InstallBase';
+import {Vanderberg} from '../../assets/images/Vanderberg';
+import {Connecticut} from '../../assets/images/Connecticut';
 import COLORS from '../constants/COLORS';
-import { useSelector } from 'react-redux';
-import { navigationRef } from '../../App';
-import { DIMENSIONS } from '../constants/DIMENSIONS';
+import {useSelector} from 'react-redux';
+import {navigationRef} from '../../App';
+import {DIMENSIONS} from '../constants/DIMENSIONS';
 import Line from '../../assets/svgs/Line';
 
-
-
 const mobileW = Math.round(Dimensions.get('screen').width);
-const InstallationBase = ({ data }) => {
+const InstallationBase = ({data}) => {
   // const {navigation, route} = props;
 
   useEffect(() => {
     const backHandler = BackHandler.addEventListener(
       'hardwareBackPress',
-      handleBackButton
+      handleBackButton,
     );
 
     return () => backHandler.remove();
@@ -39,26 +41,36 @@ const InstallationBase = ({ data }) => {
   };
 
   return (
-
-    <View style={Platform.OS == 'android' ? styles.mainDiv_installation1 : styles.mainDiv_installation}>
+    <View
+      // style={
+      //   Platform.OS == 'android'
+      //     ? styles.mainDiv_installation1
+      //     : styles.mainDiv_installation
+      // }
+      style = {styles.mainDiv_installation}
+      >
       <View style={styles.install_touchable}>
         {/* <Address style={styles.img_width} /> */}
         <InstallBase style={styles.img_width} />
         <Text style={styles.installation_text}>Installation Base</Text>
       </View>
-      <View >
+      <View>
         <View style={styles.location_div}>
           <Vanderberg style={styles.img_width} />
-          <Text style={styles.force_base}>{data[0]==undefined?data?.location:data[0].location}</Text>
+          <Text style={styles.force_base}>
+            {data[0] == undefined ? data?.location : data[0].location}
+          </Text>
           {/* <Text style={styles.force_base}>{data[0]=="undefined"?setBasePackage[0].location}</Text> */}
         </View>
         <Image
-       
-          source={require('../../assets/images/dotted.png')}
+          source={require('../../assets/images/dotted1.png')}
           resizeMode="stretch"
-          style={{  width: mobileW,}}
+          style={{
+            width: Platform.OS === 'android' ? mobileW : mobileW - 40,
+            alignSelf: 'center',
+          }}
         />
-      
+
         <View style={styles.mainDiv_state_zip}>
           <View style={styles.state_div}>
             {/* <Image
@@ -66,18 +78,22 @@ const InstallationBase = ({ data }) => {
             source={require('../../assets/images/connecticut.png')}
           /> */}
             <Connecticut style={styles.img_width} />
-            <Text style={styles.force_base}>{data[0]==undefined?data?.state:data[0].state}</Text>
+            <Text style={styles.force_base}>
+              {data[0] == undefined ? data?.state : data[0].state}
+            </Text>
             {/* <Text style={styles.force_base}>{setBasePackage[0].state}</Text> */}
           </View>
-          
+
           <View style={styles.state_div}>
             <Image
               //style={styles.img_width}
               source={require('../../assets/images/zip_code.png')}
               resizeMode="stretch"
-              style={{ width: 25, height: 25, }}
+              style={{width: 25, height: 25}}
             />
-            <Text style={styles.force_base}>{data[0]==undefined?data?.ZIP_code:data[0].ZIP_code}</Text>
+            <Text style={styles.force_base}>
+              {data[0] == undefined ? data?.ZIP_code : data[0].ZIP_code}
+            </Text>
             {/* <Text style={styles.force_base}>{setBasePackage[0].ZIP_code}</Text> */}
           </View>
         </View>
@@ -94,10 +110,9 @@ const styles = StyleSheet.create({
     // paddingVertical:15
   },
   mainDiv_installation: {
-
     shadowColor: '#000000',
-    shadowOffset: { width: 0, height: 6 },
-    shadowOpacity: 0.2,
+    shadowOffset: {width: 0, height: 6},
+    // shadowOpacity: 0.2,
     shadowRadius: 5.62,
     elevation: 8,
   },
@@ -107,7 +122,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingVertical: 15,
     borderTopLeftRadius: 10,
-    borderTopRightRadius: 10
+    borderTopRightRadius: 10,
   },
   img_width: {
     marginLeft: 20,
@@ -122,7 +137,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     backgroundColor: COLORS.GRAY,
     alignItems: 'center',
-    paddingVertical: 20,
+   paddingVertical: 20,
     // borderBottomWidth: 1,
     // borderBottomColor: COLORS.GREEN,
   },
@@ -153,8 +168,7 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
     backgroundColor: COLORS.GRAY,
     borderBottomLeftRadius: 10,
-    borderBottomRightRadius: 10
-
+    borderBottomRightRadius: 10,
   },
   state_div: {
     flexDirection: 'row',
@@ -166,7 +180,6 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     // alignItems:'center',
     paddingVertical: 10,
-
   },
   kwh_mieq_text: {
     fontWeight: 800,
@@ -186,7 +199,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     borderWidth: 1,
     borderColor: COLORS.GREEN,
-    borderRadius: 5,
     backgroundColor: COLORS.WHITE,
     marginTop: 20,
     paddingHorizontal: 10,
@@ -200,7 +212,6 @@ const styles = StyleSheet.create({
     },
     shadowOpacity: 2,
     shadowRadius: 4,
-
   },
   dollar_div: {
     flexDirection: 'row',
@@ -223,13 +234,12 @@ const styles = StyleSheet.create({
     fontWeight: 700,
     fontSize: 14,
     color: COLORS.WHITE,
-  }, 
+  },
   mainDiv_installation1: {
     overflow: 'hidden',
     borderRadius: 10,
 
-
-    shadowColor: '#000000',
+    //shadowColor: '#000000',
     shadowOffset: {
       width: 4,
       height: 6,
@@ -237,6 +247,11 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.2,
     shadowRadius: 5.62,
     elevation: Platform.OS === 'android' ? 8 : 0,
-
   },
 });
+
+/* eslint-disable no-dupe-keys */
+
+/* eslint-disable react-native/no-inline-styles */
+/* eslint-disable react-hooks/exhaustive-deps */
+/* eslint-disable no-unused-vars */

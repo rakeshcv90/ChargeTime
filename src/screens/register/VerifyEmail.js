@@ -1,4 +1,8 @@
-import React, { useState, useRef, useEffect } from 'react';
+/* eslint-disable prettier/prettier */
+/* eslint-disable eqeqeq */
+/* eslint-disable react-hooks/exhaustive-deps */
+/* eslint-disable react-native/no-inline-styles */
+import React, {useState, useRef, useEffect} from 'react';
 import {
   View,
   Text,
@@ -13,23 +17,23 @@ import {
   ScrollView,
   KeyboardAvoidingView,
 } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import {SafeAreaView} from 'react-native-safe-area-context';
 
 import COLORS from '../../constants/COLORS';
-import { API } from '../../api/API';
+import {API} from '../../api/API';
 import axios from 'axios';
-import { Toast } from 'react-native-toast-message/lib/src/Toast';
-import { PLATFORM_IOS } from '../../constants/DIMENSIONS';
+import {Toast} from 'react-native-toast-message/lib/src/Toast';
+import {PLATFORM_IOS} from '../../constants/DIMENSIONS';
 import ActivityLoader from '../../Components/ActivityLoader';
 import AnimatedLottieView from 'lottie-react-native';
-import { useSelector } from 'react-redux';
+import {useSelector} from 'react-redux';
 
 //   const mobileH = Math.round(Dimensions.get('window').height);
 const mobileW = Math.round(Dimensions.get('screen').width);
 
 export default function VerifyEmail(props) {
-  const { navigation, route } = props;
-  const { email, user_id } = route?.params;
+  const {navigation, route} = props;
+  const {email, user_id} = route?.params;
 
   const [emailCheck, setEmailCheck] = useState(false);
   const [tempID, setTempID] = useState('');
@@ -53,7 +57,7 @@ export default function VerifyEmail(props) {
   const theme = useColorScheme();
   const isDark = theme === 'dark';
   const inputRefs = useRef([]);
-  const { userRegisterData } = useSelector(state => state);
+  const {userRegisterData} = useSelector(state => state);
   const verifyOTP = async () => {
     setForLoading(true);
     const otp =
@@ -66,9 +70,9 @@ export default function VerifyEmail(props) {
 
     try {
       if (email !== '' && otp.length == 6) {
-        let payload = new FormData()
-        payload.append('email', email)
-        payload.append('otp', otp)
+        let payload = new FormData();
+        payload.append('email', email);
+        payload.append('otp', otp);
         const res = await axios({
           url: `${API}/verifyotp`,
           method: 'POST',
@@ -76,19 +80,19 @@ export default function VerifyEmail(props) {
             'Content-Type': 'multipart/form-data',
           },
           data: payload,
-        })
+        });
         if (res.data) {
-          console.log(res.data)
+          console.log(res.data);
           if (res.data.message !== 'Invalid OTP or OTP expired') {
             PLATFORM_IOS
               ? Toast.show({
-                type: 'success',
-                text1: 'OTP verification successfull.',
-              })
+                  type: 'success',
+                  text1: 'OTP verification successfull.',
+                })
               : ToastAndroid.show(
-                'OTP verification successfull.',
-                ToastAndroid.SHORT,
-              );
+                  'OTP verification successfull.',
+                  ToastAndroid.SHORT,
+                );
             navigation.navigate('CompleteProfile', {
               email: email,
               user_id: user_id,
@@ -97,14 +101,14 @@ export default function VerifyEmail(props) {
           } else {
             PLATFORM_IOS
               ? Toast.show({
-                type: 'error',
-                text1: 'Invalid OTP or OTP expired',
-                // position: 'bottom',
-              })
+                  type: 'error',
+                  text1: 'Invalid OTP or OTP expired',
+                  // position: 'bottom',
+                })
               : ToastAndroid.show(
-                'Invalid OTP or OTP expired',
-                ToastAndroid.SHORT,
-              );
+                  'Invalid OTP or OTP expired',
+                  ToastAndroid.SHORT,
+                );
 
             setForLoading(false);
           }
@@ -112,14 +116,14 @@ export default function VerifyEmail(props) {
       } else {
         PLATFORM_IOS
           ? Toast.show({
-            type: 'error',
-            text1: 'Please fill required details',
-            // position: 'bottom',
-          })
+              type: 'error',
+              text1: 'Please fill required details',
+              // position: 'bottom',
+            })
           : ToastAndroid.show(
-            'Please fill required details',
-            ToastAndroid.SHORT,
-          );
+              'Please fill required details',
+              ToastAndroid.SHORT,
+            );
       }
       setForLoading(false);
     } catch (error) {
@@ -134,7 +138,7 @@ export default function VerifyEmail(props) {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ email: email, name: userRegisterData.name }),
+        body: JSON.stringify({email: email, name: userRegisterData.name}),
       })
         .then(res => res.json())
         .then(data => {
@@ -142,20 +146,20 @@ export default function VerifyEmail(props) {
             setStatusCheck(false);
             PLATFORM_IOS
               ? Toast.show({
-                type: 'success',
-                text1: 'New OTP sent successfully',
-              })
+                  type: 'success',
+                  text1: 'New OTP sent successfully',
+                })
               : ToastAndroid.show(
-                'New OTP sent successfully',
-                ToastAndroid.SHORT,
-              );
+                  'New OTP sent successfully',
+                  ToastAndroid.SHORT,
+                );
           } else {
             PLATFORM_IOS
               ? Toast.show({
-                type: 'error',
-                text1: 'Otp not send',
-                // position: 'bottom',
-              })
+                  type: 'error',
+                  text1: 'Otp not send',
+                  // position: 'bottom',
+                })
               : ToastAndroid.show('Otp not send', ToastAndroid.SHORT);
           }
         });
@@ -176,7 +180,7 @@ export default function VerifyEmail(props) {
           'Content-Type': 'multipart/form-data',
         },
         data: payload,
-      })
+      });
       console.log('first', res.data);
       if (res.data) {
         if (res.data.message == 'Email sent successfully') {
@@ -185,20 +189,20 @@ export default function VerifyEmail(props) {
           setTempID(res.data.id);
           PLATFORM_IOS
             ? Toast.show({
-              type: 'success',
-              text1: 'Verification email resent',
-            })
+                type: 'success',
+                text1: 'Verification email resent',
+              })
             : ToastAndroid.show(
-              'Verification email resent',
-              ToastAndroid.SHORT,
-            );
+                'Verification email resent',
+                ToastAndroid.SHORT,
+              );
         } else {
           PLATFORM_IOS
             ? Toast.show({
-              type: 'error',
-              text1: 'Invalid Email',
-              // position: 'bottom',
-            })
+                type: 'error',
+                text1: 'Invalid Email',
+                // position: 'bottom',
+              })
             : ToastAndroid.show('Invalid Email', ToastAndroid.SHORT);
         }
       }
@@ -245,7 +249,7 @@ export default function VerifyEmail(props) {
   }, [emailCheck, tempID]);
 
   return (
-    <SafeAreaView style={{ backgroundColor: COLORS.CREAM, flex: 1 }}>
+    <SafeAreaView style={{backgroundColor: COLORS.CREAM, flex: 1}}>
       <ScrollView
         showsVerticalScrollIndicator={false}
         keyboardShouldPersistTaps="handled">
@@ -254,16 +258,18 @@ export default function VerifyEmail(props) {
           <View style={styles.mainDiv_container}>
             <View style={styles.mainDiv_verify_email}>
               <Text style={styles.VerifyEmail_text}>Verify your email</Text>
-              <Text style={styles.confirm_text}>Confirm your email address</Text>
+              <Text style={styles.confirm_text}>
+                Confirm your email address
+              </Text>
               <Text style={styles.sendOtp_text}>
                 {statusCheck
-                  ? `We have sent a verification email to:`
-                  : `We have sent a confirmation OTP email to:`}
+                  ? 'We have sent a verification email to:'
+                  : 'We have sent a confirmation OTP email to:'}
               </Text>
               <TextInput
                 style={[
                   styles.sendOtp_email,
-                  { color: isDark ? COLORS.BLACK : COLORS.BLACK },
+                  {color: isDark ? COLORS.BLACK : COLORS.BLACK},
                 ]}
                 placeholder="Eg. john2xyz.com"
                 placeholderTextColor={COLORS.BLACK}
@@ -274,23 +280,25 @@ export default function VerifyEmail(props) {
                 {statusCheck
                   ? `Check your inbox and click on the button to confirm your account.
 `
-                  : `Check your inbox and input the OTP here to confirm your account.`}
+                  : 'Check your inbox and input the OTP here to confirm your account.'}
               </Text>
             </View>
             <View style={styles.otp_yet}>
               <Text
                 style={
                   statusCheck
-                    ? { color: COLORS.BLACK, fontSize: 14, fontWeight: '400' }
-                    : { color: COLORS.BLACK, fontSize: 14, fontWeight: '600' }
+                    ? {color: COLORS.BLACK, fontSize: 14, fontWeight: '400'}
+                    : {color: COLORS.BLACK, fontSize: 14, fontWeight: '600'}
                 }>
                 {statusCheck
-                  ? `Verify with OTP instead.`
-                  : `Haven't received the OTP yet?`}
+                  ? 'Verify with OTP instead.'
+                  : "Haven't received the OTP yet?"}
               </Text>
-              <TouchableOpacity style={styles.resend_OTP_btn} onPress={resendOTp}>
+              <TouchableOpacity
+                style={styles.resend_OTP_btn}
+                onPress={resendOTp}>
                 <Text style={styles.resend_otp_text}>
-                  {statusCheck ? `Send OTP` : `Resend OTP`}
+                  {statusCheck ? 'Send OTP' : 'Resend OTP'}
                 </Text>
               </TouchableOpacity>
             </View>
@@ -303,7 +311,7 @@ export default function VerifyEmail(props) {
               }}>
               <Image
                 source={require('../../../assets/images/dotted.png')}
-                style={{ width: mobileW * 0.9 }}
+                style={{width: mobileW * 0.9}}
               />
 
               <Text
@@ -322,34 +330,34 @@ export default function VerifyEmail(props) {
                 style={
                   statusCheck
                     ? {
-                      color: COLORS.BLACK,
-                      fontSize: 14,
-                      fontWeight: '600',
-                      width: mobileW * 0.6,
-                    }
-                    : { color: COLORS.BLACK, fontSize: 14, fontWeight: '400' }
+                        color: COLORS.BLACK,
+                        fontSize: 14,
+                        fontWeight: '600',
+                        width: mobileW * 0.6,
+                      }
+                    : {color: COLORS.BLACK, fontSize: 14, fontWeight: '400'}
                 }>
                 {statusCheck
-                  ? `Haven’t received verification email yet?`
-                  : `Receive verification email instead.`}
+                  ? 'Haven’t received verification email yet?'
+                  : 'Receive verification email instead.'}
               </Text>
               <TouchableOpacity
                 style={styles.resend_OTP_btn}
                 onPress={resendLink}>
                 <Text style={styles.resend_otp_text}>
-                  {statusCheck ? `Resend Link` : `Send Link`}
+                  {statusCheck ? 'Resend Link' : 'Send Link'}
                 </Text>
               </TouchableOpacity>
             </View>
             {statusCheck ? (
-              <View style={{ paddingTop: 20 }}>
+              <View style={{paddingTop: 20}}>
                 <AnimatedLottieView
                   source={{
                     uri: 'https://assets4.lottiefiles.com/packages/lf20_qliQPUmnXJ.json',
                   }} // Replace with your animation file
                   autoPlay
                   loop
-                  style={{ width: 100, height: 100, alignSelf: 'center', }}
+                  style={{width: 100, height: 100, alignSelf: 'center'}}
                 />
 
                 <Text
@@ -368,12 +376,12 @@ export default function VerifyEmail(props) {
                   Enter the OTP Below
                 </Text>
                 <View style={styles.otp_box}>
-                  <TextInput
+                <TextInput
                     ref={otp1}
                     onChangeText={value => {
                       if (value != '') {
-                        otp2.current.focus();
                         setFirstDigit(value);
+                        otp2.current.focus();
                       }
                       // else setFirstDigit('');
                     }}
@@ -382,28 +390,26 @@ export default function VerifyEmail(props) {
                     style={styles.textInput_otp}
                     value={firstDigit}
                     onKeyPress={({ nativeEvent }) => {
-                      nativeEvent.key == 'Backspace' && setFirstDigit('');
+                     if (nativeEvent.key == 'Backspace' && setFirstDigit != ' ') {
+                      setFirstDigit('');
+                     }
                     }}
                   />
                   <TextInput
                     ref={otp2}
                     onChangeText={value => {
                       if (value != '') {
-                        otp3.current.focus();
                         setsecondDigit(value);
+                        otp3.current.focus();
                       }
-                      // else {
-                      //   otp1.current.focus();
-                      //   setFirstDigit('');
-                      // }
                     }}
                     keyboardType="numeric"
                     maxLength={1}
                     style={styles.textInput_otp}
                     value={secondDigit}
                     onKeyPress={({ nativeEvent }) => {
-                      if (nativeEvent.key == 'Backspace') {
-                        setFirstDigit('');
+                      if (nativeEvent.key == 'Backspace' && setsecondDigit != ' ') {
+                        setsecondDigit('');
                         otp1.current.focus();
                       }
                     }}
@@ -413,20 +419,16 @@ export default function VerifyEmail(props) {
                     ref={otp3}
                     onChangeText={value => {
                       if (value != '') {
-                        otp4.current.focus();
                         setthirdDigit(value);
+                        otp4.current.focus();
                       }
-                      // else {
-                      //   otp2.current.focus();
-                      //   setsecondDigit('');
-                      // }
                     }}
                     maxLength={1}
                     style={styles.textInput_otp}
                     value={thirdDigit}
                     onKeyPress={({ nativeEvent }) => {
-                      if (nativeEvent.key == 'Backspace') {
-                        setsecondDigit('');
+                      if (nativeEvent.key == 'Backspace' && setthirdDigit != ' ') {
+                        setthirdDigit('');
                         otp2.current.focus();
                       }
                     }}
@@ -436,21 +438,17 @@ export default function VerifyEmail(props) {
                     ref={otp4}
                     onChangeText={value => {
                       if (value != '') {
-                        otp5.current.focus();
                         setforthDigit(value);
+                        otp5.current.focus();
                       }
-                      // else {
-                      //   otp3.current.focus();
-                      //   setthirdDigit('');
-                      // }
                     }}
                     maxLength={1}
                     style={styles.textInput_otp}
                     value={forthDigit}
                     onKeyPress={({ nativeEvent }) => {
-                      if (nativeEvent.key == 'Backspace') {
+                      if (nativeEvent.key == 'Backspace' && setforthDigit != '') {
+                        setforthDigit('');
                         otp3.current.focus();
-                        setthirdDigit('');
                       }
                     }}
                   />
@@ -459,21 +457,17 @@ export default function VerifyEmail(props) {
                     ref={otp5}
                     onChangeText={value => {
                       if (value != '') {
-                        otp6.current.focus();
                         setfifthDigit(value);
+                        otp6.current.focus();
                       }
-                      // else {
-                      //   otp4.current.focus();
-                      //   setforthDigit('');
-                      // }
                     }}
                     maxLength={1}
                     style={styles.textInput_otp}
                     value={fifthDigit}
                     onKeyPress={({ nativeEvent }) => {
-                      if (nativeEvent.key == 'Backspace') {
+                      if (nativeEvent.key == 'Backspace' && setfifthDigit != ' ') {
+                        setfifthDigit('');
                         otp4.current.focus();
-                        setforthDigit('');
                       }
                     }}
                   />
@@ -484,19 +478,14 @@ export default function VerifyEmail(props) {
                       if (value != '') {
                         setSixDigit(value);
                       }
-                      // else {
-                      //   otp5.current.focus();
-                      //   setfifthDigit('');
-                      // }
                     }}
                     maxLength={1}
                     style={styles.textInput_otp}
                     value={sixDigit}
                     onKeyPress={({ nativeEvent }) => {
-                      if (nativeEvent.key == 'Backspace') {
-                        otp5.current.focus();
-                        setfifthDigit('');
+                      if (nativeEvent.key == 'Backspace' && setSixDigit != ' ') {
                         setSixDigit('');
+                        otp5.current.focus();
                       }
                     }}
                     onSubmitEditing={verifyOTP}
@@ -524,7 +513,7 @@ export default function VerifyEmail(props) {
                     ...Platform.select({
                       ios: {
                         shadowColor: '#000000',
-                        shadowOffset: { width: 0, height: 2 },
+                        shadowOffset: {width: 0, height: 2},
                         shadowOpacity: 0.3,
                         shadowRadius: 4,
                       },
@@ -547,7 +536,9 @@ export default function VerifyEmail(props) {
             <View style={styles.mainDiv_VErify_account}>
               <Text style={styles.wrong_email_text}>Entered wrong email? </Text>
               <TouchableOpacity onPress={() => navigation.navigate('Register')}>
-                <Text style={styles.make_changes}>Go back to make changes.</Text>
+                <Text style={styles.make_changes}>
+                  Go back to make changes.
+                </Text>
               </TouchableOpacity>
             </View>
           </View>

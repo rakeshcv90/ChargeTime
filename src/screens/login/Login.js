@@ -1,3 +1,9 @@
+/* eslint-disable react-hooks/exhaustive-deps */
+/* eslint-disable quotes */
+/* eslint-disable react/no-unstable-nested-components */
+/* eslint-disable react-native/no-inline-styles */
+/* eslint-disable no-unused-vars */
+/* eslint-disable eqeqeq */
 import {
   View,
   Text,
@@ -49,7 +55,8 @@ import {
 } from '../../redux/action';
 import axios from 'axios';
 import {navigationRef} from '../../../App';
-
+import messaging from '@react-native-firebase/messaging';
+import {Alert, PermissionsAndroid} from 'react-native';
 const mobileH = Math.round(Dimensions.get('window').height);
 const mobileW = Math.round(Dimensions.get('window').width);
 
@@ -62,7 +69,36 @@ export default function Login({navigation}) {
   const dispatch = useDispatch();
   const {getDeviceID, getGraphData} = useSelector(state => state);
   // console.log(getUserID,"object")
+  useEffect(() => {
+    console.log('---------', getDeviceID);
+    let unsubscribe = null;
+    const notificationService = async () => {
+      PermissionsAndroid.request(
+        PermissionsAndroid.PERMISSIONS.POST_NOTIFICATIONS,
+      );
+      await messaging().registerDeviceForRemoteMessages();
+      const token = await messaging().getToken();
 
+      if (token?.length > 0) {
+        console.log('FCM...', token);
+        messaging().setBackgroundMessageHandler(async remoteMessage => {
+          console.log('Message handled in the background!', remoteMessage);
+        });
+        unsubscribe = messaging().onMessage(async remoteMessage => {
+          Alert.alert(
+            'A new FCM message arrived!',
+            JSON.stringify(remoteMessage),
+          );
+        });
+      }
+    };
+    if (Platform.OS === 'android') {
+      notificationService();
+    }
+    if (unsubscribe) {
+      return unsubscribe;
+    }
+  }, []);
   useEffect(() => {
     const backHandler = BackHandler.addEventListener(
       'hardwareBackPress',
@@ -145,7 +181,10 @@ export default function Login({navigation}) {
             dispatch(setPackageStatus(true));
             // dispatch(setUserID(res.data?.user_id));
             dispatch(getLocationID(res.data?.locationid));
-            fetchGraphData(res.data?.user_id);
+
+            // setInterval(() => {
+            //   fetchGraphData(res.data?.user_id);
+            // }, 3000);
             fetchWeekGraphData(res.data?.user_id);
             fetchMonthGraphData(res.data?.user_id);
             fetchQuarterGraphData(res.data.user_id);
@@ -239,7 +278,7 @@ export default function Login({navigation}) {
     axios
       .get(`${API}/dailyusagegraph/${userID}`)
       .then(res => {
-        console.log('DAY GRAPH', res.data);
+        console.log('DAY GRAPH after interval ', res.data);
         dispatch(setGraphData(res?.data));
 
         dailyUsuagekwh(userID);
@@ -250,6 +289,24 @@ export default function Login({navigation}) {
         console.log(err);
       });
   };
+  const fetchGraphDataInterval = userID => {
+    console.log(userID, 'object');
+    const message = 'No usage data available';
+    axios
+      .get(`${API}/time_period/${userID}`)
+      .then(res => {
+        console.log('DAY GRAPH after interval ', res.data);
+        dispatch(setGraphData(res?.data));
+
+        dailyUsuagekwh(userID);
+        // navigation.navigate('DrawerStack');
+      })
+      .catch(err => {
+        dispatch(setGraphData({message}));
+        console.log(err);
+      });
+  };
+
   const dailyUsuagekwh = userId => {
     axios
       .get(`${API}/dailyusage/${userId}`)

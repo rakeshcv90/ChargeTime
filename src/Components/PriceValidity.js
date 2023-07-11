@@ -1,36 +1,45 @@
-import {View, Text, StyleSheet, TouchableOpacity, Image,Dimensions, Platform, SafeAreaView} from 'react-native';
-import React, { useState, useEffect } from 'react'
-import { Connecticut } from '../../assets/images/Connecticut';
-import { Charge } from '../../assets/svgs/Charge';
+/* eslint-disable no-dupe-keys */
+/* eslint-disable react-native/no-inline-styles */
+/* eslint-disable no-unused-vars */
+import {
+  View,
+  Text,
+  StyleSheet,
+  TouchableOpacity,
+  Image,
+  Dimensions,
+  Platform,
+  SafeAreaView,
+} from 'react-native';
+import React, {useState, useEffect} from 'react';
+import {Connecticut} from '../../assets/images/Connecticut';
+import {Charge} from '../../assets/svgs/Charge';
 import COLORS from '../constants/COLORS';
-import { useSelector } from 'react-redux';
+import {useSelector} from 'react-redux';
 const mobileW = Math.round(Dimensions.get('screen').width);
 
 const PriceValidity = ({data}) => {
-  
   return (
     <View style={[styles.mainDiv_installation]}>
       <TouchableOpacity style={styles.install_touchable}>
-        
-      <Charge style={styles.img_width} />
+        <Charge style={styles.img_width} />
         <Text style={styles.installation_text}>Price & Validity</Text>
       </TouchableOpacity>
       <View style={styles.location_div}>
-        
-      <Text style={styles.force_base_b}>Package Name :</Text>
+        <Text style={styles.force_base_b}>Package Name :</Text>
         <Text style={styles.force_base}>{data?.energy_plan}</Text>
       </View>
       <Image
-          // style={styles.img_width}
-          source={require('../../assets/images/straight2.png')}
-          resizeMode='stretch' style={{alignSelf: 'center', width: mobileW,}}
-        />
-        <View style={styles.location_div}>
+        // style={styles.img_width}
+        source={require('../../assets/images/straight2.png')}
+        resizeMode="stretch"
+        style={{alignSelf: 'center', width: mobileW}}
+      />
+      <View style={styles.location_div}>
         <Text style={styles.force_base_b}>Price :</Text>
         <Text style={styles.force_base}>${data?.energy_price}</Text>
-        </View>
+      </View>
     </View>
-
   );
 };
 
@@ -42,26 +51,24 @@ const styles = StyleSheet.create({
     // paddingVertical:15
   },
   mainDiv_installation: {
-    overflow:'hidden',
+    overflow: 'hidden',
     borderRadius: 10,
     // marginTop: Platform.OS === "ios"?5: 10,
     shadowColor: '#000000',
-    shadowOffset: {
-      width: 0,
-      height: 6,
-    },
-    shadowOpacity: 0.2,
-    shadowRadius: 5.62,
-    elevation: 8,
+    shadowOffset: {width: 0, height: 2},
+    shadowOpacity: 0.8,
+    shadowRadius: 5,
+    elevation: 5,
+    borderWidth: 0,
   },
-  
+
   install_touchable: {
     flexDirection: 'row',
     backgroundColor: COLORS.GREEN,
     alignItems: 'center',
     paddingVertical: 10,
   },
- 
+
   img_width: {
     marginLeft: 20,
   },
@@ -69,7 +76,7 @@ const styles = StyleSheet.create({
     fontWeight: 700,
     fontSize: 12,
     paddingLeft: 10,
-    color:COLORS.BLACK,
+    color: COLORS.BLACK,
   },
   location_div: {
     flexDirection: 'column',
@@ -78,18 +85,17 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
     // borderBottomWidth: 1,
     // borderBottomColor: COLORS.GREEN,
-    
   },
   force_base_b: {
     fontWeight: 700,
     fontSize: 14,
     paddingLeft: 20,
-    color:COLORS.BLACK
+    color: COLORS.BLACK,
     // paddingRight:250,
   },
   force_base: {
     fontWeight: '350',
-    color:COLORS.BLACK,
+    color: COLORS.BLACK,
     fontSize: 14,
     paddingLeft: 20,
     // marginRight:200,

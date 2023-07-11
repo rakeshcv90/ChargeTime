@@ -1,3 +1,11 @@
+/* eslint-disable prettier/prettier */
+/* eslint-disable no-dupe-keys */
+/* eslint-disable no-unused-vars */
+/* eslint-disable react-hooks/exhaustive-deps */
+/* eslint-disable react/no-unstable-nested-components */
+/* eslint-disable eqeqeq */
+/* eslint-disable react-native/no-inline-styles */
+/* eslint-disable no-undef */
 import {
   View,
   Text,
@@ -24,6 +32,7 @@ import {PLATFORM_IOS} from '../../constants/DIMENSIONS';
 import WaveAnimation from '../../Components/WaveAnimation';
 import {DIMENSIONS} from '../../constants/DIMENSIONS';
 import PriceValiditySubs from '../../Components/PriceValiditySubs';
+import { Toast } from 'react-native-toast-message/lib/src/Toast';
 
 import {API} from '../../api/API';
 import {
@@ -50,9 +59,6 @@ const Subscription = () => {
   const [forLoading, setForLoading] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
   const [getData, setGetData] = useState([]);
-  // const [packageExists, setPackageExists] = useState(getPurchaseData[0]);
-
-  // const packageExists = getPurchaseData;
 
   const dispatch = useDispatch();
   useEffect(() => {
@@ -61,26 +67,6 @@ const Subscription = () => {
 
   const user_id = getUserID;
 
-  // const userSubsEnergy = async () => {
-
-  //   try {
-  //     const response = await fetch(`${API}/subscription/${user_id}`);
-  //     const result = await response.json();
-  //     // console.log("-----",result)
-  //     if(result !== null)
-  //     {
-  //     console.log(result, "----------------")
-  //     // dispatch(userSubsData(result));
-  //     // setGetData(result)
-  //     }else{
-  //       console.log("iiiiiiiiiiii")
-  //     }
-
-  //   } catch (error) {
-  //    console.log("get deleted", error)
-  //   }
-
-  // }
   const PlanCancel = async () => {
     try {
       setForLoading(true);
@@ -225,14 +211,10 @@ const Subscription = () => {
           <View>
             <Image
               source={require('../../../assets/images/dotted.png')}
-              style={{
-                width: mobileW * 0.97,
-                top: Platform.OS == 'ios' ? -30 : 2,
-              }}
+              style={{width: mobileW * 0.97}}
             />
           </View>
         )}
-         
 
         {getPurchaseData.data == 'Package details not found' ? (
           <View
@@ -289,38 +271,38 @@ const Subscription = () => {
               Please Purchase Package from Home.
             </Text> */}
             <TouchableOpacity
-                onPress={() => navigationRef.navigate('HomeStack')}
+              onPress={() => navigationRef.navigate('HomeStack')}
+              style={{
+                width: mobileW * 0.45,
+                borderRadius: 10,
+                backgroundColor: COLORS.WHITE,
+                padding: 10,
+                alignItems: 'center',
+                justifyContent: 'center',
+                margin: 10,
+                ...Platform.select({
+                  ios: {
+                    shadowColor: '#000000',
+                    shadowOffset: {width: 0, height: 2},
+                    shadowOpacity: 0.3,
+                    shadowRadius: 4,
+                  },
+                  android: {
+                    elevation: 4,
+                  },
+                }),
+              }}>
+              <Text
                 style={{
-                  width: mobileW * 0.45,
-                  borderRadius: 10,
-                  backgroundColor: COLORS.WHITE,
-                  padding: 10,
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  margin: 10,
-                  ...Platform.select({
-                    ios: {
-                      shadowColor: '#000000',
-                      shadowOffset: {width: 0, height: 2},
-                      shadowOpacity: 0.3,
-                      shadowRadius: 4,
-                    },
-                    android: {
-                      elevation: 4,
-                    },
-                  }),
+                  color: '#263238',
+                  fontWeight: '700',
+                  fontSize: 14,
+                  lineHeight: 17,
+                  textTransform: 'capitalize',
                 }}>
-                <Text
-                  style={{
-                    color: '#263238',
-                    fontWeight: '700',
-                    fontSize: 14,
-                    lineHeight: 17,
-                    textTransform: 'capitalize',
-                  }}>
                 Purchase Plan
-                </Text>
-              </TouchableOpacity>
+              </Text>
+            </TouchableOpacity>
           </View>
         ) : (
           <ScrollView showsVerticalScrollIndicator={false}>
@@ -330,11 +312,11 @@ const Subscription = () => {
               <Remaining data={'energy'} />
             </View>
             {/* <View style={styles.mainDiv_installation}> */}
-              {/* <WaveAnimation /> */}
+            {/* <WaveAnimation /> */}
 
-              {/* < WaveLinearGradient /> */}
+            {/* < WaveLinearGradient /> */}
             {/* </View> */}
-            <View style={styles.managing_width}>
+            <View style={{...styles.managing_width, marginTop :PLATFORM_IOS ? -12 : 0}}>
               <PriceBox data={getPurchaseData.data} />
             </View>
 
@@ -386,7 +368,7 @@ const styles = StyleSheet.create({
     marginLeft: 10,
     marginRight: 10,
     //  flex: 1,
-    paddingVertical: PLATFORM_IOS ? 20 : 10,
+    paddingVertical: PLATFORM_IOS ? 0 : 3,
   },
   mainDiv_installation: {
     marginLeft: 20,
