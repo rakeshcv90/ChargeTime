@@ -57,8 +57,16 @@ export default function CompleteProfile(props) {
     try {
       const response = await fetch(`${API}/locations`);
       const result = await response.json();
-
-      setLocationMap(result);
+      const sortData = result.sort(function (a, b) {
+        if (a.location < b.location) {
+          return -1;
+        }
+        if (a.location > b.location) {
+          return 1;
+        }
+        return 0;
+      });
+      setLocationMap(sortData);
     } catch (error) {
       console.error(error);
     }
@@ -84,7 +92,7 @@ export default function CompleteProfile(props) {
   };
   const CompleteProfileFunction = async () => {
     setForLoading(true);
-    if (locationId && addlineone && addlinetwo && newZipcode && newState) {
+    if (locationId && addlineone && newZipcode && newState) {
       try {
         const payload = new FormData();
         payload.append('locationId', locationId);
@@ -153,7 +161,7 @@ export default function CompleteProfile(props) {
       PLATFORM_IOS
         ? Toast.show({
             type: 'success',
-            text1: 'Please fill required fields..',
+            text1: 'Please fill required fields.',
           })
         : ToastAndroid.show(
             'Please fill required fields..',
@@ -191,13 +199,13 @@ export default function CompleteProfile(props) {
                   inputSearchStyle={styles.inputSearchStyle}
                   iconStyle={styles.iconStyle}
                   data={locationMap}
-                  // search
+                  search
                   maxHeight={300}
                   labelField="location"
                   valueField="location"
                   placeholder="Installation"
                   keyboardAvoiding
-                  // searchPlaceholder="Search..."
+                  searchPlaceholder="Search..."
                   value={selectedValue}
                   onFocus={() => setIsFocus(true)}
                   onBlur={() => setIsFocus(false)}
@@ -216,7 +224,7 @@ export default function CompleteProfile(props) {
                 text="Address Line 1"
                 IconRight={() => <Address />}
                 mV={15}
-                placeholder="Eg. Connauticut House"
+                placeholder="Eg. Connecticut House"
                 bW={1}
                 textWidth={'45%'}
                 placeholderTextColor={COLORS.HALFBLACK}
@@ -231,7 +239,7 @@ export default function CompleteProfile(props) {
                 text="Address Line 2"
                 IconRight={() => <Address />}
                 mV={15}
-                placeholder="Appart Street Number-3,Block"
+                placeholder="Apart Street Number-3,Block"
                 bW={1}
                 textWidth={'45%'}
                 placeholderTextColor={COLORS.HALFBLACK}

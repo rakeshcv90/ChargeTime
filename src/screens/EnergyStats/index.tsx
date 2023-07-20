@@ -8,17 +8,14 @@
 /* eslint-disable react-native/no-inline-styles */
 import React, {useEffect, useState} from 'react';
 import {
-  ScrollView,
   View,
   Text,
   StyleSheet,
   TouchableOpacity,
-  Animated,
   Image,
   Dimensions,
   StatusBar,
   BackHandler,
-  Alert,
   Platform,
   ToastAndroid,
 } from 'react-native';
@@ -32,8 +29,6 @@ import Week from './Week';
 import Quarter from './Quarter';
 import Year from './Year';
 import {DIMENSIONS, PLATFORM_IOS} from '../../constants/DIMENSIONS';
-import ButtonSlider from '../../Components/ButtonSlider';
-import ButtonSlide from '../../Components/ButtonSlide';
 
 import {NoCharge} from '../../../assets/images/NoCharge';
 import {OnlineCharge} from '../../../assets/images/OnlineCharge';
@@ -50,7 +45,6 @@ import {
   setChargerStatus,
   setDeviceId,
   setGraphData,
-  setIsAuthorized,
   setKwhData,
   setMonthGraphData,
   setOverUsage,
@@ -182,13 +176,13 @@ export default function EnergyStats() {
         console.log(res.data, 'tt');
         if (res.data.status == 'True') {
           // dispatch(setDeviceId(res.data.message));
-          setDeviceIdTemp(res.data.message)
-          
+          setDeviceIdTemp(res.data.message);
+
           // fetchMonthGraphData(res.data?.user_id);
           // fetchQuarterGraphData(res.data.user_id);
-          console.log("Hellooo..1111..")
+          console.log('Hellooo..1111..');
           setInterval(() => {
-            console.log("Hellooo....")
+            console.log('Hellooo....');
             fetchGraphData(getUserID);
             fetchBoxTwoDashboardData(getUserID);
             fetchStatusdata(getUserID);
@@ -196,14 +190,15 @@ export default function EnergyStats() {
         } else {
           setIsLoading(false);
           PLATFORM_IOS
-          ? Toast.show({
-            type: 'success',
-            text1: "TimeOut Please Try Again !",
-          })
-          : ToastAndroid.show(
-            "TimeOut Please Try Again !",
-            ToastAndroid.SHORT,
-          );
+            ? Toast.show({
+                type: 'success',
+                text1:
+                  'Device ID not found.Contact your service representative for more information !',
+              })
+            : ToastAndroid.show(
+                'DeviceID not found.Contact your service representative for more information!',
+                ToastAndroid.SHORT,
+              );
           // getPlanCurrent(res.data?.user_id);
         }
       })
@@ -334,7 +329,7 @@ export default function EnergyStats() {
     axios
       .get(`${API}/currentplan/${userId}`)
       .then(res => {
-        console.log("DASHBOARDSADASASDASDASDASDSDA",res.data)
+        console.log('DASHBOARDSADASASDASDASDASDSDA', res.data);
         dispatch(setBoxTwoDataForDashboard(res?.data));
       })
       .catch(err => {
@@ -575,14 +570,13 @@ export default function EnergyStats() {
             }}></View>
         ) : (
           <Tab.Navigator
-          swipeEnabled={false}
+            swipeEnabled={false}
             screenOptions={{
               tabBarLabelStyle: {
                 fontSize: 16,
                 fontWeight: 'bold',
               },
               tabBarScrollEnabled: true,
-              
             }}
             tabBar={props => <MyTabBar {...props} />}>
             <Tab.Screen name="Day" component={Day} />
@@ -599,12 +593,10 @@ export default function EnergyStats() {
           </View>
         ) : (
           <>
-          {/* <ButtonSlider onToggle={handleToggle} /> */}
-          <ButtonSlider2  />
-          {/* < ButtonSlide /> */}
+            {/* <ButtonSlider onToggle={handleToggle} /> */}
+            <ButtonSlider2 />
+            {/* < ButtonSlide /> */}
           </>
-
-
         )}
       </SafeAreaView>
       {isLoading && <ActivityLoader />}

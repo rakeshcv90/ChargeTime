@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 /* eslint-disable no-shadow */
 /* eslint-disable no-unused-vars */
 /* eslint-disable react-hooks/exhaustive-deps */
@@ -41,70 +42,6 @@ import {PLATFORM_IOS} from '../../constants/DIMENSIONS';
 const mobileW = Math.round(Dimensions.get('screen').width);
 const mobileH = Math.round(Dimensions.get('window').height);
 let loginData;
-// function MyTabBar({state, descriptors, navigation, position}) {
-//    loginData = state.routes[state.index].name;
-
-//   return (
-//     <View style={[styles.tabbar_part, styles.shadowProp]}>
-//       {state.routes.map((route, index) => {
-//         const {options} = descriptors[route.key];
-//         const label =
-//           options.tabBarLabel !== undefined
-//             ? options.tabBarLabel
-//             : options.title !== undefined
-//             ? options.title
-//             : route.name;
-
-//         const isFocused = state.index === index;
-
-//         const onPress = () => {
-//           const event = navigation.emit({
-//             type: 'tabPress',
-//             target: route.key,
-//             canPreventDefault: true,
-//           });
-
-//           if (!isFocused && !event.defaultPrevented) {
-//               navigation.navigate({name: route.name, merge: true});
-//           }
-
-//         };
-
-//         return (
-//           <TouchableOpacity
-//             key={index}
-//             onPress={onPress}
-//             style={{
-//               flex: 1,
-//               backgroundColor: isFocused ? '#B1D34F' : '#EEEEEE',
-//               paddingHorizontal: 12,
-//               paddingVertical: 13,
-//               // borderRadius:10,
-//               borderRadius: isFocused ? 10 : 0,
-//               shadowColor: 'rgba(0, 0, 0, 1)',
-//               shadowOffset: {
-//                 width: isFocused ? 6 : 0,
-//                 height: isFocused ? 4 : 0,
-//               },
-//               shadowOpacity: isFocused ? 1 : 0,
-//               shadowRadius: isFocused ? 4 : 0,
-//               elevation: Platform.OS === 'android' && isFocused ? 8 : 0,
-//             }}>
-//             <Text
-//               style={{
-//                 color: isFocused ? 'black' : 'black',
-//                 fontWeight: isFocused ? '600' : '400',
-//                 fontSize: 12,
-//                 textAlign: 'center',
-//               }}>
-//               {label}
-//             </Text>
-//           </TouchableOpacity>
-//         );
-//       })}
-//     </View>
-//   );
-// }
 
 export default function Home(route) {
   const [isLoading, setIsLoading] = useState(true);
@@ -121,12 +58,14 @@ export default function Home(route) {
   useEffect(() => {
     fetchData();
     // console.log('PACKAGES', apiData);
+    console.log('----------hello------', getLocationID);
     console.log('PACKAGES APIII', getBasePackage.length);
     getBasePackage.length == 0 ? setShowPackage(true) : setShowPackage(false);
   }, []);
 
   const fetchData = async () => {
     //  loginData = await AsyncStorage.getItem('loginDataOne');
+    // setIsLoading(true);
 
     try {
       const response = await axios.get(`${API}/packagePlan/${getLocationID}`);
@@ -180,11 +119,11 @@ export default function Home(route) {
               key={index}
               onPress={onPress}
               style={{
-                // flex: 1,
-
+                flex: 1,
+                height: 50,
                 backgroundColor: isFocused ? '#B1D34F' : '#EEEEEE',
-                paddingHorizontal: 15,
-                paddingVertical: 13,
+                // paddingHorizontal: Platform.OS === 'android' ? 17 : 15,
+                // paddingVertical: 13,
                 borderRadius: isFocused ? 0 : 0,
                 shadowColor: 'rgba(0, 0, 0, 1)',
                 shadowOffset: {
@@ -192,8 +131,9 @@ export default function Home(route) {
                   height: isFocused ? 4 : 0,
                 },
                 shadowOpacity: isFocused ? 3 : 0,
-                shadowRadius: isFocused ? 4 : 0,
+                shadowRadius: isFocused ? 2 : 0,
                 elevation: Platform.OS === 'android' && isFocused ? 8 : 0,
+                justifyContent: 'center',
               }}>
               <Text
                 style={{

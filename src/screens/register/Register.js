@@ -1,3 +1,6 @@
+/* eslint-disable no-unused-vars */
+/* eslint-disable react/no-unstable-nested-components */
+/* eslint-disable react-native/no-inline-styles */
 import {
   View,
   Text,
@@ -31,15 +34,31 @@ import ActivityLoader from '../../Components/ActivityLoader';
 const mobileH = Math.round(Dimensions.get('window').height);
 const mobileW = Math.round(Dimensions.get('screen').width);
 const PasswordRegex =
-  /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+  // /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+  /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[!@#$%^&*()\-_=+[{\]}\\|;:'",<.>/?]).{8,}$/;
 const validationSchema = Yup.object().shape({
-  name: Yup.string().required('Full Name is required'),
-  email: Yup.string().email('Invalid Email').required('Email is required'),
-  mobile: Yup.string().min(10).required('Phone No. is required'),
+  // name: Yup.string().required('Full Name is required'),
+  name: Yup.string()
+    .required(' Name is required')
+    .matches(/^[A-Za-z].*/, 'Name must be start with a character')
+    .min(3, 'Name must contain at least 3 characters'),
+  // email: Yup.string().email('Invalid Email').required('Email is required'),
+  email: Yup.string()
+    .matches(/^[\w.\-]+@[\w.\-]+\.\w{2,4}$/, 'Invalid Email Format')
+    .required('Email is required'),
+  // mobile: Yup.string().min(10).required('Phone No. is required'),
+  mobile: Yup.string()
+    .test('is-ten-digits', 'Phone No. must be a 10-digit number', value => {
+      if (value) {
+        return /^\d{10}$/.test(value);
+      }
+      return true; // Allows an empty field, but shows a different required error message
+    })
+    .required('Phone No. is required'),
   password: Yup.string()
     .matches(
       PasswordRegex,
-      'Password must contain 1 uppercase and 1 lowercase letter, 1 digit and 1 special character, and the length must be at least 8 characters',
+      'Password must contain 1 Upper-Case letter, 1 Lower-Case letter, 1 Digit, 1 Special character(@,$,-,^,&), and the length must be at least 8 characters',
     )
     .required('Password is required'),
 });
@@ -56,22 +75,18 @@ export default function Register({navigation}) {
         name: values.name,
         email: values.email,
       });
-      console.log('SIGNUOP',response.data);
-      if (response.data.status == 'true') {
+      console.log(response.data.error);
+      if (response.data.error != 1) {
         PLATFORM_IOS
           ? Toast.show({
               type: 'success',
-              text1: 'Please Complete your Profile',
+              text1: 'Success!!! Please verify your email with OTP.',
             })
           : ToastAndroid.show(
-              'Please Complete your Profile',
+              'Success!!! Please verify your email with OTP.',
               ToastAndroid.SHORT,
             );
-
-        setForLoading(false);
-
-        dispatch(setUserRegisterData(values));
-        navigation.navigate('CompleteProfile', {
+        navigation.navigate('VerifyEmail', {
           email: values?.email,
           user_id: response.data?.user_id,
         });
@@ -79,41 +94,18 @@ export default function Register({navigation}) {
         //  const data=[{ email: values?.email },{ name: values?.name },{ mobile: values?.mobile },{ password: values?.password },{user_id:response.data?.user_id}]
         // const data = response.data
         //  console.log('------------------',data);
+
+        setForLoading(false);
+
+        dispatch(setUserRegisterData(values));
       } else {
-        if (response.data.error != 1) {
-          PLATFORM_IOS
-            ? Toast.show({
-                type: 'success',
-                text1: 'Success!!! Please verify your email with OTP.',
-              })
-            : ToastAndroid.show(
-                'Success!!! Please verify your email with OTP.',
-                ToastAndroid.SHORT,
-              );
-          navigation.navigate('VerifyEmail', {
-            email: values?.email,
-            user_id: response.data?.user_id,
-          });
-
-          //  const data=[{ email: values?.email },{ name: values?.name },{ mobile: values?.mobile },{ password: values?.password },{user_id:response.data?.user_id}]
-          // const data = response.data
-          //  console.log('------------------',data);
-
-          setForLoading(false);
-
-          dispatch(setUserRegisterData(values));
-        } else {
-          PLATFORM_IOS
-            ? Toast.show({
-                type: 'error',
-                text1: 'This Email already exists!',
-              })
-            : ToastAndroid.show(
-                'This Email already exists!',
-                ToastAndroid.SHORT,
-              );
-          setForLoading(false);
-        }
+        PLATFORM_IOS
+          ? Toast.show({
+              type: 'error',
+              text1: 'User not Found',
+            })
+          : ToastAndroid.show('User not Found', ToastAndroid.SHORT);
+        setForLoading(false);
       }
     } catch (error) {
       console.error(error);
@@ -167,7 +159,7 @@ export default function Register({navigation}) {
                     placeholder="Ex. John Doe"
                     bW={1}
                     textWidth={'30%'}
-                    placeholderTextColor={COLORS.HALFBLACK}
+                    placeholderTextColor={COLORS.BLACK}
                   />
 
                   <Input
@@ -183,7 +175,7 @@ export default function Register({navigation}) {
                     placeholder="Ex. johnd@xyz.com"
                     bW={1}
                     textWidth={'30%'}
-                    placeholderTextColor={COLORS.HALFBLACK}
+                    placeholderTextColor={COLORS.BLACK}
                     autoCapitalize="none"
                     keyboardType="email-address"
                   />
@@ -194,12 +186,7 @@ export default function Register({navigation}) {
                     touched={touched.mobile}
                     value={values.mobile}
                     keyboardType="numeric"
-                    onChangeText={text => {
-                      var num = /[^0-9]/g;
-                      const cardNumbers = text.replace(/\s/g, ''); // Remove spaces from card number
-                      const cardNumber = cardNumbers.replace(num, '');
-                      handleChange('mobile')(cardNumber);
-                    }}
+                    onChangeText={handleChange('mobile')}
                     maxLength={10}
                     onBlur={handleBlur('mobile')}
                     text="Phone No."
@@ -208,7 +195,7 @@ export default function Register({navigation}) {
                     placeholder="Ex. 89xxxxxxxx"
                     bW={1}
                     textWidth={'30%'}
-                    placeholderTextColor={COLORS.HALFBLACK}
+                    placeholderTextColor={COLORS.BLACK}
                   />
 
                   <Input
@@ -227,16 +214,16 @@ export default function Register({navigation}) {
                     placeholder="Create a strong password"
                     bW={1}
                     textWidth={'30%'}
-                    placeholderTextColor={COLORS.HALFBLACK}
+                    placeholderTextColor={COLORS.BLACK}
                     secureTextEntry={showPassword}
                   />
                   {/* IconLeft={null}
-            
+
             errors={errors.name}
             touched={touched.name}
-            placeholderTextColor={COLORS.HALFBLACK}
+            placeholderTextColor={COLORS.BLACK}
             text="Password"
-            
+
             passwordInput={true}
             pasButton={() => setShowPassword(!showPassword)}
             secureTextEntry={showPassword}
@@ -265,17 +252,6 @@ export default function Register({navigation}) {
                       padding: 13,
                       borderRadius: 10,
                       width: '100%',
-                      ...Platform.select({
-                        ios: {
-                          shadowColor: '#000000',
-                          shadowOffset: { width: 0, height: 2 },
-                          shadowOpacity: 0.3,
-                          shadowRadius: 4,
-                        },
-                        android: {
-                          elevation: 4,
-                        },
-                      }),
                     }}>
                     <Text
                       style={{
@@ -334,7 +310,7 @@ const styles = StyleSheet.create({
     color: COLORS.BLACK,
   },
   fullName_placeholder: {
-    backgroundColor: `rgba(86, 84, 84, 0.1)`,
+    backgroundColor: 'rgba(86, 84, 84, 0.1)',
     borderRadius: 10,
     paddingHorizontal: 15,
     height: Platform.OS === 'ios' ? 50 : 50,

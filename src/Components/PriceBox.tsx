@@ -21,7 +21,7 @@ const PriceBox = ({data}) => {
     <View
       style={
         Platform.OS === 'android'
-          ? styles.mainDiv_installation1 
+          ? styles.mainDiv_installation1
           : styles.mainDiv_installation
       }>
       <TouchableOpacity
@@ -36,60 +36,56 @@ const PriceBox = ({data}) => {
         />
         <Text style={styles.installation_text}>Price & Validity</Text>
       </TouchableOpacity>
-
-      <>
-        <View style={styles.location_div}>
-          <Text style={styles.installation_text2}>Installation Base:</Text>
-          <Text style={styles.force_base}>{data?.location}</Text>
-        </View>
-        <Image
-          // style={styles.img_width}
-          source={require('../../assets/images/dotted.png')}
-          resizeMode="stretch"
-          style={{
-            alignSelf: 'center',
-            width: Platform.OS === 'android' ? mobileW : mobileW - 40,
-          }}
-        />
-        <View style={styles.location_div}>
-          <Text style={styles.installation_text2}>Package Name:</Text>
-          <Text style={styles.force_base}>{data?.energy_plan}</Text>
-        </View>
-        {}
-        <Image
-          // style={styles.img_width}
-          source={require('../../assets/images/dotted.png')}
-          resizeMode="stretch"
-          style={{
-            alignSelf: 'center',
-            width: Platform.OS === 'android' ? mobileW : mobileW - 40,
-          }}
-        />
-        <View style={styles.location_div}>
-          <Text style={styles.installation_text2}>Price: </Text>
-          <Text style={styles.force_base}>$ {data?.energy_price}</Text>
-        </View>
-        <Image
-          // style={styles.img_width}
-          source={require('../../assets/images/dotted.png')}
-          resizeMode="stretch"
-          style={{
-            alignSelf: 'center',
-            width: Platform.OS === 'android' ? mobileW : mobileW - 40,
-          }}
-        />
-        <View
-          style={[
-            styles.location_div,
-            {
-              borderBottomLeftRadius: 10,
-              borderBottomRightRadius: 10,
-            },
-          ]}>
-          <Text style={styles.installation_text2}>Valid Till:</Text>
-          <Text style={styles.force_base}>{data?.End_validity}</Text>
-        </View>
-      </>
+      <View style={styles.location_div}>
+        <Text style={styles.installation_text2}>Installation Base:</Text>
+        <Text style={styles.force_base}>{data?.location}</Text>
+      </View>
+      <Image
+        // style={styles.img_width}
+        source={require('../../assets/images/dotted.png')}
+        resizeMode="stretch"
+        style={{
+          alignSelf: 'center',
+          width: Platform.OS === 'android' ? mobileW : mobileW - 40,
+        }}
+      />
+      <View style={styles.location_div}>
+        <Text style={styles.installation_text2}>Package Name:</Text>
+        <Text style={styles.force_base}>{data?.energy_plan}</Text>
+      </View>
+      <Image
+        // style={styles.img_width}
+        source={require('../../assets/images/dotted.png')}
+        resizeMode="stretch"
+        style={{
+          alignSelf: 'center',
+          width: Platform.OS === 'android' ? mobileW : mobileW - 40,
+        }}
+      />
+      <View style={styles.location_div}>
+        <Text style={styles.installation_text2}>Price: </Text>
+        <Text style={styles.force_base}>$ {data?.energy_price}</Text>
+      </View>
+      <Image
+        // style={styles.img_width}
+        source={require('../../assets/images/dotted.png')}
+        resizeMode="stretch"
+        style={{
+          alignSelf: 'center',
+          width: Platform.OS === 'android' ? mobileW : mobileW - 40,
+        }}
+      />
+      <View
+        style={[
+          styles.location_div,
+          {
+            borderBottomLeftRadius: 10,
+            borderBottomRightRadius: 10,
+          },
+        ]}>
+        <Text style={styles.installation_text2}>Valid Till:</Text>
+        <Text style={styles.force_base}>{data?.End_validity}</Text>
+      </View>
     </View>
   );
 };
@@ -99,20 +95,24 @@ export default PriceBox;
 const styles = StyleSheet.create({
   managing_width: {
     paddingHorizontal: 20,
-    // paddingVertical:15
+    // paddingVertical: 15,
   },
   mainDiv_installation: {
     marginTop: DIMENSIONS.SCREEN_HEIGHT * 0.03,
     marginBottom: DIMENSIONS.SCREEN_HEIGHT * 0.01,
     shadowColor: '#000000',
     shadowOffset: {width: 0, height: 6},
-    // shadowOpacity: 0.2,
+    shadowOpacity: 0.2,
     shadowRadius: 5.62,
     elevation: 8,
+    backgroundColor: 'white',
+    borderRadius: 8,
   },
   mainDiv_installation1: {
     overflow: 'hidden',
     borderRadius: 10,
+    // marginLeft: 20,
+    // marginRight: 20,
     marginTop: Platform.OS === 'ios' ? 0 : (DIMENSIONS.SCREEN_HEIGHT * 2) / 100,
     // marginBottom: Platform.OS === 'ios' ? 0 : 10,
     shadowColor: '#000000',

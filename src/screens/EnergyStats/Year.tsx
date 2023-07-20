@@ -1,3 +1,7 @@
+/* eslint-disable eqeqeq */
+/* eslint-disable react-hooks/exhaustive-deps */
+/* eslint-disable @typescript-eslint/no-unused-vars */
+/* eslint-disable react-native/no-inline-styles */
 import {View, Text, ScrollView} from 'react-native';
 import React, {useEffect, useRef, useState} from 'react';
 
@@ -6,7 +10,7 @@ import Remaining from '../../Components/Remaining';
 import TotalUsage from '../../Components/TotalUsuage';
 import Graph from '../../Components/Graph';
 import BoxTwo from '../../Components/BoxTwo';
-import PriceBox from '../../Components/PriceBox';
+import PriceValidity from '../../Components/PriceValidity';
 import ButtonSlider from '../../Components/ButtonSlider';
 import {useSelector} from 'react-redux';
 
@@ -15,7 +19,7 @@ export default function Year() {
   const ScrollRef = useRef(null);
   useEffect(() => {
     setShowSlider(true);
-    console.log("MONTHRasdsadsadasdasdasdasdasd",getYearData)
+    console.log('MONTHRasdsadsadasdasdasdasdasd', getYearData);
   }, []);
   const {getYearData, getBoxTwoDataForDashboard} = useSelector(
     (state: any) => state,
@@ -47,8 +51,7 @@ export default function Year() {
 
           <View style={{marginHorizontal: 20}}>
             {getYearData.message != 'No yearly usage data available' ? (
-            <Graph dataOne={getYearData} />
-              
+              <Graph dataOne={getYearData} />
             ) : (
               <Text
                 style={{
@@ -58,15 +61,14 @@ export default function Year() {
                   fontSize: 14,
                   marginVertical: 10,
                 }}>
-                No Graph Data Available
+                No Graph Data available
               </Text>
             )}
             <BoxTwo data={getBoxTwoDataForDashboard.data} />
           </View>
 
-          <View style={{marginBottom:80}}>
-          <PriceBox data={getBoxTwoDataForDashboard.data}/>
-
+          <View style={{marginBottom: 80}}>
+            <PriceValidity data={getBoxTwoDataForDashboard.data} />
           </View>
         </ScrollView>
       </View>

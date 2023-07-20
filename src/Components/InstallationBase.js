@@ -41,61 +41,126 @@ const InstallationBase = ({data}) => {
   };
 
   return (
+    // <View
+    //   // style={
+    //   //   Platform.OS == 'android'
+    //   //     ? styles.mainDiv_installation1
+    //   //     : styles.mainDiv_installation
+    //   // }
+    //   style = {Platform.OS == 'android'
+    //   ? styles.mainDiv_installation1
+    //   : styles.mainDiv_installation
+    //    }
+    //   >
+    //   <View style={styles.install_touchable}>
+    //     {/* <Address style={styles.img_width} /> */}
+    //     <InstallBase style={styles.img_width} />
+    //     <Text style={styles.installation_text}>Installation Base</Text>
+    //   </View>
+    //   {/* <View> */}
+    //     <View style={styles.location_div}>
+    //       <Vanderberg style={styles.img_width} />
+    //       <Text style={styles.force_base}>
+    //         {data[0] == undefined ? data?.location : data[0].location}
+    //       </Text>
+    //       {/* <Text style={styles.force_base}>{data[0]=="undefined"?setBasePackage[0].location}</Text> */}
+    //     </View>
+    //     <Image
+    //       source={require('../../assets/images/dotted1.png')}
+    //       resizeMode="stretch"
+    //       style={{
+    //         width:  mobileW - 40,
+    //         alignSelf: 'center',
+    //       }}
+    //     />
+
+    //     <View style={styles.mainDiv_state_zip}>
+    //       <View style={styles.state_div}>
+    //         {/* <Image
+    //         style={styles.img_width}
+    //         source={require('../../assets/images/connecticut.png')}
+    //       /> */}
+    //         <Connecticut style={styles.img_width} />
+    //         <Text style={styles.force_base}>
+    //           {data[0] == undefined ? data?.state : data[0].state}
+    //         </Text>
+    //         {/* <Text style={styles.force_base}>{setBasePackage[0].state}</Text> */}
+    //       {/* </View> */}
+
+    //       <View style={styles.state_div}>
+    //         <Image
+    //           //style={styles.img_width}
+    //           source={require('../../assets/images/zip_code.png')}
+    //           resizeMode="stretch"
+    //           style={{width: 25, height: 25}}
+    //         />
+    //         <Text style={styles.force_base}>
+    //           {data[0] == undefined ? data?.ZIP_code : data[0].ZIP_code}
+    //         </Text>
+    //         {/* <Text style={styles.force_base}>{setBasePackage[0].ZIP_code}</Text> */}
+    //       </View>
+    //     </View>
+    //   </View>
+    // </View>
+
     <View
       // style={
       //   Platform.OS == 'android'
       //     ? styles.mainDiv_installation1
       //     : styles.mainDiv_installation
       // }
-      style = {styles.mainDiv_installation}
-      >
+      style={
+        Platform.OS == 'android'
+          ? styles.mainDiv_installation1
+          : styles.mainDiv_installation
+      }>
       <View style={styles.install_touchable}>
         {/* <Address style={styles.img_width} /> */}
         <InstallBase style={styles.img_width} />
         <Text style={styles.installation_text}>Installation Base</Text>
       </View>
-      <View>
-        <View style={styles.location_div}>
-          <Vanderberg style={styles.img_width} />
-          <Text style={styles.force_base}>
-            {data[0] == undefined ? data?.location : data[0].location}
-          </Text>
-          {/* <Text style={styles.force_base}>{data[0]=="undefined"?setBasePackage[0].location}</Text> */}
-        </View>
-        <Image
-          source={require('../../assets/images/dotted1.png')}
-          resizeMode="stretch"
-          style={{
-            width: Platform.OS === 'android' ? mobileW : mobileW - 40,
-            alignSelf: 'center',
-          }}
-        />
-
-        <View style={styles.mainDiv_state_zip}>
-          <View style={styles.state_div}>
-            {/* <Image
+      {/* <View> */}
+      <View style={styles.location_div}>
+        <Vanderberg style={styles.img_width} />
+        <Text style={styles.force_base}>
+          {data[0] == undefined ? data?.location : data[0].location}
+        </Text>
+        {/* <Text style={styles.force_base}>{data[0]=="undefined"?setBasePackage[0].location}</Text> */}
+        {/* </View> */}
+      </View>
+      <Image
+        source={require('../../assets/images/dotted1.png')}
+        resizeMode="stretch"
+        style={{
+          width: mobileW - 40,
+          alignSelf: 'center',
+        }}
+      />
+      <View style={styles.mainDiv_state_zip}>
+        {/* <View style={styles.state_div}> */}
+        {/* <Image
             style={styles.img_width}
             source={require('../../assets/images/connecticut.png')}
           /> */}
-            <Connecticut style={styles.img_width} />
-            <Text style={styles.force_base}>
-              {data[0] == undefined ? data?.state : data[0].state}
-            </Text>
-            {/* <Text style={styles.force_base}>{setBasePackage[0].state}</Text> */}
-          </View>
+        <Connecticut style={styles.img_width} />
+        <Text style={styles.force_base}>
+          {data[0] == undefined ? data?.state : data[0].state}
+        </Text>
+        {/* <Text style={styles.force_base}>{setBasePackage[0].state}</Text> */}
+        {/* </View> */}
 
-          <View style={styles.state_div}>
-            <Image
-              //style={styles.img_width}
-              source={require('../../assets/images/zip_code.png')}
-              resizeMode="stretch"
-              style={{width: 25, height: 25}}
-            />
-            <Text style={styles.force_base}>
-              {data[0] == undefined ? data?.ZIP_code : data[0].ZIP_code}
-            </Text>
-            {/* <Text style={styles.force_base}>{setBasePackage[0].ZIP_code}</Text> */}
-          </View>
+        <View style={styles.state_div}>
+          <Image
+            //style={styles.img_width}
+            source={require('../../assets/images/zip_code.png')}
+            resizeMode="stretch"
+            style={{width: 25, height: 25}}
+          />
+          <Text style={styles.force_base}>
+            {data[0] == undefined ? data?.ZIP_code : data[0].ZIP_code}
+          </Text>
+          {/* <Text style={styles.force_base}>{setBasePackage[0].ZIP_code}</Text> */}
+          {/* </View> */}
         </View>
       </View>
     </View>
@@ -112,9 +177,11 @@ const styles = StyleSheet.create({
   mainDiv_installation: {
     shadowColor: '#000000',
     shadowOffset: {width: 0, height: 6},
-    // shadowOpacity: 0.2,
+    shadowOpacity: 0.35,
     shadowRadius: 5.62,
     elevation: 8,
+    backgroundColor: 'white',
+    borderRadius: 8,
   },
   install_touchable: {
     flexDirection: 'row',
@@ -137,7 +204,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     backgroundColor: COLORS.GRAY,
     alignItems: 'center',
-   paddingVertical: 20,
+    paddingVertical: 20,
     // borderBottomWidth: 1,
     // borderBottomColor: COLORS.GREEN,
   },
@@ -239,7 +306,7 @@ const styles = StyleSheet.create({
     overflow: 'hidden',
     borderRadius: 10,
 
-    //shadowColor: '#000000',
+    shadowColor: '#000000',
     shadowOffset: {
       width: 4,
       height: 6,
@@ -249,9 +316,3 @@ const styles = StyleSheet.create({
     elevation: Platform.OS === 'android' ? 8 : 0,
   },
 });
-
-/* eslint-disable no-dupe-keys */
-
-/* eslint-disable react-native/no-inline-styles */
-/* eslint-disable react-hooks/exhaustive-deps */
-/* eslint-disable no-unused-vars */

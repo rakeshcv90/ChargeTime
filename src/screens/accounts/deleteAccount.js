@@ -1,50 +1,60 @@
+/* eslint-disable react-native/no-inline-styles */
 /* eslint-disable quotes */
 /* eslint-disable no-unused-vars */
 /* eslint-disable prettier/prettier */
-import React, { useState, useEffect } from 'react';
-import { View, TextInput, StyleSheet, Button, SafeAreaView, TouchableOpacity, Text, ToastAndroid, Image, Platform, Dimensions } from 'react-native';
+import React, {useState, useEffect} from 'react';
+import {
+  View,
+  TextInput,
+  StyleSheet,
+  Button,
+  SafeAreaView,
+  TouchableOpacity,
+  Text,
+  ToastAndroid,
+  Image,
+  Platform,
+  Dimensions,
+} from 'react-native';
 import Input from '../../Components/Input';
 import COLORS from '../../constants/COLORS';
-import { useSelector } from 'react-redux';
-import { DIMENSIONS } from '../../constants/DIMENSIONS';
+import {useSelector} from 'react-redux';
+import {DIMENSIONS} from '../../constants/DIMENSIONS';
 import HorizontalLine from '../../Components/HorizontalLine';
 import Header from '../../Components/Header';
-import { Eye } from '../../../assets/svgs/Eye';
-import { API } from '../../api/API';
-import { navigationRef } from '../../../App';
-import { ms } from 'react-native-size-matters';
-import { PLATFORM_IOS } from '../../constants/DIMENSIONS';
-import { resetApp } from '../../redux/action';
-import { useDispatch } from 'react-redux';
-import { Toast } from 'react-native-toast-message/lib/src/Toast';
+import {Eye} from '../../../assets/svgs/Eye';
+import {API} from '../../api/API';
+import {navigationRef} from '../../../App';
+import {ms} from 'react-native-size-matters';
+import {PLATFORM_IOS} from '../../constants/DIMENSIONS';
+import {resetApp} from '../../redux/action';
+import {useDispatch} from 'react-redux';
+import {Toast} from 'react-native-toast-message/lib/src/Toast';
 const mobileW = Math.round(Dimensions.get('screen').width);
 const mobileH = Math.round(Dimensions.get('screen').height);
 
 // import Button from '../../Components/Button';
 
 const DeleteAccountScreen = () => {
-  const userRegisterData = useSelector((state) => state.userRegisterData);
+  const userProfileData = useSelector(state => state.userProfileData);
   const [reason, setReason] = useState('');
   const [password, setPassword] = useState('');
-  const getUserID = useSelector((state) => state.getUserID);
+  const getUserID = useSelector(state => state.getUserID);
   const [hidePassword, setHidePassword] = useState(true);
   const [showNew, setShowNew] = useState(false);
 
   const dispatch = useDispatch();
   const user_ID = getUserID;
 
-
   useEffect(() => {
-    console.log('data for this User:---------', userRegisterData);
-
-  }, [userRegisterData]);
+    console.log('data for this User:---------', userProfileData);
+  }, [userProfileData]);
   //  const user_ID = userRegisterData[4]?.user_id;
 
   const handleDelete = async () => {
     console.log(user_ID, 'user');
     console.log(reason, 'reason');
     console.log(password, 'password');
-
     await fetch(`${API}/deleteAccount/${user_ID}`, {
       method: 'POST',
       headers: {
@@ -54,31 +64,32 @@ const DeleteAccountScreen = () => {
         delete_reason: reason,
         pwa_password: password,
       }),
-    }).then(res => res.json())
+    })
+      .then(res => res.json())
       .then(async data => {
         console.log(data, 'fff');
-        if (data.message === "Account deleted successfully") {
-            dispatch(resetApp());
+        if (data.message === 'Account deleted successfully') {
+          dispatch(resetApp());
 
-          PLATFORM_IOS ?
-            Toast.show({
-              type: 'success',
-              text1: 'Account deleted successfully',
-
-            }) : ToastAndroid.show('Account deleted successfully', ToastAndroid.SHORT);
+          PLATFORM_IOS
+            ? Toast.show({
+                type: 'success',
+                text1: 'Account deleted successfully',
+              })
+            : ToastAndroid.show(
+                'Account deleted successfully',
+                ToastAndroid.SHORT,
+              );
 
           navigationRef.navigate('LoginStack');
-
         } else {
-
           console.log('Inccorect Password');
-          PLATFORM_IOS ?
-            Toast.show({
-              type: 'error',
-              text1: 'Inccorect Password',
-
-            }) : ToastAndroid.show('Inccorect Password', ToastAndroid.SHORT);
-
+          PLATFORM_IOS
+            ? Toast.show({
+                type: 'error',
+                text1: 'Inccorect Password',
+              })
+            : ToastAndroid.show('Inccorect Password', ToastAndroid.SHORT);
         }
       })
       .catch(error => {
@@ -86,19 +97,32 @@ const DeleteAccountScreen = () => {
       });
   };
 
-
   return (
-    <SafeAreaView style={{ backgroundColor: COLORS.CREAM, flex: 1 }}>
+    <SafeAreaView style={{backgroundColor: COLORS.CREAM, flex: 1}}>
       <Header headerName="Account Delete Request" />
-      {Platform.OS == 'android' ? <HorizontalLine style={styles.line} /> : <View
-        style={{
-
-
-        }}>
-        <Image source={require('../../../assets/images/dotted.png')} style={{ width: mobileW * 0.97 }} />
-      </View>}
+      {Platform.OS == 'android' ? (
+        <HorizontalLine style={styles.line} />
+      ) : (
+        <View style={{}}>
+          <Image
+            source={require('../../../assets/images/dotted.png')}
+            style={{width: mobileW * 0.97}}
+          />
+        </View>
+      )}
       <View style={styles.container}>
-        <View style={{ backgroundColor: COLORS.CREAM, width: 70, position: 'absolute', zIndex: 99, top: 23, left: 32, alignItems: 'center' }}><Text style={{ color: 'black' }}>Reason</Text></View>
+        <View
+          style={{
+            backgroundColor: COLORS.CREAM,
+            width: 70,
+            position: 'absolute',
+            zIndex: 99,
+            top: 23,
+            left: 32,
+            alignItems: 'center',
+          }}>
+          <Text style={{color: 'black', fontWeight: '500'}}>Reason</Text>
+        </View>
         <TextInput
           style={{
             // flex: 1,
@@ -106,16 +130,15 @@ const DeleteAccountScreen = () => {
             borderRadius: 5,
             borderWidth: 0.5,
             borderColor: COLORS.BLACK,
-           marginVertical: 19,
+            marginVertical: 19,
             width: mobileW * 0.92,
             height: ms(150),
             color: COLORS.BLACK,
             //fontFamily: 'Roboto',
-            fontWeight: '500',
+            fontWeight: '400',
             // paddingLeft: 10,
             // paddingTop: 10,
             textAlignVertical: 'top',
-
           }}
           multiline
           maxLength={550}
@@ -150,7 +173,6 @@ const DeleteAccountScreen = () => {
           value={reason}
         /> */}
 
-
         <Input
           IconLeft={null}
           bgColor={COLORS.CREAM}
@@ -178,7 +200,6 @@ const DeleteAccountScreen = () => {
           }}
         />
 
-
         <View
           style={{
             flexDirection: 'row',
@@ -199,7 +220,7 @@ const DeleteAccountScreen = () => {
               ...Platform.select({
                 ios: {
                   shadowColor: '#000000',
-                  shadowOffset: { width: 0, height: 2 },
+                  shadowOffset: {width: 0, height: 2},
                   shadowOpacity: 0.3,
                   shadowRadius: 4,
                 },
@@ -207,10 +228,7 @@ const DeleteAccountScreen = () => {
                   elevation: 4,
                 },
               }),
-            }}
-
-          >
-
+            }}>
             <Text
               style={{
                 color: COLORS.WHITE,
@@ -241,10 +259,10 @@ const styles = StyleSheet.create({
     backgroundColor: COLORS.RED,
   },
   label: {
-    position: "absolute",
+    position: 'absolute',
     top: ' -15px',
-    left: "23px",
-    padding: " 2px",
+    left: '23px',
+    padding: ' 2px',
   },
 });
 

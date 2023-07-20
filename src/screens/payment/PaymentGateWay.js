@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable react/no-unstable-nested-components */
 /* eslint-disable eqeqeq */
 /* eslint-disable react-native/no-inline-styles */
@@ -50,27 +51,60 @@ import {Toast} from 'react-native-toast-message/lib/src/Toast';
 const mobileW = Math.round(Dimensions.get('screen').width);
 const mobileH = Math.round(Dimensions.get('window').height);
 const validationSchema = Yup.object().shape({
-  cardHolderName: Yup.string().required('Card Holder Name is required'),
+  // cardHolderName: Yup.string().required('Card Holder Name is required'),
+  cardHolderName: Yup.string()
+    .required('Card Holder Name is required')
+    .matches(/^[A-Za-z].*/, 'Name must be start with a character')
+    .min(3, 'Name must contain at least 3 characters'),
   cardNumber: Yup.string()
-    .required('Invalid Card Number')
+    // .required('Invalid Card Number')
     .min(19, 'Card number must be 16 digits'),
 
   // .matches(/^[0-9]{16}$/, 'Card number must be 16 digits'),
   validTill: Yup.string()
-    .required('expiry date required')
+    .required('Expiry date is required')
     .test(
       'expiration',
-      'Expiration date must be greater than current date',
+      'Year should be greater or equal to the current year',
       function (value) {
         if (!value) {
           return false;
         }
         const currentDate = new Date();
         const [month, year] = value.split('/');
+
+        // Check if month is between 1 and 12
+        if (parseInt(month, 10) < 1 || parseInt(month, 10) > 12) {
+          return this.createError({
+            message: 'Invalid month',
+            path: 'validTill',
+          });
+        }
+
         const expirationDate = new Date(
           parseInt(`20${year}`, 10),
           parseInt(month, 10) - 1,
         );
+
+        // // Check if the year is greater than or equal to the current year
+        // if (expirationDate.getFullYear() <= currentDate.getFullYear()) {
+        //   return this.createError({
+        //     message: 'Year should be greater or equal to the current year',
+        //     path: 'validTill',
+        //   });
+        // }
+        // Check if the year is equal to the current year but the month is greater than the current month
+        if (
+          expirationDate.getFullYear() === currentDate.getFullYear() &&
+          expirationDate.getMonth() <= currentDate.getMonth()
+        ) {
+          return this.createError({
+            message: 'Month should be greater than the current month',
+            path: 'validTill',
+          });
+        }
+
+        // Check if the expiration date is greater than the current date
         return expirationDate > currentDate;
       },
     ),
@@ -82,57 +116,69 @@ export default function PaymentGateWay({navigation, route}) {
   const {getDataForPayment, getUserID, getEmailDAta} = useSelector(
     state => state,
   );
+
+  useEffect(() => {
+    handleGetCard();
+  }, []);
   const [modalVisible, setModalVisible] = useState(false);
   const [loader, setLoader] = useState(false);
   const inputRef = useRef(null);
   const dispatch = useDispatch();
 
-  const getCardDetails = useSelector(state => state.getCardDetails);
-
-  useEffect;
+  // const getCardDetails = useSelector(state => state.getCardDetails);
+  const [card, setCard] = useState([]);
   const [cardId, setCardId] = useState('');
   const [cardDetails, setCardDetails1] = useState({
-    cardHolderName: getCardDetails[0]?.cust_name,
-    card_number: getCardDetails[0]?.card_number,
-    card_cvv: getCardDetails[0]?.card_cvc,
-
-    validTill:
-      getCardDetails[0]?.card_exp_month +
-      '/' +
-      getCardDetails[0]?.card_exp_year,
+    // cardHolderName: card[0].cust_name,
+    // card_number: card[0].card_number,
+    // card_cvv: card[0].card_cvc,
+    // validTill: card[0].card_exp_month + '/' + card[0].card_exp_year,
     // card_exp_year:'',
   });
-  const [card_name, setCard_Name] = useState(
-    getCardDetails[0]?.cust_name ?? '',
-  );
+  const [card_name, setCard_Name] = useState(card[0]?.cust_name ?? '');
   const [card_Number, setCard_Number] = useState(
-    String(getCardDetails[0]?.card_number).replace(
+    String(card[0]?.card_number).replace(
       /^(\d{4})(\d{4})(\d{4})(\d{4})$/,
       '$1 $2 $3 $4',
     ) ?? '',
   );
-  const [card_cvv, setCard_Cvv] = useState(
-    String(getCardDetails[0]?.card_cvc) ?? '',
-  );
+  const [card_cvv, setCard_Cvv] = useState(String(card[0]?.card_cvc) ?? '');
   const [validity, setValidity] = useState(
-    String(
-      getCardDetails[0]?.card_exp_month +
-        '/' +
-        getCardDetails[0]?.card_exp_year,
-    ) ?? '',
+    String(card[0]?.card_exp_month + '/' + card[0]?.card_exp_year) ?? '',
   );
 
   // console.log(savedCard,"------------")
+  const handleGetCard = async () => {
+    try {
+      const response = await fetch(`${API}/getcarddetails/${getUserID}`);
+      const result = await response.json();
+      // console.log("Result", result[0].sort((b, a) => a.status - b.status))
+      // console.log(result);
+      if (result[0]?.length > 0) {
+        // setSavedCard(result[0].sort((b, a) => a.status - b.status));
+        //  console.log("after card  delete",result[0])
+        const statusOneObjects = result[0].filter(item => item.status === 1);
+        console.log(statusOneObjects);
+        setCard(statusOneObjects);
+        // dispatch(setCardDetails(statusOneObjects));
+      } else {
+      }
+    } catch (error) {
+      console.log('ERROR', error);
+    }
+  };
 
+  const validTillData = card[0]?.card_exp_month + '/' + card[0]?.card_exp_year;
+  // console.log('+++++oooooooooo', card[0].cust_name);
   const newPAYMENT = async values => {
     setLoader(true);
     let payload = new FormData();
 
-    let exp_month = cardDetails?.validTill?.split('/')[0];
-    let exp_year = cardDetails?.validTill?.split('/')[1];
+    let exp_month = validTillData.split('/')[0];
+    let exp_year = validTillData.split('/')[1];
     payload.append('kwh_unit', route.params.data.kwh);
-    payload.append('card_number', cardDetails.card_number);
-    payload.append('card_cvc', cardDetails.card_cvv);
+    payload.append('card_number', card[0]?.card_number);
+    payload.append('card_cvc', card[0]?.card_cvc);
     payload.append('card_exp_month', exp_month);
     payload.append('card_exp_year', exp_year);
     payload.append('item_details', getDataForPayment.package_name);
@@ -202,12 +248,9 @@ export default function PaymentGateWay({navigation, route}) {
         PLATFORM_IOS
           ? Toast.show({
               type: 'success',
-              text1: 'Server Busy Please Try Later.',
+              text1: 'Invalid Card Details !',
             })
-          : ToastAndroid.show(
-              'Server Busy Please Try Later.',
-              ToastAndroid.SHORT,
-            );
+          : ToastAndroid.show('Invalid Card Details !', ToastAndroid.SHORT);
       }
     } catch (err) {
       setLoader(false);
@@ -215,9 +258,12 @@ export default function PaymentGateWay({navigation, route}) {
         PLATFORM_IOS
           ? Toast.show({
               type: 'success',
-              text1: 'Invalid Card Details !',
+              text1: 'Server Busy Please Try Later.',
             })
-          : ToastAndroid.show('Invalid Card Details !', ToastAndroid.SHORT);
+          : ToastAndroid.show(
+              'Server Busy Please Try Later.',
+              ToastAndroid.SHORT,
+            );
         console.log(err.response.data);
         console.log(err.response.status);
       } else {
@@ -225,7 +271,7 @@ export default function PaymentGateWay({navigation, route}) {
       }
     }
   };
-
+  // console.log('-----------------', cardDetails);
   const getDeviceIDData = () => {
     axios
       .get(`${API}/devicecheck/${getUserID}}`)
@@ -385,15 +431,15 @@ export default function PaymentGateWay({navigation, route}) {
                     }}
                   />
                   <View style={styles.cardNumber_position}>
-                    {cardDetails.card_number ? (
+                    {card[0]?.card_number ? (
                       <Text
                         style={{
                           color: '#fff',
                           fontWeight: '600',
                           fontSize: 20,
                         }}>
-                        {cardDetails?.card_number > 0 &&
-                          formatCreditCardNumber(cardDetails.card_number + '')}
+                        {card[0]?.card_number > 0 &&
+                          formatCreditCardNumber(card[0]?.card_number + '')}
                       </Text>
                     ) : (
                       <Text
@@ -416,14 +462,14 @@ export default function PaymentGateWay({navigation, route}) {
                           Card Holder
                         </Text>
 
-                        {cardDetails.cardHolderName ? (
+                        {card[0]?.cust_name ? (
                           <Text
                             style={{
                               color: '#fff',
                               fontWeight: '600',
                               fontSize: 13,
                             }}>
-                            {cardDetails.cardHolderName}
+                            {card[0]?.cust_name}
                           </Text>
                         ) : (
                           <Text
@@ -446,14 +492,14 @@ export default function PaymentGateWay({navigation, route}) {
                           Expires
                         </Text>
 
-                        {cardDetails.validTill !== 'undefined/undefined' ? (
+                        {validTillData !== 'undefined/undefined' ? (
                           <Text
                             style={{
                               color: '#fff',
                               fontWeight: '600',
                               fontSize: 13,
                             }}>
-                            {cardDetails.validTill}
+                            {validTillData}
                           </Text>
                         ) : (
                           <Text
@@ -475,15 +521,15 @@ export default function PaymentGateWay({navigation, route}) {
                           }}>
                           CVV
                         </Text>
-                        {cardDetails.card_cvv ? (
+                        {card[0]?.card_cvc ? (
                           <Text
                             style={{
                               color: '#fff',
                               fontWeight: '600',
                               fontSize: 13,
                             }}>
-                            {cardDetails.card_cvv
-                              ? '*'.repeat(String(cardDetails.card_cvv).length)
+                            {card[0]?.card_cvc
+                              ? '*'.repeat(String(card[0]?.card_cvc).length)
                               : null}
                           </Text>
                         ) : (

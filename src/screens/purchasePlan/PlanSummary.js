@@ -1,3 +1,4 @@
+/* eslint-disable no-undef */
 /* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable no-unused-vars */
 /* eslint-disable react-native/no-inline-styles */
@@ -91,85 +92,83 @@ export default function PlanSummary({route, navigation}) {
 
           <View style={styles.plan_pricing_div}>
             <View>
+              <TouchableOpacity style={styles.install_touchable}>
+                <PlanPricing style={styles.img_width} />
+                <Text
+                  style={{
+                    fontWeight: '700',
+                    fontSize: 12,
+                    marginLeft: -10,
+                    color: COLORS.BLACK,
+                  }}>
+                  Plan Pricing
+                </Text>
+              </TouchableOpacity>
+            </View>
+            <View
+              style={{
+                display: 'flex',
+                flexDirection: 'row',
+                justifyContent: 'space-between',
+                backgroundColor: COLORS.GRAY,
+                paddingHorizontal: 10,
+                paddingVertical: 20,
+              }}>
               <View>
-                <TouchableOpacity style={styles.install_touchable}>
-                  <PlanPricing style={styles.img_width} />
-                  <Text
-                    style={{
-                      fontWeight: '700',
-                      fontSize: 12,
-                      marginLeft: -10,
-                      color: COLORS.BLACK,
-                    }}>
-                    Plan Pricing
-                  </Text>
-                </TouchableOpacity>
+                <Text
+                  style={{
+                    fontSize: 12,
+                    fontWeight: '400',
+                    paddingVertical: 5,
+                    color: COLORS.BLACK,
+                  }}>
+                  Price (excl.taxes):
+                </Text>
+                <Text
+                  style={{
+                    fontSize: 12,
+                    fontWeight: '400',
+                    paddingBottom: 5,
+                    color: COLORS.BLACK,
+                  }}>
+                  Taxes:
+                </Text>
+                <Text
+                  style={{
+                    fontSize: 14,
+                    fontWeight: '600',
+                    color: COLORS.BLACK,
+                  }}>
+                  Total:
+                </Text>
               </View>
-              <View
-                style={{
-                  display: 'flex',
-                  flexDirection: 'row',
-                  justifyContent: 'space-between',
-                  backgroundColor: COLORS.GRAY,
-                  paddingHorizontal: 10,
-                  paddingVertical: 20,
-                }}>
-                <View>
-                  <Text
-                    style={{
-                      fontSize: 12,
-                      fontWeight: '400',
-                      paddingVertical: 5,
-                      color: COLORS.BLACK,
-                    }}>
-                    Price (excl.taxes):
-                  </Text>
-                  <Text
-                    style={{
-                      fontSize: 12,
-                      fontWeight: '400',
-                      paddingBottom: 5,
-                      color: COLORS.BLACK,
-                    }}>
-                    Taxes:
-                  </Text>
-                  <Text
-                    style={{
-                      fontSize: 14,
-                      fontWeight: '600',
-                      color: COLORS.BLACK,
-                    }}>
-                    Total:
-                  </Text>
-                </View>
-                <View>
-                  <Text
-                    style={{
-                      fontSize: 12,
-                      fontWeight: '400',
-                      paddingVertical: 5,
-                      color: COLORS.BLACK,
-                    }}>
-                    ${total_price}
-                  </Text>
-                  <Text
-                    style={{
-                      fontSize: 12,
-                      fontWeight: '400',
-                      paddingBottom: 5,
-                      color: COLORS.BLACK,
-                    }}>
-                    ${tax}
-                  </Text>
-                  <Text
-                    style={{
-                      fontSize: 14,
-                      fontWeight: '600',
-                      color: COLORS.BLACK,
-                    }}>
-                    ${totalSalexTax}/-
-                  </Text>
-                </View>
+              <View>
+                <Text
+                  style={{
+                    fontSize: 12,
+                    fontWeight: '400',
+                    paddingVertical: 5,
+                    color: COLORS.BLACK,
+                  }}>
+                  ${total_price}
+                </Text>
+                <Text
+                  style={{
+                    fontSize: 12,
+                    fontWeight: '400',
+                    paddingBottom: 5,
+                    color: COLORS.BLACK,
+                  }}>
+                  ${tax}
+                </Text>
+                <Text
+                  style={{
+                    fontSize: 14,
+                    fontWeight: '600',
+                    color: COLORS.BLACK,
+                  }}>
+                  ${totalSalexTax}/-
+                </Text>
               </View>
             </View>
           </View>
@@ -222,18 +221,14 @@ const styles = StyleSheet.create({
   //   marginHorizontal: 20,
   // },
   plan_pricing_div: {
+    marginTop: Platform.OS === 'ios' ? 15 : 10,
     marginHorizontal: 20,
-    overflow: 'hidden',
-    borderRadius: 10,
-    marginTop: Platform.OS === 'ios' ? 10 : 10,
     shadowColor: '#000000',
-    shadowOffset: {
-      width: 4,
-      height: 6,
-    },
+    shadowOffset: {width: 0, height: 6},
     shadowOpacity: 0.2,
     shadowRadius: 5.62,
     elevation: 8,
+    backgroundColor: 'white',
   },
   bottom_tab: {
     paddingHorizontal: 20,

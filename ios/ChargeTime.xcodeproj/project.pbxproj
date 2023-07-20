@@ -13,6 +13,7 @@
 		13B07FC11A68108700A75B9A /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB71A68108700A75B9A /* main.m */; };
 		4911234EA7550E2791ACE514 /* libPods-ChargeTime.a in Frameworks */ = {isa = PBXBuildFile; fileRef = C5CC992CDCDD21382DF3E24E /* libPods-ChargeTime.a */; };
 		72A3A3912A5B42160008E3C7 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 72A3A3902A5B42160008E3C7 /* GoogleService-Info.plist */; };
+		72A98BEB2A69B2C60051A98B /* File.swift in Sources */ = {isa = PBXBuildFile; fileRef = 72A98BEA2A69B2C60051A98B /* File.swift */; };
 		81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */; };
 		CD018110BA6AA3D1A62AD19D /* libPods-ChargeTime-ChargeTimeTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 0F5F225E2D313B7BF4BFD498 /* libPods-ChargeTime-ChargeTimeTests.a */; };
 /* End PBXBuildFile section */
@@ -43,6 +44,8 @@
 		5B7EB9410499542E8C5724F5 /* Pods-ChargeTime-ChargeTimeTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ChargeTime-ChargeTimeTests.debug.xcconfig"; path = "Target Support Files/Pods-ChargeTime-ChargeTimeTests/Pods-ChargeTime-ChargeTimeTests.debug.xcconfig"; sourceTree = "<group>"; };
 		7288FAF12A56076C0060B125 /* build-ios-framework.sh */ = {isa = PBXFileReference; lastKnownFileType = text.script.sh; name = "build-ios-framework.sh"; path = "../node_modules/react-native/sdks/hermes-engine/utils/build-ios-framework.sh"; sourceTree = "<group>"; };
 		72A3A3902A5B42160008E3C7 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
+		72A98BE92A69B2C60051A98B /* ChargeTime-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "ChargeTime-Bridging-Header.h"; sourceTree = "<group>"; };
+		72A98BEA2A69B2C60051A98B /* File.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = File.swift; sourceTree = "<group>"; };
 		81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = LaunchScreen.storyboard; path = ChargeTime/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		89C6BE57DB24E9ADA2F236DE /* Pods-ChargeTime-ChargeTimeTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ChargeTime-ChargeTimeTests.release.xcconfig"; path = "Target Support Files/Pods-ChargeTime-ChargeTimeTests/Pods-ChargeTime-ChargeTimeTests.release.xcconfig"; sourceTree = "<group>"; };
 		C5CC992CDCDD21382DF3E24E /* libPods-ChargeTime.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-ChargeTime.a"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -96,6 +99,8 @@
 				13B07FB61A68108700A75B9A /* Info.plist */,
 				81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */,
 				13B07FB71A68108700A75B9A /* main.m */,
+				72A98BEA2A69B2C60051A98B /* File.swift */,
+				72A98BE92A69B2C60051A98B /* ChargeTime-Bridging-Header.h */,
 			);
 			name = ChargeTime;
 			sourceTree = "<group>";
@@ -213,7 +218,7 @@
 						TestTargetID = 13B07F861A680F5B00A75B9A;
 					};
 					13B07F861A680F5B00A75B9A = {
-						LastSwiftMigration = 1120;
+						LastSwiftMigration = 1430;
 					};
 				};
 			};
@@ -433,6 +438,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				13B07FBC1A68108700A75B9A /* AppDelegate.mm in Sources */,
+				72A98BEB2A69B2C60051A98B /* File.swift in Sources */,
 				13B07FC11A68108700A75B9A /* main.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -452,6 +458,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 5B7EB9410499542E8C5724F5 /* Pods-ChargeTime-ChargeTimeTests.debug.xcconfig */;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				DEVELOPMENT_TEAM = 277GPQ33HC;
 				GCC_PREPROCESSOR_DEFINITIONS = (
@@ -480,6 +487,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 89C6BE57DB24E9ADA2F236DE /* Pods-ChargeTime-ChargeTimeTests.release.xcconfig */;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				COPY_PHASE_STRIP = NO;
 				DEVELOPMENT_TEAM = 277GPQ33HC;
@@ -585,6 +593,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = "org.reactjs.native.example.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = ChargeTime;
+				SWIFT_OBJC_BRIDGING_HEADER = "ChargeTime-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
 				VERSIONING_SYSTEM = "apple-generic";
@@ -613,6 +622,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = "org.reactjs.native.example.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = ChargeTime;
+				SWIFT_OBJC_BRIDGING_HEADER = "ChargeTime-Bridging-Header.h";
 				SWIFT_VERSION = 5.0;
 				VERSIONING_SYSTEM = "apple-generic";
 			};

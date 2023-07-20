@@ -1,3 +1,6 @@
+/* eslint-disable react-hooks/exhaustive-deps */
+/* eslint-disable @typescript-eslint/no-unused-vars */
+/* eslint-disable react-native/no-inline-styles */
 import {View, Text, ScrollView} from 'react-native';
 import React, {useEffect, useRef, useState} from 'react';
 
@@ -6,20 +9,20 @@ import Remaining from '../../Components/Remaining';
 import TotalUsage from '../../Components/TotalUsuage';
 import Graph from '../../Components/Graph';
 import BoxTwo from '../../Components/BoxTwo';
-import PriceBox from '../../Components/PriceBox';
+import PriceValidity from '../../Components/PriceValidity';
 import ButtonSlider from '../../Components/ButtonSlider';
 import {useDispatch, useSelector} from 'react-redux';
 import axios from 'axios';
-import { API } from '../../api/API';
-import { setWeekGraphData } from '../../redux/action';
+import {API} from '../../api/API';
+import {setWeekGraphData} from '../../redux/action';
 
 export default function Week() {
   const [showSlider, setShowSlider] = useState(true);
-  const dispatch = useDispatch()
+  const dispatch = useDispatch();
   const ScrollRef = useRef(null);
   useEffect(() => {
     setShowSlider(true);
-    console.log("WEWEEWE FILE CHECK", getWeekGraphData)
+    console.log('WEWEEWE FILE CHECK', getWeekGraphData);
   }, []);
   const {getWeekGraphData, getBoxTwoDataForDashboard} = useSelector(
     (state: any) => state,
@@ -58,13 +61,15 @@ export default function Week() {
               marginTop: 10,
             }}>
             <Remaining RemainingFill={50} KWH={400} />
-            <TotalUsage data={getWeekGraphData?.Totalusedkwhs} location={'Weekly'} />
+            <TotalUsage
+              data={getWeekGraphData?.Totalusedkwhs}
+              location={'Weekly'}
+            />
           </View>
 
           <View style={{marginHorizontal: 20}}>
             {getWeekGraphData.message != 'No weeklyusage data available' ? (
-            <Graph dataOne={getWeekGraphData} />
-              
+              <Graph dataOne={getWeekGraphData} />
             ) : (
               <Text
                 style={{
@@ -74,13 +79,13 @@ export default function Week() {
                   fontSize: 14,
                   marginVertical: 10,
                 }}>
-                No Graph Data Available
+                No Graph Data available
               </Text>
             )}
             <BoxTwo data={getBoxTwoDataForDashboard[0]} />
           </View>
           <View style={{marginBottom: 80}}>
-            <PriceBox data={getBoxTwoDataForDashboard.data} />
+            <PriceValidity data={getBoxTwoDataForDashboard.data} />
           </View>
         </ScrollView>
       </View>

@@ -1,10 +1,7 @@
-/* eslint-disable no-trailing-spaces */
-/* eslint-disable react-native/no-inline-styles */
 /* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable @typescript-eslint/no-unused-vars */
-/* eslint-disable quotes */
-/* eslint-disable prettier/prettier */
-/* eslint-disable semi */
+/* eslint-disable eqeqeq */
+/* eslint-disable react-native/no-inline-styles */
 import {View, Text, ScrollView} from 'react-native';
 import React, {useEffect, useRef, useState} from 'react';
 
@@ -13,7 +10,7 @@ import Remaining from '../../Components/Remaining';
 import TotalUsage from '../../Components/TotalUsuage';
 import Graph from '../../Components/Graph';
 import BoxTwo from '../../Components/BoxTwo';
-import PriceBox from '../../Components/PriceBox';
+import PriceValidity from '../../Components/PriceValidity';
 import ButtonSlider from '../../Components/ButtonSlider';
 import {useSelector} from 'react-redux';
 
@@ -22,7 +19,7 @@ export default function Month() {
   const ScrollRef = useRef(null);
   useEffect(() => {
     setShowSlider(true);
-    console.log("MONTHRasdsadsadasdasdasdasdasd",getMonthData)
+    console.log('MONTHRasdsadsadasdasdasdasdasd', getMonthData);
   }, []);
   const {getMonthData, getBoxTwoDataForDashboard} = useSelector(
     (state: any) => state,
@@ -49,13 +46,15 @@ export default function Month() {
               marginTop: 10,
             }}>
             <Remaining RemainingFill={50} KWH={400} />
-            <TotalUsage data={getMonthData?.Totalusedkwhs} location={'Monthly'} />
+            <TotalUsage
+              data={getMonthData?.Totalusedkwhs}
+              location={'Monthly'}
+            />
           </View>
 
           <View style={{marginHorizontal: 20}}>
             {getMonthData.message != 'No monthlyusage data available' ? (
-            <Graph dataOne={getMonthData} />
-              
+              <Graph dataOne={getMonthData} />
             ) : (
               <Text
                 style={{
@@ -65,13 +64,13 @@ export default function Month() {
                   fontSize: 14,
                   marginVertical: 10,
                 }}>
-                No Graph Data Available
+                No Graph Data available
               </Text>
             )}
             <BoxTwo data={getBoxTwoDataForDashboard[0]} />
           </View>
           <View style={{marginBottom: 80}}>
-            <PriceBox data={getBoxTwoDataForDashboard.data} />
+            <PriceValidity data={getBoxTwoDataForDashboard.data} />
           </View>
         </ScrollView>
       </View>

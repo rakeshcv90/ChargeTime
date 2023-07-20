@@ -1,4 +1,6 @@
-import React, { useEffect } from 'react';
+/* eslint-disable no-unused-vars */
+/* eslint-disable react-native/no-inline-styles */
+import React, {useEffect} from 'react';
 import {
   View,
   Image,
@@ -19,7 +21,7 @@ const Introduction = ({navigation}) => {
   useEffect(() => {
     const backHandler = BackHandler.addEventListener(
       'hardwareBackPress',
-      handleBackButton
+      handleBackButton,
     );
 
     return () => backHandler.remove();
@@ -39,7 +41,7 @@ const Introduction = ({navigation}) => {
             marginHorizontal: 30,
             alignItems: 'center',
             justifyContent: 'center',
-            marginVertical: 40
+            marginVertical: 40,
           }}>
           <Text
             style={{
@@ -48,7 +50,7 @@ const Introduction = ({navigation}) => {
               lineHeight: 29,
               textAlign: 'center',
               marginBottom: 20,
-              color: COLORS.BLACK
+              color: COLORS.BLACK,
               // fontFamily: 'Monserrat',
             }}>
             Manage your EV Charger
@@ -59,7 +61,7 @@ const Introduction = ({navigation}) => {
               fontWeight: '400',
               lineHeight: 22,
               textAlign: 'justify',
-              color: COLORS.BLACK
+              color: COLORS.BLACK,
             }}>
             Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut et massa
             mi. Aliquam in hendrerit urna. Pellentesque sit amet sapien
@@ -71,7 +73,7 @@ const Introduction = ({navigation}) => {
           style={{
             flexDirection: 'row',
             justifyContent: 'center',
-            marginTop: mobileH <700 ? 0 : 70,
+            marginTop: mobileH < 700 ? 0 : 70,
             marginHorizontal: 20,
           }}>
           <TouchableOpacity
@@ -112,7 +114,7 @@ const styles = StyleSheet.create({
     fontWeight: '700',
     // fontFamily: 'Roboto',
     fontSize: 14,
-    lineHeight: 16
+    lineHeight: 16,
   },
 });
 

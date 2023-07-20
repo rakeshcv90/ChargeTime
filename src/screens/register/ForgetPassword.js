@@ -17,16 +17,16 @@ import {
   ToastAndroid,
   KeyboardAvoidingView,
 } from 'react-native';
-import React, { useRef, useState } from 'react';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import React, {useRef, useState} from 'react';
+import {SafeAreaView} from 'react-native-safe-area-context';
 import * as Yup from 'yup';
-import { Formik } from 'formik';
+import {Formik} from 'formik';
 import COLORS from '../../constants/COLORS';
 import Input from '../../Components/Input';
-import { Message } from '../../../assets/images/Message';
-import { PLATFORM_IOS } from '../../constants/DIMENSIONS';
-import { Toast } from 'react-native-toast-message/lib/src/Toast';
-import { API } from '../../api/API';
+import {Message} from '../../../assets/images/Message';
+import {PLATFORM_IOS} from '../../constants/DIMENSIONS';
+import {Toast} from 'react-native-toast-message/lib/src/Toast';
+import {API} from '../../api/API';
 import ActivityLoader from '../../Components/ActivityLoader';
 import axios from 'axios';
 
@@ -36,7 +36,7 @@ const validationSchema = Yup.object().shape({
   email: Yup.string().email('Invalid Email').required('Email is required'),
 });
 
-const ForgetPassword = ({ navigation }) => {
+const ForgetPassword = ({navigation}) => {
   const [forLoading, setForLoading] = useState(false);
   const [showOTP, setShowOTP] = useState(false);
   const [email, setEmail] = useState('');
@@ -63,15 +63,14 @@ const ForgetPassword = ({ navigation }) => {
         },
         data: values,
       });
-      console.log('First TIme data',values);
+      console.log('First TIme data', values);
       if (res.data) {
-      
         if (res.data.success == true) {
           PLATFORM_IOS
             ? Toast.show({
-              type: 'success',
-              text1: 'Otp sent successfully.',
-            })
+                type: 'success',
+                text1: 'Otp sent successfully.',
+              })
             : ToastAndroid.show('Otp sent successfully.', ToastAndroid.SHORT);
           // navigation.navigate('ResetPassword', {email: values});
           setForLoading(false);
@@ -80,10 +79,10 @@ const ForgetPassword = ({ navigation }) => {
         } else {
           PLATFORM_IOS
             ? Toast.show({
-              type: 'error',
-              text1: 'User not found!',
-              // position: 'bottom',
-            })
+                type: 'error',
+                text1: 'User not found!',
+                // position: 'bottom',
+              })
             : ToastAndroid.show('User not found!', ToastAndroid.SHORT);
 
           setForLoading(false);
@@ -110,7 +109,7 @@ const ForgetPassword = ({ navigation }) => {
         let payload = new FormData();
         payload.append('email', email);
         payload.append('randomotp', otp);
-   
+
         const res = await axios(`${API}/forgetverifyOtp`, {
           method: 'POST',
           headers: {
@@ -122,26 +121,26 @@ const ForgetPassword = ({ navigation }) => {
           if (res.data.message == 'OTP verification successful') {
             PLATFORM_IOS
               ? Toast.show({
-                type: 'success',
-                text1: 'OTP verification successfull.',
-              })
+                  type: 'success',
+                  text1: 'OTP verification successfull.',
+                })
               : ToastAndroid.show(
-                'OTP verification successfull.',
-                ToastAndroid.SHORT,
-              );
-            navigation.navigate('ResetPassword', { email: email });
+                  'OTP verification successfull.',
+                  ToastAndroid.SHORT,
+                );
+            navigation.navigate('ResetPassword', {email: email});
             setForLoading(false);
           } else {
             PLATFORM_IOS
               ? Toast.show({
-                type: 'error',
-                text1: 'Invalid OTP or OTP expired',
-                // position: 'bottom',
-              })
+                  type: 'error',
+                  text1: 'Invalid OTP or OTP expired',
+                  // position: 'bottom',
+                })
               : ToastAndroid.show(
-                'Invalid OTP or OTP expired',
-                ToastAndroid.SHORT,
-              );
+                  'Invalid OTP or OTP expired',
+                  ToastAndroid.SHORT,
+                );
 
             setForLoading(false);
           }
@@ -149,24 +148,23 @@ const ForgetPassword = ({ navigation }) => {
       } else {
         PLATFORM_IOS
           ? Toast.show({
-            type: 'error',
-            text1: 'Please fill required details',
-            // position: 'bottom',
-          })
+              type: 'error',
+              text1: 'Please fill required details',
+              // position: 'bottom',
+            })
           : ToastAndroid.show(
-            'Please fill required details',
-            ToastAndroid.SHORT,
-          );
+              'Please fill required details',
+              ToastAndroid.SHORT,
+            );
       }
       setForLoading(false);
     } catch (error) {
-   
       setForLoading(false);
     }
   };
-  const resendOTp = async value=> {
-   const data = {'email': value};
-   console.log('Data ',data);
+  const resendOTp = async value => {
+    const data = {email: value};
+    console.log('Data ', data);
     setForLoading(true);
     try {
       const res = await axios(`${API}/forgetPassword`, {
@@ -176,27 +174,27 @@ const ForgetPassword = ({ navigation }) => {
         },
         data: data,
       });
-     // console.log("Data ",res.data);
+      // console.log("Data ",res.data);
       if (res.data) {
         console.log(res.data);
         if (res.data.success == true) {
           PLATFORM_IOS
             ? Toast.show({
-              type: 'success',
-              text1: 'Otp Resent successfully.',
-            })
+                type: 'success',
+                text1: 'Otp Resent successfully.',
+              })
             : ToastAndroid.show('Otp Resent successfully.', ToastAndroid.SHORT);
           // navigation.navigate('ResetPassword', {email: values});
           setForLoading(false);
-     
+
           setEmail(value);
         } else {
           PLATFORM_IOS
             ? Toast.show({
-              type: 'error',
-              text1: 'User not found!',
-              // position: 'bottom',
-            })
+                type: 'error',
+                text1: 'User not found!',
+                // position: 'bottom',
+              })
             : ToastAndroid.show('User not found!', ToastAndroid.SHORT);
 
           setForLoading(false);
@@ -206,17 +204,16 @@ const ForgetPassword = ({ navigation }) => {
       console.log(err);
       setForLoading(false);
     }
-  
   };
 
   return (
-    <SafeAreaView style={{ backgroundColor: COLORS.CREAM, flex: 1 }}>
-      <KeyboardAvoidingView behavior="position" style={{ marginTop: 10 }} >
+    <SafeAreaView style={{backgroundColor: COLORS.CREAM, flex: 1}}>
+      <KeyboardAvoidingView behavior="position" style={{marginTop: 10}}>
         {forLoading ? <ActivityLoader /> : ''}
         <Image
           source={require('../../../assets/images/log.png')}
           resizeMode="contain"
-          style={{ width: mobileW, height: mobileW * 0.7 }}
+          style={{width: mobileW, height: mobileW * 0.7}}
         />
         <View style={styles.super_div}>
           <Formik
@@ -238,7 +235,7 @@ const ForgetPassword = ({ navigation }) => {
                   <Text style={styles.forget_password}>
                     Forgot Your Password?
                   </Text>
-                  <View style={{ marginTop: 20 }}>
+                  <View style={{marginTop: 20}}>
                     <Input
                       IconLeft={null}
                       errors={undefined}
@@ -256,7 +253,7 @@ const ForgetPassword = ({ navigation }) => {
                       autoCapitalize="none"
                     />
                     {errors.email && touched.email && (
-                      <Text style={{ color: 'red' }}>{errors.email}</Text>
+                      <Text style={{color: 'red'}}>{errors.email}</Text>
                     )}
                   </View>
                 </View>
@@ -264,9 +261,7 @@ const ForgetPassword = ({ navigation }) => {
                   onPress={() => handleSubmit()}
                   style={{
                     // marginTop: 5,
-                    backgroundColor: showOTP
-                      ? COLORS.HALFBLACK
-                      : COLORS.GREEN,
+                    backgroundColor: showOTP ? COLORS.HALFBLACK : COLORS.GREEN,
                     alignItems: 'center',
                     padding: 13,
                     borderRadius: 10,
@@ -274,7 +269,7 @@ const ForgetPassword = ({ navigation }) => {
                     ...Platform.select({
                       ios: {
                         shadowColor: '#000000',
-                        shadowOffset: { width: 0, height: 2 },
+                        shadowOffset: {width: 0, height: 2},
                         shadowOpacity: 0.3,
                         shadowRadius: 4,
                       },
@@ -315,10 +310,13 @@ const ForgetPassword = ({ navigation }) => {
                     maxLength={1}
                     style={styles.textInput_otp}
                     value={firstDigit}
-                    onKeyPress={({ nativeEvent }) => {
-                     if (nativeEvent.key == 'Backspace' && setFirstDigit != ' ') {
-                      setFirstDigit('');
-                     }
+                    onKeyPress={({nativeEvent}) => {
+                      if (
+                        nativeEvent.key == 'Backspace' &&
+                        setFirstDigit != ' '
+                      ) {
+                        setFirstDigit('');
+                      }
                     }}
                   />
                   <TextInput
@@ -337,8 +335,11 @@ const ForgetPassword = ({ navigation }) => {
                     maxLength={1}
                     style={styles.textInput_otp}
                     value={secondDigit}
-                    onKeyPress={({ nativeEvent }) => {
-                      if (nativeEvent.key == 'Backspace' && setsecondDigit != ' ') {
+                    onKeyPress={({nativeEvent}) => {
+                      if (
+                        nativeEvent.key == 'Backspace' &&
+                        setsecondDigit != ' '
+                      ) {
                         setsecondDigit('');
                         otp1.current.focus();
                       }
@@ -360,8 +361,11 @@ const ForgetPassword = ({ navigation }) => {
                     maxLength={1}
                     style={styles.textInput_otp}
                     value={thirdDigit}
-                    onKeyPress={({ nativeEvent }) => {
-                      if (nativeEvent.key == 'Backspace' && setthirdDigit != ' ') {
+                    onKeyPress={({nativeEvent}) => {
+                      if (
+                        nativeEvent.key == 'Backspace' &&
+                        setthirdDigit != ' '
+                      ) {
                         setthirdDigit('');
                         otp2.current.focus();
                       }
@@ -383,8 +387,11 @@ const ForgetPassword = ({ navigation }) => {
                     maxLength={1}
                     style={styles.textInput_otp}
                     value={forthDigit}
-                    onKeyPress={({ nativeEvent }) => {
-                      if (nativeEvent.key == 'Backspace' && setforthDigit != '') {
+                    onKeyPress={({nativeEvent}) => {
+                      if (
+                        nativeEvent.key == 'Backspace' &&
+                        setforthDigit != ''
+                      ) {
                         setforthDigit('');
                         otp3.current.focus();
                       }
@@ -406,8 +413,11 @@ const ForgetPassword = ({ navigation }) => {
                     maxLength={1}
                     style={styles.textInput_otp}
                     value={fifthDigit}
-                    onKeyPress={({ nativeEvent }) => {
-                      if (nativeEvent.key == 'Backspace' && setfifthDigit != ' ') {
+                    onKeyPress={({nativeEvent}) => {
+                      if (
+                        nativeEvent.key == 'Backspace' &&
+                        setfifthDigit != ' '
+                      ) {
                         setfifthDigit('');
                         otp4.current.focus();
                       }
@@ -428,10 +438,14 @@ const ForgetPassword = ({ navigation }) => {
                     maxLength={1}
                     style={styles.textInput_otp}
                     value={sixDigit}
-                    onKeyPress={({ nativeEvent }) => {
-                      if (nativeEvent.key == 'Backspace' && setSixDigit != ' ') {
+                    onKeyPress={({nativeEvent}) => {
+                      if (
+                        nativeEvent.key == 'Backspace' ||
+                        setSixDigit != ' '
+                      ) {
                         setSixDigit('');
-                        otp5.current.focus();
+                        setfifthDigit('');
+                        // otp5.current.focus();
                       }
                     }}
                     onSubmitEditing={verifyOTP}
@@ -440,21 +454,17 @@ const ForgetPassword = ({ navigation }) => {
               </View>
               <View style={styles.otp_yet}>
                 <Text
-                  style={
-
-                    { color: COLORS.BLACK, fontSize: 14, fontWeight: '600' }
-                  }>
-
-
+                  style={{
+                    color: COLORS.BLACK,
+                    fontSize: 14,
+                    fontWeight: '600',
+                  }}>
                   Haven't received the OTP yet?
                 </Text>
-                <TouchableOpacity style={styles.resend_OTP_btn} 
-                 onPress={()=>resendOTp(email)}
-                >
-
-                  <Text style={styles.resend_otp_text}>
-                    Resend OTP
-                  </Text>
+                <TouchableOpacity
+                  style={styles.resend_OTP_btn}
+                  onPress={() => resendOTp(email)}>
+                  <Text style={styles.resend_otp_text}>Resend OTP</Text>
                 </TouchableOpacity>
               </View>
               <TouchableOpacity
@@ -469,7 +479,7 @@ const ForgetPassword = ({ navigation }) => {
                   ...Platform.select({
                     ios: {
                       shadowColor: '#000000',
-                      shadowOffset: { width: 0, height: 2 },
+                      shadowOffset: {width: 0, height: 2},
                       shadowOpacity: 0.3,
                       shadowRadius: 4,
                     },
@@ -490,9 +500,7 @@ const ForgetPassword = ({ navigation }) => {
             </>
           )}
           <View style={styles.mainDiv_donot_account}>
-            <Text style={styles.dont_have_text}>
-              Remember your password?{' '}
-            </Text>
+            <Text style={styles.dont_have_text}>Remember your password? </Text>
             <TouchableOpacity onPress={() => navigation.navigate('Login')}>
               <Text style={styles.sign_up}>Log In</Text>
             </TouchableOpacity>
@@ -590,7 +598,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    marginVertical:10,
+    marginVertical: 10,
   },
   resend_otp_text: {
     color: COLORS.BLACK,

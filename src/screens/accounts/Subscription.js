@@ -32,7 +32,7 @@ import {PLATFORM_IOS} from '../../constants/DIMENSIONS';
 import WaveAnimation from '../../Components/WaveAnimation';
 import {DIMENSIONS} from '../../constants/DIMENSIONS';
 import PriceValiditySubs from '../../Components/PriceValiditySubs';
-import { Toast } from 'react-native-toast-message/lib/src/Toast';
+import {Toast} from 'react-native-toast-message/lib/src/Toast';
 
 import {API} from '../../api/API';
 import {
@@ -48,7 +48,6 @@ import {navigationRef} from '../../../App';
 import axios from 'axios';
 import Remaining from '../../Components/Remaining';
 import ActivityLoader from '../../Components/ActivityLoader';
-import PriceBox from '../../Components/PriceBox';
 
 const mobileW = Math.round(Dimensions.get('screen').width);
 const Subscription = () => {
@@ -316,8 +315,12 @@ const Subscription = () => {
 
             {/* < WaveLinearGradient /> */}
             {/* </View> */}
-            <View style={{...styles.managing_width, marginTop :PLATFORM_IOS ? -12 : 0}}>
-              <PriceBox data={getPurchaseData.data} />
+            <View
+              style={{
+                ...styles.managing_width,
+                marginTop: PLATFORM_IOS ? -12 : 0,
+              }}>
+              <PriceValiditySubs data={getPurchaseData.data} />
             </View>
 
             <View

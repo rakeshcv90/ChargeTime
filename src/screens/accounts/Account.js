@@ -95,10 +95,20 @@ const Account = ({navigation}) => {
     // },
   ];
   const handleLogOut = async () => {
-    await AsyncStorage.clear();
+    // await AsyncStorage.clear();
+    await AsyncStorage.removeItem('locationID');
+    await AsyncStorage.removeItem('isAuthorized');
     await persistor.purge();
     dispatch(setLogout());
-    navigationRef.navigate('LoginStack');
+    // navigationRef.navigate('LoginStack');
+    // navigationRef.reset({
+    //   index: 1,
+    //   routes: [{name: 'Login'}], // Replace 'Login' with the appropriate initial screen after logout
+    // });
+    navigationRef.reset({
+      index: 2,
+      routes: [{name: 'LoginStack'}],
+    });
   };
   const userDetails = async () => {
     // const response = await fetch(`${API}/userexisting/${user_ID}`);
@@ -106,7 +116,7 @@ const Account = ({navigation}) => {
       const response = await fetch(`${API}/userexisting/${user_ID}`);
       const result = await response.json();
       if (result[0].message === 'sucess') {
-        // console.log('wwwwww', result);
+        console.log('wwwwww', result);
         //  setUserData(result);
         dispatch(userProfileData(result));
         console.log(result);
@@ -125,8 +135,8 @@ const Account = ({navigation}) => {
       .then(res => {
         // setForLoading(false);
         // setModalVisible(false);
-        if (res.data.data == 'Package details not found') {
-          // dispatch(setPurchaseData(res.data));
+        if (res.data.data === 'Package details not found') {
+          dispatch(setPurchaseData(res.data));
           console.log('-------------------', res.data);
           // setGetData(res.data);
           // dispatch(setPackageStatus(false));
@@ -303,7 +313,10 @@ const styles = StyleSheet.create({
     padding: 8,
     borderWidth: 1,
     borderColor: '#ccc',
-    left: 55,
+    // left: 50,
+    // left: 30,
+    width: mobileW - 240,
+    marginLeft: (mobileW * 8) / 100,
     borderRadius: 5,
     // marginRight:10,
   },

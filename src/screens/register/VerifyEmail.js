@@ -67,6 +67,15 @@ export default function VerifyEmail(props) {
       forthDigit +
       fifthDigit +
       sixDigit;
+    console.log(
+      '----------',
+      firstDigit,
+      secondDigit,
+      thirdDigit,
+      forthDigit,
+      fifthDigit,
+      sixDigit,
+    );
 
     try {
       if (email !== '' && otp.length == 6) {
@@ -311,14 +320,14 @@ export default function VerifyEmail(props) {
               }}>
               <Image
                 source={require('../../../assets/images/dotted.png')}
-                style={{width: mobileW * 0.9}}
+                style={{width: mobileW * 0.97}}
               />
 
               <Text
                 style={{
                   alignSelf: 'center',
                   position: 'relative',
-                  right: mobileW / 2,
+                  right: mobileW / 1.9,
                   backgroundColor: COLORS.CREAM,
                   padding: 10,
                 }}>
@@ -376,7 +385,7 @@ export default function VerifyEmail(props) {
                   Enter the OTP Below
                 </Text>
                 <View style={styles.otp_box}>
-                <TextInput
+                  <TextInput
                     ref={otp1}
                     onChangeText={value => {
                       if (value != '') {
@@ -389,10 +398,13 @@ export default function VerifyEmail(props) {
                     maxLength={1}
                     style={styles.textInput_otp}
                     value={firstDigit}
-                    onKeyPress={({ nativeEvent }) => {
-                     if (nativeEvent.key == 'Backspace' && setFirstDigit != ' ') {
-                      setFirstDigit('');
-                     }
+                    onKeyPress={({nativeEvent}) => {
+                      if (
+                        nativeEvent.key == 'Backspace' &&
+                        setFirstDigit != ' '
+                      ) {
+                        setFirstDigit('');
+                      }
                     }}
                   />
                   <TextInput
@@ -407,8 +419,11 @@ export default function VerifyEmail(props) {
                     maxLength={1}
                     style={styles.textInput_otp}
                     value={secondDigit}
-                    onKeyPress={({ nativeEvent }) => {
-                      if (nativeEvent.key == 'Backspace' && setsecondDigit != ' ') {
+                    onKeyPress={({nativeEvent}) => {
+                      if (
+                        nativeEvent.key == 'Backspace' &&
+                        setsecondDigit != ' '
+                      ) {
                         setsecondDigit('');
                         otp1.current.focus();
                       }
@@ -426,8 +441,11 @@ export default function VerifyEmail(props) {
                     maxLength={1}
                     style={styles.textInput_otp}
                     value={thirdDigit}
-                    onKeyPress={({ nativeEvent }) => {
-                      if (nativeEvent.key == 'Backspace' && setthirdDigit != ' ') {
+                    onKeyPress={({nativeEvent}) => {
+                      if (
+                        nativeEvent.key == 'Backspace' &&
+                        setthirdDigit != ' '
+                      ) {
                         setthirdDigit('');
                         otp2.current.focus();
                       }
@@ -445,8 +463,11 @@ export default function VerifyEmail(props) {
                     maxLength={1}
                     style={styles.textInput_otp}
                     value={forthDigit}
-                    onKeyPress={({ nativeEvent }) => {
-                      if (nativeEvent.key == 'Backspace' && setforthDigit != '') {
+                    onKeyPress={({nativeEvent}) => {
+                      if (
+                        nativeEvent.key == 'Backspace' &&
+                        setforthDigit != ''
+                      ) {
                         setforthDigit('');
                         otp3.current.focus();
                       }
@@ -464,8 +485,11 @@ export default function VerifyEmail(props) {
                     maxLength={1}
                     style={styles.textInput_otp}
                     value={fifthDigit}
-                    onKeyPress={({ nativeEvent }) => {
-                      if (nativeEvent.key == 'Backspace' && setfifthDigit != ' ') {
+                    onKeyPress={({nativeEvent}) => {
+                      if (
+                        nativeEvent.key == 'Backspace' &&
+                        setfifthDigit != ' '
+                      ) {
                         setfifthDigit('');
                         otp4.current.focus();
                       }
@@ -482,8 +506,11 @@ export default function VerifyEmail(props) {
                     maxLength={1}
                     style={styles.textInput_otp}
                     value={sixDigit}
-                    onKeyPress={({ nativeEvent }) => {
-                      if (nativeEvent.key == 'Backspace' && setSixDigit != ' ') {
+                    onKeyPress={({nativeEvent}) => {
+                      if (
+                        nativeEvent.key == 'Backspace' &&
+                        setSixDigit != ' '
+                      ) {
                         setSixDigit('');
                         otp5.current.focus();
                       }

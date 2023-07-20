@@ -1,12 +1,7 @@
-/* eslint-disable no-trailing-spaces */
-/* eslint-disable eqeqeq */
-/* eslint-disable react-native/no-inline-styles */
 /* eslint-disable react-hooks/exhaustive-deps */
-/* eslint-disable quotes */
-/* eslint-disable prettier/prettier */
-/* eslint-disable semi */
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import {View, Text, StyleSheet, ScrollView, RefreshControl, ToastAndroid} from 'react-native';
+/* eslint-disable react-native/no-inline-styles */
+import {View, Text, StyleSheet, ScrollView, RefreshControl} from 'react-native';
 import React, {useEffect, useRef, useState} from 'react';
 import COLORS from '../../constants/COLORS';
 import Remaining from '../../Components/Remaining';
@@ -14,7 +9,7 @@ import TotalUsage from '../../Components/TotalUsuage';
 import Graph from '../../Components/Graph';
 import BoxTwo from '../../Components/BoxTwo';
 import ButtonSlider from '../../Components/ButtonSlider';
-import PriceBox from '../../Components/PriceBox';
+import PriceValidity from '../../Components/PriceValidity';
 import {useDispatch, useSelector} from 'react-redux';
 import axios from 'axios';
 import {
@@ -30,8 +25,6 @@ import {
   setYearGraphData,
 } from '../../redux/action';
 import {API} from '../../api/API';
-import { PLATFORM_IOS } from '../../constants/DIMENSIONS';
-import Toast from 'react-native-toast-message';
 
 const Day = (props: any) => {
   const {
@@ -53,8 +46,7 @@ const Day = (props: any) => {
 
   useEffect(() => {
     setShowSlider(true);
-    console.log("DAY GRAPH", getGraphData)
-     // Fetch data every 15 minutesh
+    console.log('DAY GRAPH', getGraphData);
     // fetchGraphData();
     // fetchWeekGraphData(getUserID);
     // fetchMonthGraphData(getUserID);
@@ -68,9 +60,7 @@ const Day = (props: any) => {
     axios
       .get(`${API}/dailyusagegraph/${getUserID}`)
       .then(res => {
-        fetchGraphDataInterval(getUserID);
-        // dispatch(setGraphData(res?.data));
-        // console.log("---------" , res?.data);
+        dispatch(setGraphData(res?.data));
 
         // navigation.navigate('DrawerStack');
       })
@@ -84,12 +74,8 @@ const Day = (props: any) => {
       setRefresh(false);
     }, 2000);
     remainigUsuageData();
-    // setInterval(() => {
-      fetchGraphDataInterval(getUserID)
-      fetchGraphData();
-      // dailyUsuagekwh(getUserID);
-    // }, 3000);
-    fetchGraphData()
+    dailyUsuagekwh(getUserID);
+    fetchGraphData();
   };
 
   const remainigUsuageData = () => {
@@ -128,24 +114,6 @@ const Day = (props: any) => {
   //       console.log(err);
   //     });
   // };
-  const fetchGraphDataInterval = (userId : string) => {
-    console.log(userId, 'object--------');
-    const message = 'No usage data available';
-    axios
-      .get(`${API}/time_period/${userId}`)
-      .then(res => {
-        console.log('DAY GRAPH after interval ', res.data);
-        dispatch(setGraphData(res?.data));
-
-        dailyUsuagekwh(userId);
-        // navigation.navigate('DrawerStack');
-      })
-      .catch(err => {
-        dispatch(setGraphData({message}));
-        console.log(err);
-      });
-  };
-  
   const dailyUsuagekwh = (userId: string) => {
     axios
       .get(`${API}/dailyusage/${userId}`)
@@ -259,26 +227,25 @@ const Day = (props: any) => {
             <TotalUsage data={getkwhData.Totalusedkwhs} location={'Daily'} />
           </View>
 
-          <View style={{marginHorizontal: 20, }}>
+          <View style={{marginHorizontal: 20}}>
             {getGraphData.message != 'No usage data available' ? (
-                <Graph dataOne={getGraphData} />
-              ) : (
-                <Text
-                  style={{
-                    color: COLORS.BLACK,
-                    fontWeight: 'bold',
-                    alignSelf: 'center',
-                    fontSize: 14,
-                    marginVertical: 10,
-                  }}>
-                  No Graph Data Available
-                </Text>
-              
-            ) }
+              <Graph dataOne={getGraphData} />
+            ) : (
+              <Text
+                style={{
+                  color: COLORS.BLACK,
+                  fontWeight: 'bold',
+                  alignSelf: 'center',
+                  fontSize: 14,
+                  marginVertical: 10,
+                }}>
+                No Graph Data available
+              </Text>
+            )}
             <BoxTwo data={getBoxTwoDataForDashboard[0]} />
           </View>
-          <View style={{marginBottom: 50}}>
-            <PriceBox data={getBoxTwoDataForDashboard.data} />
+          <View style={{marginBottom: 120}}>
+            <PriceValidity data={getBoxTwoDataForDashboard.data} />
           </View>
         </ScrollView>
       </View>

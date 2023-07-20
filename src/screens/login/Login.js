@@ -65,6 +65,7 @@ export default function Login({navigation}) {
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(true);
   const [forLoading, setForLoading] = useState(false);
+  const [token1, setToken] = useState('');
   // const [graphData,setGraphData] = useState([])
   const dispatch = useDispatch();
   const {getDeviceID, getGraphData} = useSelector(state => state);
@@ -81,6 +82,7 @@ export default function Login({navigation}) {
 
       if (token?.length > 0) {
         console.log('FCM...', token);
+        setToken(token);
         messaging().setBackgroundMessageHandler(async remoteMessage => {
           console.log('Message handled in the background!', remoteMessage);
         });
@@ -137,6 +139,7 @@ export default function Login({navigation}) {
   };
   const loginFunction = async () => {
     setForLoading(true);
+    // console.log('-f--f-f-f-f-f-f', token1);
     try {
       const res = await axios(`${API}/logins`, {
         method: 'POST',
@@ -146,6 +149,7 @@ export default function Login({navigation}) {
         data: {
           email: email,
           password: password,
+          // device_token: token1,
         },
       });
       if (res.data) {
@@ -183,8 +187,8 @@ export default function Login({navigation}) {
             dispatch(getLocationID(res.data?.locationid));
 
             // setInterval(() => {
-            //   fetchGraphData(res.data?.user_id);
-            // }, 3000);
+            fetchGraphData(res.data?.user_id);
+            // }, 300000);
             fetchWeekGraphData(res.data?.user_id);
             fetchMonthGraphData(res.data?.user_id);
             fetchQuarterGraphData(res.data.user_id);
@@ -240,6 +244,16 @@ export default function Login({navigation}) {
         }
       }
     } catch (err) {
+      console.log('------------', err);
+      PLATFORM_IOS
+        ? Toast.show({
+            type: 'error',
+            text1: 'Network failed! Please check your internet connection.',
+          })
+        : ToastAndroid.show(
+            'Network failed!Please check your internet connection.ß',
+            ToastAndroid.SHORT,
+          );
       setForLoading(false);
       console.log(err);
     }
@@ -497,7 +511,7 @@ export default function Login({navigation}) {
             onChangeText={text => setPassword(text)}
             value={password}
             mV={5}
-            placeholder="Enter your password"
+            placeholder="Enter your password "
             bW={1}
             textWidth={'30%'}
           />

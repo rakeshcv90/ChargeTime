@@ -1,3 +1,4 @@
+/* eslint-disable eqeqeq */
 /* eslint-disable react-native/no-inline-styles */
 import {
   View,
@@ -29,21 +30,11 @@ const BoxFour = ({data}) => {
   };
   return (
     <View
-      style={[
-        styles.mainDiv_installation,
-        {
-          backgroundColor: 'white',
-          shadowColor: 'rgba(0, 0, 0, 0.7)',
-          shadowOffset: {
-            width: 6,
-            height: 4,
-          },
-          shadowOpacity: 1,
-          shadowRadius: 4,
-          elevation: 8,
-          // elevation: Platform.OS === 'android' ? 8 : 0,
-        },
-      ]}>
+      style={
+        Platform.OS == 'android'
+          ? styles.mainDiv_installation1
+          : styles.mainDiv_installation
+      }>
       <TouchableOpacity style={styles.install_touchable}>
         <Address style={styles.img_width} />
         <Text style={styles.installation_text}>Plan Details</Text>
@@ -59,7 +50,7 @@ const BoxFour = ({data}) => {
           // style={styles.img_width}
           source={require('../../assets/images/dotted.png')}
           resizeMode="stretch"
-          style={{alignSelf: 'center', width: mobileW}}
+          style={{alignSelf: 'center', width: mobileW - 40}}
         />
         <View style={styles.mainDiv_state_zip}>
           <View style={styles.state_div}>
@@ -86,9 +77,27 @@ const styles = StyleSheet.create({
     // paddingVertical:15
   },
   mainDiv_installation: {
+    // marginTop: 55,
+    shadowColor: '#000000',
+    shadowOffset: {width: 0, height: 6},
+    shadowOpacity: 0.2,
+    shadowRadius: 5.62,
+    elevation: 8,
+    backgroundColor: 'white',
+    borderRadius: 8,
+  },
+  mainDiv_installation1: {
     overflow: 'hidden',
     borderRadius: 10,
-    marginTop: Platform.OS === 'ios' ? 10 : 20,
+
+    shadowColor: '#000000',
+    shadowOffset: {
+      width: 4,
+      height: 6,
+    },
+    shadowOpacity: 0.2,
+    shadowRadius: 5.62,
+    elevation: Platform.OS === 'android' ? 8 : 0,
   },
   install_touchable: {
     flexDirection: 'row',
@@ -113,17 +122,17 @@ const styles = StyleSheet.create({
     // borderBottomWidth: 1,
     // borderBottomColor: COLORS.GREEN,
   },
-  shadowProp: {
-    backgroundColor: 'white',
-    shadowColor: 'rgba(0, 0, 0, 0.7)',
-    shadowOffset: {
-      width: 6,
-      height: 4,
-    },
-    shadowOpacity: 1,
-    shadowRadius: 4,
-    elevation: Platform.OS === 'android' ? 8 : 0,
-  },
+  // shadowProp: {
+  //   backgroundColor: 'white',
+  //   shadowColor: 'rgba(0, 0, 0, 0.7)',
+  //   shadowOffset: {
+  //     width: 6,
+  //     height: 4,
+  //   },
+  //   shadowOpacity: 1,
+  //   shadowRadius: 4,
+  //   elevation: Platform.OS === 'android' ? 8 : 0,
+  // },
   force_base: {
     fontWeight: '400',
     fontSize: 14,
