@@ -1,10 +1,9 @@
 /* eslint-disable react/no-unstable-nested-components */
-/* eslint-disable no-trailing-spaces */
+
 /* eslint-disable react/self-closing-comp */
 /* eslint-disable eqeqeq */
 /* eslint-disable @typescript-eslint/no-unused-vars */
-/* eslint-disable quotes */
-/* eslint-disable prettier/prettier */
+
 /* eslint-disable react-native/no-inline-styles */
 import React, {useEffect, useState} from 'react';
 import {
@@ -180,13 +179,13 @@ export default function EnergyStats() {
 
           // fetchMonthGraphData(res.data?.user_id);
           // fetchQuarterGraphData(res.data.user_id);
-          console.log('Hellooo..1111..');
-          setInterval(() => {
-            console.log('Hellooo....');
-            fetchGraphData(getUserID);
-            fetchBoxTwoDashboardData(getUserID);
-            fetchStatusdata(getUserID);
-          }, 3000);
+          // console.log('Hellooo..1111..');
+          // setInterval(() => {
+          console.log('Hellooo....');
+          fetchGraphData(getUserID);
+          fetchBoxTwoDashboardData(getUserID);
+          fetchStatusdata(getUserID);
+          // }, 3000);
         } else {
           setIsLoading(false);
           PLATFORM_IOS

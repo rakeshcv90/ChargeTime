@@ -1,3 +1,4 @@
+/* eslint-disable eqeqeq */
 /* eslint-disable no-unused-vars */
 /* eslint-disable react/no-unstable-nested-components */
 /* eslint-disable react-native/no-inline-styles */
@@ -13,6 +14,7 @@ import {
   Alert,
   ToastAndroid,
   KeyboardAvoidingView,
+  Platform,
 } from 'react-native';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {Formik} from 'formik';
@@ -159,7 +161,7 @@ export default function Register({navigation}) {
                     placeholder="Ex. John Doe"
                     bW={1}
                     textWidth={'30%'}
-                    placeholderTextColor={COLORS.BLACK}
+                    placeholderTextColor={COLORS.HALFBLACK}
                   />
 
                   <Input
@@ -175,7 +177,7 @@ export default function Register({navigation}) {
                     placeholder="Ex. johnd@xyz.com"
                     bW={1}
                     textWidth={'30%'}
-                    placeholderTextColor={COLORS.BLACK}
+                    placeholderTextColor={COLORS.HALFBLACK}
                     autoCapitalize="none"
                     keyboardType="email-address"
                   />
@@ -195,7 +197,7 @@ export default function Register({navigation}) {
                     placeholder="Ex. 89xxxxxxxx"
                     bW={1}
                     textWidth={'30%'}
-                    placeholderTextColor={COLORS.BLACK}
+                    placeholderTextColor={COLORS.HALFBLACK}
                   />
 
                   <Input
@@ -214,7 +216,7 @@ export default function Register({navigation}) {
                     placeholder="Create a strong password"
                     bW={1}
                     textWidth={'30%'}
-                    placeholderTextColor={COLORS.BLACK}
+                    placeholderTextColor={COLORS.HALFBLACK}
                     secureTextEntry={showPassword}
                   />
                   {/* IconLeft={null}

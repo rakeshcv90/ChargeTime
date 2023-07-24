@@ -1,3 +1,5 @@
+/* eslint-disable react/no-unstable-nested-components */
+/* eslint-disable react-native/no-inline-styles */
 import {
   View,
   Text,
@@ -63,7 +65,7 @@ const BoxFive = ({data, purchageData, disabled}) => {
         }}>
         <View style={styles.centeredView}>
           <View style={styles.modalView}>
-            <Text style={styles.modalText}>Error!!!</Text>
+            {/* <Text style={styles.modalText}>Error!!!</Text> */}
             <Text
               style={{
                 fontSize: 14,
@@ -100,7 +102,7 @@ const BoxFive = ({data, purchageData, disabled}) => {
               styles.btn_purchage,
               {
                 backgroundColor: disabled
-                  ? COLORS.GRAY
+                  ? COLORS.RED
                   : purchageData == 'UPGRADE'
                   ? COLORS.GREEN
                   : COLORS.RED,
@@ -110,7 +112,7 @@ const BoxFive = ({data, purchageData, disabled}) => {
             <Text
               style={[
                 styles.purchage_text,
-                {color: disabled ? COLORS.HALFBLACK : COLORS.WHITE},
+                {color: disabled ? COLORS.WHITE : COLORS.WHITE},
               ]}>
               {purchageData}
             </Text>

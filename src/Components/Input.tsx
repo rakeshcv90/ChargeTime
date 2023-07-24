@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
+/* eslint-disable react-native/no-inline-styles */
 import React, {FC, memo, useEffect, useRef, useState} from 'react';
 import {
   View,

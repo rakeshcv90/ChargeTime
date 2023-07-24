@@ -343,7 +343,9 @@ export default function HomeOne(route) {
                 getPurchaseData.data != 'Package details not found'
                   ? item.kwh > getPurchaseData.data.kwh
                     ? 'UPGRADE'
-                    : 'DOWNGRADE'
+                    : item.kwh < getPurchaseData.data.kwh
+                    ? 'DOWNGRADE'
+                    : `Renewal Date: \n${getPurchaseData.data.End_validity}` // This will be displayed when item.kwh == getPurchaseData.data.kwh
                   : '';
               let num =
                 (item.package_name.toLowerCase() === getPurchaseData.length) !=

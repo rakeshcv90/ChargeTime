@@ -1,3 +1,5 @@
+/* eslint-disable prettier/prettier */
+/* eslint-disable space-infix-ops */
 /* eslint-disable no-unused-vars */
 /* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable eqeqeq */
@@ -116,7 +118,7 @@ export default function SliderOne(props) {
           getPurchaseData.data.energy_plan.toLowerCase() ===
             props.route.params.item.package_name.toLowerCase() && (
             <View style={{marginBottom: 20}}>
-              <PriceBox data={getPurchaseData.data} />
+              {/* <PriceBox data={getPurchaseData.data} /> */}
             </View>
           )}
         <View
@@ -146,6 +148,15 @@ export default function SliderOne(props) {
                 //     : false
                 //   : false
               }
+            />
+          )}
+        {getPurchaseData.data != 'Package details not found' &&
+          getPurchaseData.data.energy_plan.toLowerCase() ===
+            props.route.params.item.package_name.toLowerCase() && (
+            <BoxFive
+              data={props.route.params.item}
+              purchageData={props.route.params.purchageData}
+              disabled
             />
           )}
         {/* {!forLoading &&

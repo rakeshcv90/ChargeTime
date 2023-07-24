@@ -1,3 +1,9 @@
+/* eslint-disable no-undef */
+/* eslint-disable no-trailing-spaces */
+
+/* eslint-disable prettier/prettier */
+
+/* eslint-disable no-shadow */
 /* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable quotes */
 /* eslint-disable react/no-unstable-nested-components */
@@ -20,7 +26,7 @@ import {
   BackHandler,
 } from 'react-native';
 import {SafeAreaView} from 'react-native-safe-area-context';
-
+import notifee from '@notifee/react-native';
 import React, {useState, useEffect} from 'react';
 import COLORS from '../../constants/COLORS';
 import Toast from 'react-native-toast-message';
@@ -66,12 +72,11 @@ export default function Login({navigation}) {
   const [showPassword, setShowPassword] = useState(true);
   const [forLoading, setForLoading] = useState(false);
   const [token1, setToken] = useState('');
+  const [id, setId] = useState();
   // const [graphData,setGraphData] = useState([])
   const dispatch = useDispatch();
   const {getDeviceID, getGraphData} = useSelector(state => state);
-  // console.log(getUserID,"object")
   useEffect(() => {
-    console.log('---------', getDeviceID);
     let unsubscribe = null;
     const notificationService = async () => {
       PermissionsAndroid.request(
@@ -83,17 +88,132 @@ export default function Login({navigation}) {
       if (token?.length > 0) {
         console.log('FCM...', token);
         setToken(token);
-        messaging().setBackgroundMessageHandler(async remoteMessage => {
-          console.log('Message handled in the background!', remoteMessage);
-        });
-        unsubscribe = messaging().onMessage(async remoteMessage => {
-          Alert.alert(
-            'A new FCM message arrived!',
-            JSON.stringify(remoteMessage),
+        messaging().setBackgroundMessageHandler(async remoteMessage => {});
+
+        messaging().onNotificationOpenedApp(remoteMessage => {
+          console.log(
+            '[FCMService] onNotificationOpenedApp Notification caused app to open from background state:',
+            remoteMessage,
           );
+          if (remoteMessage) {
+            const notification = remoteMessage.notification;
+            //onOpenNotification(notification)
+
+            onDisplayNotification(remoteMessage);
+            // this.removeDeliveredNotification(notification.notificationId)
+          }
+        });
+
+        const initialNotification = await notifee.getInitialNotification();
+
+        if (initialNotification) {
+          console.log(
+            'Notification caused application to open',
+            initialNotification.notification,
+          );
+          console.log(
+            'Press action used to open the app',
+            initialNotification.pressAction,
+          );
+        }
+        unsubscribe = messaging().onMessage(async remoteMessage => {
+          console.log('Notification ....', remoteMessage);
+          onDisplayNotification(remoteMessage);
         });
       }
     };
+    async function onDisplayNotification(data) {
+      // Request permissions (required for iOS)
+      await notifee.requestPermission();
+
+      const message = data?.notification?.body;
+
+      let androidData = {};
+      let body = '';
+      if (message === 'Vehicle Connected!') {
+        androidData = {
+          channelId,
+          smallIcon: 'custom_notification_icon',
+          largeIcon: require('../../../assets/images/WithCar.png'),
+          color: '#B1D34F',
+          pressAction: {
+            id: 'default',
+          },
+        };
+        body = `<p style="color: #4caf50;"><b>${message}</b></p> &#128663;`;
+        Alert.alert('A new FCM message arrived!', 'tytytytytytytyt');
+        fetchStatusdata(id);
+      } else if (message === 'Vehicle Disconnected!') {
+        androidData = {
+          channelId,
+          smallIcon: 'custom_notification_icon',
+          largeIcon: require('../../../assets/images/WithoutCar.png'),
+          color: '#B1D34F',
+          actions: [
+            // {
+            //   title: '<b>Cancel</b>&#128557;',
+            //   pressAction: {
+            //     id: 'cancel',
+            //     launchActivity: 'default', // You can replace 'default' with the required activity to launch.
+            //   },
+            // },
+            {
+              title: '<p style="color: #f44336;"><b>Ok</b>&#128522;</p>',
+              pressAction: {
+                id: 'ok',
+                mainComponent: 'Home', // Replace 'navigateToScreen' with your required screen
+              },
+            },
+          ],
+        };
+        body = `<p style="color: #4caf50;"><b>${message}</b></p>&#128563;`;
+        fetchStatusdata(id);
+      } else if (
+        message ===
+        'Something went wrong! Please disconnect and connect your vehicle again'
+      ) {
+        androidData = {
+          channelId,
+          smallIcon: 'custom_notification_icon',
+          // largeIcon: require('../../../assets/images/WithoutCar.png'),
+          color: '#B1D34F',
+          actions: [
+            {
+              title: '<b>Contact Support</b> &#128577;',
+              pressAction: {
+                id: 'Contact Support',
+                mainComponent: navigationRef.navigate('Contact'), // Replace 'navigateToScreen' with your required screen
+              },
+            },
+            {
+              title: '<p style="color: #f44336;"><b>Cancel</b> &#128111;</p>',
+              pressAction: {
+                id: 'Cancel',
+                launchActivity: 'default', // You can replace 'default' with the required activity to launch.
+              },
+            },
+          ],
+        };
+        body = `<p style="color: #4caf50;"><b>${message}</b></p>&#128580;`;
+      }
+
+      // Create a channel (required for Android)
+      const channelId = await notifee.createChannel({
+        id: 'default',
+        name: 'Default Channel',
+      });
+
+      androidData.channelId = channelId;
+
+      // Display a notification
+      await notifee.displayNotification({
+        title: data?.notification?.title,
+        // body: `<p style="color: #4caf50;"><b>${message}</b></p> &#127881;`,
+        body: body,
+        android: androidData,
+      });
+    }
+
     if (Platform.OS === 'android') {
       notificationService();
     }
@@ -112,6 +232,19 @@ export default function Login({navigation}) {
   const handleBackButton = () => {
     return true;
   };
+
+  const fetchMessage = id => {
+    axios
+      .get(`${API}/pushNotification/${id}`)
+      .then(res => {
+        console.log('Firebase message recieved ', res.data.body);
+        // navigation.navigate('DrawerStack');
+      })
+      .catch(err => {
+        console.log(err);
+      });
+  };
+
   const packagePlans = async locationID => {
     //  loginData = await AsyncStorage.getItem('loginDataOne');
 
@@ -126,7 +259,6 @@ export default function Login({navigation}) {
         setForLoading(false);
         navigation.navigate('DrawerStack');
       } else {
-        console.log(response.data, 'Packaagessssss');
         dispatch(setBasePackage(response.data.locations));
         dispatch(setIsAuthorized(true));
         setForLoading(false);
@@ -139,7 +271,6 @@ export default function Login({navigation}) {
   };
   const loginFunction = async () => {
     setForLoading(true);
-    // console.log('-f--f-f-f-f-f-f', token1);
     try {
       const res = await axios(`${API}/logins`, {
         method: 'POST',
@@ -149,17 +280,15 @@ export default function Login({navigation}) {
         data: {
           email: email,
           password: password,
-          // device_token: token1,
+          device_token: token1,
         },
       });
       if (res.data) {
-        console.log(res.data, 'ttww');
-
         // AsyncStorage.setItem('loginDataOne', JSON.stringify(data.locationid ));
 
         if (res.data.message == 'Login Successfull') {
-          // console.log("------------",res.data.user_id)
           dispatch(setUserID(res.data?.user_id));
+          setId(res.data?.user_id);
           AsyncStorage.setItem(
             'locationID',
             JSON.stringify(res.data?.locationid),
@@ -170,8 +299,6 @@ export default function Login({navigation}) {
                 text1: 'Login Successful',
               })
             : ToastAndroid.show('Login Successful', ToastAndroid.SHORT);
-          console.log(res.data, 'Loginnnnnnnnnn');
-          console.log('firstSTATUS', res.data.status);
 
           // if(data.status == "true"){
           //   navigation.navigate('EnergyStats');
@@ -196,6 +323,9 @@ export default function Login({navigation}) {
             fetchBoxTwoDashboardData(res.data?.user_id);
             fetchStatusdata(res.data?.user_id);
             getPlanCurrent(res.data?.user_id);
+            // setTimeout(() => {
+            //   fetchMessage(res.data?.user_id);
+            // }, 15000);
             dispatch(setDeviceId(''));
           } else if (
             res.data.status ==
@@ -244,7 +374,6 @@ export default function Login({navigation}) {
         }
       }
     } catch (err) {
-      console.log('------------', err);
       PLATFORM_IOS
         ? Toast.show({
             type: 'error',
@@ -263,7 +392,6 @@ export default function Login({navigation}) {
     axios
       .get(`${API}/devicecheck/${prevData?.user_id}}`)
       .then(res => {
-        console.log(res.data, 'tt');
         if (res.data.status == 'True') {
           dispatch(setDeviceId(res.data.message));
           getPlanCurrent(prevData?.user_id);
@@ -287,12 +415,10 @@ export default function Login({navigation}) {
 
   //day data start
   const fetchGraphData = userID => {
-    console.log(userID, 'object');
     const message = 'No usage data available';
     axios
       .get(`${API}/dailyusagegraph/${userID}`)
       .then(res => {
-        console.log('DAY GRAPH after interval ', res.data);
         dispatch(setGraphData(res?.data));
 
         dailyUsuagekwh(userID);
@@ -304,12 +430,10 @@ export default function Login({navigation}) {
       });
   };
   const fetchGraphDataInterval = userID => {
-    console.log(userID, 'object');
     const message = 'No usage data available';
     axios
       .get(`${API}/time_period/${userID}`)
       .then(res => {
-        console.log('DAY GRAPH after interval ', res.data);
         dispatch(setGraphData(res?.data));
 
         dailyUsuagekwh(userID);
@@ -348,7 +472,6 @@ export default function Login({navigation}) {
           remaingData = res.data?.kwh_unit_overusage;
           dispatch(setOverUsage(true));
         }
-        console.log('first', res.data);
         dispatch(setRemainingData(remaingData));
         setForLoading(false);
       })
@@ -364,7 +487,6 @@ export default function Login({navigation}) {
       .get(`${API}/weeklyusage/${userID}`)
       .then(res => {
         if (res?.data) {
-          console.log('WEEKGRAPHDATA', res.data);
           dispatch(setWeekGraphData(res?.data));
         }
       })
@@ -377,7 +499,6 @@ export default function Login({navigation}) {
       .get(`${API}/monthlyusage/${userID}`)
       .then(res => {
         if (res?.data) {
-          console.log('MONTH GRAPH', res.data);
           dispatch(setMonthGraphData(res?.data));
         }
       })
@@ -390,7 +511,6 @@ export default function Login({navigation}) {
       .get(`${API}/threemonthusage/${userID}`)
       .then(res => {
         if (res?.data) {
-          console.log('QUARTER GRAPH', res.data);
           dispatch(setQuarterGraphData(res?.data));
         }
       })
@@ -403,7 +523,6 @@ export default function Login({navigation}) {
       .get(`${API}/yearlyusage/${userID}`)
       .then(res => {
         if (res?.data) {
-          console.log('Year GRAPH', res.data);
           dispatch(setYearGraphData(res?.data));
         }
       })
@@ -430,6 +549,7 @@ export default function Login({navigation}) {
     axios
       .get(`${API}/chargerstatus/${userId}`)
       .then(res => {
+        console.log('------22232323----', res?.data);
         dispatch(setChargerStatus(res?.data));
       })
       .catch(err => {

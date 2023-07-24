@@ -1,14 +1,26 @@
-import {View, Text, StyleSheet, TouchableOpacity, Image, BackHandler} from 'react-native';
-import React, { useEffect } from 'react';
+/* eslint-disable no-dupe-keys */
+/* eslint-disable react-native/no-inline-styles */
+/* eslint-disable no-undef */
+
+/* eslint-disable no-unused-vars */
+import {
+  View,
+  Text,
+  StyleSheet,
+  TouchableOpacity,
+  Image,
+  BackHandler,
+} from 'react-native';
+import React, {useEffect} from 'react';
 import {Dolllar} from '../../assets/images/Dollar';
 import {navigationRef} from '../../App';
-import { DIMENSIONS } from '../constants/DIMENSIONS';
+import {DIMENSIONS} from '../constants/DIMENSIONS';
 
 const PurchseButton = ({data}) => {
   useEffect(() => {
     const backHandler = BackHandler.addEventListener(
       'hardwareBackPress',
-      handleBackButton
+      handleBackButton,
     );
 
     return () => backHandler.remove();
@@ -28,7 +40,9 @@ const PurchseButton = ({data}) => {
             justifyContent: 'center',
             flexDirection: 'row',
           }}>
-          <Text style={styles.per_month}>${data[0]==undefined?data?.total_price:data[0].total_price}</Text>
+          <Text style={styles.per_month}>
+            ${data[0] == undefined ? data?.total_price : data[0].total_price}
+          </Text>
           <Text
             style={{
               fontSize: 12,
@@ -43,7 +57,11 @@ const PurchseButton = ({data}) => {
       <View>
         <TouchableOpacity
           style={styles.btn_purchage}
-          onPress={() => navigationRef.navigate('PlanSummary', {data: data[0]==undefined?data:data[0]})}>
+          onPress={() =>
+            navigationRef.navigate('PlanSummary', {
+              data: data[0] == undefined ? data : data[0],
+            })
+          }>
           <Text style={styles.purchage_text}>PURCHASE</Text>
         </TouchableOpacity>
       </View>
@@ -139,7 +157,7 @@ const styles = StyleSheet.create({
     borderColor: COLORS.GREEN,
     borderRadius: 5,
     backgroundColor: COLORS.WHITE,
-    marginTop: DIMENSIONS.SCREEN_HEIGHT*1.5/100,
+    marginTop: (DIMENSIONS.SCREEN_HEIGHT * 1.5) / 100,
     paddingHorizontal: 10,
     paddingVertical: 10,
     borderRadius: 16,
