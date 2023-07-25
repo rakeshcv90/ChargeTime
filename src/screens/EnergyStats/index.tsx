@@ -1,18 +1,24 @@
+/* eslint-disable react/no-unstable-nested-components */
+
+/* eslint-disable react/self-closing-comp */
+/* eslint-disable eqeqeq */
+/* eslint-disable @typescript-eslint/no-unused-vars */
+
+/* eslint-disable react-native/no-inline-styles */
 import React, {useEffect, useState} from 'react';
 import {
-  ScrollView,
   View,
   Text,
   StyleSheet,
   TouchableOpacity,
-  Animated,
   Image,
   Dimensions,
   StatusBar,
   BackHandler,
-  Alert
+  Platform,
+  ToastAndroid,
 } from 'react-native';
-import {useSelector} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {createMaterialTopTabNavigator} from '@react-navigation/material-top-tabs';
 import COLORS from '../../constants/COLORS';
@@ -21,19 +27,33 @@ import Month from './Month';
 import Week from './Week';
 import Quarter from './Quarter';
 import Year from './Year';
-import {DIMENSIONS} from '../../constants/DIMENSIONS';
-import ButtonSlider from '../../Components/ButtonSlider';
+import {DIMENSIONS, PLATFORM_IOS} from '../../constants/DIMENSIONS';
+
 import {NoCharge} from '../../../assets/images/NoCharge';
 import {OnlineCharge} from '../../../assets/images/OnlineCharge';
 import Charging from '../../Components/Charging';
 import axios from 'axios';
 import {API} from '../../api/API';
 import ActivityLoader from '../../Components/ActivityLoader';
-import DayOne from './DayOne';
 import DrawerOpen from '../../Components/DrawerOpen';
 import {navigationRef} from '../../../App';
 import {DrawerActions} from '@react-navigation/native';
 import AnimatedLottieView from 'lottie-react-native';
+import {
+  setBoxTwoDataForDashboard,
+  setChargerStatus,
+  setDeviceId,
+  setGraphData,
+  setKwhData,
+  setMonthGraphData,
+  setOverUsage,
+  setQuarterGraphData,
+  setRemainingData,
+  setWeekGraphData,
+  setYearGraphData,
+} from '../../redux/action';
+import ButtonSlider2 from '../../Components/ButtonSlider2';
+import Toast from 'react-native-toast-message';
 const mobileW = Math.round(Dimensions.get('screen').width);
 
 function MyTabBar({state, descriptors, navigation}) {
@@ -44,8 +64,18 @@ function MyTabBar({state, descriptors, navigation}) {
         marginHorizontal: 20,
         backgroundColor: '#EEEEEE',
         borderRadius: 20,
-        overflow: 'hidden',
-        elevation: 1,
+        ...Platform.select({
+          ios: {
+            shadowColor: '#000000',
+            shadowOffset: {width: 0, height: 2},
+            shadowOpacity: 0.3,
+            shadowRadius: 4,
+          },
+          android: {
+            elevation: 4,
+            overflow: 'hidden',
+          },
+        }),
         borderWidth: 1,
         borderColor: '#EEEEEE',
         zIndex: 1,
@@ -83,7 +113,7 @@ function MyTabBar({state, descriptors, navigation}) {
               backgroundColor: isFocused ? COLORS.GREEN : '#EEEEEE',
               paddingHorizontal: index == 2 ? 10 : 0,
               paddingVertical: 10,
-              borderRadius: isFocused ? 20 : 0,
+              borderRadius: isFocused ? 20 : 20,
               alignItems: 'center',
               justifyContent: 'center',
               //   elevation: isFocused ? 10 : 0,
@@ -110,39 +140,210 @@ export default function EnergyStats() {
   const [showCar, setShowCar] = useState(true);
   const [offline, setOffline] = useState(true);
   const [charging, setCharging] = useState(true);
-  const [deviceId, setDeviceId] = useState('');
+  const [deviceIdTemp, setDeviceIdTemp] = useState('');
 
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
   const {getGraphData} = useSelector((state: any) => state);
 
-  const {getChargerStatus, getDeviceID} = useSelector((state: any) => state);
+  const {getChargerStatus, getDeviceID, getUserID} = useSelector(
+    (state: any) => state,
+  );
   const [toggleState, setToggleState] = useState(false);
-
+  const dispatch = useDispatch();
   useEffect(() => {
-    const backAction = () => {
-      Alert.alert(
-        'Exit App',
-        'Are you sure you want to exit?',
-        [
-          {
-            text: 'Cancel',
-            onPress: () => null,
-            style: 'cancel',
-          },
-          { text: 'Exit', onPress: () => BackHandler.exitApp() },
-        ],
-        { cancelable: false }
-      );
-      return true;
-    };
-    const backHandler = BackHandler.addEventListener('hardwareBackPress', backAction);
+    const backHandler = BackHandler.addEventListener(
+      'hardwareBackPress',
+      handleBackButton,
+    );
 
     return () => backHandler.remove();
   }, []);
+  const handleBackButton = () => {
+    return true;
+  };
 
   const handleToggle = (value: any) => {
     setToggleState(value);
     navigationRef.dispatch(DrawerActions.closeDrawer());
+  };
+
+  const getDeviceIDData = () => {
+    setIsLoading(true);
+    axios
+      .get(`${API}/devicecheck/${getUserID}}`)
+      .then(res => {
+        console.log(res.data, 'tt');
+        if (res.data.status == 'True') {
+          // dispatch(setDeviceId(res.data.message));
+          setDeviceIdTemp(res.data.message);
+
+          // fetchMonthGraphData(res.data?.user_id);
+          // fetchQuarterGraphData(res.data.user_id);
+          // console.log('Hellooo..1111..');
+          // setInterval(() => {
+          console.log('Hellooo....');
+          fetchGraphData(getUserID);
+          fetchBoxTwoDashboardData(getUserID);
+          fetchStatusdata(getUserID);
+          // }, 3000);
+        } else {
+          setIsLoading(false);
+          PLATFORM_IOS
+            ? Toast.show({
+                type: 'success',
+                text1:
+                  'Device ID not found.Contact your service representative for more information !',
+              })
+            : ToastAndroid.show(
+                'DeviceID not found.Contact your service representative for more information!',
+                ToastAndroid.SHORT,
+              );
+          // getPlanCurrent(res.data?.user_id);
+        }
+      })
+      .catch(err => {
+        setIsLoading(false);
+        console.log(err);
+      });
+  };
+
+  //day data start
+  const fetchGraphData = (userID: string) => {
+    axios
+      .get(`${API}/dailyusagegraph/${userID}`)
+      .then(res => {
+        console.log('GRAPH.........', res.data);
+        dispatch(setGraphData(res?.data));
+
+        dailyUsuagekwh(getUserID);
+        // navigation.navigate('DrawerStack');
+      })
+      .catch(err => {
+        setIsLoading(false);
+        console.log(err);
+      });
+  };
+  const dailyUsuagekwh = (userId: string) => {
+    axios
+      .get(`${API}/dailyusage/${userId}`)
+      .then(res => {
+        if (res?.data) {
+          // console.log("DAILTYRWTEW", res.data)
+          dispatch(setKwhData(res?.data));
+        }
+
+        remainigUsuageData(getUserID);
+      })
+      .catch(err => {
+        console.log(err);
+      });
+  };
+  const remainigUsuageData = (userId: string) => {
+    let remaingData;
+
+    axios
+      .get(`${API}/remainingusage/${userId}`)
+      .then(res => {
+        if (res.data?.kwh_unit_remaining >= 0) {
+          remaingData = res.data?.kwh_unit_remaining;
+          dispatch(setOverUsage(false));
+        } else {
+          remaingData = res.data?.kwh_unit_overusage;
+          dispatch(setOverUsage(true));
+        }
+        console.log('first', res.data);
+        dispatch(setRemainingData(remaingData));
+        setIsLoading(false);
+        fetchWeekGraphData(getUserID);
+      })
+      .catch(err => {
+        setIsLoading(false);
+        console.log(err);
+      });
+  };
+  //day data end
+
+  //week data start
+  const fetchWeekGraphData = (userID: string) => {
+    axios
+      .get(`${API}/weeklyusage/${userID}`)
+      .then(res => {
+        if (res?.data) {
+          console.log('WEqwewqe', res.data);
+          dispatch(setWeekGraphData(res?.data));
+          fetchYearGraphData(getUserID);
+        }
+      })
+      .catch(err => {
+        fetchYearGraphData(getUserID);
+        console.log(err);
+      });
+  };
+  const fetchMonthGraphData = (userID: string) => {
+    axios
+      .get(`${API}/monthlyusage/${userID}`)
+      .then(res => {
+        if (res?.data) {
+          console.log('Month GRAPH', res.data);
+          dispatch(setMonthGraphData(res?.data));
+          fetchQuarterGraphData(getUserID);
+        }
+      })
+      .catch(err => {
+        console.log(err);
+      });
+  };
+  const fetchQuarterGraphData = (userID: string) => {
+    axios
+      .get(`${API}/threemonthusage/${userID}`)
+      .then(res => {
+        if (res?.data) {
+          console.log('Qurewrsdfds GRAPH', res.data);
+          dispatch(setQuarterGraphData(res?.data));
+          dispatch(setDeviceId(deviceIdTemp));
+          setIsLoading(false);
+        }
+      })
+      .catch(err => {
+        console.log(err);
+      });
+  };
+  const fetchYearGraphData = (userID: string) => {
+    axios
+      .get(`${API}/yearlyusage/${userID}`)
+      .then(res => {
+        if (res?.data) {
+          console.log('Year GRAPH', res.data);
+          dispatch(setYearGraphData(res?.data));
+          fetchMonthGraphData(getUserID);
+        }
+      })
+      .catch(err => {
+        setIsLoading(false);
+        console.log(err);
+      });
+  };
+
+  const fetchBoxTwoDashboardData = (userId: string) => {
+    axios
+      .get(`${API}/currentplan/${userId}`)
+      .then(res => {
+        console.log('DASHBOARDSADASASDASDASDASDSDA', res.data);
+        dispatch(setBoxTwoDataForDashboard(res?.data));
+      })
+      .catch(err => {
+        console.log(err);
+      });
+  };
+  const fetchStatusdata = (userId: string) => {
+    axios
+      .get(`${API}/chargerstatus/${userId}`)
+      .then(res => {
+        dispatch(setChargerStatus(res?.data));
+      })
+      .catch(err => {
+        console.log(err);
+      });
   };
 
   return (
@@ -150,7 +351,7 @@ export default function EnergyStats() {
       <SafeAreaView style={{backgroundColor: COLORS.CREAM, flex: 1}}>
         <StatusBar backgroundColor={COLORS.CREAM2} barStyle={'dark-content'} />
 
-        <DrawerOpen />
+        <DrawerOpen top={PLATFORM_IOS ? 70 : 30} />
         {getDeviceID ==
         'Your Account is not currently linked with a TRO Charger. Please contact customer service if you believe this is an error.' ? (
           <View
@@ -198,6 +399,7 @@ export default function EnergyStats() {
                 alignItems: 'center',
               }}>
               <TouchableOpacity
+                onPress={getDeviceIDData}
                 style={{
                   width: mobileW * 0.3,
                   borderRadius: 10,
@@ -206,7 +408,17 @@ export default function EnergyStats() {
                   alignItems: 'center',
                   justifyContent: 'center',
                   margin: 10,
-                  elevation: 10,
+                  ...Platform.select({
+                    ios: {
+                      shadowColor: '#000000',
+                      shadowOffset: {width: 0, height: 2},
+                      shadowOpacity: 0.3,
+                      shadowRadius: 4,
+                    },
+                    android: {
+                      elevation: 4,
+                    },
+                  }),
                 }}>
                 <Text
                   style={{
@@ -220,6 +432,7 @@ export default function EnergyStats() {
                 </Text>
               </TouchableOpacity>
               <TouchableOpacity
+                onPress={() => navigationRef.navigate('Contact')}
                 style={{
                   width: mobileW * 0.3,
                   borderRadius: 10,
@@ -228,7 +441,17 @@ export default function EnergyStats() {
                   alignItems: 'center',
                   justifyContent: 'center',
                   margin: 10,
-                  elevation: 10,
+                  ...Platform.select({
+                    ios: {
+                      shadowColor: '#000000',
+                      shadowOffset: {width: 0, height: 2},
+                      shadowOpacity: 0.3,
+                      shadowRadius: 4,
+                    },
+                    android: {
+                      elevation: 4,
+                    },
+                  }),
                 }}>
                 <Text
                   style={{
@@ -346,6 +569,7 @@ export default function EnergyStats() {
             }}></View>
         ) : (
           <Tab.Navigator
+            swipeEnabled={false}
             screenOptions={{
               tabBarLabelStyle: {
                 fontSize: 16,
@@ -355,7 +579,6 @@ export default function EnergyStats() {
             }}
             tabBar={props => <MyTabBar {...props} />}>
             <Tab.Screen name="Day" component={Day} />
-
             <Tab.Screen name="Week" component={Week} />
             <Tab.Screen name="Month" component={Month} />
             <Tab.Screen name="Quarter" component={Quarter} />
@@ -368,9 +591,14 @@ export default function EnergyStats() {
             <Text></Text>
           </View>
         ) : (
-          <ButtonSlider onToggle={handleToggle} />
+          <>
+            {/* <ButtonSlider onToggle={handleToggle} /> */}
+            <ButtonSlider2 />
+            {/* < ButtonSlide /> */}
+          </>
         )}
       </SafeAreaView>
+      {isLoading && <ActivityLoader />}
     </>
   );
 }

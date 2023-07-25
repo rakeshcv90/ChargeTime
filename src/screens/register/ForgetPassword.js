@@ -1,3 +1,9 @@
+/* eslint-disable react/no-unstable-nested-components */
+/* eslint-disable react-native/no-inline-styles */
+/* eslint-disable eqeqeq */
+/* eslint-disable no-trailing-spaces */
+/* eslint-disable prettier/prettier */
+/* eslint-disable no-unused-vars */
 import {
   View,
   Text,
@@ -23,7 +29,7 @@ import {Toast} from 'react-native-toast-message/lib/src/Toast';
 import {API} from '../../api/API';
 import ActivityLoader from '../../Components/ActivityLoader';
 import axios from 'axios';
-
+import {ms} from 'react-native-size-matters';
 const mobileW = Math.round(Dimensions.get('screen').width);
 
 const validationSchema = Yup.object().shape({
@@ -50,38 +56,38 @@ const ForgetPassword = ({navigation}) => {
   const handleRemberPassWord = async values => {
     setForLoading(true);
     try {
-     const res = await axios(`${API}/forgetPassword`, {
+      const res = await axios(`${API}/forgetPassword`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         data: values,
-      })
-        if(res.data) {
-          console.log(res.data);
-          if (res.data.success == true) {
-            PLATFORM_IOS
-              ? Toast.show({
-                  type: 'success',
-                  text1: 'Otp sent successfully.',
-                })
-              : ToastAndroid.show('Otp sent successfully.', ToastAndroid.SHORT);
-            // navigation.navigate('ResetPassword', {email: values});
-            setForLoading(false);
-            setShowOTP(true);
-            setEmail(values.email);
-          } else {
-            PLATFORM_IOS
-              ? Toast.show({
-                  type: 'error',
-                  text1: 'User not found!',
-                  // position: 'bottom',
-                })
-              : ToastAndroid.show('User not found!', ToastAndroid.SHORT);
+      });
+      console.log('First TIme data', values);
+      if (res.data) {
+        if (res.data.success == true) {
+          PLATFORM_IOS
+            ? Toast.show({
+                type: 'success',
+                text1: 'Otp sent successfully.',
+              })
+            : ToastAndroid.show('Otp sent successfully.', ToastAndroid.SHORT);
+          // navigation.navigate('ResetPassword', {email: values});
+          setForLoading(false);
+          setShowOTP(true);
+          setEmail(values.email);
+        } else {
+          PLATFORM_IOS
+            ? Toast.show({
+                type: 'error',
+                text1: 'User not found!',
+                // position: 'bottom',
+              })
+            : ToastAndroid.show('User not found!', ToastAndroid.SHORT);
 
-            setForLoading(false);
-          }
+          setForLoading(false);
         }
+      }
     } catch (err) {
       console.log(err);
       setForLoading(false);
@@ -103,7 +109,7 @@ const ForgetPassword = ({navigation}) => {
         let payload = new FormData();
         payload.append('email', email);
         payload.append('randomotp', otp);
-        console.log(payload);
+
         const res = await axios(`${API}/forgetverifyOtp`, {
           method: 'POST',
           headers: {
@@ -112,7 +118,7 @@ const ForgetPassword = ({navigation}) => {
           data: payload,
         });
         if (res.data) {
-          if (res.data.message == 'OTP verification successful' ) {
+          if (res.data.message == 'OTP verification successful') {
             PLATFORM_IOS
               ? Toast.show({
                   type: 'success',
@@ -153,88 +159,139 @@ const ForgetPassword = ({navigation}) => {
       }
       setForLoading(false);
     } catch (error) {
-      console.error('VERIFY OTP', error.response.data);
+      setForLoading(false);
+    }
+  };
+  const resendOTp = async value => {
+    const data = {email: value};
+    console.log('Data ', data);
+    setForLoading(true);
+    try {
+      const res = await axios(`${API}/forgetPassword`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        data: data,
+      });
+      // console.log("Data ",res.data);
+      if (res.data) {
+        console.log(res.data);
+        if (res.data.success == true) {
+          PLATFORM_IOS
+            ? Toast.show({
+                type: 'success',
+                text1: 'Otp Resent successfully.',
+              })
+            : ToastAndroid.show('Otp Resent successfully.', ToastAndroid.SHORT);
+          // navigation.navigate('ResetPassword', {email: values});
+          setForLoading(false);
+
+          setEmail(value);
+        } else {
+          PLATFORM_IOS
+            ? Toast.show({
+                type: 'error',
+                text1: 'User not found!',
+                // position: 'bottom',
+              })
+            : ToastAndroid.show('User not found!', ToastAndroid.SHORT);
+
+          setForLoading(false);
+        }
+      }
+    } catch (err) {
+      console.log(err);
       setForLoading(false);
     }
   };
 
   return (
     <SafeAreaView style={{backgroundColor: COLORS.CREAM, flex: 1}}>
-        <KeyboardAvoidingView behavior="position" style={{marginTop: 10}} >
-          {forLoading ? <ActivityLoader /> : ''}
-          <Image
-            source={require('../../../assets/images/log.png')}
-            resizeMode="contain"
-            style={{width: mobileW, height: mobileW * 0.7  }}
-          />
-          <View style={styles.super_div}>
-            <Formik
-              initialValues={{
-                email: '',
-              }}
-              onSubmit={values => handleRemberPassWord(values)}
-              validationSchema={validationSchema}>
-              {({
-                values,
-                handleChange,
-                handleSubmit,
-                handleBlur,
-                errors,
-                touched,
-              }) => (
-                <View>
-                  <View style={styles.mainDiv_forget_ur_pass}>
-                    <Text style={styles.forget_password}>
-                      Forgot Your Password?
-                    </Text>
-                    <View style={{marginTop: 20}}>
-                      <Input
-                        IconLeft={null}
-                        errors={undefined}
-                        touched={false}
-                        value={values.email}
-                        onChangeText={handleChange('email')}
-                        onBlur={handleBlur('email')}
-                        text="Email"
-                        IconRight={() => <Message />}
-                        mV={1}
-                        placeholder="Enter your Email"
-                        bW={1}
-                        textWidth={'22%'}
-                        placeholderTextColor={COLORS.BLACK}
-                        autoCapitalize="none"
-                      />
-                      {errors.email && touched.email && (
-                        <Text style={{color: 'red'}}>{errors.email}</Text>
-                      )}
-                    </View>
+      <KeyboardAvoidingView behavior="position" style={{marginTop: 10}}>
+        {forLoading ? <ActivityLoader /> : ''}
+        <Image
+          source={require('../../../assets/images/log.png')}
+          resizeMode="contain"
+          style={{width: mobileW, height: mobileW * 0.7}}
+        />
+        <View style={styles.super_div}>
+          <Formik
+            initialValues={{
+              email: '',
+            }}
+            onSubmit={values => handleRemberPassWord(values)}
+            validationSchema={validationSchema}>
+            {({
+              values,
+              handleChange,
+              handleSubmit,
+              handleBlur,
+              errors,
+              touched,
+            }) => (
+              <View>
+                <View style={styles.mainDiv_forget_ur_pass}>
+                  <Text style={styles.forget_password}>
+                    Forgot Your Password?
+                  </Text>
+                  <View style={{marginTop: 20}}>
+                    <Input
+                      IconLeft={null}
+                      errors={undefined}
+                      touched={false}
+                      value={values.email}
+                      onChangeText={handleChange('email')}
+                      onBlur={handleBlur('email')}
+                      text="Email"
+                      IconRight={() => <Message />}
+                      mV={1}
+                      placeholder="Enter your Email"
+                      bW={1}
+                      textWidth={ms(45)}
+                      placeholderTextColor={COLORS.HALFBLACK}
+                      autoCapitalize="none"
+                    />
+                    {errors.email && touched.email && (
+                      <Text style={{color: 'red'}}>{errors.email}</Text>
+                    )}
                   </View>
-                  <TouchableOpacity
-                    onPress={() => handleSubmit()}
-                    style={{
-                      // marginTop: 5,
-                      backgroundColor: showOTP
-                        ? COLORS.HALFBLACK
-                        : COLORS.GREEN,
-                      alignItems: 'center',
-                      padding: 13,
-                      borderRadius: 30,
-                      width: '100%',
-                    }}>
-                    <Text
-                      style={{
-                        fontWeight: '700',
-                        fontSize: 14,
-                        color: COLORS.BLACK,
-                      }}>
-                      RESET PASSWORD
-                    </Text>
-                  </TouchableOpacity>
                 </View>
-              )}
-            </Formik>
-            {showOTP && (
-              <>
+                <TouchableOpacity
+                  onPress={() => handleSubmit()}
+                  style={{
+                    // marginTop: 5,
+                    backgroundColor: showOTP ? COLORS.HALFBLACK : COLORS.GREEN,
+                    alignItems: 'center',
+                    padding: 13,
+                    borderRadius: 10,
+                    width: '100%',
+                    ...Platform.select({
+                      ios: {
+                        shadowColor: '#000000',
+                        shadowOffset: {width: 0, height: 2},
+                        shadowOpacity: 0.3,
+                        shadowRadius: 4,
+                      },
+                      android: {
+                        elevation: 4,
+                      },
+                    }),
+                  }}>
+                  <Text
+                    style={{
+                      fontWeight: '700',
+                      fontSize: 14,
+                      color: COLORS.BLACK,
+                    }}>
+                    RESET PASSWORD
+                  </Text>
+                </TouchableOpacity>
+              </View>
+            )}
+          </Formik>
+          {showOTP && (
+            <>
               <View style={styles.mainDiv_verify_email}>
                 <Text style={styles.havenot_received_email}>
                   Enter the OTP Below
@@ -254,7 +311,12 @@ const ForgetPassword = ({navigation}) => {
                     style={styles.textInput_otp}
                     value={firstDigit}
                     onKeyPress={({nativeEvent}) => {
-                      nativeEvent.key == 'Backspace' && setFirstDigit('');
+                      if (
+                        nativeEvent.key == 'Backspace' &&
+                        setFirstDigit != ' '
+                      ) {
+                        setFirstDigit('');
+                      }
                     }}
                   />
                   <TextInput
@@ -274,8 +336,11 @@ const ForgetPassword = ({navigation}) => {
                     style={styles.textInput_otp}
                     value={secondDigit}
                     onKeyPress={({nativeEvent}) => {
-                      if (nativeEvent.key == 'Backspace') {
-                        setFirstDigit('');
+                      if (
+                        nativeEvent.key == 'Backspace' &&
+                        setsecondDigit != ' '
+                      ) {
+                        setsecondDigit('');
                         otp1.current.focus();
                       }
                     }}
@@ -297,8 +362,11 @@ const ForgetPassword = ({navigation}) => {
                     style={styles.textInput_otp}
                     value={thirdDigit}
                     onKeyPress={({nativeEvent}) => {
-                      if (nativeEvent.key == 'Backspace') {
-                        setsecondDigit('');
+                      if (
+                        nativeEvent.key == 'Backspace' &&
+                        setthirdDigit != ' '
+                      ) {
+                        setthirdDigit('');
                         otp2.current.focus();
                       }
                     }}
@@ -320,9 +388,12 @@ const ForgetPassword = ({navigation}) => {
                     style={styles.textInput_otp}
                     value={forthDigit}
                     onKeyPress={({nativeEvent}) => {
-                      if (nativeEvent.key == 'Backspace') {
+                      if (
+                        nativeEvent.key == 'Backspace' &&
+                        setforthDigit != ''
+                      ) {
+                        setforthDigit('');
                         otp3.current.focus();
-                        setthirdDigit('');
                       }
                     }}
                   />
@@ -343,9 +414,12 @@ const ForgetPassword = ({navigation}) => {
                     style={styles.textInput_otp}
                     value={fifthDigit}
                     onKeyPress={({nativeEvent}) => {
-                      if (nativeEvent.key == 'Backspace') {
+                      if (
+                        nativeEvent.key == 'Backspace' &&
+                        setfifthDigit != ' '
+                      ) {
+                        setfifthDigit('');
                         otp4.current.focus();
-                        setforthDigit('');
                       }
                     }}
                   />
@@ -365,47 +439,74 @@ const ForgetPassword = ({navigation}) => {
                     style={styles.textInput_otp}
                     value={sixDigit}
                     onKeyPress={({nativeEvent}) => {
-                      if (nativeEvent.key == 'Backspace') {
-                        otp5.current.focus();
-                        setfifthDigit('');
+                      if (
+                        nativeEvent.key == 'Backspace' ||
+                        setSixDigit != ' '
+                      ) {
                         setSixDigit('');
+                        // setfifthDigit('');
+                        // otp5.current.focus();s
                       }
                     }}
                     onSubmitEditing={verifyOTP}
                   />
                 </View>
               </View>
-                <TouchableOpacity
-                  onPress={() => verifyOTP()}
+              <View style={styles.otp_yet}>
+                <Text
                   style={{
-                    // marginTop: 5,
-                    backgroundColor: COLORS.GREEN,
-                    alignItems: 'center',
-                    padding: 13,
-                    borderRadius: 30,
-                    width: '100%',
+                    color: COLORS.BLACK,
+                    fontSize: 14,
+                    fontWeight: '600',
                   }}>
-                  <Text
-                    style={{
-                      fontWeight: '700',
-                      fontSize: 14,
-                      color: COLORS.BLACK,
-                    }}>
-                    Confirm OTP
-                  </Text>
+                  Haven't received the OTP yet?
+                </Text>
+                <TouchableOpacity
+                  style={styles.resend_OTP_btn}
+                  onPress={() => resendOTp(email)}>
+                  <Text style={styles.resend_otp_text}>Resend OTP</Text>
                 </TouchableOpacity>
-              </>
-            )}
-            <View style={styles.mainDiv_donot_account}>
-              <Text style={styles.dont_have_text}>
-                Remember your password?{' '}
-              </Text>
-              <TouchableOpacity onPress={() => navigation.navigate('Login')}>
-                <Text style={styles.sign_up}>Log In</Text>
+              </View>
+              <TouchableOpacity
+                onPress={() => verifyOTP()}
+                style={{
+                  // marginTop: 5,
+                  backgroundColor: COLORS.GREEN,
+                  alignItems: 'center',
+                  padding: 13,
+                  borderRadius: 10,
+                  width: '100%',
+                  ...Platform.select({
+                    ios: {
+                      shadowColor: '#000000',
+                      shadowOffset: {width: 0, height: 2},
+                      shadowOpacity: 0.3,
+                      shadowRadius: 4,
+                    },
+                    android: {
+                      elevation: 4,
+                    },
+                  }),
+                }}>
+                <Text
+                  style={{
+                    fontWeight: '700',
+                    fontSize: 14,
+                    color: COLORS.BLACK,
+                  }}>
+                  Confirm OTP
+                </Text>
               </TouchableOpacity>
-            </View>
+            </>
+          )}
+          <View style={styles.mainDiv_donot_account}>
+            <Text style={styles.dont_have_text}>Remember your password? </Text>
+            <TouchableOpacity onPress={() => navigation.navigate('Login')}>
+              <Text style={styles.sign_up}>Log In</Text>
+            </TouchableOpacity>
           </View>
-        </KeyboardAvoidingView>
+        </View>
+      </KeyboardAvoidingView>
     </SafeAreaView>
   );
 };
@@ -432,7 +533,7 @@ const styles = StyleSheet.create({
     color: COLORS.BLACK,
   },
   email_placeholder: {
-    backgroundColor: `rgba(86, 84, 84, 0.1)`,
+    backgroundColor: 'rgba(86, 84, 84, 0.1)',
     borderRadius: 10,
     paddingHorizontal: 15,
     height: Platform.OS === 'ios' ? 50 : 50,
@@ -481,14 +582,28 @@ const styles = StyleSheet.create({
   textInput_otp: {
     width: 45,
     height: 45,
-    borderRadius: 15,
+    borderRadius: 10,
     backgroundColor: COLORS.BROWN,
-    paddingHorizontal: 20,
+    textAlign: 'center',
+    fontSize: 14,
+    // paddingHorizontal: 20,
   },
   mainDiv_verify_email: {
     // paddingTop: 20,
     paddingBottom: 15,
     borderRadius: 15,
     marginTop: 20,
+  },
+  otp_yet: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginVertical: 10,
+  },
+  resend_otp_text: {
+    color: COLORS.BLACK,
+    textAlign: 'center',
+    fontWeight: '400',
+    fontSize: 15,
   },
 });

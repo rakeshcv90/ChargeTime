@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "986843418123",
+    "project_id": "chargetime-16fea",
+    "storage_bucket": "chargetime-16fea.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:986843418123:android:f0c7e3e1857234fc70810e",
+        "android_client_info": {
+          "package_name": "com.chargetime"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "986843418123-mn5vcghn3f4asemkp98t0e1ccf440kjp.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBiEIlgYL6384Xik_2HqISfEraaZJ9Adec"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "986843418123-mn5vcghn3f4asemkp98t0e1ccf440kjp.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -1,3 +1,7 @@
+/* eslint-disable eqeqeq */
+/* eslint-disable no-unused-vars */
+/* eslint-disable react/no-unstable-nested-components */
+/* eslint-disable react-native/no-inline-styles */
 import {
   View,
   Text,
@@ -10,6 +14,7 @@ import {
   Alert,
   ToastAndroid,
   KeyboardAvoidingView,
+  Platform,
 } from 'react-native';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {Formik} from 'formik';
@@ -31,15 +36,31 @@ import ActivityLoader from '../../Components/ActivityLoader';
 const mobileH = Math.round(Dimensions.get('window').height);
 const mobileW = Math.round(Dimensions.get('screen').width);
 const PasswordRegex =
-  /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+  // /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+  /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[!@#$%^&*()\-_=+[{\]}\\|;:'",<.>/?]).{8,}$/;
 const validationSchema = Yup.object().shape({
-  name: Yup.string().required('Full Name is required'),
-  email: Yup.string().email('Invalid Email').required('Email is required'),
-  mobile: Yup.string().max(10).required('Phone No. is required'),
+  // name: Yup.string().required('Full Name is required'),
+  name: Yup.string()
+    .required(' Name is required')
+    .matches(/^[A-Za-z].*/, 'Name must be start with a character')
+    .min(3, 'Name must contain at least 3 characters'),
+  // email: Yup.string().email('Invalid Email').required('Email is required'),
+  email: Yup.string()
+    .matches(/^[\w.\-]+@[\w.\-]+\.\w{2,4}$/, 'Invalid Email Format')
+    .required('Email is required'),
+  // mobile: Yup.string().min(10).required('Phone No. is required'),
+  mobile: Yup.string()
+    .test('is-ten-digits', 'Phone No. must be a 10-digit number', value => {
+      if (value) {
+        return /^\d{10}$/.test(value);
+      }
+      return true; // Allows an empty field, but shows a different required error message
+    })
+    .required('Phone No. is required'),
   password: Yup.string()
     .matches(
       PasswordRegex,
-      'Password must contain 1 uppercase and 1 lowercase letter, 1 digit and 1 special character, and the length must be at least 8 characters',
+      'Password must contain 1 Upper-Case letter, 1 Lower-Case letter, 1 Digit, 1 Special character(@,$,-,^,&), and the length must be at least 8 characters',
     )
     .required('Password is required'),
 });
@@ -48,7 +69,6 @@ export default function Register({navigation}) {
   const [showPassword, setShowPassword] = useState(true);
   const dispatch = useDispatch();
   const {userRegisterData} = useSelector(state => state);
-
 
   const handleFormSubmit = async values => {
     setForLoading(true);
@@ -86,10 +106,7 @@ export default function Register({navigation}) {
               type: 'error',
               text1: 'User not Found',
             })
-          : ToastAndroid.show(
-              'User not Found',
-              ToastAndroid.SHORT,
-            );
+          : ToastAndroid.show('User not Found', ToastAndroid.SHORT);
         setForLoading(false);
       }
     } catch (error) {
@@ -100,7 +117,7 @@ export default function Register({navigation}) {
   return (
     <SafeAreaView style={{backgroundColor: COLORS.CREAM, flex: 1}}>
       <ScrollView
-      // scrollEnabled={false}
+        // scrollEnabled={false}
         showsVerticalScrollIndicator={false}
         keyboardShouldPersistTaps="handled">
         <KeyboardAvoidingView behavior="position">
@@ -144,7 +161,7 @@ export default function Register({navigation}) {
                     placeholder="Ex. John Doe"
                     bW={1}
                     textWidth={'30%'}
-                    placeholderTextColor={COLORS.BLACK}
+                    placeholderTextColor={COLORS.HALFBLACK}
                   />
 
                   <Input
@@ -160,9 +177,9 @@ export default function Register({navigation}) {
                     placeholder="Ex. johnd@xyz.com"
                     bW={1}
                     textWidth={'30%'}
-                    placeholderTextColor={COLORS.BLACK}
+                    placeholderTextColor={COLORS.HALFBLACK}
                     autoCapitalize="none"
-                    keyboardType='email-address'
+                    keyboardType="email-address"
                   />
 
                   <Input
@@ -180,7 +197,7 @@ export default function Register({navigation}) {
                     placeholder="Ex. 89xxxxxxxx"
                     bW={1}
                     textWidth={'30%'}
-                    placeholderTextColor={COLORS.BLACK}
+                    placeholderTextColor={COLORS.HALFBLACK}
                   />
 
                   <Input
@@ -199,16 +216,16 @@ export default function Register({navigation}) {
                     placeholder="Create a strong password"
                     bW={1}
                     textWidth={'30%'}
-                    placeholderTextColor={COLORS.BLACK}
+                    placeholderTextColor={COLORS.HALFBLACK}
                     secureTextEntry={showPassword}
                   />
                   {/* IconLeft={null}
-            
+
             errors={errors.name}
             touched={touched.name}
             placeholderTextColor={COLORS.BLACK}
             text="Password"
-            
+
             passwordInput={true}
             pasButton={() => setShowPassword(!showPassword)}
             secureTextEntry={showPassword}
@@ -295,7 +312,7 @@ const styles = StyleSheet.create({
     color: COLORS.BLACK,
   },
   fullName_placeholder: {
-    backgroundColor: `rgba(86, 84, 84, 0.1)`,
+    backgroundColor: 'rgba(86, 84, 84, 0.1)',
     borderRadius: 10,
     paddingHorizontal: 15,
     height: Platform.OS === 'ios' ? 50 : 50,

@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
+/* eslint-disable react-native/no-inline-styles */
 import React, {FC, memo, useEffect, useRef, useState} from 'react';
 import {
   View,
@@ -146,7 +148,7 @@ const Input: FC<Props> = ({...Props}) => {
         </View>
       </View>
       {Props.errors && Props.touched && (
-        <Text style={{color: 'red', fontSize: 11, textAlign: 'center'}}>
+        <Text style={{color: 'red', fontSize: 20, textAlign: 'center'}}>
           {Props.errors}
         </Text>
       )}

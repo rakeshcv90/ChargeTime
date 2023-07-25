@@ -1,3 +1,4 @@
+/* eslint-disable react-native/no-inline-styles */
 import React, {FC, memo} from 'react';
 import {
   View,
@@ -13,30 +14,26 @@ import {
 } from 'react-native';
 import COLORS from '../constants/COLORS';
 import {PLATFORM_IOS, DIMENSIONS} from '../constants/DIMENSIONS';
-import {Eye} from "../../assets/images/Eye";
-import { mvs,ms } from 'react-native-size-matters';
-
-
-
+import {Eye} from '../../assets/images/Eye';
+import {mvs, ms} from 'react-native-size-matters';
 
 export type Props = TextInputProps & {
-  mV?: number;
-  mH?: number;
-  IconLeft: any;
-  IconRight?: any;
-  text: string;
-  errors: any | undefined;
-  touched: any | undefined;
-  pasButton?: () => void;
-  bgColor: string;
-  bColor?: string;
-  bR?: number;
-  bW?: number;
-  passwordInput?: boolean | false;
-  passwordInputIcon?: boolean | false;
-  textWidth?: any;
-  w?: 'half' | 'full';
-  
+  mV?: number,
+  mH?: number,
+  IconLeft: any,
+  IconRight?: any,
+  text: string,
+  errors: any | undefined,
+  touched: any | undefined,
+  pasButton?: () => void,
+  bgColor: string,
+  bColor?: string,
+  bR?: number,
+  bW?: number,
+  passwordInput?: boolean | false,
+  passwordInputIcon?: boolean | false,
+  textWidth?: any,
+  w?: 'half' | 'full',
 };
 const Input: FC<Props> = ({...Props}) => {
   const theme = useColorScheme();
@@ -52,7 +49,6 @@ const Input: FC<Props> = ({...Props}) => {
             : DIMENSIONS.SCREEN_WIDTH * 0.9,
         marginVertical: Props.mV,
         alignSelf: 'center',
-        
       }}>
       <View
         style={[
@@ -65,8 +61,8 @@ const Input: FC<Props> = ({...Props}) => {
             //borderRadius: Props.bR ? Props.bR : 50,
             borderWidth: Props.bW ? Props.bW : 0,
             paddingBottom: PLATFORM_IOS ? 5 : 10,
-            borderRadius:5
-                 },
+            borderRadius: 5,
+          },
         ]}>
         {Props.IconLeft && <Props.IconLeft />}
         <View
@@ -87,7 +83,7 @@ const Input: FC<Props> = ({...Props}) => {
               backgroundColor: COLORS.CREAM,
               width: Props.textWidth ? Props.textWidth : '30%',
               paddingLeft: 10,
-              fontWeight:"500"
+              fontWeight: '500',
               // borderWidth: 1,
               // borderColor: COLORS.WHITE,
               // borderRadius: Props.bgColor != COLORS.WHITE ? 10 : 0,
@@ -99,13 +95,11 @@ const Input: FC<Props> = ({...Props}) => {
             {...Props}
             // scrollEnabled={false}
             // onScroll={undefined}
-            style={
-              {
-                color: isDark ? COLORS.BLACK : COLORS.BLACK,
-                // paddingBottom: PLATFORM_IOS?0: 13
-                // backgroundColor:"red"
-              }
-            }
+            style={{
+              color: isDark ? COLORS.BLACK : COLORS.BLACK,
+              // paddingBottom: PLATFORM_IOS?0: 13
+              // backgroundColor:"red"
+            }}
           />
         </View>
         <View style={{width: '20%', alignItems: 'center', paddingLeft: 30}}>
@@ -113,21 +107,27 @@ const Input: FC<Props> = ({...Props}) => {
           {Props.passwordInput && (
             <TouchableOpacity onPress={Props.pasButton}>
               {Props.passwordInputIcon ? (
-                <Image source={require('../../assets/images/passwod.png')} />
+                <Image
+                  source={require('../../assets/images/Vector.png')}
+                  style={{width: 25, height: 25}}
+                  resizeMode="center"
+                />
+              ) : (
                 // <Eye />
 
-              ) : (
-                  <Eye />
-                  // <Image source={require('../../assets/images/passwod.png')} />
-
+                // <Eye />
+                <Image
+                  source={require('../../assets/images/eye.png')}
+                  style={{width: 40, height: 45}}
+                />
+                // <Image source={require('../../assets/images/passwod.png')} />
               )}
             </TouchableOpacity>
           )}
-          
         </View>
       </View>
       {Props.errors && Props.touched && (
-        <Text style={{color: 'red', fontSize: 11, textAlign: 'center'}}>
+        <Text style={{color: 'red', fontSize: 12, textAlign: 'center'}}>
           {Props.errors}
         </Text>
       )}

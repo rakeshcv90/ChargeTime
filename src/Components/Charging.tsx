@@ -1,3 +1,6 @@
+/* eslint-disable react-native/no-inline-styles */
+/* eslint-disable react-hooks/exhaustive-deps */
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import {StyleSheet, Text, View, Animated} from 'react-native';
 import React, {useEffect, useRef, useState} from 'react';
 import COLORS from '../constants/COLORS';
@@ -36,7 +39,7 @@ const Charging = () => {
         marginLeft: 20,
         backgroundColor: COLORS.WHITE,
         height: 50,
-        width: (DIMENSIONS.SCREEN_WIDTH * 60) / 100,
+        width: (DIMENSIONS.SCREEN_WIDTH * 40) / 100,
         borderRadius: 15,
         shadowColor: '#000',
         shadowOffset: {
@@ -57,11 +60,11 @@ const Charging = () => {
           width: '50%',
           // justifyContent: 'center',
           alignItems: 'center',
-          flexDirection: 'row',
         }}>
         <AnimatedLottieView
           source={{
-            uri: 'https://assets9.lottiefiles.com/packages/lf20_hbr24n88.json',
+            // uri: 'https://assets9.lottiefiles.com/packages/lf20_hbr24n88.json',
+            uri: 'https://lottie.host/c6a8913a-4bdf-4379-a373-dc9904e879fb/DxU4iRBgZj.json',
           }} // Replace with your animation file
           autoPlay
           loop
@@ -70,13 +73,21 @@ const Charging = () => {
       </LinearGradient>
       <View
         style={{
-          marginHorizontal: 10,
+          marginHorizontal: 20,
           position: 'absolute',
           top: (DIMENSIONS.SCREEN_HEIGHT * 2) / 100,
-
           alignSelf: 'center',
         }}>
-        <Text style={{textAlign:'center',color:COLORS.BLACK,fontSize:15,fontWeight:'500',lineHeight:17}}>charging ...</Text>
+        <Text
+          style={{
+            textAlign: 'center',
+            color: COLORS.BLACK,
+            fontSize: 15,
+            fontWeight: '500',
+            lineHeight: 17,
+          }}>
+          charging...
+        </Text>
       </View>
     </View>
   );

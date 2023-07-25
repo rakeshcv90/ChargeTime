@@ -1,3 +1,15 @@
+/* eslint-disable no-undef */
+/* eslint-disable no-trailing-spaces */
+
+/* eslint-disable prettier/prettier */
+
+/* eslint-disable no-shadow */
+/* eslint-disable react-hooks/exhaustive-deps */
+/* eslint-disable quotes */
+/* eslint-disable react/no-unstable-nested-components */
+/* eslint-disable react-native/no-inline-styles */
+/* eslint-disable no-unused-vars */
+/* eslint-disable eqeqeq */
 import {
   View,
   Text,
@@ -14,7 +26,7 @@ import {
   BackHandler,
 } from 'react-native';
 import {SafeAreaView} from 'react-native-safe-area-context';
-
+import notifee from '@notifee/react-native';
 import React, {useState, useEffect} from 'react';
 import COLORS from '../../constants/COLORS';
 import Toast from 'react-native-toast-message';
@@ -45,10 +57,13 @@ import {
   setDeviceId,
   setIsAuthorized,
   setBasePackage,
+  setOverUsage,
 } from '../../redux/action';
 import axios from 'axios';
 import {navigationRef} from '../../../App';
-
+import messaging from '@react-native-firebase/messaging';
+import {ms} from 'react-native-size-matters';
+import {Alert, PermissionsAndroid} from 'react-native';
 const mobileH = Math.round(Dimensions.get('window').height);
 const mobileW = Math.round(Dimensions.get('window').width);
 
@@ -57,33 +72,192 @@ export default function Login({navigation}) {
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(true);
   const [forLoading, setForLoading] = useState(false);
+  const [token1, setToken] = useState('');
+  const [id, setId] = useState();
   // const [graphData,setGraphData] = useState([])
   const dispatch = useDispatch();
   const {getDeviceID, getGraphData} = useSelector(state => state);
-  // console.log(getUserID,"object")
+  // console.log('{{{{{{{{{{{', id);
   useEffect(() => {
-    // const backAction = () => {
-    //   Alert.alert(
-    //     'Exit App',
-    //     'Are you sure you want to exit?',
-    //     [
-    //       {
-    //         text: 'Cancel',
-    //         onPress: () => null,
-    //         style: 'cancel',
-    //       },
-    //       { text: 'Exit', onPress: () => BackHandler.exitApp() },
-    //     ],
-    //     { cancelable: false }
-    //   );
-    //   return true;
-    // };
-    BackHandler.addEventListener('hardwareBackPress', () =>
-      BackHandler.exitApp(),
+    let unsubscribe = null;
+    const notificationService = async () => {
+      PermissionsAndroid.request(
+        PermissionsAndroid.PERMISSIONS.POST_NOTIFICATIONS,
+      );
+      await messaging().registerDeviceForRemoteMessages();
+      const token = await messaging().getToken();
+
+      if (token?.length > 0) {
+        console.log('FCM...', token);
+        setToken(token);
+        messaging().setBackgroundMessageHandler(async remoteMessage => {});
+
+        messaging().onNotificationOpenedApp(remoteMessage => {
+          console.log(
+            '[FCMService] onNotificationOpenedApp Notification caused app to open from background state:',
+            remoteMessage,
+          );
+          if (remoteMessage) {
+            // const notification = remoteMessage.notification;
+            //onOpenNotification(notification)
+
+            onDisplayNotification(remoteMessage);
+            // this.removeDeliveredNotification(notification.notificationId)
+          }
+        });
+
+        const initialNotification = await notifee.getInitialNotification();
+
+        if (initialNotification) {
+          console.log(
+            'Notification caused application to open',
+            initialNotification.pressAction,
+          );
+          console.log(
+            'Press action used to open the app',
+            initialNotification.pressAction,
+          );
+        }
+        unsubscribe = messaging().onMessage(async remoteMessage => {
+          console.log('Notification ....', remoteMessage);
+          onDisplayNotification(remoteMessage);
+        });
+      }
+    };
+    async function onDisplayNotification(data) {
+      // Request permissions (required for iOS)
+      await notifee.requestPermission();
+
+      const message = data?.notification?.body;
+
+      let androidData = {};
+      let body = '';
+      if (message === 'Vehicle Connected!') {
+        androidData = {
+          channelId,
+          smallIcon: 'custom_notification_icon',
+          largeIcon: require('../../../assets/images/WithCar.png'),
+          color: '#B1D34F',
+          pressAction: {
+            id: 'default',
+          },
+        };
+        body = `<p style="color: #4caf50;"><b>${message}</b></p> &#128663;`;
+        // Alert.alert('A new FCM message arrived!', 'tytytytytytytyt');
+        console.log('+++5555555++++', id);
+        fetchStatusdata(id);
+      } else if (
+        message === 'Vehicle Disconnected! Please check your Vehicle'
+      ) {
+        androidData = {
+          channelId,
+          smallIcon: 'custom_notification_icon',
+          largeIcon: require('../../../assets/images/WithoutCar.png'),
+          color: '#B1D34F',
+          actions: [
+            {
+              title: '<p style="color: #f44336;"><b>Ok</b>&#128522;</p>',
+              pressAction: {
+                id: 'ok',
+                mainComponent: 'Home', // Replace 'navigateToScreen' with your required screen
+              },
+            },
+          ],
+        };
+        body = `<p style="color: #4caf50;"><b>${message}</b></p>&#128563;`;
+        console.log('+++55555+++', id);
+        fetchStatusdata(id);
+      } else if (
+        message ===
+        'Something went wrong! Please disconnect and connect your vehicle again'
+      ) {
+        androidData = {
+          channelId,
+          smallIcon: 'custom_notification_icon',
+          // largeIcon: require('../../../assets/images/WithoutCar.png'),
+          color: '#B1D34F',
+          actions: [
+            {
+              title: '<b>Contact Support</b> &#128577;',
+              pressAction: {
+                id: 'Contact Support',
+                mainComponent: 'Contact', // Replace 'navigateToScreen' with your required screen
+              },
+            },
+            {
+              title: '<p style="color: #f44336;"><b>Cancel</b> &#128111;</p>',
+              pressAction: {
+                id: 'Cancel',
+                mainComponent: '', // You can replace 'default' with the required activity to launch.
+              },
+            },
+          ],
+        };
+        body = `<p style="color: #4caf50;"><b>${message}</b></p>&#128580;`;
+        console.log('+++4444444+++', id);
+        fetchStatusdata(id);
+      } else {
+        androidData = {
+          channelId,
+          smallIcon: 'custom_notification_icon',
+          // largeIcon: require('../../../assets/images/WithCar.png'),
+          color: '#B1D34F',
+          pressAction: {
+            id: 'default',
+          },
+        };
+        body = `<p style="color: #4caf50;"><b>${message}</b></p> &#128663;`;
+        fetchStatusdata(id);
+      }
+
+      // Create a channel (required for Android)
+      const channelId = await notifee.createChannel({
+        id: 'default',
+        name: 'Default Channel',
+      });
+
+      androidData.channelId = channelId;
+
+      // Display a notification
+      await notifee.displayNotification({
+        title: data?.notification?.title,
+        // body: `<p style="color: #4caf50;"><b>${message}</b></p> &#127881;`,
+        body: body,
+        android: androidData,
+      });
+    }
+
+    if (Platform.OS === 'android') {
+      notificationService();
+    }
+    if (unsubscribe) {
+      return unsubscribe;
+    }
+  }, []);
+  useEffect(() => {
+    const backHandler = BackHandler.addEventListener(
+      'hardwareBackPress',
+      handleBackButton,
     );
 
-    // return () => backHandler.remove();
+    return () => backHandler.remove();
   }, []);
+  const handleBackButton = () => {
+    return true;
+  };
+
+  const fetchMessage = id => {
+    axios
+      .get(`${API}/pushNotification/${id}`)
+      .then(res => {
+        console.log('Firebase message recieved ', res.data.body);
+        // navigation.navigate('DrawerStack');
+      })
+      .catch(err => {
+        console.log(err);
+      });
+  };
+
   const packagePlans = async locationID => {
     //  loginData = await AsyncStorage.getItem('loginDataOne');
 
@@ -92,9 +266,12 @@ export default function Login({navigation}) {
 
       if (response?.data?.locations.length == 0) {
         setForLoading(true);
-        setShowPackage(true);
+        // setShowPackage(true);
+        dispatch(setBasePackage([]));
+        // dispatch(setIsAuthorized(true));
+        setForLoading(false);
+        navigation.navigate('DrawerStack');
       } else {
-        console.log(response.data);
         dispatch(setBasePackage(response.data.locations));
         dispatch(setIsAuthorized(true));
         setForLoading(false);
@@ -116,14 +293,15 @@ export default function Login({navigation}) {
         data: {
           email: email,
           password: password,
+          device_token: token1,
         },
       });
       if (res.data) {
-        console.log(res.data, 'ttww');
-
         // AsyncStorage.setItem('loginDataOne', JSON.stringify(data.locationid ));
 
         if (res.data.message == 'Login Successfull') {
+          dispatch(setUserID(res.data?.user_id));
+          setId(res.data?.user_id);
           AsyncStorage.setItem(
             'locationID',
             JSON.stringify(res.data?.locationid),
@@ -131,23 +309,26 @@ export default function Login({navigation}) {
           PLATFORM_IOS
             ? Toast.show({
                 type: 'success',
-                text1: 'Login SuccessfulL',
+                text1: 'Login Successful',
               })
-            : ToastAndroid.show('Login Successfull', ToastAndroid.SHORT);
-          console.log(res.data, 'Loginnnnnnnnnn');
-          console.log('firstSTATUS', res.data.status);
+            : ToastAndroid.show('Login Successful', ToastAndroid.SHORT);
 
           // if(data.status == "true"){
           //   navigation.navigate('EnergyStats');
           // }else if(data.status == "false"){
-
+          // setTimeout(() => {
+          // }, 15000);
           // }
+          await AsyncStorage.setItem('isAuthorized', res.data.user_id + '');
           if (res.data.status == 'All details available') {
             dispatch(setEmailData(res.data?.email));
             dispatch(setPackageStatus(true));
-            dispatch(setUserID(res.data?.user_id));
+            // dispatch(setUserID(res.data?.user_id));
             dispatch(getLocationID(res.data?.locationid));
+
+            // setInterval(() => {
             fetchGraphData(res.data?.user_id);
+            // }, 300000);
             fetchWeekGraphData(res.data?.user_id);
             fetchMonthGraphData(res.data?.user_id);
             fetchQuarterGraphData(res.data.user_id);
@@ -155,6 +336,9 @@ export default function Login({navigation}) {
             fetchBoxTwoDashboardData(res.data?.user_id);
             fetchStatusdata(res.data?.user_id);
             getPlanCurrent(res.data?.user_id);
+            // setTimeout(() => {
+            //   fetchMessage(res.data?.user_id);
+            // }, 15000);
             dispatch(setDeviceId(''));
           } else if (
             res.data.status ==
@@ -165,6 +349,7 @@ export default function Login({navigation}) {
             dispatch(setPackageStatus(true));
             dispatch(setUserID(res.data?.user_id));
             dispatch(getLocationID(res.data?.locationid));
+            // dispatch(setIsAuthorized(true));
             getPlanCurrent(res.data?.user_id);
             dispatch(
               setDeviceId(
@@ -174,6 +359,10 @@ export default function Login({navigation}) {
           } else {
             dispatch(setPackageStatus(false));
             dispatch(setDeviceId(res.data.message));
+            // dispatch(setIsAuthorized(true));
+            dispatch(setEmailData(res.data?.email));
+            dispatch(setUserID(res.data?.user_id));
+            dispatch(getLocationID(res.data?.locationid));
             packagePlans(res.data?.locationid);
           }
           // fetchPriceDetailsDashboardData(data?.user_id)
@@ -190,11 +379,23 @@ export default function Login({navigation}) {
                 type: 'error',
                 text1: 'Username or Password is incorrect',
               })
-            : ToastAndroid.show('Username or Password is incorrect', ToastAndroid.SHORT);
+            : ToastAndroid.show(
+                'Username or Password is incorrect',
+                ToastAndroid.SHORT,
+              );
           setForLoading(false);
         }
       }
     } catch (err) {
+      PLATFORM_IOS
+        ? Toast.show({
+            type: 'error',
+            text1: 'Network failed! Please check your internet connection.',
+          })
+        : ToastAndroid.show(
+            'Network failed!Please check your internet connection.ß',
+            ToastAndroid.SHORT,
+          );
       setForLoading(false);
       console.log(err);
     }
@@ -204,7 +405,6 @@ export default function Login({navigation}) {
     axios
       .get(`${API}/devicecheck/${prevData?.user_id}}`)
       .then(res => {
-        console.log(res.data, 'tt');
         if (res.data.status == 'True') {
           dispatch(setDeviceId(res.data.message));
           getPlanCurrent(prevData?.user_id);
@@ -228,7 +428,7 @@ export default function Login({navigation}) {
 
   //day data start
   const fetchGraphData = userID => {
-    console.log(userID, 'object');
+    const message = 'No usage data available';
     axios
       .get(`${API}/dailyusagegraph/${userID}`)
       .then(res => {
@@ -238,9 +438,26 @@ export default function Login({navigation}) {
         // navigation.navigate('DrawerStack');
       })
       .catch(err => {
+        dispatch(setGraphData({message}));
         console.log(err);
       });
   };
+  const fetchGraphDataInterval = userID => {
+    const message = 'No usage data available';
+    axios
+      .get(`${API}/time_period/${userID}`)
+      .then(res => {
+        dispatch(setGraphData(res?.data));
+
+        dailyUsuagekwh(userID);
+        // navigation.navigate('DrawerStack');
+      })
+      .catch(err => {
+        dispatch(setGraphData({message}));
+        console.log(err);
+      });
+  };
+
   const dailyUsuagekwh = userId => {
     axios
       .get(`${API}/dailyusage/${userId}`)
@@ -263,10 +480,11 @@ export default function Login({navigation}) {
       .then(res => {
         if (res.data?.kwh_unit_remaining >= 0) {
           remaingData = res.data?.kwh_unit_remaining;
+          dispatch(setOverUsage(false));
         } else {
           remaingData = res.data?.kwh_unit_overusage;
+          dispatch(setOverUsage(true));
         }
-        console.log('first', res.data);
         dispatch(setRemainingData(remaingData));
         setForLoading(false);
       })
@@ -286,7 +504,7 @@ export default function Login({navigation}) {
         }
       })
       .catch(err => {
-        console.log(err);
+        console.log('Week ERRRR', err);
       });
   };
   const fetchMonthGraphData = userID => {
@@ -298,7 +516,7 @@ export default function Login({navigation}) {
         }
       })
       .catch(err => {
-        console.log(err);
+        console.log('MONTHS ERRRR', err);
       });
   };
   const fetchQuarterGraphData = userID => {
@@ -310,7 +528,7 @@ export default function Login({navigation}) {
         }
       })
       .catch(err => {
-        console.log(err);
+        console.log('QUar ERRRR', err);
       });
   };
   const fetchYearGraphData = userID => {
@@ -322,7 +540,7 @@ export default function Login({navigation}) {
         }
       })
       .catch(err => {
-        console.log(err);
+        console.log('Year ERRRR', err);
       });
   };
 
@@ -330,7 +548,11 @@ export default function Login({navigation}) {
     axios
       .get(`${API}/currentplan/${userId}`)
       .then(res => {
-        dispatch(setBoxTwoDataForDashboard(res?.data));
+        if (res.data.data == 'Package details not found') {
+          dispatch(setBoxTwoDataForDashboard(res.data));
+        } else {
+          dispatch(setBoxTwoDataForDashboard(res?.data));
+        }
       })
       .catch(err => {
         console.log(err);
@@ -340,6 +562,7 @@ export default function Login({navigation}) {
     axios
       .get(`${API}/chargerstatus/${userId}`)
       .then(res => {
+        console.log('------22232323----', res?.data);
         dispatch(setChargerStatus(res?.data));
       })
       .catch(err => {
@@ -353,8 +576,12 @@ export default function Login({navigation}) {
       .then(res => {
         setForLoading(false);
 
+        // if (res.data.data == 'Package details not found') {
+        //   dispatch(setPurchaseData([]));
+        // } else {
+        // }
         dispatch(setPurchaseData(res?.data));
-        dispatch(setIsAuthorized(true));
+        // dispatch(setIsAuthorized(true));
         navigation.navigate('DrawerStack');
       })
       .catch(err => {
@@ -399,8 +626,8 @@ export default function Login({navigation}) {
             mV={20}
             placeholder="Enter your Email"
             bW={1}
-            textWidth={'22%'}
-            placeholderTextColor={COLORS.BLACK}
+            textWidth={ms(45)}
+            placeholderTextColor={COLORS.HALFBLACK}
             autoCapitalize="none"
           />
 
@@ -408,7 +635,7 @@ export default function Login({navigation}) {
             IconLeft={null}
             errors={undefined}
             touched={false}
-            placeholderTextColor={COLORS.BLACK}
+            placeholderTextColor={COLORS.HALFBLACK}
             text="Password"
             passwordInput={true}
             pasButton={() => setShowPassword(!showPassword)}
@@ -417,9 +644,9 @@ export default function Login({navigation}) {
             onChangeText={text => setPassword(text)}
             value={password}
             mV={5}
-            placeholder="Enter your password"
+            placeholder="Enter your password "
             bW={1}
-            textWidth={'30%'}
+            textWidth={ms(66)}
           />
           <View style={styles.main_div_lock_img}>
             <Image
@@ -450,6 +677,17 @@ export default function Login({navigation}) {
                 padding: 13,
                 borderRadius: 10,
                 width: '100%',
+                ...Platform.select({
+                  ios: {
+                    shadowColor: '#000000',
+                    shadowOffset: {width: 0, height: 2},
+                    shadowOpacity: 0.3,
+                    shadowRadius: 4,
+                  },
+                  android: {
+                    elevation: 4,
+                  },
+                }),
               }}>
               <Text style={styles.log_In_btn}>LOG IN</Text>
             </TouchableOpacity>

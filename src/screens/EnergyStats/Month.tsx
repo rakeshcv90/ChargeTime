@@ -1,27 +1,33 @@
-import { View, Text,ScrollView } from 'react-native'
-import React, { useEffect,useRef,useState } from 'react'
+/* eslint-disable react-hooks/exhaustive-deps */
+/* eslint-disable @typescript-eslint/no-unused-vars */
+/* eslint-disable eqeqeq */
+/* eslint-disable react-native/no-inline-styles */
+import {View, Text, ScrollView} from 'react-native';
+import React, {useEffect, useRef, useState} from 'react';
 
 import COLORS from '../../constants/COLORS';
 import Remaining from '../../Components/Remaining';
 import TotalUsage from '../../Components/TotalUsuage';
 import Graph from '../../Components/Graph';
 import BoxTwo from '../../Components/BoxTwo';
-import PriceBox from '../../Components/PriceBox';
+import PriceValidity from '../../Components/PriceValidity';
 import ButtonSlider from '../../Components/ButtonSlider';
-import { useSelector } from 'react-redux';
+import {useSelector} from 'react-redux';
 
 export default function Month() {
   const [showSlider, setShowSlider] = useState(true);
   const ScrollRef = useRef(null);
   useEffect(() => {
     setShowSlider(true);
+    console.log('MONTHRasdsadsadasdasdasdasdasd', getMonthData);
   }, []);
-  const {getMonthData,getBoxTwoDataForDashboard} =  useSelector((state:any) => state)
+  const {getMonthData, getBoxTwoDataForDashboard} = useSelector(
+    (state: any) => state,
+  );
   const [toggleState, setToggleState] = useState(false);
 
-  const handleToggle = (value:any) => setToggleState(value);
-  
- 
+  const handleToggle = (value: any) => setToggleState(value);
+
   return (
     <>
       <View style={{flex: 1, backgroundColor: COLORS.CREAM}}>
@@ -30,25 +36,41 @@ export default function Month() {
           showsVerticalScrollIndicator={false}
           keyboardShouldPersistTaps="handled"
           onScrollBeginDrag={() => setShowSlider(false)}
-        //   onScrollToTop={() => setShowSlider(true)}
+          //   onScrollToTop={() => setShowSlider(true)}
           onScrollEndDrag={() => setShowSlider(true)}>
           <View
             style={{
               flexDirection: 'row',
               justifyContent: 'space-between',
-              marginHorizontal: 20,
+              marginHorizontal: 30,
               marginTop: 10,
             }}>
             <Remaining RemainingFill={50} KWH={400} />
-            <TotalUsage data={getMonthData?.Totalusedkwhs} />
+            <TotalUsage
+              data={getMonthData?.Totalusedkwhs}
+              location={'Monthly'}
+            />
           </View>
-          
-          <View style={{marginHorizontal: 20,}}>
-          <Graph dataOne={getMonthData.Usage} />
-          <BoxTwo />
+
+          <View style={{marginHorizontal: 20}}>
+            {getMonthData.message != 'No monthlyusage data available' ? (
+              <Graph dataOne={getMonthData} />
+            ) : (
+              <Text
+                style={{
+                  color: COLORS.BLACK,
+                  fontWeight: 'bold',
+                  alignSelf: 'center',
+                  fontSize: 14,
+                  marginVertical: 10,
+                }}>
+                No Graph Data available
+              </Text>
+            )}
+            <BoxTwo data={getBoxTwoDataForDashboard[0]} />
           </View>
-          <View style={{marginBottom:80}}>
-          <PriceBox data={getBoxTwoDataForDashboard[0]}/>
+          <View style={{marginBottom: 80}}>
+            <PriceValidity data={getBoxTwoDataForDashboard.data} />
           </View>
         </ScrollView>
       </View>

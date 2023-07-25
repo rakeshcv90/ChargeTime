@@ -1,3 +1,7 @@
+/* eslint-disable no-unused-vars */
+/* eslint-disable react/no-unstable-nested-components */
+/* eslint-disable no-undef */
+/* eslint-disable react-native/no-inline-styles */
 import React, {useEffect, useState} from 'react';
 import {
   DrawerActions,
@@ -14,6 +18,7 @@ import {
   TouchableOpacity,
   Linking,
   Text,
+  Dimensions,
 } from 'react-native';
 import CompleteProfile from '../screens/register/CompleteProfile';
 import Home from '../screens/purchasePlan/Home';
@@ -51,6 +56,7 @@ import {NoCharge} from '../../assets/images/NoCharge';
 import COLORS from '../constants/COLORS';
 import {DIMENSIONS} from '../constants/DIMENSIONS';
 import Contact from '../screens/accounts/Contact';
+import ForDownGrade from '../Components/ForDownGrade';
 
 const Drawer = createDrawerNavigator();
 const Stack = createNativeStackNavigator();
@@ -62,6 +68,7 @@ export const DrawerScreenPart = ({navigation}) => {
   useEffect(() => {
     handleLinkPress();
   }, []);
+
   const handleLinkPress = () => {
     // Handle the link press action here
     // For example, navigate to a different screen
@@ -75,17 +82,17 @@ export const DrawerScreenPart = ({navigation}) => {
     <View>
       {/* Drawer content */}
       <TouchableOpacity onPress={handleLinkPress}>
-        <Text></Text>
+        <Text />
       </TouchableOpacity>
     </View>
   );
 };
-export const chargerStatus = () => {
+export const ChargerStatus = () => {
   const getChargerStatus = useSelector(state => state.getChargerStatus);
   console.log(getChargerStatus, 'getChargerStatus');
   return (
     <View>
-      <Text></Text>
+      <Text />
     </View>
   );
 };
@@ -93,16 +100,25 @@ const DrawerNavigation = () => {
   const [focus, setFocus] = useState();
   const [focusOne, setFocusOne] = useState();
   const [focusTwo, setFocusTwo] = useState();
-  const {getPackageStatus, getChargerStatus} = useSelector(state => state);
+  const {getPackageStatus, getChargerStatus, getDeviceID} = useSelector(
+    state => state,
+  );
 
   return (
     <Drawer.Navigator
-      screenOptions={{headerShown: false}}
-      drawerContent={CustomDrawerContent}>
+      screenOptions={{
+        headerShown: false,
+        drawerStyle: {
+          width: Dimensions.get('window').width / 1.55,
+        },
+      }}
+      gestureEnabled={false}
+      drawerContent={props => <CustomDrawerContent {...props} />}>
       {getPackageStatus ? (
         <>
           <Drawer.Screen
             options={{
+              // sw: 20,
               drawerActiveBackgroundColor: '#fff',
               drawerIcon: ({focused, color, size}) => {
                 setFocus(focused);
@@ -113,7 +129,7 @@ const DrawerNavigation = () => {
                         ? require('../../assets/images/home_white.png')
                         : require('../../assets/images/home_green.png')
                     }
-                    style={{width: 50, height: 40, padding: 0, margin: -10}}
+                    style={{width: 25, height: 30, padding: 0, margin: -10}}
                   />
                 );
               },
@@ -142,13 +158,20 @@ const DrawerNavigation = () => {
                         ? require('../../assets/images/testing.png')
                         : require('../../assets/images/energy_green.png')
                     }
-                    style={{width: 50, height: 40, padding: 0, margin: -10}}
+                    style={{
+                      width: 25,
+                      height: 30,
+                      padding: 0,
+                      margin: -10,
+                      marginTop: -30,
+                    }}
                   />
                 );
               },
               drawerLabelStyle: {
                 backgroundColor: focusOne ? 'rgba(177, 211, 79, 0.8)' : '#fff',
                 paddingVertical: 10,
+                marginTop: -20,
                 paddingLeft: 10,
                 width: '200%',
                 marginLeft: -15,
@@ -173,7 +196,7 @@ const DrawerNavigation = () => {
                       ? require('../../assets/images/home_white.png')
                       : require('../../assets/images/home_green.png')
                   }
-                  style={{width: 50, height: 40, margin: -10}}
+                  style={{width: 25, height: 30, margin: -10, marginTop: -30}}
                 />
               );
             },
@@ -182,6 +205,7 @@ const DrawerNavigation = () => {
               paddingVertical: 10,
               paddingLeft: 10,
               width: '200%',
+              marginTop: -20,
               marginLeft: -15,
             },
             drawerActiveTintColor: 'black',
@@ -232,7 +256,13 @@ const DrawerNavigation = () => {
                     ? require('../../assets/images/account_white.png')
                     : require('../../assets/images/green_account.png')
                 }
-                style={{width: 50, height: 40, padding: 0, margin: -10}}
+                style={{
+                  width: 25,
+                  height: 30,
+                  padding: 0,
+                  margin: -10,
+                  marginTop: -30,
+                }}
               />
             );
           },
@@ -240,6 +270,7 @@ const DrawerNavigation = () => {
             backgroundColor: focusTwo ? 'rgba(177, 211, 79, 0.8)' : '#fff',
             paddingVertical: 10,
             paddingLeft: 10,
+            marginTop: -20,
             width: '200%',
             marginLeft: -15,
           },
@@ -258,19 +289,20 @@ const DrawerNavigation = () => {
               <Image
                 source={require('../../assets/images/contact_us.png')}
                 resizeMode="center"
-                style={{width: 35, height: 35, padding: 0}}
+                style={{width: 25, height: 25, padding: 0, margin: -7}}
               />
             );
           },
-          drawerItemStyle: {marginTop: (DIMENSIONS.SCREEN_HEIGHT * 10) / 100},
+          drawerItemStyle: {marginTop: (DIMENSIONS.SCREEN_HEIGHT * 15) / 100},
           drawerLabelStyle: {
             backgroundColor: '#fff',
+            marginLeft: -17,
           },
           drawerActiveTintColor: 'black',
-          title: 'Contact Us',
+          //title: 'Contact Us',
         }}
-        name="Contact Us"
-        component={DrawerScreenPart}
+        name="Contact"
+        component={Contact}
       />
       <Drawer.Screen
         options={{
@@ -279,13 +311,14 @@ const DrawerNavigation = () => {
             return (
               <Image
                 source={require('../../assets/images/privacy.png')}
-                resizeMode="center"
-                style={{width: 35, height: 35, padding: 0}}
+                resizeMode="stretch"
+                style={{width: 17, height: 17, padding: 0, margin: -5}}
               />
             );
           },
           drawerLabelStyle: {
             backgroundColor: '#fff',
+            marginLeft: -15,
           },
           drawerActiveTintColor: 'black',
         }}
@@ -299,103 +332,97 @@ const DrawerNavigation = () => {
             return (
               <Image
                 source={require('../../assets/images/terms.png')}
-                resizeMode="center"
-                style={{width: 35, height: 35, padding: 0}}
+                resizeMode="stretch"
+                style={{width: 17, height: 17, padding: 0, margin: -5}}
               />
             );
           },
           drawerLabelStyle: {
             backgroundColor: '#fff',
+            marginLeft: -15,
           },
           drawerActiveTintColor: 'black',
         }}
         name="Terms & Conditions"
         component={Terms}
       />
-      <Drawer.Screen
-        options={{
-          drawerActiveBackgroundColor: '#fff',
-          gestureEnabled: false,
+      {getDeviceID !==
+        'Your Account is not currently linked with a TRO Charger. Please contact customer service if you believe this is an error.' &&
+        getPackageStatus && (
+          <Drawer.Screen
+            options={{
+              drawerActiveBackgroundColor: '#fff',
+              gestureEnabled: false,
+              drawerItemStyle: {
+                marginTop: (DIMENSIONS.SCREEN_HEIGHT * 3) / 100,
+                marginLeft: (DIMENSIONS.SCREEN_HEIGHT * 3) / 100,
+              },
+              headerInteractionEnabled: false,
+              drawerIcon: ({focused, color, size}) => {
+                let iconComponent = null;
 
-          headerInteractionEnabled: false,
-          drawerIcon: ({focused, color, size}) => {
-            let iconComponent = null;
+                if (getChargerStatus?.message === 'Charging') {
+                  iconComponent = <Charging />;
+                } else if (getChargerStatus?.message === 'Online') {
+                  iconComponent = (
+                    <OnlineCharge style={{marginTop: 10, marginLeft: 5}} />
+                  );
+                } else if (getChargerStatus?.message === 'Offline') {
+                  iconComponent = (
+                    <NoCharge style={{marginTop: 10, marginLeft: 5}} />
+                  );
+                }
 
-            if (getChargerStatus?.message === 'Charging') {
-              iconComponent = (
-                <Charging
-                  style={{
-                    width: (DIMENSIONS.SCREEN_WIDTH * 10) / 100,
-                    height: (DIMENSIONS.SCREEN_HEIGHT * 5) / 100,
-                  }}
-                />
-              );
-            } else if (getChargerStatus?.message === 'Online') {
-              iconComponent = (
-                <OnlineCharge style={{marginTop: 10, marginLeft: 5}} />
-              );
-            } else if (getChargerStatus?.message === 'Offline') {
-              iconComponent = (
-              <NoCharge style={{marginTop: 10, marginLeft: 5}} />
-                
-              );
-            }
+                return getChargerStatus.message !== 'Charging' ? (
+                  <View
+                    style={{
+                      // margin: 20,
+                      backgroundColor: COLORS.WHITE,
+                      height: (DIMENSIONS.SCREEN_HEIGHT * 7) / 100,
+                      width: (DIMENSIONS.SCREEN_WIDTH * 16) / 100,
 
-            return getChargerStatus.message !== 'Charging' ? (
-              <View
-                style={{
-                  // margin: 20,
-                  backgroundColor: COLORS.WHITE,
-                  height: (DIMENSIONS.SCREEN_HEIGHT * 7) / 100,
-                  width: (DIMENSIONS.SCREEN_WIDTH * 16) / 100,
+                      borderRadius: 15,
+                      justifyContent: 'center',
+                      alignItems: 'center',
+                      alignContent: 'center',
 
-                  borderRadius: 15,
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                  alignContent: 'center',
-
-                  shadowColor: '#000',
-                  shadowOffset: {
-                    width: -5,
-                    height: 5,
-                  },
-                  shadowOpacity: 0.29,
-                  shadowRadius: 4.65,
-                  elevation: Platform.OS === 'android' ? 10 : 0,
-                }}>
-                {iconComponent}
-              </View>
-            ) : (
-              <View
-                style={{
-                  marginLeft: -25,
-                  shadowColor: '#000',
-                  shadowOffset: {
-                    width: -5,
-                    height: 3,
-                  },
-                  shadowOpacity: 0.29,
-                  shadowRadius: 4.65,
-                  elevation: 7,
-                }}>
-                {iconComponent}
-              </View>
-            );
-          },
-          drawerLabelStyle: {
-            backgroundColor: '#fff',
-          },
-          drawerActiveTintColor: 'black',
-        }}
-        name={
-          getChargerStatus?.message == 'Online'
-            ? `Charger Status\nOnline`
-            : getChargerStatus?.message == 'Offline'
-            ? `Charger Status\nOffline`
-            : 'Chargin'
-        }
-        component={chargerStatus}
-      />
+                      shadowColor: '#000',
+                      shadowOffset: {
+                        width: 0,
+                        height: 5,
+                      },
+                      //shadowOpacity: 0.29,
+                      //shadowRadius: 4.65,
+                      elevation: Platform.OS === 'android' ? 5 : 0,
+                    }}>
+                    {iconComponent}
+                  </View>
+                ) : (
+                  <View
+                    style={{
+                      marginLeft: -25,
+                      shadowColor: '#000',
+                      // shadowOffset: {
+                      //   width: -5,
+                      //   height: 3,
+                      // },
+                      // shadowOpacity: 0.29,
+                      // shadowRadius: 4.65,
+                      // elevation: 7,
+                    }}>
+                    {iconComponent}
+                  </View>
+                );
+              },
+              drawerLabelStyle: {
+                backgroundColor: '#fff',
+              },
+              drawerActiveTintColor: 'black',
+            }}
+            name={getChargerStatus?.message == 'Online' ? 'Online' : 'Offline'}
+            component={EnergyStats}
+          />
+        )}
     </Drawer.Navigator>
   );
 };
@@ -424,12 +451,28 @@ const HomeStack = () => {
     </Stack.Navigator>
   );
 };
+const SplashStack = () => {
+  return (
+    <Stack.Navigator screenOptions={screenOptions}>
+      {/* <Stack.Screen name="Splash" component={Splash} /> */}
+      {/* <Stack.Screen name="Introduction" component={Introduction} /> */}
+      <Stack.Screen name="Login" component={Login} />
+      <Stack.Screen name="Register" component={Register} />
+      <Stack.Screen name="VerifyEmail" component={VerifyEmail} />
+      <Stack.Screen name="CompleteProfile" component={CompleteProfile} />
+      <Stack.Screen name="ForgetPassword" component={ForgetPassword} />
+      <Stack.Screen name="ResetPassword" component={ResetPassword} />
+      <Stack.Screen name="DrawerStack" component={DrawerNavigation} />
+    </Stack.Navigator>
+  );
+};
 const EnergyOptions = () => {
   return (
     <Stack.Navigator screenOptions={screenOptions}>
       <Stack.Screen name="HomeOne" component={HomeOne} />
-      <Stack.Screen name="DownGradeData" component={DownGradeData} />
+      <Stack.Screen name="DownGradeData" component={ForDownGrade} />
       <Stack.Screen name="PaymentGateWay" component={PaymentGateWay} />
+      {/* <Stack.Screen name="PlanSummary" component={PlanSummary} /> */}
     </Stack.Navigator>
   );
 };
@@ -443,22 +486,28 @@ const AccountStack = () => {
       <Stack.Screen name="Payment" component={Payment} />
       <Stack.Screen name="Subscription" component={Subscription} />
       <Stack.Screen name="Theme" component={Theme} />
-      <Stack.Screen name="Contact" component={Contact}/>
+      <Stack.Screen name="Contact" component={Contact} />
       <Stack.Screen name="deleteAccount" component={deleteAccount} />
       <Stack.Screen name="Login" component={Login} />
       <Stack.Screen name="LoginStack" component={LoginStack} />
-      <Stack.Screen name="DrawerStack" component={DrawerNavigation} />
-      <Stack.Screen name="HomeStack" component={HomeStack} />
+
+      {/* <Stack.Screen name="DrawerStack" component={DrawerNavigation} /> */}
+      <Stack.Screen name="Home" component={HomeStack} />
+      <Stack.Screen name="PaymentGateWay" component={PaymentGateWay} />
+
+      <Stack.Screen name="PlanSummary" component={PlanSummary} />
+
+      <Stack.Screen name="Privacy Policy" component={Privacy} />
     </Stack.Navigator>
   );
 };
 
 export default function Router() {
-  const [isAuthorized, setIsAuthorized] = useState(false);
+  // const [isAuthorized, setIsAuthorized] = useState(false);
   let loginDataString;
   const getLocationID = useSelector(state => state.getLocationID);
   const getPackageStatus = useSelector(state => state.getPackageStatus);
-  const getUserID = useSelector(state => state.getUserID);
+  const isAuthorized = useSelector(state => state.isAuthorized);
 
   useEffect(() => {
     checkLogin();
@@ -468,32 +517,38 @@ export default function Router() {
     id = await AsyncStorage.getItem('locationID');
   };
 
-  // console.log(getLocationId,"getLocationId")
-  // let locationId;
+  let isFirstTime, authorized;
 
-  // useEffect(() => {
-  //   retrieveLoginData();
-  // }, []);
-  // const retrieveLoginData = async () => {
-  //   try {
-  //     //loginDataString = await AsyncStorage.getItem('loginDataOne');
+  useEffect(() => {
+    retrieveLoginData();
+  }, []);
+  const retrieveLoginData = async () => {
+    try {
+      //loginDataString = await AsyncStorage.getItem('loginDataOne');
+      isFirstTime = await AsyncStorage.getItem('isFirstTime');
 
-  //     if (loginDataString !== null) {
-  //       const loginData = JSON.parse(loginDataString);
-  //       setIsAuthorized(true);
-  //       console.log('Retrieved login data: ', loginDataString);
-  //     }
-  //   } catch (error) {
-  //     console.log('Error retrieving login data: ', error);
-  //     // setIsAuthorized(false);
-  //   }
-  // };
+      authorized = await AsyncStorage.getItem('isAuthorized');
+      console.log('isFirstTime', isFirstTime);
+      console.log(isAuthorized, 'getLocationId');
+
+      // if (loginDataString !== null) {
+      //   const loginData = JSON.parse(loginDataString);
+      //   setIsAuthorized(true);
+      //   console.log('Retrieved login data: ', loginDataString);
+      // }
+    } catch (error) {
+      console.log('Error retrieving login data: ', error);
+      // setIsAuthorized(false);
+    }
+  };
 
   return (
     <Stack.Navigator screenOptions={screenOptions}>
-      {/* <>
-        <Stack.Screen name="DrawerStack" component={DrawerNavigation} />
-      </> */}
+      {/* {(isFirstTime == null || isFirstTime == undefined) && (
+        <>
+          <Stack.Screen name="SplashStack" component={SplashStack} />
+        </>
+      )} */}
       {!isAuthorized ? (
         <>
           <Stack.Screen name="LoginStack" component={LoginStack} />

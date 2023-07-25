@@ -1,3 +1,8 @@
+/* eslint-disable react-hooks/exhaustive-deps */
+/* eslint-disable react/no-unstable-nested-components */
+/* eslint-disable eqeqeq */
+/* eslint-disable react-native/no-inline-styles */
+/* eslint-disable no-unused-vars */
 import {
   View,
   Text,
@@ -9,50 +14,213 @@ import {
   Modal,
   Pressable,
   Alert,
+  KeyboardAvoidingView,
+  ToastAndroid,
+  Platform,
 } from 'react-native';
 import AnimatedLottieView from 'lottie-react-native';
-import React, {useState, useRef} from 'react';
+import React, {useState, useRef, useEffect} from 'react';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import Input from '../../Components/Input';
 import COLORS from '../../constants/COLORS';
 import {Card} from '../../../assets/svgs/Card';
 import {Name} from '../../../assets/svgs/Name';
-import {DIMENSIONS} from '../../constants/DIMENSIONS';
+import {DIMENSIONS, PLATFORM_IOS} from '../../constants/DIMENSIONS';
 import {LeftIcon} from '../../../assets/images/LeftIcon';
 import {Formik} from 'formik';
 import * as Yup from 'yup';
 import {Admin} from '../../../assets/images/Admin';
 import {Message} from '../../../assets/images/Message';
-import {useSelector} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 import axios from 'axios';
 import {API} from '../../api/API';
 import {navigationRef} from '../../../App';
 import ActivityLoader from '../../Components/ActivityLoader';
+import HorizontalLine from '../../Components/HorizontalLine';
+import {mvs, ms} from 'react-native-size-matters';
+
+import {
+  setCardDetails,
+  setDeviceId,
+  setPackageStatus,
+  setPlanStatus,
+  setPurchaseData,
+} from '../../redux/action';
+import {Toast} from 'react-native-toast-message/lib/src/Toast';
+
 const mobileW = Math.round(Dimensions.get('screen').width);
 const mobileH = Math.round(Dimensions.get('window').height);
 const validationSchema = Yup.object().shape({
-  cardHolderName: Yup.string().required('Card Holder Name is required'),
-  cardNumber: Yup.string().required('Invalid Card Number'),
-  validTill: Yup.string().required('expiry date required'),
-  cvv: Yup.string().required('cvv is required'),
+  // cardHolderName: Yup.string().required('Card Holder Name is required'),
+  cardHolderName: Yup.string()
+    .required('Card Holder Name is required')
+    .matches(/^[A-Za-z].*/, 'Name must be start with a character')
+    .min(3, 'Name must contain at least 3 characters'),
+  cardNumber: Yup.string()
+    // .required('Invalid Card Number')
+    .min(19, 'Card number must be 16 digits'),
+
+  // .matches(/^[0-9]{16}$/, 'Card number must be 16 digits'),
+  validTill: Yup.string()
+    .required('Expiry date is required')
+    .test(
+      'expiration',
+      'Year should be greater or equal to the current year',
+      function (value) {
+        if (!value) {
+          return false;
+        }
+        const currentDate = new Date();
+        const [month, year] = value.split('/');
+
+        // Check if month is between 1 and 12
+        if (parseInt(month, 10) < 1 || parseInt(month, 10) > 12) {
+          return this.createError({
+            message: 'Invalid month',
+            path: 'validTill',
+          });
+        }
+
+        const expirationDate = new Date(
+          parseInt(`20${year}`, 10),
+          parseInt(month, 10) - 1,
+        );
+
+        // // Check if the year is greater than or equal to the current year
+        // if (expirationDate.getFullYear() <= currentDate.getFullYear()) {
+        //   return this.createError({
+        //     message: 'Year should be greater or equal to the current year',
+        //     path: 'validTill',
+        //   });
+        // }
+        // Check if the year is equal to the current year but the month is greater than the current month
+        if (
+          expirationDate.getFullYear() === currentDate.getFullYear() &&
+          expirationDate.getMonth() <= currentDate.getMonth()
+        ) {
+          return this.createError({
+            message: 'Month should be greater than the current month',
+            path: 'validTill',
+          });
+        }
+
+        // Check if the expiration date is greater than the current date
+        return expirationDate > currentDate;
+      },
+    ),
+  cvv: Yup.string()
+    .required('cvv is required')
+    .matches(/^[0-9]{3}$/, 'CVV must be 3 digits'),
 });
 export default function PaymentGateWay({navigation, route}) {
-  
-
   const {getDataForPayment, getUserID, getEmailDAta} = useSelector(
     state => state,
   );
+
+  useEffect(() => {
+    handleGetCard();
+  }, []);
   const [modalVisible, setModalVisible] = useState(false);
-  const [loader,setLoader] = useState(false)
+  const [loader, setLoader] = useState(false);
   const inputRef = useRef(null);
-  
+  const dispatch = useDispatch();
+
+  // const getCardDetails = useSelector(state => state.getCardDetails);
+  const [card, setCard] = useState([]);
+  const [cardId, setCardId] = useState('');
+  const [cardDetails, setCardDetails1] = useState({
+    // cardHolderName: card[0].cust_name,
+    // card_number: card[0].card_number,
+    // card_cvv: card[0].card_cvc,
+    // validTill: card[0].card_exp_month + '/' + card[0].card_exp_year,
+    // card_exp_year:'',
+  });
+  const [card_name, setCard_Name] = useState(card[0]?.cust_name ?? '');
+  const [card_Number, setCard_Number] = useState(
+    String(card[0]?.card_number).replace(
+      /^(\d{4})(\d{4})(\d{4})(\d{4})$/,
+      '$1 $2 $3 $4',
+    ) ?? '',
+  );
+  const [card_cvv, setCard_Cvv] = useState(String(card[0]?.card_cvc) ?? '');
+  const [validity, setValidity] = useState(
+    String(card[0]?.card_exp_month + '/' + card[0]?.card_exp_year) ?? '',
+  );
+
+  // console.log(savedCard,"------------")
+  const handleGetCard = async () => {
+    try {
+      const response = await fetch(`${API}/getcarddetails/${getUserID}`);
+      const result = await response.json();
+      // console.log("Result", result[0].sort((b, a) => a.status - b.status))
+      // console.log(result);
+      if (result[0]?.length > 0) {
+        // setSavedCard(result[0].sort((b, a) => a.status - b.status));
+        //  console.log("after card  delete",result[0])
+        const statusOneObjects = result[0].filter(item => item.status === 1);
+        console.log(statusOneObjects);
+        setCard(statusOneObjects);
+        // dispatch(setCardDetails(statusOneObjects));
+      } else {
+      }
+    } catch (error) {
+      console.log('ERROR', error);
+    }
+  };
+
+  const validTillData = card[0]?.card_exp_month + '/' + card[0]?.card_exp_year;
+  // console.log('+++++oooooooooo', card[0].cust_name);
+  const newPAYMENT = async values => {
+    setLoader(true);
+    let payload = new FormData();
+
+    let exp_month = validTillData.split('/')[0];
+    let exp_year = validTillData.split('/')[1];
+    payload.append('kwh_unit', route.params.data.kwh);
+    payload.append('card_number', card[0]?.card_number);
+    payload.append('card_cvc', card[0]?.card_cvc);
+    payload.append('card_exp_month', exp_month);
+    payload.append('card_exp_year', exp_year);
+    payload.append('item_details', getDataForPayment.package_name);
+    payload.append('price', getDataForPayment.total_price);
+    payload.append('price_stripe_id', getDataForPayment.price_stripe_id);
+    payload.append('user_id', getUserID);
+    console.log('----------------', payload);
+    try {
+      const response = await axios.post(`${API}/checkout`, payload, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      });
+      console.log('PAYMENT', response.data);
+      if ((response.data.status = 'success')) {
+        setLoader(false);
+        setModalVisible(true);
+      }
+    } catch (err) {
+      setLoader(false);
+      if (err.response) {
+        PLATFORM_IOS
+          ? Toast.show({
+              type: 'success',
+              text1: 'Invalid Card Details !',
+            })
+          : ToastAndroid.show('Invalid Card Details !', ToastAndroid.SHORT);
+        console.log('-------------------------', err.response.data);
+        console.log(err.response.status);
+      } else {
+        console.log(err);
+      }
+    }
+  };
+
   const handlePaymentSubmit = async values => {
-    setLoader(true)
+    setLoader(true);
     let payload = new FormData();
 
     let exp_month = values?.validTill?.split('/')[0];
     let exp_year = values?.validTill?.split('/')[1];
-    
+
     payload.append('kwh_unit', route.params.data.kwh);
     payload.append('card_number', values.cardNumber.replace(/\s/g, ''));
     payload.append('card_cvc', values.cvv);
@@ -62,22 +230,40 @@ export default function PaymentGateWay({navigation, route}) {
     payload.append('price', getDataForPayment.total_price);
     payload.append('price_stripe_id', getDataForPayment.price_stripe_id);
     payload.append('user_id', getUserID);
-    console.log(payload,"object")
+    console.log(payload, 'object');
     try {
       const response = await axios.post(`${API}/checkout`, payload, {
         headers: {
           'Content-Type': 'multipart/form-data',
         },
       });
-      if(response.data.status="success"){
-        setLoader(false)
-        setModalVisible(true)
-        
+      console.log('PAYMENT', response.data);
+      if ((response.data.status = 'success')) {
+        // handleAddCard(values)
+
+        setModalVisible(true);
+
+        setLoader(false);
+      } else {
+        PLATFORM_IOS
+          ? Toast.show({
+              type: 'success',
+              text1: 'Invalid Card Details !',
+            })
+          : ToastAndroid.show('Invalid Card Details !', ToastAndroid.SHORT);
       }
     } catch (err) {
-      setLoader(false)
+      setLoader(false);
       if (err.response) {
-        
+        PLATFORM_IOS
+          ? Toast.show({
+              type: 'success',
+              text1: 'Server Busy Please Try Later.',
+            })
+          : ToastAndroid.show(
+              'Server Busy Please Try Later.',
+              ToastAndroid.SHORT,
+            );
         console.log(err.response.data);
         console.log(err.response.status);
       } else {
@@ -85,14 +271,97 @@ export default function PaymentGateWay({navigation, route}) {
       }
     }
   };
+  // console.log('-----------------', cardDetails);
+  const getDeviceIDData = () => {
+    axios
+      .get(`${API}/devicecheck/${getUserID}}`)
+      .then(res => {
+        setModalVisible(false);
+        console.log(res.data, 'tt');
+        if (res.data.status == 'True') {
+          // dispatch(setDeviceId(res.data.message));
+          console.log(route.params.purchageData);
+          if (route.params.purchageData == 'DOWNGRADE') {
+            // PlanStatus();
+
+            navigationRef.navigate('HomeOne');
+          } else {
+            getPlanCurrent();
+          }
+        } else {
+          getPlanCurrent();
+          dispatch(setDeviceId(res.data.message));
+          navigationRef.navigate('DrawerStack');
+
+          // fetchGraphData(res.data?.user_id);
+          // fetchWeekGraphData(res.data?.user_id);
+          // fetchMonthGraphData(res.data?.user_id);
+          // fetchQuarterGraphData(res.data.user_id);
+          // fetchYearGraphData(res.data?.user_id);
+          // fetchBoxTwoDashboardData(res.data?.user_id);
+          // fetchStatusdata(res.data?.user_id);
+          // getPlanCurrent(res.data?.user_id);
+        }
+      })
+      .catch(err => {
+        console.log(err);
+      });
+  };
+  const getPlanCurrent = () => {
+    axios
+      .get(`${API}/currentplan/${getUserID}`)
+      .then(res => {
+        console.log(res.data);
+
+        if (res.data.data == 'Package details not found') {
+          dispatch(setPurchaseData(res.data));
+        } else {
+          dispatch(setPurchaseData(res?.data));
+        }
+        dispatch(setPackageStatus(true));
+        navigationRef.navigate('HomeOne');
+      })
+      .catch(err => {
+        console.log(err);
+      });
+  };
+
+  function formatCreditCardNumber(cardNumber) {
+    const digitsOnly = cardNumber.replace(/\D/g, '');
+
+    // If the number is less than 16 digits, return the original input
+    if (digitsOnly.length < 16) {
+      return cardNumber;
+    }
+
+    // Mask the first 12 digits and display the last 4 digits
+    const maskedNumber = 'xxxx xxxx xxxx ' + digitsOnly.substring(12, 16);
+
+    return maskedNumber;
+  }
+  // const PlanStatus = () => {
+  //   axios
+  //     .get(`${API}/planstatus/${getUserID}`)
+  //     .then(res => {
+  //       const name = res.data.subscriptions.filter(
+  //         item => item.subscription_status == 'scheduled',
+  //       );
+  //       dispatch(setPlanStatus(name[0].item_name));
+  //       navigationRef.navigate('HomeOne');
+  //     })
+  //     .catch(err => {
+  //       console.log(err);
+  //     });
+  // };
 
   return (
     <SafeAreaView style={{backgroundColor: COLORS.CREAM, flex: 1}}>
-     {loader&& <ActivityLoader />}
-      <ScrollView>
-        <View style={{marginHorizontal: 20, paddingTop: 20}}>
-          <Text style={styles.complete_profile}>Payment Details</Text>
-        </View>
+      <View style={{marginHorizontal: 20, paddingTop: 20}}>
+        <Text style={styles.complete_profile}>Payment Details</Text>
+      </View>
+      <ScrollView showsVerticalScrollIndicator={false} style={{flex: 1}}>
+        {loader && <ActivityLoader />}
+
         <View style={styles.centeredView}>
           <Modal
             animationType="slide"
@@ -124,7 +393,7 @@ export default function PaymentGateWay({navigation, route}) {
                 <View style={styles.button_one}>
                   <Pressable
                     style={[styles.button, styles.buttonClose]}
-                    onPress={() => setModalVisible(!modalVisible)}>
+                    onPress={getDeviceIDData}>
                     <Text style={styles.textStyle}>OK</Text>
                   </Pressable>
                 </View>
@@ -132,7 +401,7 @@ export default function PaymentGateWay({navigation, route}) {
             </View>
           </Modal>
         </View>
-        
+
         <View style={styles.mainDiv_container}>
           <View>
             <Formik
@@ -151,8 +420,9 @@ export default function PaymentGateWay({navigation, route}) {
                 handleBlur,
                 errors,
                 touched,
+                setFieldValue,
               }) => (
-                <View>
+                <KeyboardAvoidingView behavior="padding">
                   <Image
                     source={require('../../../assets/images/visaCard.png')}
                     style={{
@@ -161,10 +431,26 @@ export default function PaymentGateWay({navigation, route}) {
                     }}
                   />
                   <View style={styles.cardNumber_position}>
-                    <Text
-                      style={{color: '#fff', fontWeight: '600', fontSize: 13}}>
-                      {values.cardNumber}
-                    </Text>
+                    {card[0]?.card_number ? (
+                      <Text
+                        style={{
+                          color: '#fff',
+                          fontWeight: '600',
+                          fontSize: 20,
+                        }}>
+                        {card[0]?.card_number > 0 &&
+                          formatCreditCardNumber(card[0]?.card_number + '')}
+                      </Text>
+                    ) : (
+                      <Text
+                        style={{
+                          color: '#fff',
+                          fontWeight: '600',
+                          fontSize: 20,
+                        }}>
+                        {formatCreditCardNumber(values.cardNumber + '')}
+                      </Text>
+                    )}
                     <View style={styles.text_div}>
                       <View style={{gap: 5, width: 100}}>
                         <Text
@@ -175,14 +461,26 @@ export default function PaymentGateWay({navigation, route}) {
                           }}>
                           Card Holder
                         </Text>
-                        <Text
-                          style={{
-                            color: '#fff',
-                            fontWeight: '600',
-                            fontSize: 13,
-                          }}>
-                          {values.cardHolderName}
-                        </Text>
+
+                        {card[0]?.cust_name ? (
+                          <Text
+                            style={{
+                              color: '#fff',
+                              fontWeight: '600',
+                              fontSize: 13,
+                            }}>
+                            {card[0]?.cust_name}
+                          </Text>
+                        ) : (
+                          <Text
+                            style={{
+                              color: '#fff',
+                              fontWeight: '600',
+                              fontSize: 13,
+                            }}>
+                            {values.cardHolderName}
+                          </Text>
+                        )}
                       </View>
                       <View style={{gap: 5}}>
                         <Text
@@ -193,14 +491,26 @@ export default function PaymentGateWay({navigation, route}) {
                           }}>
                           Expires
                         </Text>
-                        <Text
-                          style={{
-                            color: '#fff',
-                            fontWeight: '600',
-                            fontSize: 13,
-                          }}>
-                          {values.validTill}
-                        </Text>
+
+                        {validTillData !== 'undefined/undefined' ? (
+                          <Text
+                            style={{
+                              color: '#fff',
+                              fontWeight: '600',
+                              fontSize: 13,
+                            }}>
+                            {validTillData}
+                          </Text>
+                        ) : (
+                          <Text
+                            style={{
+                              color: '#fff',
+                              fontWeight: '600',
+                              fontSize: 13,
+                            }}>
+                            {values.validTill}
+                          </Text>
+                        )}
                       </View>
                       <View style={{gap: 5}}>
                         <Text
@@ -211,21 +521,80 @@ export default function PaymentGateWay({navigation, route}) {
                           }}>
                           CVV
                         </Text>
-                        <Text
-                          style={{
-                            color: '#fff',
-                            fontWeight: '600',
-                            fontSize: 13,
-                          }}>
-                          {values.cvv}
-                        </Text>
+                        {card[0]?.card_cvc ? (
+                          <Text
+                            style={{
+                              color: '#fff',
+                              fontWeight: '600',
+                              fontSize: 13,
+                            }}>
+                            {card[0]?.card_cvc
+                              ? '*'.repeat(String(card[0]?.card_cvc).length)
+                              : null}
+                          </Text>
+                        ) : (
+                          <Text
+                            style={{
+                              color: '#fff',
+                              fontWeight: '600',
+                              fontSize: 13,
+                            }}>
+                            {values.cvv
+                              ? '*'.repeat(String(values.cvv).length)
+                              : null}
+                          </Text>
+                        )}
                       </View>
                     </View>
                   </View>
+                  <View
+                    style={{
+                      backgroundColor: COLORS.GREEN,
+                      //width:DIMENSIONS.SCREEN_WIDTH*0.3,
+                      height: DIMENSIONS.SCREEN_HEIGHT * 0.05,
+                      // marginBottom: 35,
+                      marginBottom: Platform.OS == 'android' ? 35 : 10,
+                      justifyContent: 'center',
+                      alignItems: 'center',
+                      borderRadius: 12,
+                      ...Platform.select({
+                        ios: {
+                          shadowColor: '#000000',
+                          shadowOffset: {width: 0, height: 2},
+                          shadowOpacity: 0.3,
+                          shadowRadius: 4,
+                        },
+                        android: {
+                          elevation: 4,
+                        },
+                      }),
+                    }}>
+                    <TouchableOpacity onPress={newPAYMENT}>
+                      <Text
+                        style={{
+                          fontSize: 14,
+                          fontWeight: '700',
+                          color: COLORS.BLACK,
+                        }}>
+                        Make Payment By Default Card
+                      </Text>
+                    </TouchableOpacity>
+                  </View>
+                  {Platform.OS == 'android' ? (
+                    <HorizontalLine style={styles.line} />
+                  ) : (
+                    <View style={{paddingVertical: 20}}>
+                      <Image
+                        source={require('../../../assets/images/dotted.png')}
+                        style={{width: mobileW * 0.98}}
+                      />
+                    </View>
+                  )}
+
                   <Input
                     IconLeft={null}
-                    errors={undefined}
-                    touched={false}
+                    errors={errors.cardHolderName}
+                    touched={touched.cardHolderName}
                     value={values.cardHolderName}
                     onChangeText={handleChange('cardHolderName')}
                     onBlur={handleBlur('cardHolderName')}
@@ -234,29 +603,26 @@ export default function PaymentGateWay({navigation, route}) {
                     mV={15}
                     placeholder="John Doe"
                     bW={1}
-                    textWidth={'45%'}
-                    placeholderTextColor={COLORS.BLACK}
+                    textWidth={ms(110)}
+                    placeholderTextColor={COLORS.HALFBLACK}
                   />
-                  {errors.cardHolderName && touched.cardHolderName && (
-                    <Text style={{color: 'red'}}>{errors.cardHolderName}</Text>
-                  )}
                   <Input
                     IconLeft={null}
-                    errors={undefined}
-                    touched={false}
+                    errors={errors.cardNumber}
+                    touched={errors.cardNumber}
                     value={values.cardNumber}
                     //onChangeText={handleChange('cardNumber')}
                     onChangeText={text => {
-                      
-                      const cardNumber = text.replace(/\s/g, ''); // Remove spaces from card number
-
+                      var num = /[^0-9]/g;
+                      const cardNumbers = text.replace(/\s/g, ''); // Remove spaces from card number
+                      const cardNumber = cardNumbers.replace(num, '');
                       let formattedCardNumber = '';
                       for (let i = 0; i < cardNumber.length; i += 4) {
                         formattedCardNumber += cardNumber.substr(i, 4) + ' ';
                       }
-                    
+
                       formattedCardNumber = formattedCardNumber.trim();
-                    
+
                       handleChange('cardNumber')(formattedCardNumber);
                     }}
                     onBlur={handleBlur('cardNumber')}
@@ -264,21 +630,18 @@ export default function PaymentGateWay({navigation, route}) {
                     text="Card Number"
                     IconRight={() => <Message />}
                     mV={15}
-                    placeholder="1234  5678  xxxx  xxxx"
+                    placeholder="xxxx  xxxx 1234 5678"
                     bW={1}
-                    textWidth={'35%'}
-                    placeholderTextColor={COLORS.BLACK}
-                    keyboardType="numeric"
+                    textWidth={ms(85)}
+                    placeholderTextColor={COLORS.HALFBLACK}
+                    keyboardType="number-pad"
                   />
-                  {errors.cardNumber && touched.cardNumber && (
-                    <Text style={{color: 'red'}}>{errors.cardNumber}</Text>
-                  )}
                   <View style={styles.mainDiv_state_ZIP}>
                     <View style={styles.zip_state_view}>
                       <Input
                         IconLeft={null}
-                        errors={undefined}
-                        touched={false}
+                        errors={errors.validTill}
+                        touched={touched.validTill}
                         value={values.validTill}
                         //
                         onChangeText={text => {
@@ -291,7 +654,7 @@ export default function PaymentGateWay({navigation, route}) {
                             formattedValidTill =
                               validTill.slice(0, 2) + '/' + validTill.slice(2);
                           }
-
+                          console.log(formattedValidTill, 'asd');
                           // Update the valid till value
                           handleChange('validTill')(formattedValidTill);
                         }}
@@ -301,21 +664,18 @@ export default function PaymentGateWay({navigation, route}) {
                         mV={15}
                         placeholder="07/23"
                         bW={1}
-                        textWidth={'70%'}
-                        placeholderTextColor={COLORS.BLACK}
+                        textWidth={ms(62)}
+                        placeholderTextColor={COLORS.HALFBLACK}
                         w="half"
                         keyboardType="numeric"
                         maxLength={5}
                       />
-                      {errors.validTill && touched.validTill && (
-                        <Text style={{color: 'red'}}>{errors.validTill}</Text>
-                      )}
                     </View>
                     <View style={styles.zip_state_view}>
                       <Input
                         IconLeft={null}
-                        errors={undefined}
-                        touched={false}
+                        errors={errors.cvv}
+                        touched={touched.cvv}
                         value={values.cvv}
                         onChangeText={handleChange('cvv')}
                         onBlur={handleBlur('cvv')}
@@ -324,16 +684,13 @@ export default function PaymentGateWay({navigation, route}) {
                         mV={15}
                         placeholder="***"
                         bW={1}
-                        textWidth={'50%'}
-                        placeholderTextColor={COLORS.BLACK}
+                        textWidth={ms(38)}
+                        placeholderTextColor={COLORS.HALFBLACK}
                         w="half"
                         secureTextEntry={true}
                         maxLength={3}
                         keyboardType="numeric"
                       />
-                      {errors.cvv && touched.cvv && (
-                        <Text style={{color: 'red'}}>{errors.cvv}</Text>
-                      )}
                     </View>
                   </View>
                   <View style={styles.bottom_tab}>
@@ -353,6 +710,17 @@ export default function PaymentGateWay({navigation, route}) {
                         paddingHorizontal: 20,
                         paddingVertical: 10,
                         borderRadius: 12,
+                        ...Platform.select({
+                          ios: {
+                            shadowColor: '#000000',
+                            shadowOffset: {width: 0, height: 2},
+                            shadowOpacity: 0.3,
+                            shadowRadius: 4,
+                          },
+                          android: {
+                            elevation: 4,
+                          },
+                        }),
                       }}>
                       <TouchableOpacity onPress={handleSubmit}>
                         <Text
@@ -366,7 +734,7 @@ export default function PaymentGateWay({navigation, route}) {
                       </TouchableOpacity>
                     </View>
                   </View>
-                </View>
+                </KeyboardAvoidingView>
               )}
             </Formik>
           </View>
@@ -399,11 +767,22 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
+    ...Platform.select({
+      ios: {
+        shadowColor: '#000000',
+        shadowOffset: {width: 0, height: 2},
+        shadowOpacity: 0.3,
+        shadowRadius: 4,
+      },
+      android: {
+        elevation: 4,
+      },
+    }),
     // borderRadius: 6,
   },
   cardNumber_position: {
     position: 'absolute',
-    top: 130,
+    top: 120,
     left: 30,
   },
   text_div: {
@@ -434,20 +813,15 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.25,
     shadowRadius: 4,
     elevation: 5,
-  },
-  button: {
-    borderRadius: 20,
-    padding: 10,
-    elevation: 2,
+    width: DIMENSIONS.SCREEN_WIDTH * 0.8,
   },
   button_one: {
     marginLeft: 80,
-    marginTop: 40,
+    marginTop: 20,
     alignItems: 'flex-end',
     justifyContent: 'flex-end',
   },
   button: {
-    borderRadius: 20,
     padding: 10,
     elevation: 2,
     borderRadius: 100,
@@ -473,21 +847,3 @@ const styles = StyleSheet.create({
     color: '#000000',
   },
 });
-
-
-
-// //customerName: values.cardHolderName,
-        
-        // // customerZipcode: getDataForPayment.ZIP_code,
-        // // customerState: getDataForPayment.state,
-        // // customerCountry: getDataForPayment.location,
-        // kwh_unit:route.params.data.kwh,
-        // card_number: values.cardNumber,
-        // card_cvc: values.cvv,
-        // card_exp_month: exp_month,
-        // card_exp_year: exp_year,
-        // item_details: getDataForPayment.package_name,
-        // price: getDataForPayment.total_price,
-        // // total_amount: getDataForPayment.totalSalexTax,
-        // price_stripe_id: getDataForPayment.price_stripe_id,
-        // cust_id: getUserID,

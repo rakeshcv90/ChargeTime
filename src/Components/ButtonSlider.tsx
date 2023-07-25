@@ -1,4 +1,3 @@
-
 // import React, { useEffect, useState } from 'react';
 // import {
 //   View,
@@ -108,12 +107,6 @@
 //     ],
 //   };
 
-  
-  
-
- 
-
-
 //   return (
 //     <View style={styles.container}>
 //       <LinearGradient
@@ -174,7 +167,7 @@
 //                       lineHeight: 18,
 //                       color: COLORS.BLACK,
 //                       marginLeft: 10,
-                      
+
 //                     }}>
 //                     Swipe right to start charging....
 //                   </Text>
@@ -242,9 +235,6 @@
 //           </TouchableOpacity>
 //         )}
 
-
-
-       
 //       </LinearGradient>
 //     </View>
 //   );
@@ -276,24 +266,23 @@
 //     fontSize: 16,
 //   },
 
-
-  
 // });
 
 // export default ButtonSlider;
 
-
-
-
-
-
-
 import React from 'react';
-import {StyleSheet,View,Image, Text, Platform} from 'react-native';
+import {
+  StyleSheet,
+  View,
+  Image,
+  Text,
+  Platform,
+  TouchableWithoutFeedback,
+} from 'react-native';
 
 import LinearGradient from 'react-native-linear-gradient';
 
-import {PanGestureHandler} from 'react-native-gesture-handler';
+import { PanGestureHandler } from 'react-native-gesture-handler';
 import Animated, {
   useAnimatedGestureHandler,
   useSharedValue,
@@ -304,7 +293,7 @@ import Animated, {
   interpolateColor,
   runOnJS,
 } from 'react-native-reanimated';
-import {useState} from 'react';
+import { useState, useEffect } from 'react';
 import { DIMENSIONS } from '../constants/DIMENSIONS';
 import COLORS from '../constants/COLORS';
 
@@ -315,72 +304,77 @@ import { setChargerStatus } from '../redux/action';
 import { navigationRef } from '../../App';
 import { DrawerActions } from '@react-navigation/native';
 import ActivityLoader from './ActivityLoader';
+import AnimatedLottieView from 'lottie-react-native';
 
-const BUTTON_WIDTH = 330;
+const BUTTON_WIDTH = DIMENSIONS.SCREEN_WIDTH * 88 / 100;
 const BUTTON_HEIGHT = 60;
-const BUTTON_PADDING =Platform.OS=='ios'?10:DIMENSIONS.SCREEN_WIDTH* 1.5/100
+const BUTTON_PADDING =
+  Platform.OS == 'ios' ? 10 : (DIMENSIONS.SCREEN_WIDTH * 1.5) / 100;
 const SWIPEABLE_DIMENSIONS = BUTTON_HEIGHT - 3 * BUTTON_PADDING;
 
 const H_WAVE_RANGE = SWIPEABLE_DIMENSIONS + 3 * BUTTON_PADDING;
 const H_SWIPE_RANGE = BUTTON_WIDTH - 3 * BUTTON_PADDING - SWIPEABLE_DIMENSIONS;
 const AnimatedLinearGradient = Animated.createAnimatedComponent(LinearGradient);
 
-const ButtonSlider = ({onToggle}) => {
+const ButtonSlider = ({ onToggle }) => {
   const dispatch = useDispatch();
-  const {getUserID} = useSelector((state:any)=> state)
-  const [isLoading, setIsLoading] = useState(false)
-  const [showText,setShowText] = useState(false)
-  
+  const { getUserID, getChargerStatus } = useSelector((state: any) => state);
+  const [isLoading, setIsLoading] = useState(false);
+  const [showText, setShowText] = useState(false);
+
   // Animated value for X translation
   const X = useSharedValue(0);
   // Toggled State
   const [toggled, setToggled] = useState(false);
-
+  useEffect(() => {
+    X.value =
+      getChargerStatus.message == 'Online' ||
+        getChargerStatus.message == 'Charging'
+        ? 285
+        : 0;
+    setShowText(true);
+  }, []);
   // Fires when animation ends
-  const handleComplete = (isToggled:any) => {
-
-navigationRef.dispatch(DrawerActions.closeDrawer())
+  const handleComplete = (isToggled: any) => {
+    navigationRef.dispatch(DrawerActions.closeDrawer());
     if (isToggled !== toggled) {
       setToggled(isToggled);
       onToggle(isToggled);
     }
-    setIsLoading(true)
+    setIsLoading(true);
     if (isToggled == true) {
-            axios
-              .post(`${API}/charger_ON/${getUserID}`)
-              .then((res) => {
-                setShowText(true)
-                dispatch(setChargerStatus(res?.data));
-                setIsLoading(false)
-                onToggle(isToggled);
-              })
-              .catch((err) => {
-                console.log(err);
-                setIsLoading(false)
-              });
-          } else {
-            axios
-              .post(`${API}/charger_OFF/${getUserID}`)
-              .then((res) => {
-                setShowText(false)
-                dispatch(setChargerStatus(res?.data));
-                setIsLoading(false)
-                onToggle(!isToggled);
-              })
-              .catch((err) => {
-                console.log(err);
-                setIsLoading(false)
-              });
-          }
-    
+      axios
+        .post(`${API}/charger_ON/${getUserID}`)
+        .then(res => {
+          // setShowText(true);
+          dispatch(setChargerStatus(res?.data));
+          setIsLoading(false);
+          onToggle(isToggled);
+        })
+        .catch(err => {
+          console.log(err);
+          setIsLoading(false);
+        });
+    } else {
+      axios
+        .post(`${API}/charger_OFF/${getUserID}`)
+        .then(res => {
+          // setShowText(false);
+          dispatch(setChargerStatus(res?.data));
+          setIsLoading(false);
+          onToggle(!isToggled);
+        })
+        .catch(err => {
+          console.log(err);
+          setIsLoading(false);
+        });
+    }
   };
 
   // Gesture Handler Events
   const animatedGestureHandler = useAnimatedGestureHandler({
-    
     onStart: (_, ctx) => {
       ctx.completed = toggled;
-      
     },
     onActive: (e, ctx) => {
       let newValue;
@@ -395,7 +389,6 @@ navigationRef.dispatch(DrawerActions.closeDrawer())
       }
     },
     onEnd: () => {
-      
       if (X.value < BUTTON_WIDTH / 5 - SWIPEABLE_DIMENSIONS / 5) {
         X.value = withSpring(0);
         runOnJS(handleComplete)(false);
@@ -408,7 +401,6 @@ navigationRef.dispatch(DrawerActions.closeDrawer())
 
   const InterpolateXInput = [0, H_SWIPE_RANGE];
   const AnimatedStyles = {
-    
     swipeCont: useAnimatedStyle(() => {
       return {};
     }),
@@ -426,7 +418,7 @@ navigationRef.dispatch(DrawerActions.closeDrawer())
           [0, BUTTON_WIDTH - SWIPEABLE_DIMENSIONS - BUTTON_PADDING],
           ['#50AC3D', '#50AC3D'],
         ),
-        transform: [{translateX: X.value}],
+        transform: [{ translateX: X.value }],
       };
     }),
     swipeText: useAnimatedStyle(() => {
@@ -452,80 +444,105 @@ navigationRef.dispatch(DrawerActions.closeDrawer())
   };
 
   return (
-    <View style={styles.container}>
-     {isLoading && <ActivityLoader />}
-    <LinearGradient
-           colors={[
-              'rgba(21, 251, 2, 0.1) 0%,',
-              'rgba(141, 1, 249, 0.2) 10%)',
-              'rgba(141, 1, 249, 0.2) 10%)',
-            ]}
-            start={{x: 0, y: 0}} 
-            end={{x: 1, y: 0}}
-            style={styles.button}
-            >
-    <Animated.View style={[ AnimatedStyles.swipeCont]}>
-      <AnimatedLinearGradient
-        style={[AnimatedStyles.colorWave, styles.colorWave]}
-        colors={['#50AC3D', '#50AC3D']}
-        start={{x: 0.0, y: 0.5}}
-        end={{x: 1, y: 0.5}}
-      />
-      <PanGestureHandler onBegan={()=>navigationRef.dispatch(DrawerActions.closeDrawer())} onGestureEvent={animatedGestureHandler}>
-        <Animated.View style={[styles.swipeable, AnimatedStyles.swipeable]}>
-        <Animated.View style={[styles.swipeable ]}>
+    <TouchableWithoutFeedback
+      onPress={() => navigationRef.dispatch(DrawerActions.closeDrawer())}
+      onFocus={() => navigationRef.dispatch(DrawerActions.closeDrawer())}
+      onPressIn={() => navigationRef.dispatch(DrawerActions.closeDrawer())}>
+      <View style={styles.container}>
+        {isLoading && <ActivityLoader />}
         <LinearGradient
-                colors={['#50AC3D', 'rgba(141, 1, 249, 0.5) 10%)']}
-                start={{x: 0, y: 0}}
-                end={{x: 1, y: 0}}
-                style={{
-                  width: 50,
-                  height: 50,
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                  borderRadius: 50,
-                  borderWidth: 0,
-                  elevation: 0,
-                  marginTop:-14,
-                  marginLeft:-5
-                }}>
-                <Image
-                  source={require('../../assets/images/PowerButton.png')}
-                  style={{width: 20, height: 20}}
-                />
-                
-              </LinearGradient>
-              
-              </Animated.View>
-        </Animated.View>
-      </PanGestureHandler>
-      <Text style={[styles.swipeText]}>
-      
-        {showText ? 'Swipe left to stop charging' : 'Swipe right to start charging'}
-      </Text>
-      
-    </Animated.View>
-    </LinearGradient>
-    </View>
+          colors={[
+            'rgba(21, 251, 2, 0.1) 0%,',
+            'rgba(141, 1, 249, 0.2) 10%)',
+            'rgba(141, 1, 249, 0.2) 10%)',
+          ]}
+          start={{ x: 0, y: 0 }}
+          end={{ x: 1, y: 0 }}
+          style={styles.button}>
+          <Animated.View style={[AnimatedStyles.swipeCont]}>
+            <AnimatedLinearGradient
+              style={[AnimatedStyles.colorWave, styles.colorWave]}
+              colors={['#50AC3D', '#50AC3D']}
+              start={{ x: 0.0, y: 0.5 }}
+              end={{ x: 1, y: 0.5 }}
+            />
+            <Animated.View style={[styles.swipeable, AnimatedStyles.swipeable]}>
+              <PanGestureHandler
+                minDist={10}
+                onBegan={() => {
+                  navigationRef.dispatch(DrawerActions.closeDrawer());
+                  setShowText(false);
+                }}
+                onEnded={() => setShowText(true)}
+                onCancelled={() => setShowText(true)}
+                onFailed={() => setShowText(true)}
+                // onEnded={() => setShowText(true)}
+                onGestureEvent={animatedGestureHandler}>
+                <Animated.View style={[styles.swipeable]}>
+                  <LinearGradient
+                    colors={['#50AC3D', 'rgba(141, 1, 249, 0.5) 10%)']}
+                    start={{ x: 0, y: 0 }}
+                    end={{ x: 1, y: 0 }}
+                    style={{
+                      width: 50,
+                      height: 50,
+                      justifyContent: 'center',
+                      alignItems: 'center',
+                      borderRadius: 50,
+                      borderWidth: 0,
+                      elevation: 0,
+                      marginTop: -14,
+                      marginLeft: -5,
+                    }}>
+                    {getChargerStatus.message == 'Online' ||
+                      getChargerStatus.message == 'Charging' ? (
+                      <Image
+                        source={require('../../assets/images/PowerButton.png')}
+                        style={{ width: 20, height: 20 }}
+                      />
+                    ) : (
+                      <AnimatedLottieView
+                        source={{
+                          uri: 'https://assets9.lottiefiles.com/packages/lf20_hbr24n88.json',
+                        }} // Replace with your animation file
+                        autoPlay
+                        loop
+                        style={{ width: 20, height: 20 }}
+                      />
+                    )}
+                  </LinearGradient>
+                </Animated.View>
+              </PanGestureHandler>
+            </Animated.View>
+
+            {showText ? (
+              <Text style={[styles.swipeText]}>
+                {getChargerStatus.message == 'Online' ||
+                  getChargerStatus.message == 'Charging'
+                  ? 'Swipe left to stop charging'
+                  : 'Swipe right to start charging'}
+              </Text>
+            ) : (
+              <Text style={[styles.swipeText]} />
+            )}
+          </Animated.View>
+        </LinearGradient>
+      </View>
+    </TouchableWithoutFeedback>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
-        // alignItems: 'center',
-        // justifyContent: 'center',
-        position: 'absolute',
-        flex: 1,
-        bottom: 40,
-        alignSelf: 'center',
-        borderRadius: 50,
-      },
+    position: 'absolute',
+    flex: 1,
+    bottom: DIMENSIONS.SCREEN_HEIGHT * 1 / 100,
+    alignSelf: 'center',
+    borderRadius: 50,
+  },
   swipeCont: {
-    // height: BUTTON_HEIGHT,
-    // width: BUTTON_WIDTH,
+
     backgroundColor: '#fff',
-    //borderRadius: BUTTON_HEIGHT,
-    //padding: BUTTON_PADDING,
     display: 'flex',
     justifyContent: 'center',
     alignItems: 'center',
@@ -534,43 +551,35 @@ const styles = StyleSheet.create({
   colorWave: {
     position: 'absolute',
     left: 0,
-    // height: BUTTON_HEIGHT,
-    // borderRadius: BUTTON_HEIGHT,
+
   },
   swipeable: {
     position: 'absolute',
     left: BUTTON_PADDING,
-    // height: SWIPEABLE_DIMENSIONS,
-    // width: SWIPEABLE_DIMENSIONS,
-    // borderRadius: SWIPEABLE_DIMENSIONS,
     zIndex: 0,
   },
   swipeText: {
     alignSelf: 'center',
     color: 'black',
-    justifyContent:"center",
-        fontSize: 16,
+    justifyContent: 'center',
+    fontSize: 16,
     fontWeight: '400',
-     zIndex: 2,
-     paddingLeft:30
-    // backgroundColor:'white'
-    
+    zIndex: 2,
+
   },
   button: {
-        width: DIMENSIONS.SCREEN_WIDTH * 0.9,
-        height: 70,
-        // backgroundColor: COLORS.GREEN,
-        justifyContent: 'center',
-        //  alignItems: 'center',
-        borderRadius: 35,
-        borderWidth: 2,
-        borderColor: COLORS.GREEN,
-        overflow: 'hidden',
-      },
-      buttonText: {
-        color: 'white',
-        fontSize: 16,
-      },
+    width: DIMENSIONS.SCREEN_WIDTH * 0.9,
+        height: DIMENSIONS.SCREEN_HEIGHT * 0.07,
+    justifyContent: 'center',
+    borderRadius: 35,
+    borderWidth: 2,
+    borderColor: COLORS.GREEN,
+    overflow: 'hidden',
+  },
+  buttonText: {
+    color: 'white',
+    fontSize: 16,
+  },
 });
 
 export default ButtonSlider;

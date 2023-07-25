@@ -1,3 +1,5 @@
+/* eslint-disable react-native/no-inline-styles */
+/* eslint-disable no-unused-vars */
 import {
   View,
   Text,
@@ -20,6 +22,7 @@ import Input from '../../Components/Input';
 import {StrongPass} from '../../../assets/images/StrongPass';
 import {API} from '../../api/API';
 import {PLATFORM_IOS} from '../../constants/DIMENSIONS';
+import {ms} from 'react-native-size-matters';
 import {Toast} from 'react-native-toast-message/lib/src/Toast';
 import ActivityLoader from '../../Components/ActivityLoader';
 const PasswordRegex =
@@ -141,8 +144,8 @@ const ResetPassword = props => {
                       mV={10}
                       placeholder="Enter your new password..."
                       bW={1}
-                      textWidth={'40%'}
-                      placeholderTextColor={COLORS.BLACK}
+                      textWidth={ms(89)}
+                      placeholderTextColor={COLORS.HALFBLACK}
                       autoCapitalize="none"
                     />
                     <Input
@@ -160,16 +163,18 @@ const ResetPassword = props => {
                       mV={10}
                       placeholder="Re-enter your new password.."
                       bW={1}
-                      textWidth={'50%'}
-                      placeholderTextColor={COLORS.BLACK}
+                      textWidth={ms(109)}
+                      placeholderTextColor={COLORS.HALFBLACK}
                       autoCapitalize="none"
                     />
                     {values.password !== values.password_confirmation &&
                     touched.password &&
                     touched.password_confirmation ? (
-                      <Text style={{color: 'red'}}>Password does not match</Text>
+                      <Text style={{color: 'red'}}>
+                        Password does not match
+                      </Text>
                     ) : (
-                      <Text></Text>
+                      <Text />
                     )}
                   </View>
                 </View>
@@ -186,9 +191,20 @@ const ResetPassword = props => {
                       backgroundColor: COLORS.GREEN,
                       alignItems: 'center',
                       padding: 13,
-                      borderRadius: 30,
+                      borderRadius: 10,
 
                       width: '100%',
+                      ...Platform.select({
+                        ios: {
+                          shadowColor: '#000000',
+                          shadowOffset: {width: 0, height: 2},
+                          shadowOpacity: 0.3,
+                          shadowRadius: 4,
+                        },
+                        android: {
+                          elevation: 4,
+                        },
+                      }),
                     }}>
                     <Text
                       style={{
@@ -231,7 +247,7 @@ const styles = StyleSheet.create({
     color: COLORS.BLACK,
   },
   email_placeholder: {
-    backgroundColor: `rgba(86, 84, 84, 0.1)`,
+    backgroundColor: 'rgba(86, 84, 84, 0.1)',
     borderRadius: 10,
     paddingHorizontal: 15,
     height: Platform.OS === 'ios' ? 50 : 50,
