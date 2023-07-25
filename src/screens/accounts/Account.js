@@ -115,6 +115,7 @@ const Account = ({navigation}) => {
     try {
       const response = await fetch(`${API}/userexisting/${user_ID}`);
       const result = await response.json();
+
       if (result[0].message === 'sucess') {
         console.log('wwwwww', result);
         //  setUserData(result);
@@ -122,12 +123,14 @@ const Account = ({navigation}) => {
         console.log(result);
       } else {
         console.log('iiiiiiiiiiii');
+
       }
       // setLocationMap(result);
     } catch (error) {
       console.error(error);
     }
   };
+
   const getPlanCurrent = () => {
     // setForLoading(true);
     axios
@@ -169,6 +172,10 @@ const Account = ({navigation}) => {
   };
   const handleLinkPress = screen => {
     navigation.navigate(screen, {allSavedCard});
+
+
+
+ 
   };
 
   return (
@@ -261,8 +268,8 @@ const Account = ({navigation}) => {
       </View>
     </SafeAreaView>
   );
-};
-
+  };
+ 
 const styles = StyleSheet.create({
   row: {
     width: DIMENSIONS.SCREEN_WIDTH * 0.95,

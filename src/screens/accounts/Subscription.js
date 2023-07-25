@@ -200,6 +200,7 @@ const Subscription = () => {
     );
   };
 
+
   return (
     <>
       <SafeAreaView style={{backgroundColor: COLORS.CREAM, flex: 1}}>
