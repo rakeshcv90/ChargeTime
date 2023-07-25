@@ -241,6 +241,14 @@ const Account = ({navigation}) => {
               <Text style={styles.bullet}>•</Text>
               <Text style={styles.text}>Contact Us</Text>
             </TouchableOpacity>
+            {/* <TouchableOpacity
+              onPress={() => {
+                navigation.navigate('Setting');
+              }}
+              style={styles.listItem}>
+              <Text style={styles.bullet}>•</Text>
+              <Text style={styles.text}>Settings</Text>
+            </TouchableOpacity> */}
           </View>
           <View style={styles.ButtonsContainer}>
             <TouchableOpacity

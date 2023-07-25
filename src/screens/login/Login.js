@@ -62,6 +62,7 @@ import {
 import axios from 'axios';
 import {navigationRef} from '../../../App';
 import messaging from '@react-native-firebase/messaging';
+import {ms} from 'react-native-size-matters';
 import {Alert, PermissionsAndroid} from 'react-native';
 const mobileH = Math.round(Dimensions.get('window').height);
 const mobileW = Math.round(Dimensions.get('window').width);
@@ -76,6 +77,7 @@ export default function Login({navigation}) {
   // const [graphData,setGraphData] = useState([])
   const dispatch = useDispatch();
   const {getDeviceID, getGraphData} = useSelector(state => state);
+  // console.log('{{{{{{{{{{{', id);
   useEffect(() => {
     let unsubscribe = null;
     const notificationService = async () => {
@@ -96,7 +98,7 @@ export default function Login({navigation}) {
             remoteMessage,
           );
           if (remoteMessage) {
-            const notification = remoteMessage.notification;
+            // const notification = remoteMessage.notification;
             //onOpenNotification(notification)
 
             onDisplayNotification(remoteMessage);
@@ -109,7 +111,7 @@ export default function Login({navigation}) {
         if (initialNotification) {
           console.log(
             'Notification caused application to open',
-            initialNotification.notification,
+            initialNotification.pressAction,
           );
           console.log(
             'Press action used to open the app',
@@ -141,22 +143,18 @@ export default function Login({navigation}) {
           },
         };
         body = `<p style="color: #4caf50;"><b>${message}</b></p> &#128663;`;
-        Alert.alert('A new FCM message arrived!', 'tytytytytytytyt');
+        // Alert.alert('A new FCM message arrived!', 'tytytytytytytyt');
+        console.log('+++5555555++++', id);
         fetchStatusdata(id);
-      } else if (message === 'Vehicle Disconnected!') {
+      } else if (
+        message === 'Vehicle Disconnected! Please check your Vehicle'
+      ) {
         androidData = {
           channelId,
           smallIcon: 'custom_notification_icon',
           largeIcon: require('../../../assets/images/WithoutCar.png'),
           color: '#B1D34F',
           actions: [
-            // {
-            //   title: '<b>Cancel</b>&#128557;',
-            //   pressAction: {
-            //     id: 'cancel',
-            //     launchActivity: 'default', // You can replace 'default' with the required activity to launch.
-            //   },
-            // },
             {
               title: '<p style="color: #f44336;"><b>Ok</b>&#128522;</p>',
               pressAction: {
@@ -167,6 +165,7 @@ export default function Login({navigation}) {
           ],
         };
         body = `<p style="color: #4caf50;"><b>${message}</b></p>&#128563;`;
+        console.log('+++55555+++', id);
         fetchStatusdata(id);
       } else if (
         message ===
@@ -182,19 +181,33 @@ export default function Login({navigation}) {
               title: '<b>Contact Support</b> &#128577;',
               pressAction: {
                 id: 'Contact Support',
-                mainComponent: navigationRef.navigate('Contact'), // Replace 'navigateToScreen' with your required screen
+                mainComponent: 'Contact', // Replace 'navigateToScreen' with your required screen
               },
             },
             {
               title: '<p style="color: #f44336;"><b>Cancel</b> &#128111;</p>',
               pressAction: {
                 id: 'Cancel',
-                launchActivity: 'default', // You can replace 'default' with the required activity to launch.
+                mainComponent: '', // You can replace 'default' with the required activity to launch.
               },
             },
           ],
         };
         body = `<p style="color: #4caf50;"><b>${message}</b></p>&#128580;`;
+        console.log('+++4444444+++', id);
+        fetchStatusdata(id);
+      } else {
+        androidData = {
+          channelId,
+          smallIcon: 'custom_notification_icon',
+          // largeIcon: require('../../../assets/images/WithCar.png'),
+          color: '#B1D34F',
+          pressAction: {
+            id: 'default',
+          },
+        };
+        body = `<p style="color: #4caf50;"><b>${message}</b></p> &#128663;`;
+        fetchStatusdata(id);
       }
 
       // Create a channel (required for Android)
@@ -613,7 +626,7 @@ export default function Login({navigation}) {
             mV={20}
             placeholder="Enter your Email"
             bW={1}
-            textWidth={'22%'}
+            textWidth={ms(45)}
             placeholderTextColor={COLORS.HALFBLACK}
             autoCapitalize="none"
           />
@@ -633,7 +646,7 @@ export default function Login({navigation}) {
             mV={5}
             placeholder="Enter your password "
             bW={1}
-            textWidth={'30%'}
+            textWidth={ms(66)}
           />
           <View style={styles.main_div_lock_img}>
             <Image

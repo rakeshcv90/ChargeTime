@@ -22,6 +22,7 @@ import Input from '../../Components/Input';
 import {StrongPass} from '../../../assets/images/StrongPass';
 import {API} from '../../api/API';
 import {PLATFORM_IOS} from '../../constants/DIMENSIONS';
+import {ms} from 'react-native-size-matters';
 import {Toast} from 'react-native-toast-message/lib/src/Toast';
 import ActivityLoader from '../../Components/ActivityLoader';
 const PasswordRegex =
@@ -143,7 +144,7 @@ const ResetPassword = props => {
                       mV={10}
                       placeholder="Enter your new password..."
                       bW={1}
-                      textWidth={'40%'}
+                      textWidth={ms(89)}
                       placeholderTextColor={COLORS.HALFBLACK}
                       autoCapitalize="none"
                     />
@@ -162,7 +163,7 @@ const ResetPassword = props => {
                       mV={10}
                       placeholder="Re-enter your new password.."
                       bW={1}
-                      textWidth={'50%'}
+                      textWidth={ms(109)}
                       placeholderTextColor={COLORS.HALFBLACK}
                       autoCapitalize="none"
                     />

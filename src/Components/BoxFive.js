@@ -236,12 +236,12 @@ const styles = StyleSheet.create({
   },
   per_month: {
     fontWeight: 500,
-    fontSize: 20,
+    fontSize: 18,
     color: COLORS.BLACK,
     paddingLeft: 7,
   },
   btn_purchage: {
-    paddingHorizontal: 24,
+    paddingHorizontal: 18,
     paddingVertical: 10,
     backgroundColor: COLORS.RED,
     alignItems: 'center',

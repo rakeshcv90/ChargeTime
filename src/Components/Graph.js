@@ -75,7 +75,7 @@ const Graph = ({dataOne}) => {
             {openBox &&
               dataOne.Usage.map(
                 (val, i) =>
-                  i == index && (
+                  i === index && (
                     <TouchableOpacity
                       onPress={() => setOpenBox(false)}
                       style={{

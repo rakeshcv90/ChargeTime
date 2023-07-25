@@ -29,7 +29,7 @@ import {Toast} from 'react-native-toast-message/lib/src/Toast';
 import {API} from '../../api/API';
 import ActivityLoader from '../../Components/ActivityLoader';
 import axios from 'axios';
-
+import {ms} from 'react-native-size-matters';
 const mobileW = Math.round(Dimensions.get('screen').width);
 
 const validationSchema = Yup.object().shape({
@@ -248,7 +248,7 @@ const ForgetPassword = ({navigation}) => {
                       mV={1}
                       placeholder="Enter your Email"
                       bW={1}
-                      textWidth={'22%'}
+                      textWidth={ms(45)}
                       placeholderTextColor={COLORS.HALFBLACK}
                       autoCapitalize="none"
                     />
@@ -444,8 +444,8 @@ const ForgetPassword = ({navigation}) => {
                         setSixDigit != ' '
                       ) {
                         setSixDigit('');
-                        setfifthDigit('');
-                        // otp5.current.focus();
+                        // setfifthDigit('');
+                        // otp5.current.focus();s
                       }
                     }}
                     onSubmitEditing={verifyOTP}

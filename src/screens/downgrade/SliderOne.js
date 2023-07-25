@@ -117,7 +117,7 @@ export default function SliderOne(props) {
         {getPurchaseData.data != 'Package details not found' &&
           getPurchaseData.data.energy_plan.toLowerCase() ===
             props.route.params.item.package_name.toLowerCase() && (
-            <View style={{marginBottom: 20}}>
+            <View style={{marginBottom: 5}}>
               {/* <PriceBox data={getPurchaseData.data} /> */}
             </View>
           )}
@@ -127,7 +127,7 @@ export default function SliderOne(props) {
               getPurchaseData.data != 'Package details not found' &&
               getPurchaseData.data.energy_plan.toLowerCase() ===
                 props.route.params.item.package_name.toLowerCase()
-                ? 20
+                ? 5
                 : 0,
           }}>
           <InstallationBase data={props.route.params.item} />
