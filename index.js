@@ -12,8 +12,23 @@ import {Provider} from 'react-redux';
 import {store, persistor} from './src/redux/store';
 import {PersistGate} from 'redux-persist/integration/react';
 import messaging from '@react-native-firebase/messaging';
+import notifee, { EventType } from '@notifee/react-native';
+import { useEffect } from 'react';
+
 
 const AppRedux = () => {
+  useEffect(() => {
+    return notifee.onForegroundEvent(({ type, detail }) => {
+      switch (type) {
+        case EventType.DISMISSED:
+          console.log('User dismissed notification', detail.notification);
+          break;
+        case EventType.PRESS:
+          console.log('User pressed notification', detail.notification);
+          break;
+      }
+    });
+  }, []);
   return (
     <Provider store={store}>
       <PersistGate loading={null} persistor={persistor}>
@@ -26,4 +41,5 @@ const AppRedux = () => {
 //   console.log('Message handled in the background!', remoteMessage);
 //   // navigationRef.navigate('Home');
 // });
+
 AppRegistry.registerComponent(appName, () => AppRedux);

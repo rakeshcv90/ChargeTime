@@ -53,6 +53,7 @@ import {setCardDetails} from '../../redux/action';
 import {useDispatch} from 'react-redux';
 import Carousel from 'react-native-reanimated-carousel';
 import ActivityLoader from '../../Components/ActivityLoader';
+import CardDeleteConfirmation from '../../Components/CardDeleteConfirmation';
 
 const mobileW = Math.round(Dimensions.get('screen').width);
 const mobileH = Math.round(Dimensions.get('window').height);
@@ -110,7 +111,7 @@ const validationSchema = Yup.object().shape({
     .matches(/^[0-9]{3}$/, 'CVV must be 3 digits'),
 });
 export default function PaymentGateWay({navigation, route}) {
-  console.log('Route...', route.params);
+  const [modalVisible, setModalVisible] = useState(false);
   const {allSavedCard} = route.params;
   const {getUserID} = useSelector(state => state);
 
@@ -223,6 +224,7 @@ export default function PaymentGateWay({navigation, route}) {
             );
       }
     } catch (error) {
+      setLoader(false);
       console.error(error);
     }
   };
@@ -275,6 +277,7 @@ export default function PaymentGateWay({navigation, route}) {
         // setFocusedIndex(focusIndex === 0 ? 0 : focusIndex - 1);
         handleGetCard();
         setLoader(false);
+        setModalVisible(false);
         setCardDetails1({
           cardHolderName: '',
           card_number: '',
@@ -301,6 +304,8 @@ export default function PaymentGateWay({navigation, route}) {
         });
       }
     } catch (error) {
+      setModalVisible(false);
+      setLoader(false);
       console.error('Error deleting card', error);
     }
   };
@@ -348,6 +353,9 @@ export default function PaymentGateWay({navigation, route}) {
 
   const cardTypeImage = getCardType(getCard_Number);
 
+  const toggleModal = () => {
+    setModalVisible(!modalVisible);
+  };
   return (
     <SafeAreaView style={{backgroundColor: COLORS.CREAM, flex: 1}}>
       <Header headerName="Payment Methods" editShow={false} />
@@ -730,28 +738,7 @@ export default function PaymentGateWay({navigation, route}) {
                   </TouchableOpacity>
                   <TouchableOpacity
                     onPress={() => {
-                      // console.log(currentCard);
-                      if (
-                        currentCard.status === 1 ||
-                        currentCard.status === 0
-                      ) {
-                        // setCardID(currentCard.id)
-                        handleDeleteCard(currentCard.id);
-                      } else if (savedCard.length > 0) {
-                        // console.log("------",savedCard[0]?.id)
-                        // setCardID(savedCard[0]?.id)
-                        handleDeleteCard(savedCard[0]?.id);
-                      } else {
-                        PLATFORM_IOS
-                          ? Toast.show({
-                              type: 'success',
-                              text1: 'NO CARD ADDED !',
-                            })
-                          : ToastAndroid.show(
-                              'NO CARD ADDED !',
-                              ToastAndroid.SHORT,
-                            );
-                      }
+                      setModalVisible(true);
                     }}
                     style={{
                       marginLeft: 35,
@@ -956,6 +943,27 @@ export default function PaymentGateWay({navigation, route}) {
             )}
           </Formik>
         </View>
+
+        <CardDeleteConfirmation
+          isVisible={modalVisible}
+          onClose={toggleModal}
+          onPress={() => {
+            if (currentCard.status === 1 || currentCard.status === 0) {
+              handleDeleteCard(currentCard.id);
+            } else if (savedCard.length > 0) {
+              console.log('------', savedCard[0]?.id);
+
+              handleDeleteCard(savedCard[0]?.id);
+            } else {
+              PLATFORM_IOS
+                ? Toast.show({
+                    type: 'success',
+                    text1: 'NO CARD ADDED !',
+                  })
+                : ToastAndroid.show('NO CARD ADDED !', ToastAndroid.SHORT);
+            }
+          }}
+        />
       </ScrollView>
     </SafeAreaView>
   );

@@ -3,9 +3,9 @@
 <plist version="1.0">
 <dict>
 	<key>CLIENT_ID</key>
-	<string>986843418123-r228g4hsfd9veb0frung1ij95mepg33c.apps.googleusercontent.com</string>
+	<string>986843418123-edh3amvpo73v42cmi62s1bnf8nbmuj0l.apps.googleusercontent.com</string>
 	<key>REVERSED_CLIENT_ID</key>
-	<string>com.googleusercontent.apps.986843418123-r228g4hsfd9veb0frung1ij95mepg33c</string>
+	<string>com.googleusercontent.apps.986843418123-edh3amvpo73v42cmi62s1bnf8nbmuj0l</string>
 	<key>API_KEY</key>
 	<string>AIzaSyAT6wjss0qkHYCjSMGyav6VlF-cC3oHMpo</string>
 	<key>GCM_SENDER_ID</key>
@@ -13,7 +13,7 @@
 	<key>PLIST_VERSION</key>
 	<string>1</string>
 	<key>BUNDLE_ID</key>
-	<string>org.reactjs.native.example.ChargeTime</string>
+	<string>com.chargetime</string>
 	<key>PROJECT_ID</key>
 	<string>chargetime-16fea</string>
 	<key>STORAGE_BUCKET</key>
@@ -29,6 +29,6 @@
 	<key>IS_SIGNIN_ENABLED</key>
 	<true></true>
 	<key>GOOGLE_APP_ID</key>
-	<string>1:986843418123:ios:b1155dd26e1e88b570810e</string>
+	<string>1:986843418123:ios:9e6711b39eafa1d970810e</string>
 </dict>
 </plist>

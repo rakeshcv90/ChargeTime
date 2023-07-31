@@ -60,7 +60,7 @@ const validationSchema = Yup.object().shape({
   password: Yup.string()
     .matches(
       PasswordRegex,
-      'Password must contain 1 Upper-Case letter, 1 Lower-Case letter, 1 Digit, 1 Special character(@,$,-,^,&), and the length must be at least 8 characters',
+      'Password must contain 1 Upper-Case letter, 1 Lower-Case letter, 1 Digit, 1 Special character(@,$,-,^,&, !), and the length must be at least 8 characters',
     )
     .required('Password is required'),
 });
