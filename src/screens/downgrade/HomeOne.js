@@ -122,10 +122,7 @@ export default function HomeOne(route) {
 
   useEffect(() => {
     fetchData();
-    console.log(
-      getPurchaseData,
-      'sdfjhiauvshriaeushrviuaesbvuiarsvyayvbiuabvyraiv uayse',
-    );
+ 
   }, []);
 
   useEffect(() => {
@@ -146,7 +143,7 @@ export default function HomeOne(route) {
     if (getBasePackage?.length >= 1 && getBasePackage) {
       getBasePackage.forEach(item => {
         const num =
-          getPurchaseData.data != 'Package details not found'
+          getPurchaseData.data != 'Package not found'
             ? item.package_name.toLowerCase() ===
               getPurchaseData.data.energy_plan.toLowerCase()
             : '';
@@ -266,7 +263,9 @@ export default function HomeOne(route) {
 
   return (
     <SafeAreaView style={{backgroundColor: COLORS.CREAM, flex: 1}}>
-      {getPurchaseData.data != 'Package details not found' &&
+     
+  
+      {getPurchaseData.data != 'Package not found'?
         getPurchaseData.data.energy_plan.toLowerCase() ===
           myTest.toLowerCase() && (
           <View
@@ -290,7 +289,7 @@ export default function HomeOne(route) {
               }}
             />
           </View>
-        )}
+        ):null}
 
       <DrawerOpen top={PLATFORM_IOS ? 70 : 30} />
       <View style={[styles.charging_imag_style]}>
@@ -340,7 +339,7 @@ export default function HomeOne(route) {
             getBasePackage &&
             getBasePackage.map((item, ind) => {
               let purchageData =
-                getPurchaseData.data != 'Package details not found'
+                getPurchaseData.data != 'Package not found'
                   ? item.kwh > getPurchaseData.data.kwh
                     ? 'UPGRADE'
                     : item.kwh < getPurchaseData.data.kwh

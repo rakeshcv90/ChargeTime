@@ -64,7 +64,7 @@ export default function SliderOne(props) {
       .then(res => {
         console.log(res.data);
 
-        if (res.data.data == 'Package details not found') {
+        if (res.data.data == 'Package not found') {
           dispatch(setPurchaseData(res.data));
           dispatch(setPackageStatus(false));
         } else {
@@ -109,12 +109,12 @@ export default function SliderOne(props) {
 
       <View style={styles.managing_width}>
         <BoxTwo data={props.route.params.item} />
-        {getPurchaseData.data != 'Package details not found' &&
+        {getPurchaseData.data != 'Package not found' &&
           getPurchaseData.data.energy_plan.toLowerCase() ===
             props.route.params.item.package_name.toLowerCase() && (
             <Remaining RemainingFill={50} KWH={400} data={'energy'} />
           )}
-        {getPurchaseData.data != 'Package details not found' &&
+        {getPurchaseData.data != 'Package not found' &&
           getPurchaseData.data.energy_plan.toLowerCase() ===
             props.route.params.item.package_name.toLowerCase() && (
             <View style={{marginBottom: 5}}>
@@ -124,7 +124,7 @@ export default function SliderOne(props) {
         <View
           style={{
             marginBottom:
-              getPurchaseData.data != 'Package details not found' &&
+              getPurchaseData.data != 'Package not found' &&
               getPurchaseData.data.energy_plan.toLowerCase() ===
                 props.route.params.item.package_name.toLowerCase()
                 ? 5
@@ -133,7 +133,7 @@ export default function SliderOne(props) {
           <InstallationBase data={props.route.params.item} />
         </View>
 
-        {getPurchaseData.data != 'Package details not found' &&
+        {getPurchaseData.data != 'Package not found' &&
           getPurchaseData.data.energy_plan.toLowerCase() !==
             props.route.params.item.package_name.toLowerCase() && (
             <BoxFive
@@ -150,7 +150,7 @@ export default function SliderOne(props) {
               }
             />
           )}
-        {getPurchaseData.data != 'Package details not found' &&
+        {getPurchaseData.data != 'Package not found' &&
           getPurchaseData.data.energy_plan.toLowerCase() ===
             props.route.params.item.package_name.toLowerCase() && (
             <BoxFive

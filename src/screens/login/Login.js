@@ -26,7 +26,7 @@ import {
   BackHandler,
 } from 'react-native';
 import {SafeAreaView} from 'react-native-safe-area-context';
-import notifee from '@notifee/react-native';
+import notifee, {EventType} from '@notifee/react-native';
 import React, {useState, useEffect} from 'react';
 import COLORS from '../../constants/COLORS';
 import Toast from 'react-native-toast-message';
@@ -58,6 +58,7 @@ import {
   setIsAuthorized,
   setBasePackage,
   setOverUsage,
+  setSubscriptionStatus,
 } from '../../redux/action';
 import axios from 'axios';
 import {navigationRef} from '../../../App';
@@ -74,23 +75,38 @@ export default function Login({navigation}) {
   const [forLoading, setForLoading] = useState(false);
   const [token1, setToken] = useState('');
   const [id, setId] = useState();
-  // const [graphData,setGraphData] = useState([])
+
   const dispatch = useDispatch();
   const {getDeviceID, getGraphData} = useSelector(state => state);
-  // console.log('{{{{{{{{{{{', id);
+
   useEffect(() => {
     let unsubscribe = null;
+    let token = 0;
     const notificationService = async () => {
-      PermissionsAndroid.request(
-        PermissionsAndroid.PERMISSIONS.POST_NOTIFICATIONS,
-      );
-      await messaging().registerDeviceForRemoteMessages();
-      const token = await messaging().getToken();
+      if (Platform.OS == 'android') {
+        PermissionsAndroid.request(
+          PermissionsAndroid.PERMISSIONS.POST_NOTIFICATIONS,
+        );
+        await messaging().registerDeviceForRemoteMessages();
+        token = await messaging().getToken();
+      } else {
+        const authStatus = await messaging().requestPermission();
+        const enabled =
+          authStatus === messaging.AuthorizationStatus.AUTHORIZED ||
+          authStatus === messaging.AuthorizationStatus.PROVISIONAL;
+
+        if (enabled) {
+          await messaging().registerDeviceForRemoteMessages();
+          token = await messaging().getToken();
+        }
+      }
 
       if (token?.length > 0) {
         console.log('FCM...', token);
         setToken(token);
-        messaging().setBackgroundMessageHandler(async remoteMessage => {});
+        messaging().setBackgroundMessageHandler(async remoteMessage => {
+          onDisplayNotification(remoteMessage);
+        });
 
         messaging().onNotificationOpenedApp(remoteMessage => {
           console.log(
@@ -119,116 +135,251 @@ export default function Login({navigation}) {
           );
         }
         unsubscribe = messaging().onMessage(async remoteMessage => {
-          console.log('Notification ....', remoteMessage);
           onDisplayNotification(remoteMessage);
         });
       }
     };
+    async function setCategories() {
+      await notifee.setNotificationCategories([
+        {
+          id: 'post',
+          actions: [
+            {
+              id: 'like',
+              title: 'Like Post',
+            },
+            {
+              id: 'dislike',
+              title: 'Dislike Post',
+            },
+          ],
+        },
+      ]);
+    }
+
     async function onDisplayNotification(data) {
-      // Request permissions (required for iOS)
-      await notifee.requestPermission();
-
-      const message = data?.notification?.body;
-
-      let androidData = {};
-      let body = '';
-      if (message === 'Vehicle Connected!') {
-        androidData = {
-          channelId,
-          smallIcon: 'custom_notification_icon',
-          largeIcon: require('../../../assets/images/WithCar.png'),
-          color: '#B1D34F',
-          pressAction: {
-            id: 'default',
-          },
-        };
-        body = `<p style="color: #4caf50;"><b>${message}</b></p> &#128663;`;
-        // Alert.alert('A new FCM message arrived!', 'tytytytytytytyt');
-        console.log('+++5555555++++', id);
-        fetchStatusdata(id);
-      } else if (
-        message === 'Vehicle Disconnected! Please check your Vehicle'
-      ) {
-        androidData = {
-          channelId,
-          smallIcon: 'custom_notification_icon',
-          largeIcon: require('../../../assets/images/WithoutCar.png'),
-          color: '#B1D34F',
-          actions: [
-            {
-              title: '<p style="color: #f44336;"><b>Ok</b>&#128522;</p>',
-              pressAction: {
-                id: 'ok',
-                mainComponent: 'Home', // Replace 'navigateToScreen' with your required screen
-              },
-            },
-          ],
-        };
-        body = `<p style="color: #4caf50;"><b>${message}</b></p>&#128563;`;
-        console.log('+++55555+++', id);
-        fetchStatusdata(id);
-      } else if (
-        message ===
-        'Something went wrong! Please disconnect and connect your vehicle again'
-      ) {
-        androidData = {
-          channelId,
-          smallIcon: 'custom_notification_icon',
-          // largeIcon: require('../../../assets/images/WithoutCar.png'),
-          color: '#B1D34F',
-          actions: [
-            {
-              title: '<b>Contact Support</b> &#128577;',
-              pressAction: {
-                id: 'Contact Support',
-                mainComponent: 'Contact', // Replace 'navigateToScreen' with your required screen
-              },
-            },
-            {
-              title: '<p style="color: #f44336;"><b>Cancel</b> &#128111;</p>',
-              pressAction: {
-                id: 'Cancel',
-                mainComponent: '', // You can replace 'default' with the required activity to launch.
-              },
-            },
-          ],
-        };
-        body = `<p style="color: #4caf50;"><b>${message}</b></p>&#128580;`;
-        console.log('+++4444444+++', id);
-        fetchStatusdata(id);
-      } else {
-        androidData = {
-          channelId,
-          smallIcon: 'custom_notification_icon',
-          // largeIcon: require('../../../assets/images/WithCar.png'),
-          color: '#B1D34F',
-          pressAction: {
-            id: 'default',
-          },
-        };
-        body = `<p style="color: #4caf50;"><b>${message}</b></p> &#128663;`;
-        fetchStatusdata(id);
-      }
-
-      // Create a channel (required for Android)
       const channelId = await notifee.createChannel({
         id: 'default',
         name: 'Default Channel',
       });
 
+      await notifee.requestPermission();
+      const message = data?.data?.message;
+      notifee.displayNotification({
+        title: 'New post from John',
+        body: 'Hey everyone! Check out my new blog post on my website.',
+        // ios: {
+        //   categoryId: 'post',
+        // },
+        android: {
+          channelId: channelId,
+          actions: [
+            {
+              title: 'Title',
+              icon: 'https://my-cdn.com/icons/snooze.png',
+              pressAction: {
+                id: 'title',
+              },
+            },
+            {
+              title: 'Snooze',
+              icon: 'https://my-cdn.com/icons/snooze.png',
+              pressAction: {
+                id: 'snooze',
+              },
+            },
+          ],
+        },
+      });
+      notifee.onBackgroundEvent(async ({type, detail}) => {
+        if (
+          type === EventType.ACTION_PRESS &&
+          detail.pressAction.id === 'title'
+        ) {
+          console.log('User pressed the "Mark as read" action.');
+        } else {
+          console.log('User pressed the "Mark as read" action.');
+        }
+      });
+      notifee.onForegroundEvent(({type, detail}) => {
+        if (type === EventType.ACTION_PRESS && detail.pressAction.id) {
+          console.log(
+            'User pressed an action with the id: ',
+            detail.pressAction.id,
+          );
+        }
+      });
+
+      // if (Platform.OS == 'ios') {
+      //   let iosData = {};
+      //   let body = '';
+      //   title = '';
+      //   if (message === 'Vehicle Connected!') {
+      //     console.log('99999999');
+      //     title = data?.data?.title;
+      //     body = message;
+      //     iosData = {
+      //       attachments: [
+      //         {
+      //           // React Native asset.
+      //           url: require('../../../assets/images/log.png'),
+      //         },
+      //       ],
+      //     };
+      //   } else if (
+      //     message === 'Vehicle Disconnected! Please check your Vehicle'
+      //   ) {
+      //     console.log('Tes00000000');
+      //     title = data?.notification?.title;
+      //     body = message;
+      //     iosData = {
+      //       attachments: [
+      //         {
+      //           // React Native asset.
+      //           url: require('../../../assets/images/WithoutCar.png'),
+      //         },
+      //       ],
+      //     };
+      //     // fetchStatusdata(id);
+      //   } else if (
+      //     message ===
+      //     'Something went wrong! Please disconnect and connect your vehicle again'
+      //   ) {
+      //     console.log('Test121');
+      //     title = data?.notification?.title;
+      //     body = message;
+      //     iosData = {
+      //       attachments: [
+      //         {
+      //           // React Native asset.
+      //           url: require('../../../assets/images/WithoutCar.png'),
+      //         },
+      //       ],
+      //     };
+      //   } else {
+      //     console.log('Test12123');
+      //     title = data?.notification?.title;
+      //     body = message;
+      //     iosData = {
+      //       attachments: [
+      //         {
+      //           // React Native asset.
+      //           url: require('../../../assets/images/log.png'),
+      //         },
+      //       ],
+      //     };
+      //     //fetchStatusdata(id);
+      //   }
+      //   notifee.displayNotification({
+      //     title: title,
+      //     body: message,
+      //     ios: iosData,
+      //   });
+      // } else {
+      //   let androidData = {};
+      //   let body = '';
+      //   // if (message === 'Vehicle Connected!') {
+      //   //   androidData = {
+      //   //     channelId,
+      //   //     smallIcon: 'custom_notification_icon',
+      //   //     largeIcon: require('../../../assets/images/WithCar.png'),
+      //   //     color: '#B1D34F',
+      //   //     pressAction: {
+      //   //       id: 'default',
+      //   //     },
+      //   //   };
+      //   //   body = `<p style="color: #4caf50;"><b>${message}</b></p> &#128663;`;
+      //   //   // Alert.alert('A new FCM message arrived!', 'tytytytytytytyt');
+      //   //   console.log('+++5555555++++', id);
+      //   //   //   fetchStatusdata(id);
+      //   // } else if (
+      //   //   message === 'Vehicle Disconnected! Please check your Vehicle'
+      //   // ) {
+      //   //   androidData = {
+      //   //     channelId,
+      //   //     smallIcon: 'custom_notification_icon',
+      //   //     largeIcon: require('../../../assets/images/WithoutCar.png'),
+      //   //     color: '#B1D34F',
+      //   //     actions: [
+      //   //       {
+      //   //         title: '<p style="color: #f44336;"><b>Ok</b>&#128522;</p>',
+      //   //         pressAction: {
+      //   //           id: 'ok',
+      //   //           mainComponent: 'Home', // Replace 'navigateToScreen' with your required screen
+      //   //         },
+      //   //       },
+      //   //     ],
+      //   //   };
+      //   //   body = `<p style="color: #4caf50;"><b>${message}</b></p>&#128563;`;
+      //   //   console.log('+++55555+++', id);
+      //   //   // fetchStatusdata(id);
+      //   // } else if (
+      //   //   message ===
+      //   //   'Something went wrong! Please disconnect and connect your vehicle again'
+      //   // ) {
+      //   //   androidData = {
+      //   //     channelId,
+      //   //     smallIcon: 'custom_notification_icon',
+      //   //     // largeIcon: require('../../../assets/images/WithoutCar.png'),
+      //   //     color: '#B1D34F',
+      //   //     actions: [
+      //   //       {
+      //   //         title: '<b>Contact Support</b> &#128577;',
+      //   //         pressAction: {
+      //   //           id: 'Contact Support',
+      //   //           mainComponent: 'Contact', // Replace 'navigateToScreen' with your required screen
+      //   //         },
+      //   //       },
+      //   //       {
+      //   //         title: '<p style="color: #f44336;"><b>Cancel</b> &#128111;</p>',
+      //   //         pressAction: {
+      //   //           id: 'Cancel',
+      //   //           mainComponent: '', // You can replace 'default' with the required activity to launch.
+      //   //         },
+      //   //       },
+      //   //     ],
+      //   //   };
+      //   //   body = `<p style="color: #4caf50;"><b>${message}</b></p>&#128580;`;
+      //   //   console.log('+++4444444+++', id);
+      //   //   // fetchStatusdata(id);
+      //   // } else {
+      //   //   androidData = {
+      //   //     channelId,
+      //   //     smallIcon: 'custom_notification_icon',
+      //   //     // largeIcon: require('../../../assets/images/WithCar.png'),
+      //   //     color: '#B1D34F',
+      //   //     pressAction: {
+      //   //       id: 'default',
+      //   //     },
+      //   //   };
+      //   //   body = `<p style="color: #4caf50;"><b>${message}</b></p> &#128663;`;
+      //   //   //fetchStatusdata(id);
+      //   // }
+
+      //   // Create a channel (required for Android)
+
       androidData.channelId = channelId;
 
-      // Display a notification
-      await notifee.displayNotification({
-        title: data?.notification?.title,
-        // body: `<p style="color: #4caf50;"><b>${message}</b></p> &#127881;`,
-        body: body,
-        android: androidData,
-      });
+      //   // Display a notification
+      //   await notifee.displayNotification({
+      //     title: data?.data?.title,
+      //     //body: `<p style="color: #4caf50;"><b>${message}</b></p> &#127881;`,
+      //     body: message,
+      //     android: {
+      //       channelId: androidData, // Required for Android 8.0+
+      //       actions: [action1, action2], // Add your actions here
+      //     },
+
+      //   });
+      // }
     }
 
     if (Platform.OS === 'android') {
       notificationService();
+      setCategories();
+    } else {
+      notificationService();
+      setCategories();
     }
     if (unsubscribe) {
       return unsubscribe;
@@ -329,6 +480,7 @@ export default function Login({navigation}) {
             // setInterval(() => {
             fetchGraphData(res.data?.user_id);
             // }, 300000);
+            
             fetchWeekGraphData(res.data?.user_id);
             fetchMonthGraphData(res.data?.user_id);
             fetchQuarterGraphData(res.data.user_id);
@@ -562,7 +714,8 @@ export default function Login({navigation}) {
     axios
       .get(`${API}/chargerstatus/${userId}`)
       .then(res => {
-        console.log('------22232323----', res?.data);
+        getSubscriptionStatus(userId)
+   
         dispatch(setChargerStatus(res?.data));
       })
       .catch(err => {
@@ -575,7 +728,7 @@ export default function Login({navigation}) {
       .get(`${API}/currentplan/${userId}`)
       .then(res => {
         setForLoading(false);
-
+        getSubscriptionStatus(userId)
         // if (res.data.data == 'Package details not found') {
         //   dispatch(setPurchaseData([]));
         // } else {
@@ -586,6 +739,17 @@ export default function Login({navigation}) {
       })
       .catch(err => {
         setForLoading(false);
+        console.log(err);
+      });
+  };
+  const getSubscriptionStatus = (data) => {
+    axios
+      .get(`${API}/planstatuspauseresume/${data}/`)
+      .then(res => {
+ 
+       dispatch(setSubscriptionStatus(res.data.PlanStatus));
+      })
+      .catch(err => {
         console.log(err);
       });
   };

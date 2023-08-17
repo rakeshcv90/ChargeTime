@@ -34,6 +34,7 @@ export type Props = TextInputProps & {
   passwordInputIcon?: boolean | false,
   textWidth?: any,
   w?: 'half' | 'full',
+  colorText?: boolean | false,
 };
 const Input: FC<Props> = ({...Props}) => {
   const theme = useColorScheme();
@@ -127,7 +128,7 @@ const Input: FC<Props> = ({...Props}) => {
         </View>
       </View>
       {Props.errors && Props.touched && (
-        <Text style={{color: 'red', fontSize: 12, textAlign: 'center'}}>
+        <Text style={{color:Props.colorText?'green' :'red', fontSize: 12, textAlign: 'center'}}>
           {Props.errors}
         </Text>
       )}

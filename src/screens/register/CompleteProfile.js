@@ -441,9 +441,10 @@ const styles = StyleSheet.create({
     height: 20,
   },
   inputSearchStyle: {
-    height: 40,
+   // height: 40,
     fontSize: 16,
-    backgroundColor: COLORS.CREAM,
+   backgroundColor: COLORS.CREAM,
+   borderColor:'COLORS.GREEN',
   },
   dropdownContainer: {
     backgroundColor: COLORS.CREAM, // Set your desired background color here

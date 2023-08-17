@@ -31,6 +31,7 @@ const initialState = {
   getQuarterData: [],
   getYearData: [],
   getPlanStatus: [],
+  subscriptionStatus:'0',
   overusage: false,
   resetApp: null,
 };
@@ -101,6 +102,8 @@ const rootReducer = (state = initialState, action) => {
       return {...state, getCurrentPlan: action.payload};
     case types.GET_PLAN_STATUS:
       return {...state, getPlanStatus: action.payload};
+      case types.GET_SUBSCRIPTIONSTATUS:
+        return {...state, subscriptionStatus: action.payload};
     case types.LOG_OUT:
       return {...initialState};
     case types.RESET_APP:

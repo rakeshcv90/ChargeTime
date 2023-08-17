@@ -53,6 +53,7 @@ import {setCardDetails} from '../../redux/action';
 import {useDispatch} from 'react-redux';
 import Carousel from 'react-native-reanimated-carousel';
 import ActivityLoader from '../../Components/ActivityLoader';
+import CardDeleteConfirmation from '../../Components/CardDeleteConfirmation';
 
 const mobileW = Math.round(Dimensions.get('screen').width);
 const mobileH = Math.round(Dimensions.get('window').height);
@@ -110,7 +111,7 @@ const validationSchema = Yup.object().shape({
     .matches(/^[0-9]{3}$/, 'CVV must be 3 digits'),
 });
 export default function PaymentGateWay({navigation, route}) {
-  console.log('Route...', route.params);
+  const [modalVisible, setModalVisible] = useState(false);
   const {allSavedCard} = route.params;
   const {getUserID} = useSelector(state => state);
 
@@ -137,14 +138,14 @@ export default function PaymentGateWay({navigation, route}) {
     validTill: '',
     cvv: '',
   };
-  // console.log("-------------",savedCard)
+
   const user_ID = getUserID;
   const dispatch = useDispatch();
   const getCardType = cardNumber => {
     const cardType = creditCardType(cardNumber ? cardNumber : creditCard)[0]
       ?.type;
 
-    // console.log("Card ...", cardType)
+
 
     if (cardType === 'visa') {
       return require('../../../assets/images/Visa.png');
@@ -160,7 +161,7 @@ export default function PaymentGateWay({navigation, route}) {
   };
 
   useEffect(() => {
-    // console.log("Credit card...",creditCardType(creditCard))
+  
     getCardType(cardDetails?.card_number ?? '');
     handleGetCard();
   }, [creditCard, cardDetails, cardId]);
@@ -182,7 +183,7 @@ export default function PaymentGateWay({navigation, route}) {
         card_exp_month: exp_month,
         card_exp_year: exp_year,
       });
-      console.log('add card------', response.data);
+
       if (response.data.message) {
         cb();
         handleGetCard();
@@ -223,6 +224,7 @@ export default function PaymentGateWay({navigation, route}) {
             );
       }
     } catch (error) {
+      setLoader(false);
       console.error(error);
     }
   };
@@ -231,14 +233,13 @@ export default function PaymentGateWay({navigation, route}) {
     try {
       const response = await fetch(`${API}/getcarddetails/${user_ID}`);
       const result = await response.json();
-      // console.log("Result", result[0].sort((b, a) => a.status - b.status))
-      console.log(result);
+  
+   
       if (result[0]?.length > 0) {
         setSavedCard(result[0].sort((b, a) => a.status - b.status));
-        //  console.log("after card  delete",result[0])
+    
         const statusOneObjects = result[0].filter(item => item.status === 1);
-        // console.log(statusOneObjects)
-        // dispatch(setCardDetails(statusOneObjects));
+     
       } else {
       }
     } catch (error) {
@@ -275,6 +276,7 @@ export default function PaymentGateWay({navigation, route}) {
         // setFocusedIndex(focusIndex === 0 ? 0 : focusIndex - 1);
         handleGetCard();
         setLoader(false);
+        setModalVisible(false);
         setCardDetails1({
           cardHolderName: '',
           card_number: '',
@@ -301,6 +303,8 @@ export default function PaymentGateWay({navigation, route}) {
         });
       }
     } catch (error) {
+      setModalVisible(false);
+      setLoader(false);
       console.error('Error deleting card', error);
     }
   };
@@ -348,6 +352,9 @@ export default function PaymentGateWay({navigation, route}) {
 
   const cardTypeImage = getCardType(getCard_Number);
 
+  const toggleModal = () => {
+    setModalVisible(!modalVisible);
+  };
   return (
     <SafeAreaView style={{backgroundColor: COLORS.CREAM, flex: 1}}>
       <Header headerName="Payment Methods" editShow={false} />
@@ -402,9 +409,11 @@ export default function PaymentGateWay({navigation, route}) {
                           <View style={{}}>
                             <ImageBackground
                               source={getCardType(item.card_number)}
+                               resizeMode="contain"
                               style={{
                                 width: DIMENSIONS.SCREEN_WIDTH * 0.9,
-                                resizeMode: 'contain',
+                             
+                               
                                 height: mvs(190),
                                 // height:200,
                               }}>
@@ -633,34 +642,23 @@ export default function PaymentGateWay({navigation, route}) {
                           savedCard[0].status === 1 &&
                           (!currentCard || currentCard.status === 1)
                         ) {
-                          // console.log("------",savedCard[0])
-                          // navigationRef.navigate('PaymentGateWay');
+                     
                         } else if (
                           savedCard &&
                           savedCard.length === 1 &&
                           savedCard[0].status === 0
                         ) {
-                          console.log('In else if------', savedCard[0].id);
+                       
                           handleMakeDefaultCard(savedCard[0].id);
                         } else if (
                           savedCard &&
                           savedCard.length > 1 &&
                           currentCard.status === 0
                         ) {
-                          console.log('In else------', currentCard.id);
+                      
                           handleMakeDefaultCard(currentCard.id);
                         }
-                        // else {
-                        //   PLATFORM_IOS
-                        //     ? Toast.show({
-                        //       type: 'success',
-                        //       text1: "NO CARD ADDED !",
-                        //     })
-                        //     : ToastAndroid.show(
-                        //       "NO CARD ADDED !",
-                        //       ToastAndroid.SHORT,
-                        //     );
-                        // }
+                      
                       } else {
                         PLATFORM_IOS
                           ? Toast.show({
@@ -730,28 +728,7 @@ export default function PaymentGateWay({navigation, route}) {
                   </TouchableOpacity>
                   <TouchableOpacity
                     onPress={() => {
-                      // console.log(currentCard);
-                      if (
-                        currentCard.status === 1 ||
-                        currentCard.status === 0
-                      ) {
-                        // setCardID(currentCard.id)
-                        handleDeleteCard(currentCard.id);
-                      } else if (savedCard.length > 0) {
-                        // console.log("------",savedCard[0]?.id)
-                        // setCardID(savedCard[0]?.id)
-                        handleDeleteCard(savedCard[0]?.id);
-                      } else {
-                        PLATFORM_IOS
-                          ? Toast.show({
-                              type: 'success',
-                              text1: 'NO CARD ADDED !',
-                            })
-                          : ToastAndroid.show(
-                              'NO CARD ADDED !',
-                              ToastAndroid.SHORT,
-                            );
-                      }
+                      setModalVisible(true);
                     }}
                     style={{
                       marginLeft: 35,
@@ -864,7 +841,7 @@ export default function PaymentGateWay({navigation, route}) {
                           formattedValidTill =
                             validTill.slice(0, 2) + '/' + validTill.slice(2);
                         }
-                        console.log(formattedValidTill, 'asd');
+                   
                         // Update the valid till value
                         handleChange('validTill')(formattedValidTill);
                         setCardDetails1({
@@ -956,6 +933,27 @@ export default function PaymentGateWay({navigation, route}) {
             )}
           </Formik>
         </View>
+
+        <CardDeleteConfirmation
+          isVisible={modalVisible}
+          onClose={toggleModal}
+          onPress={() => {
+            if (currentCard.status === 1 || currentCard.status === 0) {
+              handleDeleteCard(currentCard.id);
+            } else if (savedCard.length > 0) {
+            
+
+              handleDeleteCard(savedCard[0]?.id);
+            } else {
+              PLATFORM_IOS
+                ? Toast.show({
+                    type: 'success',
+                    text1: 'NO CARD ADDED !',
+                  })
+                : ToastAndroid.show('NO CARD ADDED !', ToastAndroid.SHORT);
+            }
+          }}
+        />
       </ScrollView>
     </SafeAreaView>
   );

@@ -36,6 +36,7 @@ import {
   setBasePackage,
   userProfileData as updatePersionalDetail,
   setPurchaseData,
+  setPackageStatus,
 } from '../../redux/action';
 import {Toast} from 'react-native-toast-message/lib/src/Toast';
 import {setBasePackage as setUpdateBasePackage} from '../../redux/action';
@@ -65,23 +66,22 @@ const Installation = () => {
 
   const dispatch = useDispatch();
   useEffect(() => {
-    console.log('data for this User:---------', userProfileData);
-    console.log('data for this User:---------', getPurchaseData.data);
-
     setAddLineTwo(userProfileData[0]?.pwa_add2);
     setAddLineOne(userProfileData[0]?.pwa_add1);
-    // console.log('userrrrrrrrr',location)
+    getPlanCurrent;
     fetchOptions();
   }, [userProfileData]);
+
+  useEffect(() => {
+    getPlanCurrent();
+  }, []);
   const user_id = getUserID;
-  //  const {navigation, route} = props;
-  //  const { user_id} = route?.params;
 
   const fetchOptions = async () => {
     try {
       const response = await fetch(`${API}/locations`);
       const result = await response.json();
-      // console.log(result,'ttt');
+
       const sortData = result.sort(function (a, b) {
         if (a.location < b.location) {
           return -1;
@@ -91,7 +91,7 @@ const Installation = () => {
         }
         return 0;
       });
-      console.log('---------sdsdsdsds----', sortData);
+
       setLocationMap(sortData);
     } catch (error) {
       console.error(error);
@@ -103,7 +103,6 @@ const Installation = () => {
   };
 
   const handleSelect = (id, item) => {
-    console.log('{{{{{{{', id);
     setIsFocus(false);
     setSelectedValue(item.location);
     setLocationId(id);
@@ -128,7 +127,6 @@ const Installation = () => {
         // setIsLoading(true);
         // setShowPackage(true);
       } else {
-        console.log(response?.data?.locations);
         setApiData(response?.data?.locations);
         dispatch(setUpdateBasePackage(response.data.locations));
         // setIsLoading(false);
@@ -145,14 +143,14 @@ const Installation = () => {
       .then(res => {
         setForLoading(false);
         setModalVisible(false);
-        if (res.data.data == 'Package details not found') {
+
+        if (res.data.data == 'Package not found') {
           dispatch(setPurchaseData(res.data));
-          // console.log("-------------------",res.data)
-          // setGetData(res.data);
+
           dispatch(setPackageStatus(false));
         } else {
           dispatch(setPurchaseData(res?.data));
-          setGetData(res.data);
+          // setGetData(res.data);
         }
       })
       .catch(err => {
@@ -193,10 +191,9 @@ const Installation = () => {
     }
   };
   const InstalltionUpdate = async () => {
-    console.log('=====', locationId);
     setForLoading(true);
+
     if ((locationId && addlineone && newZipcode && newState) || addlinetwo) {
-      console.log('-------');
       try {
         const res = await fetch(`${API}/installation/${user_id}`, {
           method: 'POST',
@@ -206,29 +203,51 @@ const Installation = () => {
           body: JSON.stringify({
             pwa_add1: addlineone,
             pwa_add2: addlinetwo,
-            pwa_state: newState,
-            pwa_zip: newZipcode,
-            location: selectedValue,
-            pwa_choice: locationId,
+            pwa_state:
+              newState.length == 0 ? userProfileData[0]?.pwa_state : newState,
+            pwa_zip:
+              newZipcode.length == 0 ? userProfileData[0]?.pwa_zip : newZipcode,
+            location:
+              selectedValue.length == 0
+                ? userProfileData[0]?.location
+                : selectedValue,
+            pwa_choice:
+              locationId == undefined
+                ? userProfileData[0]?.pwa_choice
+                : locationId,
           }),
         });
         const response = await res.json();
         if (response.msg == 'Your Profile Update') {
+          setModalVisible(false);
+          setIsEditable(false);
           if (response) {
             const updatedData = [
               {
                 ...userProfileData[0],
                 pwa_add1: addlineone,
                 pwa_add2: addlinetwo,
-                pwa_state: newState,
-                pwa_zip: newZipcode,
-                location: selectedValue,
-                pwa_choice: locationId,
+                pwa_state:
+                  newState.length == 0
+                    ? userProfileData[0]?.pwa_state
+                    : newState,
+                pwa_zip:
+                  newZipcode.length == 0
+                    ? userProfileData[0]?.pwa_zip
+                    : newZipcode,
+                location:
+                  selectedValue.length == 0
+                    ? userProfileData[0]?.location
+                    : selectedValue,
+                pwa_choice:
+                  locationId == undefined
+                    ? userProfileData[0]?.pwa_choice
+                    : locationId,
               },
             ];
-            // console.log(updatedData,'------');
+
             dispatch(updatePersionalDetail(updatedData));
-            console.log('location id --------', locationId);
+
             dispatch(updatedLocationId(locationId));
             fetchData();
             setForLoading(false);
@@ -241,7 +260,7 @@ const Installation = () => {
                   'Profile has been updated successfully.',
                   ToastAndroid.SHORT,
                 );
-            // navigationRef.navigate('Account');
+
             setForLoading(false);
           } else {
             PLATFORM_IOS
@@ -263,34 +282,43 @@ const Installation = () => {
 
   const handleOk = () => {
     PlanCancel();
-    console.log('Confirmed');
+
     setIsEditable(false);
     setModalVisible(false);
   };
 
   const handleCancel = () => {
     // Perform cancel logic here
-    console.log('Cancelled');
+
     setIsEditable(false);
     setModalVisible(false);
   };
 
   const onPress = () => {
-    console.log('onpress..', isModalVisible);
-    if (getPurchaseData.data !== 'Package details not found') {
-      setModalVisible(true);
-    } else if (selectedValue != ' ' && addlineone != ' ' && addlinetwo != ' ') {
-      setModalVisible(false);
-      setIsEditable(false);
+    if (getPurchaseData.data == 'Package not found') {
       InstalltionUpdate();
+    } else if (selectedValue.length == 0) {
+      InstalltionUpdate();
+    } else if (selectedValue == userProfileData[0]?.location) {
+      InstalltionUpdate();
+    } else if (selectedValue != userProfileData[0]?.location) {
+      setModalVisible(true);
     } else {
-      setModalVisible(false);
-      setIsEditable(false);
+      setModalVisible(true);
     }
+
+    // if (getPurchaseData.data !== 'Package not found') {
+    //   setModalVisible(true);
+    // } else if (selectedValue != ' ' && addlineone != ' ' && addlinetwo != ' ') {
+    //   setModalVisible(false);
+    //   setIsEditable(false);
+    //   InstalltionUpdate();
+    // } else {
+    //   setModalVisible(false);
+    //   setIsEditable(false);
+    // }
   };
   const enableEdit = () => {
-    console.log('enable edit', isEditable);
-
     setIsEditable(true);
   };
   const ConfirmModal = () => {
