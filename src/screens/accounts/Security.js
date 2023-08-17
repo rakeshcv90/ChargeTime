@@ -199,7 +199,7 @@ const Security = () => {
             setShowNew(!showNew)
           }}
           secureTextEntry={hidePassword}
-          passwordInputIcon={showNew}
+          passwordInputIcon={!showNew}
           placeholder=""
           onChangeText={text => setNewPassword(text)}
           value={newPassword}
@@ -232,7 +232,7 @@ const Security = () => {
 
           }}
           secureTextEntry={Password}
-          passwordInputIcon={showNew1}
+          passwordInputIcon={!showNew1}
           placeholder=""
           onChangeText={text => setConfirmPassword(text)}
           value={confirmPassword}

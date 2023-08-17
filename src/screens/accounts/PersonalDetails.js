@@ -14,9 +14,9 @@ import {
   Dimensions,
   Image,
   Platform,
-} from 'react-native';;
+} from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import React, {useState, useEffect} from 'react';;
+import React, {useState, useEffect} from 'react';
 import {useSelector} from 'react-redux';
 import HorizontalLine from '../../Components/HorizontalLine';
 import {PLATFORM_IOS} from '../../constants/DIMENSIONS';
@@ -53,7 +53,7 @@ const PersonalDetails = () => {
 
   useEffect(() => {
     setName(userProfileData[0]?.name);
-    setNumber(userProfileData[0]?.mobile);;
+    setNumber(userProfileData[0]?.mobile);
   }, [userProfileData]);
 
   const theme = useColorScheme();
@@ -96,7 +96,7 @@ const PersonalDetails = () => {
     }
   };
   const enableEdit = () => {
-    setIsEditable(true);;
+    setIsEditable(true);
   };
 
   const updatePersonalDetails = async () => {
@@ -128,10 +128,10 @@ const PersonalDetails = () => {
           PLATFORM_IOS
             ? Toast.show({
                 type: 'success',
-                text1: 'Your Profile Updated Successfully',
+                text1: 'Profile Updated Successfully',
               })
             : ToastAndroid.show(
-                'Your Profile Updated Successfully',
+                'Profile Updated Successfully',
                 ToastAndroid.SHORT,
               );
           setIsEditable(false);
@@ -189,17 +189,21 @@ const PersonalDetails = () => {
           }}
           onChangeText={name => {
             setName(name);
-            if  (!name.match(/^(?=.[a-zA-Z])([a-zA-Z0-9]+)$/)) {
+            if (!name.match(/^(?=.[a-zA-Z])([a-zA-Z0-9]+)$/)) {
               setNameError(true);
-            } else  {
+            } else {
               setNameError(false);
             }
           }}
           value={name}
         />
 
-        {nameError && (
+        {nameError ? (
           <Text style={{color: 'red'}}>Name should be start with letter.</Text>
+        ) : name&&name.length < 3 ? (
+          <Text style={{color: 'red'}}>Name cannot be lesser than 3 letters</Text>
+        ) : (
+          ''
         )}
 
         <Input
@@ -212,6 +216,7 @@ const PersonalDetails = () => {
           bColor={COLORS.BLACK}
           text="Phone No."
           mV={15}
+          keyboardType="numeric"
           maxLength={10}
           textWi
           dth={ms(70)}
@@ -250,6 +255,7 @@ const PersonalDetails = () => {
           bW={0.4}
           bColor={COLORS.BLACK}
           text="Email"
+          keyboardType="email-address"
           mV={5}
           textWidth={ms(50)}
           value={userProfileData[0]?.email}
@@ -350,4 +356,3 @@ const styles = StyleSheet.create({
 });
 
 export default PersonalDetails;
-

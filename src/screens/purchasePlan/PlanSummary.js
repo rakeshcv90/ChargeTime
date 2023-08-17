@@ -175,7 +175,7 @@ export default function PlanSummary({route, navigation}) {
                     paddingBottom: 5,
                     color: COLORS.BLACK,
                   }}>
-                  ${tax}
+                  {tax}%
                 </Text>
                 <Text
                   style={{

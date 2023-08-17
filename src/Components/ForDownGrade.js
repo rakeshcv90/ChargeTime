@@ -111,22 +111,22 @@ export default function ForDownGrade({route, navigation}) {
                 fontSize: 16,
                 color: purchageData == 'DOWNGRADE' ? 'red' : '#22936F',
                 marginVertical: 5,
+                lineHeight: 29
               }}>
               {purchageData == 'DOWNGRADE'
                 ? 'Downgrade Package'
                 : 'UPGRADE Package'}
             </Text>
-            {purchageData == 'DOWNGRADE' && (
               <Text
-                style={{
-                  fontWeight: '600',
-                  fontSize: 16,
+              style={{
+                  lineHeight: 26,
+                  fontWeight: '400',
+                  fontSize: 14,
                   color: COLORS.BLACK,
                   textAlign: 'justify',
                 }}>
                 {message}
               </Text>
-            )}
           </View>
           <View
             style={

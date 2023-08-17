@@ -168,6 +168,7 @@ export default function PaymentGateWay({navigation, route}) {
 
   const handleAddCard = async (values, cb) => {
     setLoader(true);
+    console.log('first',values)
     let exp_month = values?.validTill?.split('/')[0];
     let exp_year = values?.validTill?.split('/')[1];
     // let customer_number = values?.cardNumber.split(" ").join("");
@@ -225,7 +226,7 @@ export default function PaymentGateWay({navigation, route}) {
       }
     } catch (error) {
       setLoader(false);
-      console.error(error);
+      console.error("Add Card Error",error);
     }
   };
 
@@ -642,7 +643,7 @@ export default function PaymentGateWay({navigation, route}) {
                           savedCard[0].status === 1 &&
                           (!currentCard || currentCard.status === 1)
                         ) {
-                     
+                          
                         } else if (
                           savedCard &&
                           savedCard.length === 1 &&

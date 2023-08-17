@@ -199,20 +199,21 @@ export default function PaymentGateWay({navigation, route}) {
     payload.append('price_stripe_id', getDataForPayment.price_stripe_id);
     payload.append('user_id', getUserID);
     payload.append('voucherCode',coupon==null?'':coupon );
-   
+    console.log(payload)
     try {
       const response = await axios.post(`${API}/checkout`, payload, {
         headers: {
           'Content-Type': 'multipart/form-data',
         },
       });
-   
+      
       if ((response.data.status = 'success')) {
         setLoader(false);
         setModalVisible(true);
       }
     } catch (err) {
       setLoader(false);
+      console.log(err.response.data.message)
       if (err.response) {
         PLATFORM_IOS
           ? Toast.show({
@@ -426,7 +427,7 @@ export default function PaymentGateWay({navigation, route}) {
             setColor(true);
           } else {
         
-            setCoupenError('Coupon Expiered/Invalid!');
+            setCoupenError('Coupon Expired/Invalid!');
             setCoupenStates(true);
             setColor(false);
           }
