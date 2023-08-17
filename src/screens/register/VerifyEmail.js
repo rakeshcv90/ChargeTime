@@ -47,6 +47,9 @@ export default function VerifyEmail(props) {
   const [forthDigit, setforthDigit] = useState('');
   const [fifthDigit, setfifthDigit] = useState('');
   const [sixDigit, setSixDigit] = useState('');
+  const [remainingTime, setRemainingTime] = useState(60);
+  const [timerActive, setTimerActive] = useState(true);
+  const [disablebutton, setdisableButton] = useState(false);
 
   const otp1 = useRef(null);
   const otp2 = useRef(null);
@@ -141,6 +144,8 @@ export default function VerifyEmail(props) {
     }
   };
   const resendOTp = async () => {
+    setRemainingTime(60);
+    setTimerActive(true);
     try {
       await fetch(`${API}/resendOtp`, {
         method: 'POST',
@@ -179,6 +184,9 @@ export default function VerifyEmail(props) {
   };
 
   const resendLink = async () => {
+    setdisableButton(true);
+    setRemainingTime(60);
+    setTimerActive(true);
     try {
       console.log(email);
       let payload = new FormData();
@@ -257,6 +265,20 @@ export default function VerifyEmail(props) {
     };
   }, [emailCheck, tempID]);
 
+  useEffect(() => {
+    if (timerActive && remainingTime > 0) {
+      const timer = setInterval(() => {
+        setRemainingTime(prevTime => prevTime - 1);
+      }, 1000);
+
+      return () => clearInterval(timer);
+    } else if (remainingTime === 0) {
+      setdisableButton(false);
+      setTimerActive(false);
+      //setStatusCheck(false);
+    }
+  }, [remainingTime, timerActive]);
+
   return (
     <SafeAreaView style={{backgroundColor: COLORS.CREAM, flex: 1}}>
       <ScrollView
@@ -305,6 +327,7 @@ export default function VerifyEmail(props) {
               </Text>
               <TouchableOpacity
                 style={styles.resend_OTP_btn}
+                disabled={remainingTime > 0 ? true : false}
                 onPress={resendOTp}>
                 <Text style={styles.resend_otp_text}>
                   {statusCheck ? 'Send OTP' : 'Resend OTP'}
@@ -317,10 +340,13 @@ export default function VerifyEmail(props) {
                 alignItems: 'center',
                 justifyContent: 'center',
                 width: mobileW,
+                //marginLeft:10,
+                marginRight: 10,
               }}>
               <Image
+                style={{width: mobileW, height: 3}}
+                resizeMode="stretch"
                 source={require('../../../assets/images/dotted.png')}
-                style={{width: mobileW * 0.97}}
               />
 
               <Text
@@ -330,6 +356,11 @@ export default function VerifyEmail(props) {
                   right: mobileW / 1.9,
                   backgroundColor: COLORS.CREAM,
                   padding: 10,
+                  color: COLORS.BLACK,
+                  fontWeight: 400,
+                  lineHeight: 26,
+                  fontSize: 14,
+                  
                 }}>
                 OR
               </Text>
@@ -351,6 +382,7 @@ export default function VerifyEmail(props) {
                   : 'Receive verification email instead.'}
               </Text>
               <TouchableOpacity
+                disabled={disablebutton}
                 style={styles.resend_OTP_btn}
                 onPress={resendLink}>
                 <Text style={styles.resend_otp_text}>
@@ -358,6 +390,7 @@ export default function VerifyEmail(props) {
                 </Text>
               </TouchableOpacity>
             </View>
+
             {statusCheck ? (
               <View style={{paddingTop: 20}}>
                 <AnimatedLottieView
@@ -368,7 +401,16 @@ export default function VerifyEmail(props) {
                   loop
                   style={{width: 100, height: 100, alignSelf: 'center'}}
                 />
-
+                <View style={{marginVertical: 10, alignSelf: 'center'}}>
+                  {remainingTime > 0 ? (
+                    <Text>Resend Link in {remainingTime} seconds</Text>
+                  ) : (
+                    <View>
+                      <Text>Previous Email Link Expired</Text>
+                      <Text>Click Resend Link Button</Text>
+                    </View>
+                  )}
+                </View>
                 <Text
                   style={{
                     textAlign: 'center',
@@ -517,6 +559,16 @@ export default function VerifyEmail(props) {
                     }}
                     onSubmitEditing={verifyOTP}
                   />
+                </View>
+                <View style={{marginVertical: 10, alignSelf: 'center'}}>
+                  {remainingTime > 0 ? (
+                    <Text>Resend OTP in {remainingTime} seconds</Text>
+                  ) : (
+                    <View>
+                      <Text>Previous OTP Expired </Text>
+                      <Text>Click Resend OTP Button</Text>
+                    </View>
+                  )}
                 </View>
               </View>
             )}

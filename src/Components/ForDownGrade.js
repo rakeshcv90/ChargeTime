@@ -6,14 +6,14 @@ import {
   Image,
   ScrollView,
 } from 'react-native';
-import React, { useEffect, useState } from 'react';
+import React, {useEffect, useState} from 'react';
 
 import COLORS from '../constants/COLORS';
-import { Unit } from '../../assets/images/Unit';
-import { Mieq } from '../../assets/images/Mieq';
-import { PlanPricing } from '../../assets/images/PlanPricing';
-import { useDispatch, useSelector } from 'react-redux';
-import { navigationRef } from '../../App';
+import {Unit} from '../../assets/images/Unit';
+import {Mieq} from '../../assets/images/Mieq';
+import {PlanPricing} from '../../assets/images/PlanPricing';
+import {useDispatch, useSelector} from 'react-redux';
+import {navigationRef} from '../../App';
 import axios from 'axios';
 import {API} from '../api/API';
 import {SafeAreaView} from 'react-native-safe-area-context';
@@ -21,35 +21,48 @@ import {setDataForPayment} from '../redux/action';
 
 export default function ForDownGrade({route, navigation}) {
   const {dataOne, purchageData, message} = route.params;
+
   const {getPurchaseData, getUserID, getLocationID} = useSelector(
     state => state,
   );
 
   const [tax, setTax] = useState('');
   const [totalSalexTax, setTotalSalextax] = useState('');
+  const [voucherStatus, setvoucherStatus] = useState(false);
 
   //const [data,setData] = useState('');
   const dispatch = useDispatch();
 
-  const [data, setData] = useState('');
   const [forLoading, setForLoading] = useState(false);
 
   //   const {id, package_name, total_price, salestax} = route.params.data;
 
-  //   useEffect(() => {
-  //     getPlanSummary();
-  //   }, []);
-
-  const forDowngradeFunction = () => {
+  useEffect(() => {
+    if (route.params.dataOne.stripe_voucher_id) {
+      getVoucherDetails(route.params.dataOne.stripe_voucher_id);
+    }
+  }, []);
+  const getVoucherDetails = data => {
+    axios
+      .get(`${API}/couponret/${data}`)
+      .then(res => {
+        setvoucherStatus(res.data.valid);
+      })
+      .catch(err => {
+        console.log(err);
+      });
+  };
+  const forDowngradeFunction = item => {
+    console.log('My data is', item);
     axios
       .post(`${API}/upgrade_downgrade/${getUserID}`)
       .then(res => {
-        console.log('DOWNGRADE', res.data);
         navigationRef.navigate('PaymentGateWay', {
           data: dataOne,
           purchageData: purchageData,
+          voucherStatus: voucherStatus,
+          details: item,
         });
-
       })
       .catch(err => {
         console.log(err.response.data.message);
@@ -65,7 +78,7 @@ export default function ForDownGrade({route, navigation}) {
         dispatch(setDataForPayment(res.data?.locations[0]));
         setTax(res.data.locations[0].salestax);
         setTotalSalextax(res.data.locations[0].totalSalexTax);
-        forDowngradeFunction();
+        forDowngradeFunction(res.data);
       })
       .catch(err => {
         setForLoading(false);
@@ -114,7 +127,6 @@ export default function ForDownGrade({route, navigation}) {
                 {message}
               </Text>
             )}
-
           </View>
           <View
             style={
@@ -171,7 +183,7 @@ export default function ForDownGrade({route, navigation}) {
                 // style={styles.img_width}
                 source={require('../../assets/images/dotted.png')}
                 resizeMode="stretch"
-                style={{ alignSelf: 'center', width: '100%', marginTop: 15 }}
+                style={{alignSelf: 'center', width: '100%', marginTop: 15}}
               />
               <View
                 style={{
@@ -193,8 +205,8 @@ export default function ForDownGrade({route, navigation}) {
                   }}>
                   <Image
                     source={require('../../assets/images/kwh_icon_one.png')}
-                    resizeMode='contain'
-                    style={{ width: 30, height: 30 }}
+                    resizeMode="contain"
+                    style={{width: 30, height: 30}}
                   />
                   <Text
                     style={{
@@ -215,7 +227,7 @@ export default function ForDownGrade({route, navigation}) {
                 // style={styles.img_width}
                 source={require('../../assets/images/dotted.png')}
                 resizeMode="stretch"
-                style={{ alignSelf: 'center', width: '100%', marginVertical: 10 }}
+                style={{alignSelf: 'center', width: '100%', marginVertical: 10}}
               />
               <View
                 style={{
@@ -236,8 +248,8 @@ export default function ForDownGrade({route, navigation}) {
                   }}>
                   <Image
                     source={require('../../assets/images/kwh_dollar.png')}
-                    resizeMode='contain'
-                    style={{ width: 30, height: 30 }}
+                    resizeMode="contain"
+                    style={{width: 30, height: 30}}
                   />
                   <Text
                     style={{
@@ -265,10 +277,7 @@ export default function ForDownGrade({route, navigation}) {
             <View>
               <TouchableOpacity style={styles.install_touchable}>
                 <PlanPricing style={styles.img_width} />
-                <Text style={styles.installation_text}>
-                  New Plan Pricing
-                </Text>
-
+                <Text style={styles.installation_text}>New Plan Pricing</Text>
               </TouchableOpacity>
               <View
                 style={{
@@ -280,8 +289,7 @@ export default function ForDownGrade({route, navigation}) {
                   paddingVertical: 20,
                   borderBottomLeftRadius: 10,
 
-                  borderBottomRightRadius: 10
-
+                  borderBottomRightRadius: 10,
                 }}>
                 <View>
                   <Text
@@ -289,12 +297,11 @@ export default function ForDownGrade({route, navigation}) {
                       fontSize: 12,
                       fontWeight: '400',
                       paddingVertical: 5,
-
                     }}>
                     Price (excl.taxes):
                   </Text>
                   <Text
-                    style={{ fontSize: 12, fontWeight: '400', paddingBottom: 5 }}>
+                    style={{fontSize: 12, fontWeight: '400', paddingBottom: 5}}>
                     Taxes:
                   </Text>
                   <Text
@@ -316,7 +323,7 @@ export default function ForDownGrade({route, navigation}) {
                     ${dataOne?.total_price}
                   </Text>
                   <Text
-                    style={{ fontSize: 12, fontWeight: '400', paddingBottom: 5 }}>
+                    style={{fontSize: 12, fontWeight: '400', paddingBottom: 5}}>
                     ${dataOne?.salesTax}
                   </Text>
                   <Text
@@ -360,7 +367,7 @@ export default function ForDownGrade({route, navigation}) {
                 }),
               }}>
               <Text
-                style={{ fontWeight: '700', color: COLORS.BLACK, fontSize: 14 }}>
+                style={{fontWeight: '700', color: COLORS.BLACK, fontSize: 14}}>
                 CANCEL
               </Text>
             </TouchableOpacity>
@@ -386,7 +393,7 @@ export default function ForDownGrade({route, navigation}) {
                 }),
               }}>
               <Text
-                style={{ fontWeight: '700', color: COLORS.WHITE, fontSize: 14 }}>
+                style={{fontWeight: '700', color: COLORS.WHITE, fontSize: 14}}>
                 {purchageData}
               </Text>
             </TouchableOpacity>
@@ -431,8 +438,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     paddingHorizontal: 18,
     borderTopLeftRadius: 10,
-    borderTopRightRadius: 10
-
+    borderTopRightRadius: 10,
   },
   cuurent_plan: {
     fontSize: 14,
@@ -466,8 +472,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingVertical: 15,
     borderTopLeftRadius: 10,
-    borderTopRightRadius: 10
-
+    borderTopRightRadius: 10,
   },
   img_width: {
     marginHorizontal: 20,

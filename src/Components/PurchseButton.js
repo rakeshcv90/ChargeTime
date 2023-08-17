@@ -17,6 +17,7 @@ import {navigationRef} from '../../App';
 import {DIMENSIONS} from '../constants/DIMENSIONS';
 
 const PurchseButton = ({data}) => {
+
   useEffect(() => {
     const backHandler = BackHandler.addEventListener(
       'hardwareBackPress',

@@ -17,6 +17,7 @@ import {
   KeyboardAvoidingView,
   ToastAndroid,
   Platform,
+  ImageBackground,
 } from 'react-native';
 import AnimatedLottieView from 'lottie-react-native';
 import React, {useState, useRef, useEffect} from 'react';
@@ -38,6 +39,7 @@ import {navigationRef} from '../../../App';
 import ActivityLoader from '../../Components/ActivityLoader';
 import HorizontalLine from '../../Components/HorizontalLine';
 import {mvs, ms} from 'react-native-size-matters';
+import creditCardType, {types as CardType} from 'credit-card-type';
 
 import {
   setCardDetails,
@@ -47,6 +49,7 @@ import {
   setPurchaseData,
 } from '../../redux/action';
 import {Toast} from 'react-native-toast-message/lib/src/Toast';
+import Carousel from 'react-native-reanimated-carousel';
 
 const mobileW = Math.round(Dimensions.get('screen').width);
 const mobileH = Math.round(Dimensions.get('window').height);
@@ -113,12 +116,23 @@ const validationSchema = Yup.object().shape({
     .matches(/^[0-9]{3}$/, 'CVV must be 3 digits'),
 });
 export default function PaymentGateWay({navigation, route}) {
+  const [allSavedCard, setSavedCard] = useState([]);
+  const [currentCard, setCurrentCard] = useState('');
+  const [focusIndex, setFocusedIndex] = useState(0);
+  const [coupon, setCoupen] = useState(null);
+  const [coupenStates, setCoupenStates] = useState(false);
+  const [couponerror, setCoupenError] = useState('');
+  const [color, setColor] = useState(false);
+  const voucherStatus = route.params.voucherStatus;
+
+
   const {getDataForPayment, getUserID, getEmailDAta} = useSelector(
     state => state,
   );
 
   useEffect(() => {
     handleGetCard();
+    handleAllGetCard();
   }, []);
   const [modalVisible, setModalVisible] = useState(false);
   const [loader, setLoader] = useState(false);
@@ -146,53 +160,53 @@ export default function PaymentGateWay({navigation, route}) {
   const [validity, setValidity] = useState(
     String(card[0]?.card_exp_month + '/' + card[0]?.card_exp_year) ?? '',
   );
+ 
 
-  // console.log(savedCard,"------------")
+ 
   const handleGetCard = async () => {
     try {
       const response = await fetch(`${API}/getcarddetails/${getUserID}`);
       const result = await response.json();
-      // console.log("Result", result[0].sort((b, a) => a.status - b.status))
-      // console.log(result);
+  
       if (result[0]?.length > 0) {
-        // setSavedCard(result[0].sort((b, a) => a.status - b.status));
-        //  console.log("after card  delete",result[0])
+      
         const statusOneObjects = result[0].filter(item => item.status === 1);
-        console.log(statusOneObjects);
+     
         setCard(statusOneObjects);
-        // dispatch(setCardDetails(statusOneObjects));
+   
       } else {
       }
     } catch (error) {
-      console.log('ERROR', error);
+      console.log('ERROR123', error);
     }
   };
 
   const validTillData = card[0]?.card_exp_month + '/' + card[0]?.card_exp_year;
-  // console.log('+++++oooooooooo', card[0].cust_name);
+
   const newPAYMENT = async values => {
-    setLoader(true);
+    //setLoader(true);
     let payload = new FormData();
 
     let exp_month = validTillData.split('/')[0];
     let exp_year = validTillData.split('/')[1];
     payload.append('kwh_unit', route.params.data.kwh);
-    payload.append('card_number', card[0]?.card_number);
-    payload.append('card_cvc', card[0]?.card_cvc);
-    payload.append('card_exp_month', exp_month);
-    payload.append('card_exp_year', exp_year);
+    payload.append('card_number', values.card_number);
+    payload.append('card_cvc', values.card_cvc);
+    payload.append('card_exp_month', values.card_exp_month);
+    payload.append('card_exp_year', values.card_exp_year);
     payload.append('item_details', getDataForPayment.package_name);
     payload.append('price', getDataForPayment.total_price);
     payload.append('price_stripe_id', getDataForPayment.price_stripe_id);
     payload.append('user_id', getUserID);
-    console.log('----------------', payload);
+    payload.append('voucherCode',coupon==null?'':coupon );
+   
     try {
       const response = await axios.post(`${API}/checkout`, payload, {
         headers: {
           'Content-Type': 'multipart/form-data',
         },
       });
-      console.log('PAYMENT', response.data);
+   
       if ((response.data.status = 'success')) {
         setLoader(false);
         setModalVisible(true);
@@ -206,8 +220,8 @@ export default function PaymentGateWay({navigation, route}) {
               text1: 'Invalid Card Details !',
             })
           : ToastAndroid.show('Invalid Card Details !', ToastAndroid.SHORT);
-        console.log('-------------------------', err.response.data);
-        console.log(err.response.status);
+    
+   
       } else {
         console.log(err);
       }
@@ -230,14 +244,16 @@ export default function PaymentGateWay({navigation, route}) {
     payload.append('price', getDataForPayment.total_price);
     payload.append('price_stripe_id', getDataForPayment.price_stripe_id);
     payload.append('user_id', getUserID);
-    console.log(payload, 'object');
+    payload.append('voucherCode',coupon==null?'':coupon);
+
+   
     try {
       const response = await axios.post(`${API}/checkout`, payload, {
         headers: {
           'Content-Type': 'multipart/form-data',
         },
       });
-      console.log('PAYMENT', response.data);
+
       if ((response.data.status = 'success')) {
         // handleAddCard(values)
 
@@ -264,23 +280,22 @@ export default function PaymentGateWay({navigation, route}) {
               'Server Busy Please Try Later.',
               ToastAndroid.SHORT,
             );
-        console.log(err.response.data);
-        console.log(err.response.status);
+  
       } else {
         console.log(err);
       }
     }
   };
-  // console.log('-----------------', cardDetails);
+
   const getDeviceIDData = () => {
     axios
       .get(`${API}/devicecheck/${getUserID}}`)
       .then(res => {
         setModalVisible(false);
-        console.log(res.data, 'tt');
+     
         if (res.data.status == 'True') {
           // dispatch(setDeviceId(res.data.message));
-          console.log(route.params.purchageData);
+    
           if (route.params.purchageData == 'DOWNGRADE') {
             // PlanStatus();
 
@@ -311,7 +326,7 @@ export default function PaymentGateWay({navigation, route}) {
     axios
       .get(`${API}/currentplan/${getUserID}`)
       .then(res => {
-        console.log(res.data);
+    
 
         if (res.data.data == 'Package details not found') {
           dispatch(setPurchaseData(res.data));
@@ -353,7 +368,75 @@ export default function PaymentGateWay({navigation, route}) {
   //       console.log(err);
   //     });
   // };
+  const handleAllGetCard = async () => {
+    try {
+      const response = await fetch(`${API}/getcarddetails/${getUserID}`);
+      const result = await response.json();
+    
+      if (result[0]?.length > 0) {
+        setSavedCard(result[0].sort((b, a) => a.status - b.status));
+        const statusOneObjects = result[0].filter(item => item.status === 1);
+        dispatch(setCardDetails(statusOneObjects));
+      } else {
+        setSavedCard([]);
+      }
+    } catch (error) {
+      console.log('ERROR', error);
+    }
+  };
+  const getCardType = cardNumber => {
+    const cardType = creditCardType(cardNumber ? cardNumber : creditCard)[0]
+      ?.type;
 
+    if (cardType === 'visa') {
+      return require('../../../assets/images/Visa.png');
+    } else if (cardType === 'master') {
+      return require('../../../assets/images/Master.png');
+    } else if (cardType === 'american-express') {
+      return require('../../../assets/images/Amex.png');
+    } else if (cardType === 'discover') {
+      return require('../../../assets/images/Discover.png');
+    } else {
+      return require('../../../assets/images/visaCard.png');
+    }
+  };
+  const coupenDetail = data => {
+ 
+    if(data==null){
+      setCoupenError('Enter Coupon Code');
+      setCoupenStates(true);
+      setColor(false);
+    }
+   else if (data.trim().length <= 0) {
+      setCoupenError('Enter Coupon Code');
+      setCoupenStates(true);
+      setColor(false);
+    } else {
+      setLoader(true);
+      axios
+        .get(
+          `${API}/couponpricetblvalid/${data}/${route.params.details.locations[0].price_stripe_id}`,
+        )
+        .then(res => {
+         
+          setLoader(false);
+          if ( res.data.couponstatus=='true' && voucherStatus) {
+            setCoupenError('Coupon Applied!');
+            setCoupenStates(true);
+            setColor(true);
+          } else {
+        
+            setCoupenError('Coupon Expiered/Invalid!');
+            setCoupenStates(true);
+            setColor(false);
+          }
+        })
+        .catch(err => {
+          console.log(err);
+          setLoader(false);
+        });
+    }
+  };
   return (
     <SafeAreaView style={{backgroundColor: COLORS.CREAM, flex: 1}}>
       <View style={{marginHorizontal: 20, paddingTop: 20}}>
@@ -423,163 +506,175 @@ export default function PaymentGateWay({navigation, route}) {
                 setFieldValue,
               }) => (
                 <KeyboardAvoidingView behavior="padding">
-                  <Image
-                    source={require('../../../assets/images/visaCard.png')}
-                    style={{
-                      width: DIMENSIONS.SCREEN_WIDTH * 0.9,
-                      resizeMode: 'contain',
-                    }}
-                  />
-                  <View style={styles.cardNumber_position}>
-                    {card[0]?.card_number ? (
-                      <Text
-                        style={{
-                          color: '#fff',
-                          fontWeight: '600',
-                          fontSize: 20,
-                        }}>
-                        {card[0]?.card_number > 0 &&
-                          formatCreditCardNumber(card[0]?.card_number + '')}
-                      </Text>
-                    ) : (
-                      <Text
-                        style={{
-                          color: '#fff',
-                          fontWeight: '600',
-                          fontSize: 20,
-                        }}>
-                        {formatCreditCardNumber(values.cardNumber + '')}
-                      </Text>
-                    )}
-                    <View style={styles.text_div}>
-                      <View style={{gap: 5, width: 100}}>
-                        <Text
-                          style={{
-                            color: 'gray',
-                            fontWeight: '600',
-                            fontSize: 8,
-                          }}>
-                          Card Holder
-                        </Text>
+                  <>
+                    <Carousel
+                      //ref={(c) => { this._carousel = c; }}
+                      style={{flexGrow: 0}}
+                      width={420}
+                      height={DIMENSIONS.SCREEN_WIDTH * 0.8}
+                      data={allSavedCard}
+                      // defaultIndex={focusIndex >= 0 ? focusIndex : 0}
+                      renderItem={({item, index}) => {
+                        return (
+                          <View style={{}}>
+                            <ImageBackground
+                              source={getCardType(item.card_number)}
+                              resizeMode="contain"
+                              style={{
+                                width: DIMENSIONS.SCREEN_WIDTH * 0.9,
 
-                        {card[0]?.cust_name ? (
-                          <Text
-                            style={{
-                              color: '#fff',
-                              fontWeight: '600',
-                              fontSize: 13,
-                            }}>
-                            {card[0]?.cust_name}
-                          </Text>
-                        ) : (
-                          <Text
-                            style={{
-                              color: '#fff',
-                              fontWeight: '600',
-                              fontSize: 13,
-                            }}>
-                            {values.cardHolderName}
-                          </Text>
-                        )}
-                      </View>
-                      <View style={{gap: 5}}>
-                        <Text
-                          style={{
-                            fontWeight: '600',
-                            fontSize: 8,
-                            color: 'gray',
-                          }}>
-                          Expires
-                        </Text>
+                                height: 210,
+                              }}>
+                              <View style={styles.cardNumber_position}>
+                                <Text
+                                  style={{
+                                    color: '#fff',
+                                    fontWeight: '600',
+                                    fontSize: ms(20),
+                                  }}>
+                                  {String(item.card_number).replace(
+                                    /^(\d{12})(\d{4})$/,
+                                    'xxxx xxxx xxxx $2',
+                                  )}
+                                </Text>
+                                <View style={styles.text_div}>
+                                  <View style={{gap: ms(5), width: ms(100)}}>
+                                    <Text
+                                      style={{
+                                        color: 'gray',
+                                        fontWeight: '600',
+                                        fontSize: 8,
+                                      }}>
+                                      Card Holder
+                                    </Text>
+                                    <Text
+                                      style={{
+                                        color: '#fff',
+                                        fontWeight: '600',
+                                        fontSize: 13,
+                                      }}>
+                                      {String(item.cust_name)}
+                                    </Text>
+                                  </View>
+                                  <View style={{gap: ms(5)}}>
+                                    <Text
+                                      style={{
+                                        fontWeight: '600',
+                                        fontSize: 8,
+                                        color: 'gray',
+                                      }}>
+                                      Expires
+                                    </Text>
+                                    <Text
+                                      style={{
+                                        color: '#fff',
+                                        fontWeight: '600',
+                                        fontSize: 13,
+                                      }}>
+                                      {String(
+                                        item.card_exp_month +
+                                          '/' +
+                                          item.card_exp_year,
+                                      )}
+                                    </Text>
+                                  </View>
+                                  <View style={{gap: 5}}>
+                                    <Text
+                                      style={{
+                                        fontWeight: '600',
+                                        fontSize: 8,
+                                        color: 'gray',
+                                      }}>
+                                      CVV
+                                    </Text>
+                                    <Text
+                                      style={{
+                                        color: '#fff',
+                                        fontWeight: '600',
+                                        fontSize: 13,
+                                      }}>
+                                      {/* {String(item.card_cvc)} */}
+                                      {item.card_cvc
+                                        ? '*'.repeat(
+                                            String(item.card_cvc).length,
+                                          )
+                                        : null}
+                                    </Text>
+                                  </View>
+                                </View>
+                              </View>
+                            </ImageBackground>
+                            <View
+                              style={{
+                                backgroundColor: COLORS.GREEN,
+                                marginLeft: -70,
+                                //height: DIMENSIONS.SCREEN_HEIGHT * 0.05,
+                                alignItems: 'center',
+                                marginVertical: 10,
+                                justifyContent: 'center',
+                                alignSelf: 'center',
+                                padding: 15,
+                                borderRadius: 12,
+                                ...Platform.select({
+                                  ios: {
+                                    shadowColor: '#000000',
+                                    shadowOffset: {width: 0, height: 2},
+                                    shadowOpacity: 0.3,
+                                    shadowRadius: 4,
+                                  },
+                                  android: {
+                                    elevation: 4,
+                                  },
+                                }),
+                              }}>
+                              <TouchableOpacity
+                                onPress={() => newPAYMENT(item)}>
+                                <Text
+                                  style={{
+                                    fontSize: 14,
+                                    fontWeight: '700',
+                                    color: COLORS.BLACK,
+                                  }}>
+                                  {item.status == 1
+                                    ? `Make Payment By Default Card`
+                                    : 'Make Payment By Save Card'}
+                                </Text>
+                              </TouchableOpacity>
+                            </View>
+                          </View>
+                        );
+                      }}
+                      // sliderWidth={400}
+                      // itemWidth={400}
+                      loop={false}
+                      onSnapToItem={index => {
+                        setCurrentCard(allSavedCard[index]);
+                        setFocusedIndex(index);
+                      }}
+                    />
 
-                        {validTillData !== 'undefined/undefined' ? (
-                          <Text
-                            style={{
-                              color: '#fff',
-                              fontWeight: '600',
-                              fontSize: 13,
-                            }}>
-                            {validTillData}
-                          </Text>
-                        ) : (
-                          <Text
-                            style={{
-                              color: '#fff',
-                              fontWeight: '600',
-                              fontSize: 13,
-                            }}>
-                            {values.validTill}
-                          </Text>
-                        )}
-                      </View>
-                      <View style={{gap: 5}}>
-                        <Text
-                          style={{
-                            fontWeight: '600',
-                            fontSize: 8,
-                            color: 'gray',
-                          }}>
-                          CVV
-                        </Text>
-                        {card[0]?.card_cvc ? (
-                          <Text
-                            style={{
-                              color: '#fff',
-                              fontWeight: '600',
-                              fontSize: 13,
-                            }}>
-                            {card[0]?.card_cvc
-                              ? '*'.repeat(String(card[0]?.card_cvc).length)
-                              : null}
-                          </Text>
-                        ) : (
-                          <Text
-                            style={{
-                              color: '#fff',
-                              fontWeight: '600',
-                              fontSize: 13,
-                            }}>
-                            {values.cvv
-                              ? '*'.repeat(String(values.cvv).length)
-                              : null}
-                          </Text>
-                        )}
-                      </View>
+                    <View style={styles.dotsContainer}>
+                      {allSavedCard &&
+                        allSavedCard.length > 0 &&
+                        allSavedCard.map((item, index) => {
+                          if (index === 0 && !currentCard) {
+                            return (
+                              <View style={[styles.dot, styles.activeDot]} />
+                            );
+                          } else {
+                            return (
+                              <View
+                                style={[
+                                  styles.dot,
+                                  index === focusIndex && styles.activeDot,
+                                ]}
+                              />
+                            );
+                          }
+                        })}
                     </View>
-                  </View>
-                  <View
-                    style={{
-                      backgroundColor: COLORS.GREEN,
-                      //width:DIMENSIONS.SCREEN_WIDTH*0.3,
-                      height: DIMENSIONS.SCREEN_HEIGHT * 0.05,
-                      // marginBottom: 35,
-                      marginBottom: Platform.OS == 'android' ? 35 : 10,
-                      justifyContent: 'center',
-                      alignItems: 'center',
-                      borderRadius: 12,
-                      ...Platform.select({
-                        ios: {
-                          shadowColor: '#000000',
-                          shadowOffset: {width: 0, height: 2},
-                          shadowOpacity: 0.3,
-                          shadowRadius: 4,
-                        },
-                        android: {
-                          elevation: 4,
-                        },
-                      }),
-                    }}>
-                    <TouchableOpacity onPress={newPAYMENT}>
-                      <Text
-                        style={{
-                          fontSize: 14,
-                          fontWeight: '700',
-                          color: COLORS.BLACK,
-                        }}>
-                        Make Payment By Default Card
-                      </Text>
-                    </TouchableOpacity>
-                  </View>
+                  </>
+
                   {Platform.OS == 'android' ? (
                     <HorizontalLine style={styles.line} />
                   ) : (
@@ -654,7 +749,7 @@ export default function PaymentGateWay({navigation, route}) {
                             formattedValidTill =
                               validTill.slice(0, 2) + '/' + validTill.slice(2);
                           }
-                          console.log(formattedValidTill, 'asd');
+                       
                           // Update the valid till value
                           handleChange('validTill')(formattedValidTill);
                         }}
@@ -693,6 +788,73 @@ export default function PaymentGateWay({navigation, route}) {
                       />
                     </View>
                   </View>
+                  <View
+                    style={{
+                      flexDirection: 'row',
+                      justifyContent: 'space-between',
+                      alignContent: 'center',
+                    }}>
+                    <Input
+                      errors={couponerror}
+                      onChangeText={text => {
+                        setCoupen(text);
+                      }}
+                      value={coupon}
+                      touched={coupenStates}
+                      text="Coupon"
+                      mV={10}
+                      placeholder="AZVP901AD"
+                      bW={1}
+                      textWidth={ms(70)}
+                      placeholderTextColor={COLORS.HALFBLACK}
+                      w="half"
+                     // keyboardType="numeric"
+                      maxLength={20}
+                      colorText={color}
+                    />
+                    <View
+                      style={{
+                        backgroundColor: COLORS.GREEN,
+                        paddingHorizontal: 20,
+                        paddingVertical: 15,
+                        alignSelf: 'center',
+
+                        borderRadius: 12,
+                        ...Platform.select({
+                          ios: {
+                            shadowColor: '#000000',
+                            shadowOffset: {width: 0, height: 2},
+                            shadowOpacity: 0.3,
+                            shadowRadius: 4,
+                          },
+                          android: {
+                            elevation: 4,
+                          },
+                        }),
+                      }}>
+                      <TouchableOpacity
+                        onPress={() => {
+                          coupenDetail(coupon);
+                        }}
+                        style={{
+                          alignItems: 'center',
+                          alignSelf: 'center',
+                          backgroundColor: COLORS.GREEN,
+
+                          borderRadius: 12,
+                        }}>
+                        <Text
+                          style={{
+                            fontSize: 14,
+                            fontWeight: '700',
+                            textAlign: 'center',
+                            color: COLORS.BLACK,
+                          }}>
+                          Apply
+                        </Text>
+                      </TouchableOpacity>
+                    </View>
+                  </View>
                   <View style={styles.bottom_tab}>
                     <TouchableOpacity
                       onPress={() => navigation.goBack()}
@@ -700,6 +862,17 @@ export default function PaymentGateWay({navigation, route}) {
                         padding: 20,
                         backgroundColor: COLORS.GRAY,
                         borderRadius: 25,
+                        ...Platform.select({
+                          ios: {
+                            shadowColor: '#000000',
+                            shadowOffset: {width: 0, height: 2},
+                            shadowOpacity: 0.3,
+                            shadowRadius: 4,
+                          },
+                          android: {
+                            elevation: 4,
+                          },
+                        }),
                       }}>
                       <LeftIcon />
                     </TouchableOpacity>
@@ -708,7 +881,7 @@ export default function PaymentGateWay({navigation, route}) {
                       style={{
                         backgroundColor: COLORS.GREEN,
                         paddingHorizontal: 20,
-                        paddingVertical: 10,
+                        paddingVertical: 15,
                         borderRadius: 12,
                         ...Platform.select({
                           ios: {
@@ -753,7 +926,8 @@ const styles = StyleSheet.create({
   },
   mainDiv_container: {
     paddingHorizontal: 20,
-    // paddingTop: 30,
+
+    marginVertical: '10%',
   },
   mainDiv_state_ZIP: {
     flexDirection: 'row',
@@ -782,22 +956,21 @@ const styles = StyleSheet.create({
   },
   cardNumber_position: {
     position: 'absolute',
-    top: 120,
-    left: 30,
+    top: mvs(90),
+    left: ms(25),
   },
   text_div: {
     position: 'relative',
-    top: 45,
-    left: 0,
+    top: 35,
+    left: 10,
     flexDirection: 'row',
-    gap: 40,
+    gap: 25,
   },
   centeredView: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    marginTop: 22,
   },
   modalView: {
     margin: 20,
@@ -814,12 +987,13 @@ const styles = StyleSheet.create({
     shadowRadius: 4,
     elevation: 5,
     width: DIMENSIONS.SCREEN_WIDTH * 0.8,
+    alignItems:'center'
   },
   button_one: {
-    marginLeft: 80,
+
     marginTop: 20,
-    alignItems: 'flex-end',
-    justifyContent: 'flex-end',
+    alignItems: 'center',
+  justifyContent: 'center',
   },
   button: {
     padding: 10,
@@ -831,6 +1005,8 @@ const styles = StyleSheet.create({
   },
   buttonClose: {
     backgroundColor: COLORS.GREEN,
+    alignItems:'center',
+    alignSelf:'center'
   },
   textStyle: {
     color: 'black',
@@ -845,5 +1021,24 @@ const styles = StyleSheet.create({
     fontWeight: '400',
     fontSize: 24,
     color: '#000000',
+  },
+  dotsContainer: {
+    flexDirection: 'row',
+    marginHorizontal: mobileW * 0.37,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginTop: 10,
+  },
+  activeDot: {
+    backgroundColor: COLORS.GREEN, // Customize the active dot color as desired
+  },
+  dot: {
+    width: 10,
+    height: 10,
+    borderRadius: 5,
+    backgroundColor: '#CCCCCC',
+    // justifyContent: 'center',
+    alignItems: 'center',
+    marginHorizontal: 3,
   },
 });

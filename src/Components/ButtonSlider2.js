@@ -2,7 +2,7 @@
 /* eslint-disable eqeqeq */
 /* eslint-disable no-unused-vars */
 /* eslint-disable prettier/prettier */
-import React from 'react';
+import React, {useEffect} from 'react';
 import {
   StyleSheet,
   View,
@@ -25,9 +25,12 @@ import Toast from 'react-native-toast-message';
 import {PLATFORM_IOS} from '../constants/DIMENSIONS';
 
 const ButtonSlider2 = () => {
-  const {getUserID, getChargerStatus} = useSelector(state => state);
+  const {getUserID, getChargerStatus,subscriptionStatus} = useSelector(state => state);
+
   const dispatch = useDispatch();
   const [isLoading, setIsLoading] = useState(false);
+
+ 
 
   const handleComplete = Data => {
     setIsLoading(true);
@@ -35,17 +38,14 @@ const ButtonSlider2 = () => {
       axios
         .post(`${API}/charger_ON/${getUserID}`)
         .then(res => {
-         
           if (res?.data.message === 'Device not connected with server') {
-            
             PLATFORM_IOS
               ? Toast.show({
-                text1: res?.data.message,
-              
-                position: 'top',
-                type: 'success',
-                duration: 500,
-             
+                  text1: res?.data.message,
+
+                  position: 'top',
+                  type: 'success',
+                  duration: 500,
                 })
               : ToastAndroid.show(res?.data.message, ToastAndroid.SHORT);
           }
@@ -61,26 +61,23 @@ const ButtonSlider2 = () => {
       axios
         .post(`${API}/charger_OFF/${getUserID}`)
         .then(res => {
-            
           if (res?.data.message === 'Device not connected with server') {
-            
             PLATFORM_IOS
-              ? Toast.show(
-                {
-                text1: res?.data.message,
-              
-                position: 'top',
-                type: 'success',
-                duration: 1000,
-                textStyle: {
-                  textAlign: 'center'
-                }
-                // {
-                //   type: 'success',
-                //   text1: res?.data.message,
-                  
-                // }
-             } )
+              ? Toast.show({
+                  text1: res?.data.message,
+
+                  position: 'top',
+                  type: 'success',
+                  duration: 1000,
+                  textStyle: {
+                    textAlign: 'center',
+                  },
+                  // {
+                  //   type: 'success',
+                  //   text1: res?.data.message,
+
+                  // }
+                })
               : ToastAndroid.show(res?.data.message, ToastAndroid.SHORT);
           }
           dispatch(setChargerStatus(res?.data));
@@ -95,15 +92,27 @@ const ButtonSlider2 = () => {
 
   return (
     <TouchableOpacity
+    // disabled={subscriptionStatus=='0'?false:true}
       onPress={() => {
-        if (
-          getChargerStatus.message == 'Online' ||
-          getChargerStatus.message == 'Charging'
-        ) {
-          handleComplete(1);
-        } else {
-          handleComplete(0);
+        if(subscriptionStatus=='1'){
+          PLATFORM_IOS
+          ? Toast.show({
+              type: 'success',
+              text1: 'Your Subscription is Paused',
+            })
+          : ToastAndroid.show('Your Subscription is Paused', ToastAndroid.SHORT);
+
+        }else{
+          if (
+            getChargerStatus.message == 'Online' ||
+            getChargerStatus.message == 'Charging'
+          ) {
+            handleComplete(1);
+          } else {
+            handleComplete(0);
+          }
         }
+       
       }}
       style={styles.container}>
       {isLoading && <ActivityLoader />}

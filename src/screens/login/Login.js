@@ -26,7 +26,7 @@ import {
   BackHandler,
 } from 'react-native';
 import {SafeAreaView} from 'react-native-safe-area-context';
-import notifee , { EventType } from '@notifee/react-native';
+import notifee, {EventType} from '@notifee/react-native';
 import React, {useState, useEffect} from 'react';
 import COLORS from '../../constants/COLORS';
 import Toast from 'react-native-toast-message';
@@ -58,6 +58,7 @@ import {
   setIsAuthorized,
   setBasePackage,
   setOverUsage,
+  setSubscriptionStatus,
 } from '../../redux/action';
 import axios from 'axios';
 import {navigationRef} from '../../../App';
@@ -77,19 +78,7 @@ export default function Login({navigation}) {
 
   const dispatch = useDispatch();
   const {getDeviceID, getGraphData} = useSelector(state => state);
-  const action1 = {
-    pressAction: {
-      id: 'action-1',
-      title: 'Action 1',
-    },
-  };
 
-  const action2 = {
-    pressAction: {
-      id: 'action-2',
-      title: 'Action 2',
-    },
-  };
   useEffect(() => {
     let unsubscribe = null;
     let token = 0;
@@ -116,7 +105,7 @@ export default function Login({navigation}) {
         console.log('FCM...', token);
         setToken(token);
         messaging().setBackgroundMessageHandler(async remoteMessage => {
-          
+          onDisplayNotification(remoteMessage);
         });
 
         messaging().onNotificationOpenedApp(remoteMessage => {
@@ -167,11 +156,7 @@ export default function Login({navigation}) {
         },
       ]);
     }
-    notifee.onBackgroundEvent(async ({ type, detail }) => {
-      if (type === EventType.ACTION_PRESS && detail.pressAction.id === 'like') {
-        console.log('User pressed the "Mark as read" action.');
-      }
-    });
+
     async function onDisplayNotification(data) {
       const channelId = await notifee.createChannel({
         id: 'default',
@@ -205,6 +190,24 @@ export default function Login({navigation}) {
             },
           ],
         },
+      });
+      notifee.onBackgroundEvent(async ({type, detail}) => {
+        if (
+          type === EventType.ACTION_PRESS &&
+          detail.pressAction.id === 'title'
+        ) {
+          console.log('User pressed the "Mark as read" action.');
+        } else {
+          console.log('User pressed the "Mark as read" action.');
+        }
+      });
+      notifee.onForegroundEvent(({type, detail}) => {
+        if (type === EventType.ACTION_PRESS && detail.pressAction.id) {
+          console.log(
+            'User pressed an action with the id: ',
+            detail.pressAction.id,
+          );
+        }
       });
 
       // if (Platform.OS == 'ios') {
@@ -354,8 +357,8 @@ export default function Login({navigation}) {
       //   // }
 
       //   // Create a channel (required for Android)
-     
-        androidData.channelId = channelId;
+
+      androidData.channelId = channelId;
 
       //   // Display a notification
       //   await notifee.displayNotification({
@@ -366,17 +369,17 @@ export default function Login({navigation}) {
       //       channelId: androidData, // Required for Android 8.0+
       //       actions: [action1, action2], // Add your actions here
       //     },
-          
+
       //   });
       // }
     }
 
     if (Platform.OS === 'android') {
       notificationService();
-      setCategories()
+      setCategories();
     } else {
       notificationService();
-      setCategories()
+      setCategories();
     }
     if (unsubscribe) {
       return unsubscribe;
@@ -477,6 +480,7 @@ export default function Login({navigation}) {
             // setInterval(() => {
             fetchGraphData(res.data?.user_id);
             // }, 300000);
+            
             fetchWeekGraphData(res.data?.user_id);
             fetchMonthGraphData(res.data?.user_id);
             fetchQuarterGraphData(res.data.user_id);
@@ -710,7 +714,8 @@ export default function Login({navigation}) {
     axios
       .get(`${API}/chargerstatus/${userId}`)
       .then(res => {
-        console.log('------22232323----', res?.data);
+        getSubscriptionStatus(userId)
+   
         dispatch(setChargerStatus(res?.data));
       })
       .catch(err => {
@@ -723,7 +728,7 @@ export default function Login({navigation}) {
       .get(`${API}/currentplan/${userId}`)
       .then(res => {
         setForLoading(false);
-
+        getSubscriptionStatus(userId)
         // if (res.data.data == 'Package details not found') {
         //   dispatch(setPurchaseData([]));
         // } else {
@@ -734,6 +739,17 @@ export default function Login({navigation}) {
       })
       .catch(err => {
         setForLoading(false);
+        console.log(err);
+      });
+  };
+  const getSubscriptionStatus = (data) => {
+    axios
+      .get(`${API}/planstatuspauseresume/${data}/`)
+      .then(res => {
+ 
+       dispatch(setSubscriptionStatus(res.data.PlanStatus));
+      })
+      .catch(err => {
         console.log(err);
       });
   };

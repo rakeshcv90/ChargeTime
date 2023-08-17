@@ -22,7 +22,12 @@ import {persistor} from '../../redux/store';
 import {useSelector} from 'react-redux';
 import {API} from '../../api/API';
 import {useDispatch} from 'react-redux';
-import {setLogout, setPurchaseData, userProfileData} from '../../redux/action';
+import {
+  setLogout,
+  setPurchaseData,
+  setSubscriptionStatus,
+  userProfileData,
+} from '../../redux/action';
 import axios from 'axios';
 import {setCardDetails} from '../../redux/action';
 import {ScrollView} from 'react-native-gesture-handler';
@@ -33,6 +38,7 @@ const mobileH = Math.round(Dimensions.get('screen').height);
 const Account = ({navigation}) => {
   const [allSavedCard, setSavedCard] = useState([]);
   const getUserID = useSelector(state => state.getUserID);
+
   // const [getData, setGetData] = useState([]);
   // const [apiResponse, setApiResponse] = useState(null);
   const user_ID = getUserID;
@@ -40,10 +46,11 @@ const Account = ({navigation}) => {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    //  console.log('data for this User:---------', userRegisterData);
+
     handleAllGetCard();
     userDetails();
     getPlanCurrent();
+    getSubscriptionStatus();
     // userSubscription();
     //  userSubsEnergy();
     const backHandler = BackHandler.addEventListener(
@@ -55,6 +62,18 @@ const Account = ({navigation}) => {
   }, []);
   const handleBackButton = () => {
     return true;
+  };
+
+  const getSubscriptionStatus = () => {
+    axios
+      .get(`${API}/planstatuspauseresume/${getUserID}/`)
+      .then(res => {
+    
+       dispatch(setSubscriptionStatus(res.data.PlanStatus));
+      })
+      .catch(err => {
+        console.log(err);
+      });
   };
   const Screen = [
     {
@@ -116,14 +135,14 @@ const Account = ({navigation}) => {
       const response = await fetch(`${API}/userexisting/${user_ID}`);
       const result = await response.json();
 
+
       if (result[0].message === 'sucess') {
-        console.log('wwwwww', result);
+
         //  setUserData(result);
         dispatch(userProfileData(result));
-        console.log(result);
+   
       } else {
         console.log('iiiiiiiiiiii');
-
       }
       // setLocationMap(result);
     } catch (error) {
@@ -138,9 +157,10 @@ const Account = ({navigation}) => {
       .then(res => {
         // setForLoading(false);
         // setModalVisible(false);
+
         if (res.data.data === 'Package details not found') {
           dispatch(setPurchaseData(res.data));
-          console.log('-------------------', res.data);
+        
           // setGetData(res.data);
           // dispatch(setPackageStatus(false));
         } else {
@@ -150,15 +170,15 @@ const Account = ({navigation}) => {
       })
       .catch(err => {
         // setForLoading(false);
-        console.log(err);
+        console.log('xcvvcxvcxv', err);
       });
   };
   const handleAllGetCard = async () => {
     try {
       const response = await fetch(`${API}/getcarddetails/${user_ID}`);
       const result = await response.json();
-      // console.log("Result", result[0].sort((b, a) => a.status - b.status))
-      console.log('handle all card...', result);
+   
+
       if (result[0]?.length > 0) {
         setSavedCard(result[0].sort((b, a) => a.status - b.status));
         const statusOneObjects = result[0].filter(item => item.status === 1);
@@ -172,10 +192,6 @@ const Account = ({navigation}) => {
   };
   const handleLinkPress = screen => {
     navigation.navigate(screen, {allSavedCard});
-
-
-
- 
   };
 
   return (
@@ -268,8 +284,8 @@ const Account = ({navigation}) => {
       </View>
     </SafeAreaView>
   );
-  };
- 
+};
+
 const styles = StyleSheet.create({
   row: {
     width: DIMENSIONS.SCREEN_WIDTH * 0.95,

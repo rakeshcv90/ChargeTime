@@ -30,32 +30,48 @@ import {navigationRef} from '../../../App';
 import ActivityLoader from '../../Components/ActivityLoader';
 import {useDispatch} from 'react-redux';
 import {setDataForPayment} from '../../redux/action';
+import DownGradeData from '../downgrade/DownGradeData';
 
 const mobileW = Math.round(Dimensions.get('screen').width);
 
 export default function PlanSummary({route, navigation}) {
-  console.log(route.params.data, 'jj');
   const [tax, setTax] = useState('');
   const [totalSalexTax, setTotalSalextax] = useState('');
-
-  //const [data,setData] = useState('');
+  const [voucherStatus, setvoucherStatus] = useState(false);
   const dispatch = useDispatch();
 
   const [data, setData] = useState('');
   const [forLoading, setForLoading] = useState(false);
+  const [data1,setData1]=useState('');
+  DownGradeData;
+  const {id, package_name, total_price, salestax, stripe_voucher_id} =
+    route.params?.data;
 
-  const {id, package_name, total_price, salestax} = route.params?.data;
 
   useEffect(() => {
     getPlanSummary();
+    if (stripe_voucher_id) {
+      getVoucherDetails(stripe_voucher_id);
+    }
   }, []);
-
+  const getVoucherDetails = data => {
+    axios
+      .get(`${API}/couponret/${data}`)
+      .then(res => {
+        console.log('DVDDDF', res.data);
+        setvoucherStatus(res.data.valid);
+      })
+      .catch(err => {
+        console.log(err);
+      });
+  };
   const getPlanSummary = () => {
     setForLoading(true);
     axios
       .get(`${API}/planPurchase/${id}/${package_name}`)
       .then(res => {
-        console.log(`${API}/planPurchase/${id}/${package_name}`);
+ 
+        setData1(res.data)
         setForLoading(false);
         setData(res.data.locations);
         dispatch(setDataForPayment(res.data?.locations[0]));
@@ -179,6 +195,17 @@ export default function PlanSummary({route, navigation}) {
                 padding: 20,
                 backgroundColor: COLORS.GRAY,
                 borderRadius: 25,
+                ...Platform.select({
+                  ios: {
+                    shadowColor: '#000000',
+                    shadowOffset: {width: 0, height: 2},
+                    shadowOpacity: 0.3,
+                    shadowRadius: 4,
+                  },
+                  android: {
+                    elevation: 4,
+                  },
+                }),
               }}>
               <LeftIcon />
             </TouchableOpacity>
@@ -189,11 +216,24 @@ export default function PlanSummary({route, navigation}) {
                 paddingHorizontal: 20,
                 paddingVertical: 10,
                 borderRadius: 12,
+                ...Platform.select({
+                  ios: {
+                    shadowColor: '#000000',
+                    shadowOffset: {width: 0, height: 2},
+                    shadowOpacity: 0.3,
+                    shadowRadius: 4,
+                  },
+                  android: {
+                    elevation: 4,
+                  },
+                }),
               }}>
               <TouchableOpacity
                 onPress={() =>
                   navigation.navigate('PaymentGateWay', {
                     data: route.params.data,
+                    voucherStatus: voucherStatus,
+                    details: data1,
                   })
                 }>
                 <Text

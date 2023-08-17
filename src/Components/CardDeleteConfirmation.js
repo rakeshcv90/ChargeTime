@@ -6,6 +6,7 @@ import {
   StyleSheet,
   Text,
   View,
+  TouchableOpacity
 } from 'react-native';
 import React, {useState} from 'react';
 import COLORS from '../constants/COLORS';
@@ -13,7 +14,7 @@ import COLORS from '../constants/COLORS';
 import {DIMENSIONS} from '../constants/DIMENSIONS';
 
 import AnimatedLottieView from 'lottie-react-native';
-import {TouchableOpacity} from 'react-native-gesture-handler';
+
 
 const CardDeleteConfirmation = ({ isVisible, onClose, onPress }) => {
   return (
@@ -30,7 +31,7 @@ const CardDeleteConfirmation = ({ isVisible, onClose, onPress }) => {
             source={{
               uri: 'https://assets6.lottiefiles.com/private_files/lf30_mf7q9oho.json',
             }} // Replace with your animation file
-            //autoPlay
+            autoPlay
             loop
             style={{width: 200, height: 150}}
           />

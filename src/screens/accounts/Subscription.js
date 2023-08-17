@@ -1,11 +1,3 @@
-/* eslint-disable prettier/prettier */
-/* eslint-disable no-dupe-keys */
-/* eslint-disable no-unused-vars */
-/* eslint-disable react-hooks/exhaustive-deps */
-/* eslint-disable react/no-unstable-nested-components */
-/* eslint-disable eqeqeq */
-/* eslint-disable react-native/no-inline-styles */
-/* eslint-disable no-undef */
 import {
   View,
   Text,
@@ -40,6 +32,7 @@ import {
   setPackageStatus,
   setPlanStatus,
   setPurchaseData,
+  setSubscriptionStatus,
 } from '../../redux/action';
 import {userSubsData} from '../../redux/action';
 
@@ -50,10 +43,16 @@ import Remaining from '../../Components/Remaining';
 import ActivityLoader from '../../Components/ActivityLoader';
 
 const mobileW = Math.round(Dimensions.get('screen').width);
-const Subscription = () => {
+const Subscription = ({navigation, route}) => {
   const getUserID = useSelector(state => state.getUserID);
   const getPurchaseData = useSelector(state => state.getPurchaseData);
-  const {getChargerStatus, getDeviceID} = useSelector(state => state);
+  const {getChargerStatus, getDeviceID,subscriptionStatus} = useSelector(state => state);
+
+  const [text, setText] = useState(
+    subscriptionStatus  == '0'
+      ? 'Pause Subscription'
+      : 'Resume Subscription',
+  );
 
   const [forLoading, setForLoading] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
@@ -77,7 +76,7 @@ const Subscription = () => {
         },
       });
       // const result = await response.json();
-      console.log(response.data, 'ttt');
+
       if (response.data.message == 'Plan Cancelled Successfully') {
         const updatedData = [
           {
@@ -104,10 +103,12 @@ const Subscription = () => {
               'Plan Cancelled Successfully',
               ToastAndroid.SHORT,
             );
+        setModalVisible(false);
       }
     } catch (error) {
       setForLoading(false);
       console.error(error);
+      setModalVisible(false);
     }
   };
   const getPlanCurrent = () => {
@@ -117,9 +118,10 @@ const Subscription = () => {
       .then(res => {
         setForLoading(false);
         setModalVisible(false);
-        if (res.data.data == 'Package details not found') {
+
+        if (res.data.data == 'Package not found') {
           dispatch(setPurchaseData(res.data));
-          // console.log("-------------------",res.data)
+
           setGetData(res.data);
           dispatch(setPackageStatus(false));
         } else {
@@ -199,8 +201,60 @@ const Subscription = () => {
       </Modal>
     );
   };
+  const getSubscriptionStatus = () => {
+    setForLoading(true);
+    if (text == 'Pause Subscription') {
+      axios
+        .get(`${API}/subscription_pause/${getUserID}`)
+        .then(res => {
+          setForLoading(false);
+          getSubscriptionStatus1();
 
-
+          PLATFORM_IOS
+            ? Toast.show({
+                type: 'success',
+                text1: res.data.subscription,
+              })
+            : ToastAndroid.show(res.data.subscription, ToastAndroid.SHORT);
+        })
+        .catch(err => {
+          setForLoading(false);
+          console.log(err);
+        });
+    } else {
+      axios
+        .get(`${API}/subscription_resume/${getUserID}`)
+        .then(res => {
+          setForLoading(false);
+          getSubscriptionStatus1();
+          PLATFORM_IOS
+            ? Toast.show({
+                type: 'success',
+                text1: res.data.subscription,
+              })
+            : ToastAndroid.show(res.data.subscription, ToastAndroid.SHORT);
+        })
+        .catch(err => {
+          setForLoading(false);
+          console.log(err);
+        });
+    }
+  };
+  const getSubscriptionStatus1 = () => {
+    axios
+      .get(`${API}/planstatuspauseresume/${getUserID}/`)
+      .then(res => {
+        if(res.data.PlanStatus=='0'){
+          setText('Pause Subscription')
+        }else{
+          setText('Resume Subscription')
+        }
+        dispatch(setSubscriptionStatus(res.data.PlanStatus));
+      })
+      .catch(err => {
+        console.log(err);
+      });
+  };
   return (
     <>
       <SafeAreaView style={{backgroundColor: COLORS.CREAM, flex: 1}}>
@@ -216,7 +270,7 @@ const Subscription = () => {
           </View>
         )}
 
-        {getPurchaseData.data == 'Package details not found' ? (
+        {getPurchaseData.data == 'Package not found' ? (
           <View
             style={{
               justifyContent: 'center',
@@ -326,23 +380,34 @@ const Subscription = () => {
 
             <View
               style={{
-                flexDirection: 'row',
-                justifyContent: 'center',
-                marginHorizontal: 20,
+                justifyContent: 'space-between',
+                marginHorizontal: 10,
                 paddingBottom: 30,
               }}>
               <TouchableOpacity
+                activeOpacity={0.9}
                 onPress={() => {
                   setModalVisible(true);
                 }}
                 style={{
                   marginTop: 15,
-                  marginRight: 170,
+
                   backgroundColor: '#F84E4E',
                   alignItems: 'center',
                   padding: 13,
                   borderRadius: 10,
-                  width: '50%',
+
+                  ...Platform.select({
+                    ios: {
+                      shadowColor: '#000000',
+                      shadowOffset: {width: 0, height: 2},
+                      shadowOpacity: 0.3,
+                      shadowRadius: 4,
+                    },
+                    android: {
+                      elevation: 4,
+                    },
+                  }),
                 }}>
                 <Text
                   style={{
@@ -351,6 +416,39 @@ const Subscription = () => {
                     fontWeight: '700',
                   }}>
                   Cancel Subscription
+                </Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                activeOpacity={0.9}
+                onPress={() => {
+                  getSubscriptionStatus();
+                }}
+                style={{
+                  marginTop: 15,
+
+                  backgroundColor: COLORS.GREEN,
+                  alignItems: 'center',
+                  padding: 13,
+                  borderRadius: 10,
+                  ...Platform.select({
+                    ios: {
+                      shadowColor: '#000000',
+                      shadowOffset: {width: 0, height: 2},
+                      shadowOpacity: 0.3,
+                      shadowRadius: 4,
+                    },
+                    android: {
+                      elevation: 4,
+                    },
+                  }),
+                }}>
+                <Text
+                  style={{
+                    color: COLORS.BLACK,
+                    fontSize: 14,
+                    fontWeight: '700',
+                  }}>
+                  {text}
                 </Text>
               </TouchableOpacity>
             </View>
