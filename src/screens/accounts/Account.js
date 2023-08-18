@@ -190,7 +190,7 @@ const Account = ({navigation}) => {
 
   return (
     // eslint-disable-next-line react-native/no-inline-styles
-    <SafeAreaView style={{backgroundColor: COLORS.CREAM, flex: 1}}>
+    <View style={{backgroundColor: COLORS.CREAM, flex: 1}}>
       <View style={styles.main_div}>
         <View style={styles.row}>
           <Text style={styles.heading}>Account</Text>
@@ -299,7 +299,7 @@ const Account = ({navigation}) => {
           </View>
         </ScrollView>
       </View>
-    </SafeAreaView>
+    </View>
   );
 };
 

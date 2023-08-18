@@ -237,6 +237,7 @@ export default function PaymentGateWay({navigation, route}) {
   
    
       if (result[0]?.length > 0) {
+        console.log(result[0])
         setSavedCard(result[0].sort((b, a) => a.status - b.status));
     
         const statusOneObjects = result[0].filter(item => item.status === 1);
@@ -991,7 +992,8 @@ const styles = StyleSheet.create({
     width: mobileW,
 
     height: mobileH,
-    marginVertical: '10%',
+    marginBottom: '10%',
+    marginTop: '5%',
 
     // paddingTop: 30,
   },
