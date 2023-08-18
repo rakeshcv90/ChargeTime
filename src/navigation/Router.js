@@ -159,7 +159,7 @@ const DrawerNavigation = () => {
                         : require('../../assets/images/energy_green.png')
                     }
                     style={{
-                      width: 25,
+                      width: 28,
                       height: 30,
                       padding: 0,
                       margin: -10,
@@ -174,7 +174,7 @@ const DrawerNavigation = () => {
                 marginTop: -20,
                 paddingLeft: 10,
                 width: '200%',
-                marginLeft: -15,
+                marginLeft: -17,
               },
               drawerActiveTintColor: 'black',
               title: 'Energy',

@@ -167,13 +167,11 @@ export default function PaymentGateWay({navigation, route}) {
     try {
       const response = await fetch(`${API}/getcarddetails/${getUserID}`);
       const result = await response.json();
-  
+
       if (result[0]?.length > 0) {
-      
         const statusOneObjects = result[0].filter(item => item.status === 1);
-     
+
         setCard(statusOneObjects);
-   
       } else {
       }
     } catch (error) {
@@ -198,21 +196,22 @@ export default function PaymentGateWay({navigation, route}) {
     payload.append('price', getDataForPayment.total_price);
     payload.append('price_stripe_id', getDataForPayment.price_stripe_id);
     payload.append('user_id', getUserID);
-    payload.append('voucherCode',coupon==null?'':coupon );
-   
+    payload.append('voucherCode', coupon == null ? '' : coupon);
+    console.log(payload);
     try {
       const response = await axios.post(`${API}/checkout`, payload, {
         headers: {
           'Content-Type': 'multipart/form-data',
         },
       });
-   
+
       if ((response.data.status = 'success')) {
         setLoader(false);
         setModalVisible(true);
       }
     } catch (err) {
       setLoader(false);
+      console.log(err.response.data.message);
       if (err.response) {
         PLATFORM_IOS
           ? Toast.show({
@@ -220,8 +219,6 @@ export default function PaymentGateWay({navigation, route}) {
               text1: 'Invalid Card Details !',
             })
           : ToastAndroid.show('Invalid Card Details !', ToastAndroid.SHORT);
-    
-   
       } else {
         console.log(err);
       }
@@ -244,9 +241,8 @@ export default function PaymentGateWay({navigation, route}) {
     payload.append('price', getDataForPayment.total_price);
     payload.append('price_stripe_id', getDataForPayment.price_stripe_id);
     payload.append('user_id', getUserID);
-    payload.append('voucherCode',coupon==null?'':coupon);
+    payload.append('voucherCode', coupon == null ? '' : coupon);
 
-   
     try {
       const response = await axios.post(`${API}/checkout`, payload, {
         headers: {
@@ -280,7 +276,6 @@ export default function PaymentGateWay({navigation, route}) {
               'Server Busy Please Try Later.',
               ToastAndroid.SHORT,
             );
-  
       } else {
         console.log(err);
       }
@@ -292,10 +287,10 @@ export default function PaymentGateWay({navigation, route}) {
       .get(`${API}/devicecheck/${getUserID}}`)
       .then(res => {
         setModalVisible(false);
-     
+
         if (res.data.status == 'True') {
           // dispatch(setDeviceId(res.data.message));
-    
+
           if (route.params.purchageData == 'DOWNGRADE') {
             // PlanStatus();
 
@@ -326,8 +321,6 @@ export default function PaymentGateWay({navigation, route}) {
     axios
       .get(`${API}/currentplan/${getUserID}`)
       .then(res => {
-    
-
         if (res.data.data == 'Package details not found') {
           dispatch(setPurchaseData(res.data));
         } else {
@@ -372,7 +365,7 @@ export default function PaymentGateWay({navigation, route}) {
     try {
       const response = await fetch(`${API}/getcarddetails/${getUserID}`);
       const result = await response.json();
-    
+
       if (result[0]?.length > 0) {
         setSavedCard(result[0].sort((b, a) => a.status - b.status));
         const statusOneObjects = result[0].filter(item => item.status === 1);
@@ -401,13 +394,11 @@ export default function PaymentGateWay({navigation, route}) {
     }
   };
   const coupenDetail = data => {
- 
-    if(data==null){
+    if (data == null) {
       setCoupenError('Enter Coupon Code');
       setCoupenStates(true);
       setColor(false);
-    }
-   else if (data.trim().length <= 0) {
+    } else if (data.trim().length <= 0) {
       setCoupenError('Enter Coupon Code');
       setCoupenStates(true);
       setColor(false);
@@ -418,15 +409,13 @@ export default function PaymentGateWay({navigation, route}) {
           `${API}/couponpricetblvalid/${data}/${route.params.details.locations[0].price_stripe_id}`,
         )
         .then(res => {
-         
           setLoader(false);
-          if ( res.data.couponstatus=='true' && voucherStatus) {
+          if (res.data.couponstatus == 'true' && voucherStatus) {
             setCoupenError('Coupon Applied!');
             setCoupenStates(true);
             setColor(true);
           } else {
-        
-            setCoupenError('Coupon Expiered/Invalid!');
+            setCoupenError('Coupon Expired/Invalid!');
             setCoupenStates(true);
             setColor(false);
           }
@@ -506,174 +495,257 @@ export default function PaymentGateWay({navigation, route}) {
                 setFieldValue,
               }) => (
                 <KeyboardAvoidingView behavior="padding">
-                  <>
-                    <Carousel
-                      //ref={(c) => { this._carousel = c; }}
-                      style={{flexGrow: 0}}
-                      width={420}
-                      height={DIMENSIONS.SCREEN_WIDTH * 0.8}
-                      data={allSavedCard}
-                      // defaultIndex={focusIndex >= 0 ? focusIndex : 0}
-                      renderItem={({item, index}) => {
-                        return (
-                          <View style={{}}>
-                            <ImageBackground
-                              source={getCardType(item.card_number)}
-                              resizeMode="contain"
-                              style={{
-                                width: DIMENSIONS.SCREEN_WIDTH * 0.9,
+                  {allSavedCard.length > 0 ? (
+                    <>
+                      <Carousel
+                        //ref={(c) => { this._carousel = c; }}
+                        style={{flexGrow: 0}}
+                        width={420}
+                        height={DIMENSIONS.SCREEN_WIDTH * 0.8}
+                        data={allSavedCard}
+                        // defaultIndex={focusIndex >= 0 ? focusIndex : 0}
+                        renderItem={({item, index}) => {
+                          return (
+                            <View style={{}}>
+                              <ImageBackground
+                                source={getCardType(item.card_number)}
+                                resizeMode="contain"
+                                style={{
+                                  width: DIMENSIONS.SCREEN_WIDTH * 0.9,
 
-                                height: 210,
-                              }}>
-                              <View style={styles.cardNumber_position}>
-                                <Text
-                                  style={{
-                                    color: '#fff',
-                                    fontWeight: '600',
-                                    fontSize: ms(20),
-                                  }}>
-                                  {String(item.card_number).replace(
-                                    /^(\d{12})(\d{4})$/,
-                                    'xxxx xxxx xxxx $2',
-                                  )}
-                                </Text>
-                                <View style={styles.text_div}>
-                                  <View style={{gap: ms(5), width: ms(100)}}>
-                                    <Text
-                                      style={{
-                                        color: 'gray',
-                                        fontWeight: '600',
-                                        fontSize: 8,
-                                      }}>
-                                      Card Holder
-                                    </Text>
-                                    <Text
-                                      style={{
-                                        color: '#fff',
-                                        fontWeight: '600',
-                                        fontSize: 13,
-                                      }}>
-                                      {String(item.cust_name)}
-                                    </Text>
-                                  </View>
-                                  <View style={{gap: ms(5)}}>
-                                    <Text
-                                      style={{
-                                        fontWeight: '600',
-                                        fontSize: 8,
-                                        color: 'gray',
-                                      }}>
-                                      Expires
-                                    </Text>
-                                    <Text
-                                      style={{
-                                        color: '#fff',
-                                        fontWeight: '600',
-                                        fontSize: 13,
-                                      }}>
-                                      {String(
-                                        item.card_exp_month +
-                                          '/' +
-                                          item.card_exp_year,
-                                      )}
-                                    </Text>
-                                  </View>
-                                  <View style={{gap: 5}}>
-                                    <Text
-                                      style={{
-                                        fontWeight: '600',
-                                        fontSize: 8,
-                                        color: 'gray',
-                                      }}>
-                                      CVV
-                                    </Text>
-                                    <Text
-                                      style={{
-                                        color: '#fff',
-                                        fontWeight: '600',
-                                        fontSize: 13,
-                                      }}>
-                                      {/* {String(item.card_cvc)} */}
-                                      {item.card_cvc
-                                        ? '*'.repeat(
-                                            String(item.card_cvc).length,
-                                          )
-                                        : null}
-                                    </Text>
+                                  height: 210,
+                                }}>
+                                <View style={styles.cardNumber_position}>
+                                  <Text
+                                    style={{
+                                      color: '#fff',
+                                      fontWeight: '600',
+                                      fontSize: ms(20),
+                                    }}>
+                                    {String(item.card_number).replace(
+                                      /^(\d{12})(\d{4})$/,
+                                      'xxxx xxxx xxxx $2',
+                                    )}
+                                  </Text>
+                                  <View style={styles.text_div}>
+                                    <View style={{gap: ms(5), width: ms(100)}}>
+                                      <Text
+                                        style={{
+                                          color: 'gray',
+                                          fontWeight: '600',
+                                          fontSize: 8,
+                                        }}>
+                                        Card Holder
+                                      </Text>
+                                      <Text
+                                        style={{
+                                          color: '#fff',
+                                          fontWeight: '600',
+                                          fontSize: 13,
+                                        }}>
+                                        {String(item.cust_name)}
+                                      </Text>
+                                    </View>
+                                    <View style={{gap: ms(5)}}>
+                                      <Text
+                                        style={{
+                                          fontWeight: '600',
+                                          fontSize: 8,
+                                          color: 'gray',
+                                        }}>
+                                        Expires
+                                      </Text>
+                                      <Text
+                                        style={{
+                                          color: '#fff',
+                                          fontWeight: '600',
+                                          fontSize: 13,
+                                        }}>
+                                        {String(
+                                          item.card_exp_month +
+                                            '/' +
+                                            item.card_exp_year,
+                                        )}
+                                      </Text>
+                                    </View>
+                                    <View style={{gap: 5}}>
+                                      <Text
+                                        style={{
+                                          fontWeight: '600',
+                                          fontSize: 8,
+                                          color: 'gray',
+                                        }}>
+                                        CVV
+                                      </Text>
+                                      <Text
+                                        style={{
+                                          color: '#fff',
+                                          fontWeight: '600',
+                                          fontSize: 13,
+                                        }}>
+                                        {/* {String(item.card_cvc)} */}
+                                        {item.card_cvc
+                                          ? '*'.repeat(
+                                              String(item.card_cvc).length,
+                                            )
+                                          : null}
+                                      </Text>
+                                    </View>
                                   </View>
                                 </View>
-                              </View>
-                            </ImageBackground>
-                            <View
-                              style={{
-                                backgroundColor: COLORS.GREEN,
-                                marginLeft: -70,
-                                //height: DIMENSIONS.SCREEN_HEIGHT * 0.05,
-                                alignItems: 'center',
-                                marginVertical: 10,
-                                justifyContent: 'center',
-                                alignSelf: 'center',
-                                padding: 15,
-                                borderRadius: 12,
-                                ...Platform.select({
-                                  ios: {
-                                    shadowColor: '#000000',
-                                    shadowOffset: {width: 0, height: 2},
-                                    shadowOpacity: 0.3,
-                                    shadowRadius: 4,
-                                  },
-                                  android: {
-                                    elevation: 4,
-                                  },
-                                }),
-                              }}>
-                              <TouchableOpacity
-                                onPress={() => newPAYMENT(item)}>
-                                <Text
-                                  style={{
-                                    fontSize: 14,
-                                    fontWeight: '700',
-                                    color: COLORS.BLACK,
-                                  }}>
-                                  {item.status == 1
-                                    ? `Make Payment By Default Card`
-                                    : 'Make Payment By Save Card'}
-                                </Text>
-                              </TouchableOpacity>
-                            </View>
-                          </View>
-                        );
-                      }}
-                      // sliderWidth={400}
-                      // itemWidth={400}
-                      loop={false}
-                      onSnapToItem={index => {
-                        setCurrentCard(allSavedCard[index]);
-                        setFocusedIndex(index);
-                      }}
-                    />
-
-                    <View style={styles.dotsContainer}>
-                      {allSavedCard &&
-                        allSavedCard.length > 0 &&
-                        allSavedCard.map((item, index) => {
-                          if (index === 0 && !currentCard) {
-                            return (
-                              <View style={[styles.dot, styles.activeDot]} />
-                            );
-                          } else {
-                            return (
+                              </ImageBackground>
                               <View
-                                style={[
-                                  styles.dot,
-                                  index === focusIndex && styles.activeDot,
-                                ]}
-                              />
-                            );
-                          }
-                        })}
-                    </View>
-                  </>
+                                style={{
+                                  backgroundColor: COLORS.GREEN,
+                                  marginLeft: -70,
+                                  //height: DIMENSIONS.SCREEN_HEIGHT * 0.05,
+                                  alignItems: 'center',
+                                  marginVertical: 10,
+                                  justifyContent: 'center',
+                                  alignSelf: 'center',
+                                  padding: 15,
+                                  borderRadius: 12,
+                                  ...Platform.select({
+                                    ios: {
+                                      shadowColor: '#000000',
+                                      shadowOffset: {width: 0, height: 2},
+                                      shadowOpacity: 0.3,
+                                      shadowRadius: 4,
+                                    },
+                                    android: {
+                                      elevation: 4,
+                                    },
+                                  }),
+                                }}>
+                                <TouchableOpacity
+                                  onPress={() => newPAYMENT(item)}>
+                                  <Text
+                                    style={{
+                                      fontSize: 14,
+                                      fontWeight: '700',
+                                      color: COLORS.BLACK,
+                                    }}>
+                                    {item.status == 1
+                                      ? `Make Payment By Default Card`
+                                      : 'Make Payment By Save Card'}
+                                  </Text>
+                                </TouchableOpacity>
+                              </View>
+                            </View>
+                          );
+                        }}
+                        // sliderWidth={400}
+                        // itemWidth={400}
+                        loop={false}
+                        onSnapToItem={index => {
+                          setCurrentCard(allSavedCard[index]);
+                          setFocusedIndex(index);
+                        }}
+                      />
+
+                      <View style={styles.dotsContainer}>
+                        {allSavedCard &&
+                          allSavedCard.length > 0 &&
+                          allSavedCard.map((item, index) => {
+                            if (index === 0 && !currentCard) {
+                              return (
+                                <View style={[styles.dot, styles.activeDot]} />
+                              );
+                            } else {
+                              return (
+                                <View
+                                  style={[
+                                    styles.dot,
+                                    index === focusIndex && styles.activeDot,
+                                  ]}
+                                />
+                              );
+                            }
+                          })}
+                      </View>
+                    </>
+                  ) : (
+                    <ImageBackground
+                      source={require('../../../assets/images/visaCard.png')}
+                      resizeMode="contain"
+                      style={{
+                        width: DIMENSIONS.SCREEN_WIDTH * 0.9,
+                        height: 210,
+                        marginBottom: 50
+                      }}>
+                      <View style={styles.cardNumber_position}>
+                        <Text
+                          style={{
+                            color: '#fff',
+                            fontWeight: '600',
+                            fontSize: 20,
+                          }}>
+                          {values.cardNumber}
+                          {/* {values.cardNumber+'    '+allSavedCard.length} */}
+                        </Text>
+                        <View style={styles.text_div}>
+                          <View style={{gap: 5, width: 100}}>
+                            <Text
+                              style={{
+                                color: 'gray',
+                                fontWeight: '600',
+                                fontSize: 8,
+                              }}>
+                              Card Holder
+                            </Text>
+
+                            <Text
+                              style={{
+                                color: '#fff',
+                                fontWeight: '600',
+                                fontSize: 13,
+                              }}>
+                              {values.cardHolderName}
+                            </Text>
+                          </View>
+                          <View style={{gap: 5}}>
+                            <Text
+                              style={{
+                                fontWeight: '600',
+                                fontSize: 8,
+                                color: 'gray',
+                              }}>
+                              Expires
+                            </Text>
+
+                            <Text
+                              style={{
+                                color: '#fff',
+                                fontWeight: '600',
+                                fontSize: 13,
+                              }}>
+                              {values.validTill}
+                            </Text>
+                          </View>
+                          <View style={{gap: 5}}>
+                            <Text
+                              style={{
+                                fontWeight: '600',
+                                fontSize: 8,
+                                color: 'gray',
+                              }}>
+                              CVV
+                            </Text>
+                            <Text
+                              style={{
+                                color: '#fff',
+                                fontWeight: '600',
+                                fontSize: 13,
+                              }}>
+                              {values.cvv
+                                ? '*'.repeat(String(values.cvv).length)
+                                : null}
+                            </Text>
+                          </View>
+                        </View>
+                      </View>
+                    </ImageBackground>
+                  )}
 
                   {Platform.OS == 'android' ? (
                     <HorizontalLine style={styles.line} />
@@ -749,7 +821,7 @@ export default function PaymentGateWay({navigation, route}) {
                             formattedValidTill =
                               validTill.slice(0, 2) + '/' + validTill.slice(2);
                           }
-                       
+
                           // Update the valid till value
                           handleChange('validTill')(formattedValidTill);
                         }}
@@ -808,7 +880,7 @@ export default function PaymentGateWay({navigation, route}) {
                       textWidth={ms(70)}
                       placeholderTextColor={COLORS.HALFBLACK}
                       w="half"
-                     // keyboardType="numeric"
+                      // keyboardType="numeric"
                       maxLength={20}
                       colorText={color}
                     />
@@ -927,7 +999,8 @@ const styles = StyleSheet.create({
   mainDiv_container: {
     paddingHorizontal: 20,
 
-    marginVertical: '10%',
+    marginBottom: '10%',
+    marginTop: '5%',
   },
   mainDiv_state_ZIP: {
     flexDirection: 'row',
@@ -987,13 +1060,12 @@ const styles = StyleSheet.create({
     shadowRadius: 4,
     elevation: 5,
     width: DIMENSIONS.SCREEN_WIDTH * 0.8,
-    alignItems:'center'
+    alignItems: 'center',
   },
   button_one: {
-
     marginTop: 20,
     alignItems: 'center',
-  justifyContent: 'center',
+    justifyContent: 'center',
   },
   button: {
     padding: 10,
@@ -1005,8 +1077,8 @@ const styles = StyleSheet.create({
   },
   buttonClose: {
     backgroundColor: COLORS.GREEN,
-    alignItems:'center',
-    alignSelf:'center'
+    alignItems: 'center',
+    alignSelf: 'center',
   },
   textStyle: {
     color: 'black',

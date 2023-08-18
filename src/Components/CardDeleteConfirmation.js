@@ -49,7 +49,7 @@ const CardDeleteConfirmation = ({ isVisible, onClose, onPress }) => {
               style={{
                 backgroundColor: COLORS.GREEN,
                 alignItems: 'center',
-                padding: 13,
+                padding: 10,
                 borderRadius: 10,
 
                 ...Platform.select({
@@ -71,7 +71,7 @@ const CardDeleteConfirmation = ({ isVisible, onClose, onPress }) => {
               style={{
                 backgroundColor: 'red',
                 alignItems: 'center',
-                padding: 13,
+                padding: 10,
                 borderRadius: 10,
 
                 ...Platform.select({
@@ -133,6 +133,6 @@ const styles = StyleSheet.create({
   log_In_btn: {
     color: COLORS.BLACK,
     fontSize: 14,
-    fontWeight: Platform.OS === 'ios' ? 700 : 700,
+    fontWeight: '700',
   },
 });

@@ -46,7 +46,6 @@ const Account = ({navigation}) => {
   const dispatch = useDispatch();
 
   useEffect(() => {
-
     handleAllGetCard();
     userDetails();
     getPlanCurrent();
@@ -68,8 +67,7 @@ const Account = ({navigation}) => {
     axios
       .get(`${API}/planstatuspauseresume/${getUserID}/`)
       .then(res => {
-    
-       dispatch(setSubscriptionStatus(res.data.PlanStatus));
+        dispatch(setSubscriptionStatus(res.data.PlanStatus));
       })
       .catch(err => {
         console.log(err);
@@ -135,12 +133,9 @@ const Account = ({navigation}) => {
       const response = await fetch(`${API}/userexisting/${user_ID}`);
       const result = await response.json();
 
-
       if (result[0].message === 'sucess') {
-
         //  setUserData(result);
         dispatch(userProfileData(result));
-   
       } else {
         console.log('iiiiiiiiiiii');
       }
@@ -160,7 +155,7 @@ const Account = ({navigation}) => {
 
         if (res.data.data === 'Package details not found') {
           dispatch(setPurchaseData(res.data));
-        
+
           // setGetData(res.data);
           // dispatch(setPackageStatus(false));
         } else {
@@ -177,7 +172,6 @@ const Account = ({navigation}) => {
     try {
       const response = await fetch(`${API}/getcarddetails/${user_ID}`);
       const result = await response.json();
-   
 
       if (result[0]?.length > 0) {
         setSavedCard(result[0].sort((b, a) => a.status - b.status));
@@ -196,7 +190,7 @@ const Account = ({navigation}) => {
 
   return (
     // eslint-disable-next-line react-native/no-inline-styles
-    <SafeAreaView style={{backgroundColor: COLORS.CREAM, flex: 1}}>
+    <View style={{backgroundColor: COLORS.CREAM, flex: 1}}>
       <View style={styles.main_div}>
         <View style={styles.row}>
           <Text style={styles.heading}>Account</Text>
@@ -210,7 +204,30 @@ const Account = ({navigation}) => {
               style={styles.itemContainer}
               onPress={() => handleLinkPress(item.link)}>
               <View style={styles.row}>
-                <Image source={item.image} style={styles.icon} />
+                <Image
+                  source={item.image}
+                  style={[
+                    styles.icon,
+                    {
+                      marginLeft:
+                        index == 2
+                          ? 15
+                          : index == 3
+                          ? 10
+                          : index == 4
+                          ? 15
+                          : 20,
+                      width:
+                        index == 2
+                          ? 22
+                          : index == 3
+                          ? 28
+                          : index == 4
+                          ? 20
+                          : 20,
+                    },
+                  ]}
+                />
                 <Text style={styles.title}>{item.title} </Text>
                 <View style={styles.sideImageContainer}>
                   <Image source={item.side_image} style={styles.side_icon} />
@@ -282,7 +299,7 @@ const Account = ({navigation}) => {
           </View>
         </ScrollView>
       </View>
-    </SafeAreaView>
+    </View>
   );
 };
 

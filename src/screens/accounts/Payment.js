@@ -168,6 +168,7 @@ export default function PaymentGateWay({navigation, route}) {
 
   const handleAddCard = async (values, cb) => {
     setLoader(true);
+    console.log('first',values)
     let exp_month = values?.validTill?.split('/')[0];
     let exp_year = values?.validTill?.split('/')[1];
     // let customer_number = values?.cardNumber.split(" ").join("");
@@ -225,7 +226,7 @@ export default function PaymentGateWay({navigation, route}) {
       }
     } catch (error) {
       setLoader(false);
-      console.error(error);
+      console.error("Add Card Error",error);
     }
   };
 
@@ -236,6 +237,7 @@ export default function PaymentGateWay({navigation, route}) {
   
    
       if (result[0]?.length > 0) {
+        console.log(result[0])
         setSavedCard(result[0].sort((b, a) => a.status - b.status));
     
         const statusOneObjects = result[0].filter(item => item.status === 1);
@@ -642,7 +644,7 @@ export default function PaymentGateWay({navigation, route}) {
                           savedCard[0].status === 1 &&
                           (!currentCard || currentCard.status === 1)
                         ) {
-                     
+                          
                         } else if (
                           savedCard &&
                           savedCard.length === 1 &&
@@ -990,7 +992,8 @@ const styles = StyleSheet.create({
     width: mobileW,
 
     height: mobileH,
-    marginVertical: '10%',
+    marginBottom: '10%',
+    marginTop: '5%',
 
     // paddingTop: 30,
   },

@@ -87,9 +87,9 @@ const DeleteAccountScreen = () => {
           PLATFORM_IOS
             ? Toast.show({
                 type: 'error',
-                text1: 'Inccorect Password',
+                text1: 'Incorect Password',
               })
-            : ToastAndroid.show('Inccorect Password', ToastAndroid.SHORT);
+            : ToastAndroid.show('Incorect Password', ToastAndroid.SHORT);
         }
       })
       .catch(error => {
@@ -184,7 +184,7 @@ const DeleteAccountScreen = () => {
             setShowNew(!showNew);
           }}
           secureTextEntry={hidePassword}
-          passwordInputIcon={showNew}
+          passwordInputIcon={!showNew}
           placeholder="Enter password to verify..."
           onChangeText={text => setPassword(text)}
           value={password}
