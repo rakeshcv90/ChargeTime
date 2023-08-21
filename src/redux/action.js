@@ -103,6 +103,9 @@ export const setOverUsage = data => {
 export const setSubscriptionStatus = data => {
   return {type: types.GET_SUBSCRIPTIONSTATUS, payload: data};
 };
+export const setMaintainence = data => {
+  return {type: types.MAINTAINENCE, payload: data};
+};
 export const setLogout = () => {
   return {type: types.LOG_OUT};
 };
