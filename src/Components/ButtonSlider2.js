@@ -199,6 +199,7 @@ const styles = StyleSheet.create({
     // alignItems: 'flex-end',
     flexDirection: 'row',
     justifyContent: 'center',
+    
   },
   swipeText: {
     // alignSelf: 'flex-start',
@@ -207,7 +208,8 @@ const styles = StyleSheet.create({
     fontWeight: '700',
     textAlignVertical: 'center',
     textAlign: 'center',
-    marginRight: 10
+    marginRight: 10,
+    alignSelf:'center'
     // left: DIMENSIONS.SCREEN_WIDTH * 0.41,
     //  zIndex: 2,
     // bottom: DIMENSIONS.SCREEN_HEIGHT * 0.03,

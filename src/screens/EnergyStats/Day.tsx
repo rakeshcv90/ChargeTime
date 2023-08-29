@@ -58,11 +58,15 @@ const Day = (props: any) => {
   }, []);
   const fetchGraphData = () => {
     axios
-      .get(`${API}/dailyusagegraph/${getUserID}`)
+      .get(`${API}/dailyusagedeviceid/${getUserID}`)
       .then(res => {
-        dispatch(setGraphData(res?.data));
+        dispatch(setGraphData(res.data.Dayusagewithgraph));
+        dispatch(setWeekGraphData(res.data.weeklyusagewithgraph));
+        dispatch(setMonthGraphData(res?.data.monthlyusagewithgraph));
+        dispatch(setQuarterGraphData(res?.data.threemonthusagewithgraph));
+        dispatch(setYearGraphData(res?.data.yearlyusagewithgraph));
 
-        // navigation.navigate('DrawerStack');
+       
       })
       .catch(err => {
         console.log(err);
@@ -76,6 +80,7 @@ const Day = (props: any) => {
     remainigUsuageData();
     dailyUsuagekwh(getUserID);
     fetchGraphData();
+    fetchStatusdata(getUserID);
   };
 
   const remainigUsuageData = () => {
@@ -189,16 +194,16 @@ const Day = (props: any) => {
   //       console.log(err);
   //     });
   // };
-  // const fetchStatusdata = (userId: string) => {
-  //   axios
-  //     .get(`${API}/chargerstatus/${userId}`)
-  //     .then(res => {
-  //       dispatch(setChargerStatus(res?.data));
-  //     })
-  //     .catch(err => {
-  //       console.log(err);
-  //     });
-  // };
+  const fetchStatusdata = (userId: string) => {
+    axios
+      .get(`${API}/chargerStatus/${userId}`)
+      .then(res => {
+        dispatch(setChargerStatus(res?.data));
+      })
+      .catch(err => {
+        console.log(err);
+      });
+  };
   return (
     <>
       <View style={{flex: 1, backgroundColor: COLORS.CREAM}}>

@@ -63,8 +63,8 @@ const Charging = () => {
         }}>
         <AnimatedLottieView
           source={{
-            // uri: 'https://assets9.lottiefiles.com/packages/lf20_hbr24n88.json',
-            uri: 'https://lottie.host/c6a8913a-4bdf-4379-a373-dc9904e879fb/DxU4iRBgZj.json',
+            uri: 'https://assets9.lottiefiles.com/packages/lf20_hbr24n88.json',
+            // uri: 'https://lottie.host/c6a8913a-4bdf-4379-a373-dc9904e879fb/DxU4iRBgZj.json',
           }} // Replace with your animation file
           autoPlay
           loop

@@ -77,7 +77,7 @@ export default function Login({navigation}) {
   const [id, setId] = useState();
 
   const dispatch = useDispatch();
-  const {getDeviceID, getGraphData} = useSelector(state => state);
+  const {getDeviceID, getGraphData,getUserID} = useSelector(state => state);
 
   useEffect(() => {
     let unsubscribe = null;
@@ -158,225 +158,88 @@ export default function Login({navigation}) {
     }
 
     async function onDisplayNotification(data) {
+      console.log("fgfgfgfgf",data)
+      await notifee.requestPermission();
       const channelId = await notifee.createChannel({
         id: 'default',
         name: 'Default Channel',
       });
 
-      await notifee.requestPermission();
-      const message = data?.data?.message;
+  
+      const message = data?.data?.message
+      if (message === 'Charger is turned on') {
+        axios
+          .post(`${API}/charger_ON/${getUserID}`)
+          .then(res => {
+
+            dispatch(setChargerStatus(res?.data));
+          })
+          .catch(err => {
+            console.log(err);
+          });
+      }
+      if (message === 'Charger is turned off') {
+        axios
+          .post(`${API}/charger_OFF/${getUserID}`)
+          .then(res => {
+            dispatch(setChargerStatus(res?.data));
+          })
+          .catch(err => {
+            console.log(err);
+          });
+      }
       notifee.displayNotification({
-        title: 'New post from John',
-        body: 'Hey everyone! Check out my new blog post on my website.',
-        // ios: {
-        //   categoryId: 'post',
-        // },
+        title:data?.data?.title,
+        body: data.data.message,
+
+        ios: {   
+          categoryId: 'post',
+        },
         android: {
           channelId: channelId,
-          actions: [
-            {
-              title: 'Title',
-              icon: 'https://my-cdn.com/icons/snooze.png',
-              pressAction: {
-                id: 'title',
-              },
-            },
-            {
-              title: 'Snooze',
-              icon: 'https://my-cdn.com/icons/snooze.png',
-              pressAction: {
-                id: 'snooze',
-              },
-            },
-          ],
+          smallIcon: 'custom_notification_icon',
+          largeIcon: require('../../../assets/ic_launcher.png'),
+          // actions: [
+          //   {
+          //     title: 'Title',
+          //     icon: 'https://my-cdn.com/icons/snooze.png',
+          //     pressAction: {
+          //       id: 'title',
+          //     },
+          //   },
+          //   {
+          //     title: 'Snooze',
+          //     icon: 'https://my-cdn.com/icons/snooze.png',
+          //     pressAction: {
+          //       id: 'snooze',
+          //     },
+          //   },
+          // ],
         },
       });
-      notifee.onBackgroundEvent(async ({type, detail}) => {
-        if (
-          type === EventType.ACTION_PRESS &&
-          detail.pressAction.id === 'title'
-        ) {
-          console.log('User pressed the "Mark as read" action.');
-        } else {
-          console.log('User pressed the "Mark as read" action.');
-        }
-      });
-      notifee.onForegroundEvent(({type, detail}) => {
-        if (type === EventType.ACTION_PRESS && detail.pressAction.id) {
-          console.log(
-            'User pressed an action with the id: ',
-            detail.pressAction.id,
-          );
-        }
-      });
-
-      // if (Platform.OS == 'ios') {
-      //   let iosData = {};
-      //   let body = '';
-      //   title = '';
-      //   if (message === 'Vehicle Connected!') {
-      //     console.log('99999999');
-      //     title = data?.data?.title;
-      //     body = message;
-      //     iosData = {
-      //       attachments: [
-      //         {
-      //           // React Native asset.
-      //           url: require('../../../assets/images/log.png'),
-      //         },
-      //       ],
-      //     };
-      //   } else if (
-      //     message === 'Vehicle Disconnected! Please check your Vehicle'
+      // notifee.onBackgroundEvent(async ({type, detail}) => {
+      //   if (
+      //     type === EventType.ACTION_PRESS &&
+      //     detail.pressAction.id === 'title'
       //   ) {
-      //     console.log('Tes00000000');
-      //     title = data?.notification?.title;
-      //     body = message;
-      //     iosData = {
-      //       attachments: [
-      //         {
-      //           // React Native asset.
-      //           url: require('../../../assets/images/WithoutCar.png'),
-      //         },
-      //       ],
-      //     };
-      //     // fetchStatusdata(id);
-      //   } else if (
-      //     message ===
-      //     'Something went wrong! Please disconnect and connect your vehicle again'
-      //   ) {
-      //     console.log('Test121');
-      //     title = data?.notification?.title;
-      //     body = message;
-      //     iosData = {
-      //       attachments: [
-      //         {
-      //           // React Native asset.
-      //           url: require('../../../assets/images/WithoutCar.png'),
-      //         },
-      //       ],
-      //     };
+      //     console.log('User pressed the "Mark as read" action.');
       //   } else {
-      //     console.log('Test12123');
-      //     title = data?.notification?.title;
-      //     body = message;
-      //     iosData = {
-      //       attachments: [
-      //         {
-      //           // React Native asset.
-      //           url: require('../../../assets/images/log.png'),
-      //         },
-      //       ],
-      //     };
-      //     //fetchStatusdata(id);
+      //     console.log('User pressed the "Mark as read" action.');
       //   }
-      //   notifee.displayNotification({
-      //     title: title,
-      //     body: message,
-      //     ios: iosData,
-      //   });
-      // } else {
-      //   let androidData = {};
-      //   let body = '';
-      //   // if (message === 'Vehicle Connected!') {
-      //   //   androidData = {
-      //   //     channelId,
-      //   //     smallIcon: 'custom_notification_icon',
-      //   //     largeIcon: require('../../../assets/images/WithCar.png'),
-      //   //     color: '#B1D34F',
-      //   //     pressAction: {
-      //   //       id: 'default',
-      //   //     },
-      //   //   };
-      //   //   body = `<p style="color: #4caf50;"><b>${message}</b></p> &#128663;`;
-      //   //   // Alert.alert('A new FCM message arrived!', 'tytytytytytytyt');
-      //   //   console.log('+++5555555++++', id);
-      //   //   //   fetchStatusdata(id);
-      //   // } else if (
-      //   //   message === 'Vehicle Disconnected! Please check your Vehicle'
-      //   // ) {
-      //   //   androidData = {
-      //   //     channelId,
-      //   //     smallIcon: 'custom_notification_icon',
-      //   //     largeIcon: require('../../../assets/images/WithoutCar.png'),
-      //   //     color: '#B1D34F',
-      //   //     actions: [
-      //   //       {
-      //   //         title: '<p style="color: #f44336;"><b>Ok</b>&#128522;</p>',
-      //   //         pressAction: {
-      //   //           id: 'ok',
-      //   //           mainComponent: 'Home', // Replace 'navigateToScreen' with your required screen
-      //   //         },
-      //   //       },
-      //   //     ],
-      //   //   };
-      //   //   body = `<p style="color: #4caf50;"><b>${message}</b></p>&#128563;`;
-      //   //   console.log('+++55555+++', id);
-      //   //   // fetchStatusdata(id);
-      //   // } else if (
-      //   //   message ===
-      //   //   'Something went wrong! Please disconnect and connect your vehicle again'
-      //   // ) {
-      //   //   androidData = {
-      //   //     channelId,
-      //   //     smallIcon: 'custom_notification_icon',
-      //   //     // largeIcon: require('../../../assets/images/WithoutCar.png'),
-      //   //     color: '#B1D34F',
-      //   //     actions: [
-      //   //       {
-      //   //         title: '<b>Contact Support</b> &#128577;',
-      //   //         pressAction: {
-      //   //           id: 'Contact Support',
-      //   //           mainComponent: 'Contact', // Replace 'navigateToScreen' with your required screen
-      //   //         },
-      //   //       },
-      //   //       {
-      //   //         title: '<p style="color: #f44336;"><b>Cancel</b> &#128111;</p>',
-      //   //         pressAction: {
-      //   //           id: 'Cancel',
-      //   //           mainComponent: '', // You can replace 'default' with the required activity to launch.
-      //   //         },
-      //   //       },
-      //   //     ],
-      //   //   };
-      //   //   body = `<p style="color: #4caf50;"><b>${message}</b></p>&#128580;`;
-      //   //   console.log('+++4444444+++', id);
-      //   //   // fetchStatusdata(id);
-      //   // } else {
-      //   //   androidData = {
-      //   //     channelId,
-      //   //     smallIcon: 'custom_notification_icon',
-      //   //     // largeIcon: require('../../../assets/images/WithCar.png'),
-      //   //     color: '#B1D34F',
-      //   //     pressAction: {
-      //   //       id: 'default',
-      //   //     },
-      //   //   };
-      //   //   body = `<p style="color: #4caf50;"><b>${message}</b></p> &#128663;`;
-      //   //   //fetchStatusdata(id);
-      //   // }
-
-      //   // Create a channel (required for Android)
-
-      androidData.channelId = channelId;
-
-      //   // Display a notification
-      //   await notifee.displayNotification({
-      //     title: data?.data?.title,
-      //     //body: `<p style="color: #4caf50;"><b>${message}</b></p> &#127881;`,
-      //     body: message,
-      //     android: {
-      //       channelId: androidData, // Required for Android 8.0+
-      //       actions: [action1, action2], // Add your actions here
-      //     },
-
-      //   });
-      // }
+      // });
+      // notifee.onForegroundEvent(({type, detail}) => {
+      //   if (type === EventType.ACTION_PRESS && detail.pressAction.id) {
+      //     console.log(
+      //       'User pressed an action with the id: ',
+      //       detail.pressAction.id,
+      //     );
+      //   }
+      // });
     }
 
     if (Platform.OS === 'android') {
       notificationService();
-      setCategories();
+      //setCategories();
     } else {
       notificationService();
       setCategories();
@@ -395,18 +258,6 @@ export default function Login({navigation}) {
   }, []);
   const handleBackButton = () => {
     return true;
-  };
-
-  const fetchMessage = id => {
-    axios
-      .get(`${API}/pushNotification/${id}`)
-      .then(res => {
-        console.log('Firebase message recieved ', res.data.body);
-        // navigation.navigate('DrawerStack');
-      })
-      .catch(err => {
-        console.log(err);
-      });
   };
 
   const packagePlans = async locationID => {
@@ -480,14 +331,12 @@ export default function Login({navigation}) {
             // setInterval(() => {
             fetchGraphData(res.data?.user_id);
             // }, 300000);
-            
-            fetchWeekGraphData(res.data?.user_id);
-            fetchMonthGraphData(res.data?.user_id);
-            fetchQuarterGraphData(res.data.user_id);
-            fetchYearGraphData(res.data?.user_id);
-            fetchBoxTwoDashboardData(res.data?.user_id);
-            fetchStatusdata(res.data?.user_id);
-            getPlanCurrent(res.data?.user_id);
+
+            // fetchWeekGraphData(res.data?.user_id);
+            // fetchMonthGraphData(res.data?.user_id);
+            // fetchQuarterGraphData(res.data.user_id);
+            // fetchYearGraphData(res.data?.user_id);
+
             // setTimeout(() => {
             //   fetchMessage(res.data?.user_id);
             // }, 15000);
@@ -553,60 +402,29 @@ export default function Login({navigation}) {
     }
   };
 
-  const getDeviceIDData = prevData => {
-    axios
-      .get(`${API}/devicecheck/${prevData?.user_id}}`)
-      .then(res => {
-        if (res.data.status == 'True') {
-          dispatch(setDeviceId(res.data.message));
-          getPlanCurrent(prevData?.user_id);
-        } else {
-          dispatch(setDeviceId(res.data.message));
-          packagePlans(res.data?.locationid);
-          // fetchGraphData(res.data?.user_id);
-          // fetchWeekGraphData(res.data?.user_id);
-          // fetchMonthGraphData(res.data?.user_id);
-          // fetchQuarterGraphData(res.data.user_id);
-          // fetchYearGraphData(res.data?.user_id);
-          // fetchBoxTwoDashboardData(res.data?.user_id);
-          // fetchStatusdata(res.data?.user_id);
-          // getPlanCurrent(res.data?.user_id);
-        }
-      })
-      .catch(err => {
-        console.log(err);
-      });
-  };
-
   //day data start
   const fetchGraphData = userID => {
     const message = 'No usage data available';
     axios
-      .get(`${API}/dailyusagegraph/${userID}`)
+      .get(`${API}/dailyusagedeviceid/${userID}`)
       .then(res => {
-        dispatch(setGraphData(res?.data));
+        console.log('My Data Is', res.data.Dayusagewithgraph);
+        dispatch(setGraphData(res.data.Dayusagewithgraph));
+        dispatch(setWeekGraphData(res.data.weeklyusagewithgraph));
+        dispatch(setMonthGraphData(res?.data.monthlyusagewithgraph));
+        dispatch(setQuarterGraphData(res?.data.threemonthusagewithgraph));
+        dispatch(setYearGraphData(res?.data.yearlyusagewithgraph));
 
         dailyUsuagekwh(userID);
+        fetchBoxTwoDashboardData(userID);
+        fetchStatusdata(userID);
+        getPlanCurrent(userID);
         // navigation.navigate('DrawerStack');
       })
       .catch(err => {
         dispatch(setGraphData({message}));
         console.log(err);
-      });
-  };
-  const fetchGraphDataInterval = userID => {
-    const message = 'No usage data available';
-    axios
-      .get(`${API}/time_period/${userID}`)
-      .then(res => {
-        dispatch(setGraphData(res?.data));
-
-        dailyUsuagekwh(userID);
-        // navigation.navigate('DrawerStack');
-      })
-      .catch(err => {
-        dispatch(setGraphData({message}));
-        console.log(err);
+        getPlanCurrent(userID);
       });
   };
 
@@ -644,57 +462,6 @@ export default function Login({navigation}) {
         console.log(err);
       });
   };
-  //day data end
-
-  //week data start
-  const fetchWeekGraphData = userID => {
-    axios
-      .get(`${API}/weeklyusage/${userID}`)
-      .then(res => {
-        if (res?.data) {
-          dispatch(setWeekGraphData(res?.data));
-        }
-      })
-      .catch(err => {
-        console.log('Week ERRRR', err);
-      });
-  };
-  const fetchMonthGraphData = userID => {
-    axios
-      .get(`${API}/monthlyusage/${userID}`)
-      .then(res => {
-        if (res?.data) {
-          dispatch(setMonthGraphData(res?.data));
-        }
-      })
-      .catch(err => {
-        console.log('MONTHS ERRRR', err);
-      });
-  };
-  const fetchQuarterGraphData = userID => {
-    axios
-      .get(`${API}/threemonthusage/${userID}`)
-      .then(res => {
-        if (res?.data) {
-          dispatch(setQuarterGraphData(res?.data));
-        }
-      })
-      .catch(err => {
-        console.log('QUar ERRRR', err);
-      });
-  };
-  const fetchYearGraphData = userID => {
-    axios
-      .get(`${API}/yearlyusage/${userID}`)
-      .then(res => {
-        if (res?.data) {
-          dispatch(setYearGraphData(res?.data));
-        }
-      })
-      .catch(err => {
-        console.log('Year ERRRR', err);
-      });
-  };
 
   const fetchBoxTwoDashboardData = userId => {
     axios
@@ -712,10 +479,10 @@ export default function Login({navigation}) {
   };
   const fetchStatusdata = userId => {
     axios
-      .get(`${API}/chargerstatus/${userId}`)
+      .get(`${API}/chargerStatus/${userId}`)
       .then(res => {
-        getSubscriptionStatus(userId)
-   
+        getSubscriptionStatus(userId);
+
         dispatch(setChargerStatus(res?.data));
       })
       .catch(err => {
@@ -728,45 +495,27 @@ export default function Login({navigation}) {
       .get(`${API}/currentplan/${userId}`)
       .then(res => {
         setForLoading(false);
-        getSubscriptionStatus(userId)
-        // if (res.data.data == 'Package details not found') {
-        //   dispatch(setPurchaseData([]));
-        // } else {
-        // }
+        getSubscriptionStatus(userId);
         dispatch(setPurchaseData(res?.data));
-        // dispatch(setIsAuthorized(true));
         navigation.navigate('DrawerStack');
       })
       .catch(err => {
         setForLoading(false);
+        navigation.navigate('DrawerStack');
         console.log(err);
       });
   };
-  const getSubscriptionStatus = (data) => {
+  const getSubscriptionStatus = data => {
     axios
       .get(`${API}/planstatuspauseresume/${data}/`)
       .then(res => {
- 
-       dispatch(setSubscriptionStatus(res.data.PlanStatus));
+        dispatch(setSubscriptionStatus(res.data.PlanStatus));
       })
       .catch(err => {
         console.log(err);
       });
   };
-  // const fetchPriceDetailsDashboardData = (userId) =>{
-  //   axios.get(`${API}/yearlyusage/${userID}`)
-  //   .then((res) =>{
 
-  //     dispatch(setPriceAndDetailsData(res?.data))
-
-  //   })
-  //   .catch((err) => {
-  //     console.log(err)
-
-  //   })
-  // }
-
-  //week data end
   return (
     <SafeAreaView style={{backgroundColor: COLORS.CREAM, flex: 1}}>
       <KeyboardAvoidingView behavior="position" style={{marginTop: 10}}>

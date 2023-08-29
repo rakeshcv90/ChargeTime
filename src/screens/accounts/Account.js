@@ -9,6 +9,7 @@ import {
   TouchableOpacity,
   SafeAreaView,
   BackHandler,
+  Platform,
 } from 'react-native';
 import React, {useState, useEffect} from 'react';
 import COLORS from '../../constants/COLORS';
@@ -312,6 +313,8 @@ const styles = StyleSheet.create({
   main_div: {
     width: DIMENSIONS.SCREEN_WIDTH * 0.95,
     height: DIMENSIONS.SCREEN_HEIGHT * 0.9,
+    marginVertical:Platform.OS=='ios'?DIMENSIONS.SCREEN_HEIGHT * 0.09:DIMENSIONS.SCREEN_HEIGHT * 0.03,
+    
   },
   heading: {
     color: COLORS.BLACK,

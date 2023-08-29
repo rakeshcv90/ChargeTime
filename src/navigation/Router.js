@@ -388,13 +388,14 @@ const DrawerNavigation = () => {
 
                       shadowColor: '#000',
                       shadowOffset: {
-                        width: 0,
-                        height: 5,
+                        width: -5,
+                        height: 3,
                       },
-                      //shadowOpacity: 0.29,
-                      //shadowRadius: 4.65,
-                      elevation: Platform.OS === 'android' ? 5 : 0,
-                    }}>
+                      shadowOpacity: 0.29,
+                      shadowRadius: 4.65,
+                      elevation: 7,
+                    }}
+                    >
                     {iconComponent}
                   </View>
                 ) : (
