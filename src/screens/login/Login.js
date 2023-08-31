@@ -77,7 +77,7 @@ export default function Login({navigation}) {
   const [id, setId] = useState();
 
   const dispatch = useDispatch();
-  const {getDeviceID, getGraphData,getUserID} = useSelector(state => state);
+  const {getDeviceID, getGraphData, getUserID} = useSelector(state => state);
 
   useEffect(() => {
     let unsubscribe = null;
@@ -102,7 +102,7 @@ export default function Login({navigation}) {
       }
 
       if (token?.length > 0) {
-        console.log('FCM...', token);
+        console.log('FCM....', token);
         setToken(token);
         messaging().setBackgroundMessageHandler(async remoteMessage => {
           onDisplayNotification(remoteMessage);
@@ -158,27 +158,42 @@ export default function Login({navigation}) {
     }
 
     async function onDisplayNotification(data) {
-      console.log("fgfgfgfgf",data)
+      console.log('fgfgfgfgf', data);
       await notifee.requestPermission();
       const channelId = await notifee.createChannel({
         id: 'default',
         name: 'Default Channel',
       });
 
-  
-      const message = data?.data?.message
+      const message = data?.data?.message;
       if (message === 'Charger is turned on') {
+        notifee.displayNotification({
+          title: data?.data?.title,
+          body: data.data.message,
+          android: {
+            channelId: channelId,
+            smallIcon: 'custom_notification_icon',
+            largeIcon: require('../../../assets/ic_launcher.png'),
+          },
+        });
         axios
           .post(`${API}/charger_ON/${getUserID}`)
           .then(res => {
-
             dispatch(setChargerStatus(res?.data));
           })
           .catch(err => {
             console.log(err);
           });
-      }
-      if (message === 'Charger is turned off') {
+      } else if (message === 'Charger is turned off') {
+        notifee.displayNotification({
+          title: data?.data?.title,
+          body: data.data.message,
+          android: {
+            channelId: channelId,
+            smallIcon: 'custom_notification_icon',
+            largeIcon: require('../../../assets/ic_launcher.png'),
+          },
+        });
         axios
           .post(`${API}/charger_OFF/${getUserID}`)
           .then(res => {
@@ -187,54 +202,140 @@ export default function Login({navigation}) {
           .catch(err => {
             console.log(err);
           });
-      }
-      notifee.displayNotification({
-        title:data?.data?.title,
-        body: data.data.message,
+      } else if (message === 'You have used 90% of the subscribed package') {
+        notifee.displayNotification({
+          title: data?.data?.title,
+          body: data.data.message,
 
-        ios: {   
-          categoryId: 'post',
-        },
-        android: {
-          channelId: channelId,
-          smallIcon: 'custom_notification_icon',
-          largeIcon: require('../../../assets/ic_launcher.png'),
-          // actions: [
-          //   {
-          //     title: 'Title',
-          //     icon: 'https://my-cdn.com/icons/snooze.png',
-          //     pressAction: {
-          //       id: 'title',
-          //     },
-          //   },
-          //   {
-          //     title: 'Snooze',
-          //     icon: 'https://my-cdn.com/icons/snooze.png',
-          //     pressAction: {
-          //       id: 'snooze',
-          //     },
-          //   },
-          // ],
-        },
+          ios: {
+            categoryId: 'post',
+          },
+          android: {
+            channelId: channelId,
+            smallIcon: 'custom_notification_icon',
+            largeIcon: require('../../../assets/ic_launcher.png'),
+            actions: [
+              {
+                title: 'Upgrade your package',
+                icon: 'https://my-cdn.com/icons/snooze.png',
+                pressAction: {
+                  id: 'Upgrade',
+                },
+              },
+              {
+                title: 'Cancel',
+                icon: 'https://my-cdn.com/icons/snooze.png',
+                pressAction: {
+                  id: 'Cancel',
+                },
+              },
+            ],
+          },
+        });
+      } else if (
+        message ===
+        'You have consumed 100% of your package quota. Upgrade your package?'
+      ) {
+        notifee.displayNotification({
+          title: data?.data?.title,
+          body: data.data.message,
+
+          ios: {
+            categoryId: 'post',
+          },
+          android: {
+            channelId: channelId,
+            smallIcon: 'custom_notification_icon',
+            largeIcon: require('../../../assets/ic_launcher.png'),
+            actions: [
+              {
+                title: 'Yes',
+                icon: 'https://my-cdn.com/icons/snooze.png',
+                pressAction: {
+                  id: 'Upgrade',
+                },
+              },
+              {
+                title: 'No',
+                icon: 'https://my-cdn.com/icons/snooze.png',
+                pressAction: {
+                  id: 'Cancel',
+                },
+              },
+            ],
+          },
+        });
+      } else {
+        notifee.displayNotification({
+          title: data?.data?.title,
+          body: data.data.message,
+
+          // ios: {
+          //   categoryId: 'post',
+          // },
+          android: {
+            channelId: channelId,
+            smallIcon: 'custom_notification_icon',
+            largeIcon: require('../../../assets/ic_launcher.png'),
+            // actions: [
+            //   {
+            //     title: 'Upgrade your package',
+            //     pressAction: {
+            //       id: 'Upgrade',
+            //     },
+            //   },
+            //   {
+            //     title: 'Cancel',
+            //     pressAction: {
+            //       id: 'Cancel',
+            //     },
+            //   },
+            // ],
+          },
+        });
+      }
+      notifee.onBackgroundEvent(async ({type, detail}) => {
+        if (
+          type === EventType.ACTION_PRESS &&
+          detail.pressAction.id == 'Upgrade'
+        ) {
+          console.log(
+            'User pressed an action with the id: ',
+            detail.pressAction.id,
+          );
+          navigationRef.navigate('EnergyOptions');
+        } else if (
+          type === EventType.ACTION_PRESS &&
+          detail.pressAction.id == 'Contact'
+        ) {
+          console.log(
+            'User pressed an action with the id: ',
+            detail.pressAction.id,
+          );
+          navigationRef.navigate('Contact');
+        }
       });
-      // notifee.onBackgroundEvent(async ({type, detail}) => {
-      //   if (
-      //     type === EventType.ACTION_PRESS &&
-      //     detail.pressAction.id === 'title'
-      //   ) {
-      //     console.log('User pressed the "Mark as read" action.');
-      //   } else {
-      //     console.log('User pressed the "Mark as read" action.');
-      //   }
-      // });
-      // notifee.onForegroundEvent(({type, detail}) => {
-      //   if (type === EventType.ACTION_PRESS && detail.pressAction.id) {
-      //     console.log(
-      //       'User pressed an action with the id: ',
-      //       detail.pressAction.id,
-      //     );
-      //   }
-      // });
+      notifee.onForegroundEvent(({type, detail}) => {
+        if (
+          type === EventType.ACTION_PRESS &&
+          detail.pressAction.id == 'Upgrade'
+        ) {
+          console.log(
+            'User pressed an action with the id: ',
+            detail.pressAction.id,
+          );
+          navigationRef.navigate('EnergyOptions');
+        } else if (
+          type === EventType.ACTION_PRESS &&
+          detail.pressAction.id == 'Contact'
+        ) {
+          console.log(
+            'User pressed an action with the id: ',
+            detail.pressAction.id,
+          );
+          navigationRef.navigate('Contact');
+        }
+      });
     }
 
     if (Platform.OS === 'android') {
@@ -270,7 +371,7 @@ export default function Login({navigation}) {
         setForLoading(true);
         // setShowPackage(true);
         dispatch(setBasePackage([]));
-        // dispatch(setIsAuthorized(true));
+        dispatch(setIsAuthorized(true));
         setForLoading(false);
         navigation.navigate('DrawerStack');
       } else {
@@ -498,10 +599,12 @@ export default function Login({navigation}) {
         getSubscriptionStatus(userId);
         dispatch(setPurchaseData(res?.data));
         navigation.navigate('DrawerStack');
+        dispatch(setIsAuthorized(true));
       })
       .catch(err => {
         setForLoading(false);
         navigation.navigate('DrawerStack');
+        dispatch(setIsAuthorized(true));
         console.log(err);
       });
   };
