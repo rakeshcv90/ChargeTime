@@ -5,23 +5,23 @@
  */
 
 import {AppRegistry, PermissionsAndroid, Platform} from 'react-native';
-import App, { navigationRef } from './App';
+import App, {navigationRef} from './App';
 import {name as appName} from './app.json';
 import {Provider} from 'react-redux';
 // import {store, persistor} from './files/redux/store';
 import {store, persistor} from './src/redux/store';
 import {PersistGate} from 'redux-persist/integration/react';
 import messaging from '@react-native-firebase/messaging';
-import notifee, { EventType } from '@notifee/react-native';
-import { useEffect, useState } from 'react';
-
+import notifee, {EventType} from '@notifee/react-native';
+import {useEffect, useState} from 'react';
+import { PLATFORM_IOS } from './src/constants/DIMENSIONS';
 
 const AppRedux = () => {
-
   const [token1, setToken] = useState('');
   useEffect(() => {
     let unsubscribe = null;
     let token = 0;
+    let count = 0
     const notificationService = async () => {
       if (Platform.OS == 'android') {
         PermissionsAndroid.request(
@@ -39,6 +39,7 @@ const AppRedux = () => {
           await messaging().registerDeviceForRemoteMessages();
           token = await messaging().getToken();
         }
+        await notifee.requestPermission();
       }
 
       if (token?.length > 0) {
@@ -48,7 +49,7 @@ const AppRedux = () => {
           onDisplayNotification(remoteMessage);
         });
 
-        messaging().onNotificationOpenedApp(remoteMessage => {
+        unsubscribe = messaging().onNotificationOpenedApp(remoteMessage => {
           console.log(
             '[FCMService] onNotificationOpenedApp Notification caused app to open from background state:',
             remoteMessage,
@@ -94,17 +95,80 @@ const AppRedux = () => {
             },
           ],
         },
+        {
+          id: '90',
+          actions: [
+            {
+              id: 'Upgrade',
+              title: 'Upgrade your package',
+            },
+            {
+              id: 'Cancel',
+              title: 'Cancel',
+            },
+          ],
+        },
+        {
+          id: '100',
+          actions: [
+            {
+              id: 'Upgrade',
+              title: 'Yes',
+            },
+            {
+              id: 'Cancel',
+              title: 'No',
+            },
+          ],
+        },
       ]);
     }
 
     async function onDisplayNotification(data) {
       console.log('fgfgfgfgf', data);
-      await notifee.requestPermission();
+      // // let channelId = ''
+      // //  channelId = await notifee.createChannel({
+      // //     id: 'fcm_fallback_notification_channel',
+      // //     name: 'Default Channel',
+      // //   });
+      // //   console.log("asdfghjk ", channelId)
+      // // notifee.requestPermission();
+      // const channelIdd = await notifee.getChannels();
+      // let channelIds = '';
+      // channelIds = !PLATFORM_IOS && channelIdd[0].id;
+      // console.log('DSSDADSDSADSSDASAD', channelIdd.length, channelIds, count);
+      // notifee.displayNotification({
+      //   title: 'data?.data?.title',
+      //   body: 'data.data.message',
+
+      //   ios: {
+      //     categoryId: '90',
+      //   },
+      //   android: {
+      //     channelId: channelIds,
+      //     smallIcon: 'custom_notification_icon',
+      //     largeIcon: require('./assets/ic_launcher.png'),
+      //     actions: [
+      //       {
+      //         title: 'Upgrade your package',
+      //         pressAction: {
+      //           id: 'Upgrade',
+      //         },
+      //       },
+      //       {
+      //         title: 'Cancel',
+      //         pressAction: {
+      //           id: 'Cancel',
+      //         },
+      //       },
+      //     ],
+      //   },
+      // });
+      // count++
       const channelId = await notifee.createChannel({
         id: 'default',
         name: 'Default Channel',
       });
-
       const message = data?.data?.message;
       if (message === 'Charger is turned on') {
         notifee.displayNotification({
@@ -148,7 +212,7 @@ const AppRedux = () => {
           body: data.data.message,
 
           ios: {
-            categoryId: 'post',
+            categoryId: '90',
           },
           android: {
             channelId: channelId,
@@ -181,7 +245,7 @@ const AppRedux = () => {
           body: data.data.message,
 
           ios: {
-            categoryId: 'post',
+            categoryId: '100',
           },
           android: {
             channelId: channelId,
@@ -309,6 +373,5 @@ const AppRedux = () => {
     </Provider>
   );
 };
-
 
 AppRegistry.registerComponent(appName, () => AppRedux);
