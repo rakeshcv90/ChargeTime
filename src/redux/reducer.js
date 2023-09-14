@@ -15,6 +15,7 @@ const initialState = {
   getEmailDAta: '',
   getkwhData: '',
   getRemainingData: [],
+  RemainingDataGet: [],
   getWeekKwhdata: '',
   getWeekGraphData: [],
   getBoxTwoDataForDashboard: [],
@@ -67,6 +68,8 @@ const rootReducer = (state = initialState, action) => {
       return {...state, getGraphData: action.payload};
     case types.GET_REMAINING_DATA:
       return {...state, getRemainingData: action.payload};
+      // case types.REMAINING_DATA_GET:
+      //   return {...state, RemainingDataGet: action.payload};
     //week reducer start
     case types.GET_WEEK_KWH:
       return {...state, getWeekKwhdata: action.payload};

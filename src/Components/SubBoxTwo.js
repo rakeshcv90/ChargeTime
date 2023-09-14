@@ -19,10 +19,7 @@ import {DIMENSIONS} from '../constants/DIMENSIONS';
 const SubBoxTwo = () => {
   const getPurchaseData = useSelector(state => state.getPurchaseData);
 
-  useEffect(() => {
-    // console.log('data for this User:---------', getPlanSummary);
-    console.log(getPurchaseData, '----------');
-  }, []);
+
   return (
     <View
       style={

@@ -36,6 +36,8 @@ const Remaining = ({...props}) => {
   const {getRemainingData, getUserID, overusage} = useSelector(
     (state: any) => state,
   );
+
+console.log("Over Data",overusage,getRemainingData)
   const [modalVisible, setModalVisible] = useState(false);
   const [x, setX] = useState<number>(0);
   setUpdateIntervalForType(SensorTypes.gyroscope, 200); // defaults to 100ms
@@ -61,7 +63,7 @@ const Remaining = ({...props}) => {
           dispatch(setOverUsage(true));
           setModalVisible(true);
         }
-        console.log('first', res.data);
+
         dispatch(setRemainingData(remaingData));
       })
       .catch(err => {
@@ -71,7 +73,7 @@ const Remaining = ({...props}) => {
   const nav = () => {
     setModalVisible(!modalVisible);
     navigationRef.navigate('HomeOne');
-    // console.log(navigationRef.current?.getState().key)
+
   };
   const OverusageModal = () => {
     return (

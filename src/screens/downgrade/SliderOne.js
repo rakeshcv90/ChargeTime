@@ -48,7 +48,7 @@ export default function SliderOne(props) {
 
   useEffect(() => {
     getPlanCurrent();
-    console.log(props.route.params.purchageData);
+ 
   }, []);
   const handleRefresh = () => {
     setRefresh(true);
@@ -62,7 +62,7 @@ export default function SliderOne(props) {
     axios
       .get(`${API}/currentplan/${getUserID}`)
       .then(res => {
-        console.log(res.data);
+    
 
         if (res.data.data == 'Package not found') {
           dispatch(setPurchaseData(res.data));
@@ -77,29 +77,7 @@ export default function SliderOne(props) {
       });
   };
 
-  // const PlanStatus = () => {
-  //   setForLoading(true);
-  //   axios
-  //     .get(`${API}/planstatus/${getUserID}`)
-  //     .then(res => {
-  //       console.log('asdsadasdsadasdasd', res.data);
-  //       const name = res.data.subscriptions.filter(
-  //         item => item.subscription_status == 'scheduled' || item.subscription_status == 'notActive',
-  //       );
-  //       if (name.length != 0) {
-  //         dispatch(setPlanStatus(name[0]));
-  //         setForLoading(false);
-  //       } else {
-  //         dispatch(setPlanStatus([]));
-  //         setForLoading(false);
-  //       }
-  //       console.log('STATUSSSS', name[0]);
-  //     })
-  //     .catch(err => {
-  //       console.log(err);
-  //       setForLoading(false);
-  //     });
-  // };
+
 
   return (
     <ScrollView

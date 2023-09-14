@@ -39,6 +39,9 @@ export const setGraphData = data => {
 export const setRemainingData = data => {
   return {type: types.GET_REMAINING_DATA, payload: data};
 };
+// export const getRemainingData = data => {
+//   return {type: types.REMAINING_DATA_GET, payload: data};
+// };
 
 // week action start
 export const setWeekTotalData = data => {

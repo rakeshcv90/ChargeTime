@@ -104,249 +104,13 @@ export default function Login({navigation}) {
       if (token?.length > 0) {
         console.log('FCM....', token);
         setToken(token);
-        messaging().setBackgroundMessageHandler(async remoteMessage => {
-          onDisplayNotification(remoteMessage);
-        });
-
-        messaging().onNotificationOpenedApp(remoteMessage => {
-          console.log(
-            '[FCMService] onNotificationOpenedApp Notification caused app to open from background state:',
-            remoteMessage,
-          );
-          if (remoteMessage) {
-            // const notification = remoteMessage.notification;
-            //onOpenNotification(notification)
-
-            onDisplayNotification(remoteMessage);
-            // this.removeDeliveredNotification(notification.notificationId)
-          }
-        });
-
-        const initialNotification = await notifee.getInitialNotification();
-
-        if (initialNotification) {
-          console.log(
-            'Notification caused application to open',
-            initialNotification.pressAction,
-          );
-          console.log(
-            'Press action used to open the app',
-            initialNotification.pressAction,
-          );
-        }
-        unsubscribe = messaging().onMessage(async remoteMessage => {
-          onDisplayNotification(remoteMessage);
-        });
       }
     };
-    async function setCategories() {
-      await notifee.setNotificationCategories([
-        {
-          id: 'post',
-          actions: [
-            {
-              id: 'like',
-              title: 'Like Post',
-            },
-            {
-              id: 'dislike',
-              title: 'Dislike Post',
-            },
-          ],
-        },
-      ]);
-    }
-
-    async function onDisplayNotification(data) {
-      console.log('fgfgfgfgf', data);
-      await notifee.requestPermission();
-      const channelId = await notifee.createChannel({
-        id: 'default',
-        name: 'Default Channel',
-      });
-
-      const message = data?.data?.message;
-      if (message === 'Charger is turned on') {
-        notifee.displayNotification({
-          title: data?.data?.title,
-          body: data.data.message,
-          android: {
-            channelId: channelId,
-            smallIcon: 'custom_notification_icon',
-            largeIcon: require('../../../assets/ic_launcher.png'),
-          },
-        });
-        axios
-          .post(`${API}/charger_ON/${getUserID}`)
-          .then(res => {
-            dispatch(setChargerStatus(res?.data));
-          })
-          .catch(err => {
-            console.log(err);
-          });
-      } else if (message === 'Charger is turned off') {
-        notifee.displayNotification({
-          title: data?.data?.title,
-          body: data.data.message,
-          android: {
-            channelId: channelId,
-            smallIcon: 'custom_notification_icon',
-            largeIcon: require('../../../assets/ic_launcher.png'),
-          },
-        });
-        axios
-          .post(`${API}/charger_OFF/${getUserID}`)
-          .then(res => {
-            dispatch(setChargerStatus(res?.data));
-          })
-          .catch(err => {
-            console.log(err);
-          });
-      } else if (message === 'You have used 90% of the subscribed package') {
-        notifee.displayNotification({
-          title: data?.data?.title,
-          body: data.data.message,
-
-          ios: {
-            categoryId: 'post',
-          },
-          android: {
-            channelId: channelId,
-            smallIcon: 'custom_notification_icon',
-            largeIcon: require('../../../assets/ic_launcher.png'),
-            actions: [
-              {
-                title: 'Upgrade your package',
-                icon: 'https://my-cdn.com/icons/snooze.png',
-                pressAction: {
-                  id: 'Upgrade',
-                },
-              },
-              {
-                title: 'Cancel',
-                icon: 'https://my-cdn.com/icons/snooze.png',
-                pressAction: {
-                  id: 'Cancel',
-                },
-              },
-            ],
-          },
-        });
-      } else if (
-        message ===
-        'You have consumed 100% of your package quota. Upgrade your package?'
-      ) {
-        notifee.displayNotification({
-          title: data?.data?.title,
-          body: data.data.message,
-
-          ios: {
-            categoryId: 'post',
-          },
-          android: {
-            channelId: channelId,
-            smallIcon: 'custom_notification_icon',
-            largeIcon: require('../../../assets/ic_launcher.png'),
-            actions: [
-              {
-                title: 'Yes',
-                icon: 'https://my-cdn.com/icons/snooze.png',
-                pressAction: {
-                  id: 'Upgrade',
-                },
-              },
-              {
-                title: 'No',
-                icon: 'https://my-cdn.com/icons/snooze.png',
-                pressAction: {
-                  id: 'Cancel',
-                },
-              },
-            ],
-          },
-        });
-      } else {
-        notifee.displayNotification({
-          title: data?.data?.title,
-          body: data.data.message,
-
-          // ios: {
-          //   categoryId: 'post',
-          // },
-          android: {
-            channelId: channelId,
-            smallIcon: 'custom_notification_icon',
-            largeIcon: require('../../../assets/ic_launcher.png'),
-            // actions: [
-            //   {
-            //     title: 'Upgrade your package',
-            //     pressAction: {
-            //       id: 'Upgrade',
-            //     },
-            //   },
-            //   {
-            //     title: 'Cancel',
-            //     pressAction: {
-            //       id: 'Cancel',
-            //     },
-            //   },
-            // ],
-          },
-        });
-      }
-      notifee.onBackgroundEvent(async ({type, detail}) => {
-        if (
-          type === EventType.ACTION_PRESS &&
-          detail.pressAction.id == 'Upgrade'
-        ) {
-          console.log(
-            'User pressed an action with the id: ',
-            detail.pressAction.id,
-          );
-          navigationRef.navigate('EnergyOptions');
-        } else if (
-          type === EventType.ACTION_PRESS &&
-          detail.pressAction.id == 'Contact'
-        ) {
-          console.log(
-            'User pressed an action with the id: ',
-            detail.pressAction.id,
-          );
-          navigationRef.navigate('Contact');
-        }
-      });
-      notifee.onForegroundEvent(({type, detail}) => {
-        if (
-          type === EventType.ACTION_PRESS &&
-          detail.pressAction.id == 'Upgrade'
-        ) {
-          console.log(
-            'User pressed an action with the id: ',
-            detail.pressAction.id,
-          );
-          navigationRef.navigate('EnergyOptions');
-        } else if (
-          type === EventType.ACTION_PRESS &&
-          detail.pressAction.id == 'Contact'
-        ) {
-          console.log(
-            'User pressed an action with the id: ',
-            detail.pressAction.id,
-          );
-          navigationRef.navigate('Contact');
-        }
-      });
-    }
 
     if (Platform.OS === 'android') {
       notificationService();
-      //setCategories();
     } else {
       notificationService();
-      setCategories();
-    }
-    if (unsubscribe) {
-      return unsubscribe;
     }
   }, []);
   useEffect(() => {
@@ -397,6 +161,7 @@ export default function Login({navigation}) {
           email: email,
           password: password,
           device_token: token1,
+          notification_status: 'true',
         },
       });
       if (res.data) {
@@ -405,10 +170,17 @@ export default function Login({navigation}) {
         if (res.data.message == 'Login Successfull') {
           dispatch(setUserID(res.data?.user_id));
           setId(res.data?.user_id);
+
           AsyncStorage.setItem(
             'locationID',
             JSON.stringify(res.data?.locationid),
           );
+          AsyncStorage.setItem(
+            'userId',
+            JSON.stringify(res.data?.user_id),
+          );
+          
+
           PLATFORM_IOS
             ? Toast.show({
                 type: 'success',
@@ -524,7 +296,11 @@ export default function Login({navigation}) {
       })
       .catch(err => {
         dispatch(setGraphData({message}));
-        console.log(err);
+        dispatch(setWeekGraphData({message}));
+        dispatch(setMonthGraphData({message}));
+        dispatch(setQuarterGraphData({message}));
+        dispatch(setYearGraphData({message}));
+
         getPlanCurrent(userID);
       });
   };
@@ -534,6 +310,7 @@ export default function Login({navigation}) {
       .get(`${API}/dailyusage/${userId}`)
       .then(res => {
         if (res?.data) {
+         
           dispatch(setKwhData(res?.data));
         }
 

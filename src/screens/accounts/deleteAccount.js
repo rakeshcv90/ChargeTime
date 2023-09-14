@@ -46,15 +46,11 @@ const DeleteAccountScreen = () => {
   const dispatch = useDispatch();
   const user_ID = getUserID;
 
-  useEffect(() => {
-    console.log('data for this User:---------', userProfileData);
-  }, [userProfileData]);
+
   //  const user_ID = userRegisterData[4]?.user_id;
 
   const handleDelete = async () => {
-    console.log(user_ID, 'user');
-    console.log(reason, 'reason');
-    console.log(password, 'password');
+
     await fetch(`${API}/deleteAccount/${user_ID}`, {
       method: 'POST',
       headers: {
@@ -83,7 +79,7 @@ const DeleteAccountScreen = () => {
 
           navigationRef.navigate('LoginStack');
         } else {
-          console.log('Inccorect Password');
+        
           PLATFORM_IOS
             ? Toast.show({
                 type: 'error',

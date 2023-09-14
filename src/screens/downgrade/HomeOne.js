@@ -338,6 +338,7 @@ export default function HomeOne(route) {
           {getBasePackage?.length >= 1 &&
             getBasePackage &&
             getBasePackage.map((item, ind) => {
+         
               let purchageData =
                 getPurchaseData.data != 'Package not found'
                   ? item.kwh > getPurchaseData.data.kwh
@@ -357,6 +358,7 @@ export default function HomeOne(route) {
                   component={SliderOne}
                   initialParams={{item: item, purchageData: purchageData}}
                 />
+                
               );
             })}
         </Tab.Navigator>

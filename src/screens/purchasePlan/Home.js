@@ -57,9 +57,8 @@ export default function Home(route) {
 
   useEffect(() => {
     fetchData();
-    // console.log('PACKAGES', apiData);
-    console.log('----------hello------', getLocationID);
-    console.log('PACKAGES APIII', getBasePackage.length);
+
+
     getBasePackage.length == 0 ? setShowPackage(true) : setShowPackage(false);
   }, []);
 

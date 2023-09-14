@@ -23,6 +23,7 @@ import {
   setRemainingData,
   setWeekGraphData,
   setYearGraphData,
+  setSubscriptionStatus,
 } from '../../redux/action';
 import {API} from '../../api/API';
 
@@ -46,15 +47,6 @@ const Day = (props: any) => {
 
   useEffect(() => {
     setShowSlider(true);
-    console.log('DAY GRAPH', getGraphData);
-    // fetchGraphData();
-    // fetchWeekGraphData(getUserID);
-    // fetchMonthGraphData(getUserID);
-    // fetchQuarterGraphData(getUserID);
-    // fetchYearGraphData(getUserID);
-    // fetchBoxTwoDashboardData(getUserID);
-    // fetchStatusdata(getUserID);
-    // console.log(getkwhData)
   }, []);
   const fetchGraphData = () => {
     axios
@@ -65,8 +57,6 @@ const Day = (props: any) => {
         dispatch(setMonthGraphData(res?.data.monthlyusagewithgraph));
         dispatch(setQuarterGraphData(res?.data.threemonthusagewithgraph));
         dispatch(setYearGraphData(res?.data.yearlyusagewithgraph));
-
-       
       })
       .catch(err => {
         console.log(err);
@@ -104,27 +94,12 @@ const Day = (props: any) => {
       });
   };
 
-  //day data start
-  // const fetchGraphData = (userID: string) => {
-  //   axios
-  //     .get(`${API}/dailyusagegraph/${userID}`)
-  //     .then(res => {
-  //       console.log("GRAPH.........", res.data)
-  //       dispatch(setGraphData(res?.data));
-
-  //       dailyUsuagekwh(userID);
-  //       // navigation.navigate('DrawerStack');
-  //     })
-  //     .catch(err => {
-  //       console.log(err);
-  //     });
-  // };
   const dailyUsuagekwh = (userId: string) => {
     axios
       .get(`${API}/dailyusage/${userId}`)
       .then(res => {
         if (res?.data) {
-          console.log(res.data, 'TOALASD');
+       
           dispatch(setKwhData(res?.data));
         }
       })
@@ -132,68 +107,7 @@ const Day = (props: any) => {
         console.log(err);
       });
   };
-  // //day data end
 
-  // //week data start
-  // const fetchWeekGraphData = (userID: string) => {
-  //   axios
-  //     .get(`${API}/weeklyusage/${userID}`)
-  //     .then(res => {
-  //       if (res?.data) {
-  //         dispatch(setWeekGraphData(res?.data));
-  //       }
-  //     })
-  //     .catch(err => {
-  //       console.log(err);
-  //     });
-  // };
-  // const fetchMonthGraphData = (userID: string) => {
-  //   axios
-  //     .get(`${API}/monthlyusage/${userID}`)
-  //     .then(res => {
-  //       if (res?.data) {
-  //         dispatch(setMonthGraphData(res?.data));
-  //       }
-  //     })
-  //     .catch(err => {
-  //       console.log(err);
-  //     });
-  // };
-  // const fetchQuarterGraphData = (userID: string) => {
-  //   axios
-  //     .get(`${API}/threemonthusage/${userID}`)
-  //     .then(res => {
-  //       if (res?.data) {
-  //         dispatch(setQuarterGraphData(res?.data));
-  //       }
-  //     })
-  //     .catch(err => {
-  //       console.log(err);
-  //     });
-  // };
-  // const fetchYearGraphData = (userID: string) => {
-  //   axios
-  //     .get(`${API}/yearlyusage/${userID}`)
-  //     .then(res => {
-  //       if (res?.data) {
-  //         dispatch(setYearGraphData(res?.data));
-  //       }
-  //     })
-  //     .catch(err => {
-  //       console.log(err);
-  //     });
-  // };
-
-  // const fetchBoxTwoDashboardData = (userId: string) => {
-  //   axios
-  //     .get(`${API}/currentplan/${userId}`)
-  //     .then(res => {
-  //       dispatch(setBoxTwoDataForDashboard(res?.data));
-  //     })
-  //     .catch(err => {
-  //       console.log(err);
-  //     });
-  // };
   const fetchStatusdata = (userId: string) => {
     axios
       .get(`${API}/chargerStatus/${userId}`)
@@ -234,7 +148,9 @@ const Day = (props: any) => {
 
           <View style={{marginHorizontal: 20}}>
             {getGraphData.message != 'No usage data available' ? (
-              <Graph dataOne={getGraphData} />
+              <>
+                <Graph dataOne={getGraphData} />
+              </>
             ) : (
               <Text
                 style={{

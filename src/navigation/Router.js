@@ -89,7 +89,7 @@ export const DrawerScreenPart = ({navigation}) => {
 };
 export const ChargerStatus = () => {
   const getChargerStatus = useSelector(state => state.getChargerStatus);
-  console.log(getChargerStatus, 'getChargerStatus');
+
   return (
     <View>
       <Text />
@@ -529,8 +529,7 @@ export default function Router() {
       isFirstTime = await AsyncStorage.getItem('isFirstTime');
 
       authorized = await AsyncStorage.getItem('isAuthorized');
-      console.log('isFirstTime', isFirstTime);
-      console.log(isAuthorized, 'getLocationId');
+
 
       // if (loginDataString !== null) {
       //   const loginData = JSON.parse(loginDataString);

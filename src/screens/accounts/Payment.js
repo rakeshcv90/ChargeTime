@@ -168,7 +168,7 @@ export default function PaymentGateWay({navigation, route}) {
 
   const handleAddCard = async (values, cb) => {
     setLoader(true);
-    console.log('first',values)
+
     let exp_month = values?.validTill?.split('/')[0];
     let exp_year = values?.validTill?.split('/')[1];
     // let customer_number = values?.cardNumber.split(" ").join("");
@@ -237,7 +237,7 @@ export default function PaymentGateWay({navigation, route}) {
   
    
       if (result[0]?.length > 0) {
-        console.log(result[0])
+   
         setSavedCard(result[0].sort((b, a) => a.status - b.status));
     
         const statusOneObjects = result[0].filter(item => item.status === 1);

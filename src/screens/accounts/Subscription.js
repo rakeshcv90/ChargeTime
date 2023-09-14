@@ -61,7 +61,25 @@ const Subscription = ({navigation, route}) => {
   const dispatch = useDispatch();
   useEffect(() => {
     getPlanCurrent();
+    getSubscription();
   }, []);
+
+  const getSubscription = () => {
+    axios
+      .get(`${API}/planstatuspauseresume/${getUserID}/`)
+      .then(res => {
+      
+        dispatch(setSubscriptionStatus(res.data.PlanStatus));
+        if(res.data.PlanStatus=='0'){
+          setText('Pause Subscription')
+        }else{
+          setText('Resume Subscription')
+        }
+      })
+      .catch(err => {
+        console.log(err);
+      });
+  };
 
   const user_id = getUserID;
 
