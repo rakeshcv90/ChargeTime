@@ -25,9 +25,9 @@ import Toast from 'react-native-toast-message';
 import {PLATFORM_IOS} from '../constants/DIMENSIONS';
 
 const ButtonSlider2 = () => {
-  const {getUserID, getChargerStatus, subscriptionStatus} = useSelector(
-    state => state,
-  );
+  const {getUserID, getChargerStatus, subscriptionStatus, getRemainingData} =
+    useSelector(state => state);
+
 
   const dispatch = useDispatch();
   const [isLoading, setIsLoading] = useState(false);
@@ -94,7 +94,7 @@ const ButtonSlider2 = () => {
     <TouchableOpacity
       // disabled={subscriptionStatus=='0'?false:true}
       onPress={() => {
-        if (subscriptionStatus == '1') {
+        if (subscriptionStatus == '1' && getRemainingData == '0.00') {
           PLATFORM_IOS
             ? Toast.show({
                 type: 'success',
@@ -207,7 +207,8 @@ const styles = StyleSheet.create({
     fontWeight: '700',
     textAlignVertical: 'center',
     textAlign: 'center',
-    marginRight: 10
+    marginRight: 10,
+    alignSelf: 'center',
     // left: DIMENSIONS.SCREEN_WIDTH * 0.41,
     //  zIndex: 2,
     // bottom: DIMENSIONS.SCREEN_HEIGHT * 0.03,

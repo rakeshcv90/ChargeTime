@@ -53,7 +53,7 @@ export default function ForDownGrade({route, navigation}) {
       });
   };
   const forDowngradeFunction = item => {
-    console.log('My data is', item);
+   
     axios
       .post(`${API}/upgrade_downgrade/${getUserID}`)
       .then(res => {

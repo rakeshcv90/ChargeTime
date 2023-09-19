@@ -66,8 +66,7 @@ const ResetPassword = props => {
       })
         .then(res => res.json())
         .then(data => {
-          console.log(data, 'ccc');
-          console.log(payload, 'yyy');
+         
           if (data.success !== false) {
             PLATFORM_IOS
               ? Toast.show({

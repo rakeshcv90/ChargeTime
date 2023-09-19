@@ -39,6 +39,9 @@ export const setGraphData = data => {
 export const setRemainingData = data => {
   return {type: types.GET_REMAINING_DATA, payload: data};
 };
+// export const getRemainingData = data => {
+//   return {type: types.REMAINING_DATA_GET, payload: data};
+// };
 
 // week action start
 export const setWeekTotalData = data => {
@@ -105,6 +108,9 @@ export const setSubscriptionStatus = data => {
 };
 export const setMaintainence = data => {
   return {type: types.MAINTAINENCE, payload: data};
+};
+export const setOverModelView = data => {
+  return {type: types.OVER_MODEL_VIEW, payload: data};
 };
 export const setLogout = () => {
   return {type: types.LOG_OUT};

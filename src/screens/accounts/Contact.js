@@ -38,10 +38,10 @@ const Contact = () => {
       const response = await axios.post(`${API}/sendEmail`, {
         message: message,
       });
-      // console.log("update-----------",response)
+
       if (response.data.message === 'Email sent successfully') {
         setMessage('');
-        console.log('hello');
+   
         PLATFORM_IOS
           ? Toast.show({
               type: 'success',

@@ -104,7 +104,7 @@ export default function CompleteProfile(props) {
         payload.append('pwa_mobile', userRegisterData.mobile);
         payload.append('pwa_password', userRegisterData.password);
         payload.append('pwa_name', userRegisterData.name);
-        console.log(payload);
+
         const res = await axios({
           url: `${API}/completeProfile`,
           method: 'POST',
@@ -154,7 +154,7 @@ export default function CompleteProfile(props) {
           }
         }
       } catch (err) {
-        console.log(err.response.data);
+  
         setForLoading(false);
       }
     } else {
@@ -171,7 +171,7 @@ export default function CompleteProfile(props) {
     }
   };
 
-  // console.log(locationMap,"locationMap")
+
   return (
     <SafeAreaView style={{backgroundColor: COLORS.CREAM, flex: 1}}>
       <ScrollView
@@ -288,26 +288,12 @@ export default function CompleteProfile(props) {
               </View>
             </View>
             <View>
-              {/* <DropDownPicker
-      //  items={locationMap?.map((option) => {
-      //   return console.log({label:option.location},'op')
-      // })}
-        defaultValue={selectedValue}
-        placeholder="Select an option"
-        containerStyle={{ height: 40, width: 200 }}
-        style={{ backgroundColor: "red" }}
-        itemStyle={{ justifyContent: 'flex-start' }}
-        dropDownStyle={{ backgroundColor: 'red' }}
-        onChangeItem={(item) => setSelectedValue(item.value)}
-        keyExtractor={(item) => item.value.toString()}
-      /> */}
+      
             </View>
             <View
               style={{
                 flexDirection: 'row',
                 justifyContent: 'center',
-
-                // paddingVertical: 20,
               }}>
               <TouchableOpacity
                 onPress={CompleteProfileFunction}

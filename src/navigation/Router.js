@@ -89,7 +89,7 @@ export const DrawerScreenPart = ({navigation}) => {
 };
 export const ChargerStatus = () => {
   const getChargerStatus = useSelector(state => state.getChargerStatus);
-  console.log(getChargerStatus, 'getChargerStatus');
+
   return (
     <View>
       <Text />
@@ -388,13 +388,14 @@ const DrawerNavigation = () => {
 
                       shadowColor: '#000',
                       shadowOffset: {
-                        width: 0,
-                        height: 5,
+                        width: -5,
+                        height: 3,
                       },
-                      //shadowOpacity: 0.29,
-                      //shadowRadius: 4.65,
-                      elevation: Platform.OS === 'android' ? 5 : 0,
-                    }}>
+                      shadowOpacity: 0.29,
+                      shadowRadius: 4.65,
+                      elevation: 7,
+                    }}
+                    >
                     {iconComponent}
                   </View>
                 ) : (
@@ -528,8 +529,7 @@ export default function Router() {
       isFirstTime = await AsyncStorage.getItem('isFirstTime');
 
       authorized = await AsyncStorage.getItem('isAuthorized');
-      console.log('isFirstTime', isFirstTime);
-      console.log(isAuthorized, 'getLocationId');
+
 
       // if (loginDataString !== null) {
       //   const loginData = JSON.parse(loginDataString);

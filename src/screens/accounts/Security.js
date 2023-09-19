@@ -76,11 +76,11 @@ const Security = () => {
 
   const mail = userProfileData[0]?.email;
   const enableEdit = () => {
-    console.log("enable edit", isEditable)
+  
     setIsEditable(true)
   }
   const UpdatePassword = async () => {
-    // console.log(values);
+  
     try {
       // const values = { password: newPassword, confirmPassword };
 

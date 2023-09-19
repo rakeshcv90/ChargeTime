@@ -46,12 +46,12 @@ const mobileW = Math.round(Dimensions.get('screen').width);
 const Subscription = ({navigation, route}) => {
   const getUserID = useSelector(state => state.getUserID);
   const getPurchaseData = useSelector(state => state.getPurchaseData);
-  const {getChargerStatus, getDeviceID,subscriptionStatus} = useSelector(state => state);
+  const {getChargerStatus, getDeviceID, subscriptionStatus} = useSelector(
+    state => state,
+  );
 
   const [text, setText] = useState(
-    subscriptionStatus  == '0'
-      ? 'Pause Subscription'
-      : 'Resume Subscription',
+    subscriptionStatus == '0' ? 'Pause Subscription' : 'Resume Subscription',
   );
 
   const [forLoading, setForLoading] = useState(false);
@@ -61,7 +61,24 @@ const Subscription = ({navigation, route}) => {
   const dispatch = useDispatch();
   useEffect(() => {
     getPlanCurrent();
+    getSubscription();
   }, []);
+
+  const getSubscription = () => {
+    axios
+      .get(`${API}/planstatuspauseresume/${getUserID}/`)
+      .then(res => {
+        dispatch(setSubscriptionStatus(res.data.PlanStatus));
+        if (res.data.PlanStatus == '0') {
+          setText('Pause Subscription');
+        } else {
+          setText('Resume Subscription');
+        }
+      })
+      .catch(err => {
+        console.log(err);
+      });
+  };
 
   const user_id = getUserID;
 
@@ -244,10 +261,10 @@ const Subscription = ({navigation, route}) => {
     axios
       .get(`${API}/planstatuspauseresume/${getUserID}/`)
       .then(res => {
-        if(res.data.PlanStatus=='0'){
-          setText('Pause Subscription')
-        }else{
-          setText('Resume Subscription')
+        if (res.data.PlanStatus == '0') {
+          setText('Pause Subscription');
+        } else {
+          setText('Resume Subscription');
         }
         dispatch(setSubscriptionStatus(res.data.PlanStatus));
       })
@@ -378,11 +395,16 @@ const Subscription = ({navigation, route}) => {
               <PriceValiditySubs data={getPurchaseData.data} />
             </View>
 
-            <View
+            {/* <View
               style={{
-                justifyContent: 'space-between',
-                marginHorizontal: 10,
+                
+                //  marginHorizontal: DIMENSIONS.SCREEN_WIDTH * 0.1,
                 paddingBottom: 30,
+                width: DIMENSIONS.SCREEN_WIDTH * 0.8,
+                height: DIMENSIONS.SCREEN_HEIGHT * 0.1,
+               
+                flexDirection:'row',
+          
               }}>
               <TouchableOpacity
                 activeOpacity={0.9}
@@ -413,7 +435,7 @@ const Subscription = ({navigation, route}) => {
                   style={{
                     color: COLORS.WHITE,
                     fontSize: 14,
-                    fontWeight: '700',
+                    fontWeight: '500',
                   }}>
                   Cancel Subscription
                 </Text>
@@ -425,10 +447,10 @@ const Subscription = ({navigation, route}) => {
                 }}
                 style={{
                   marginTop: 15,
-
+                  marginHorizontal:10,
                   backgroundColor: COLORS.GREEN,
                   alignItems: 'center',
-                  padding: 13,
+               
                   borderRadius: 10,
                   ...Platform.select({
                     ios: {
@@ -446,7 +468,82 @@ const Subscription = ({navigation, route}) => {
                   style={{
                     color: COLORS.BLACK,
                     fontSize: 14,
-                    fontWeight: '700',
+                    fontWeight: '500',
+                  }}>
+                  {text}
+                </Text>
+              </TouchableOpacity>
+            </View> */}
+            <View
+              style={{
+                flexDirection: 'row',
+
+                ...styles.managing_width,
+               
+                marginVertical:20
+              }}>
+              <TouchableOpacity
+                onPress={() => {
+                  setModalVisible(true);
+                }}
+                style={{
+                  width: DIMENSIONS.SCREEN_WIDTH * 0.4,
+                  height: (DIMENSIONS.SCREEN_HEIGHT * 6) / 100,
+                  backgroundColor: '#F84E4E',
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  borderRadius: 10,
+                  ...Platform.select({
+                    ios: {
+                      shadowColor: '#000000',
+                      shadowOffset: {width: 0, height: 2},
+                      shadowOpacity: 0.3,
+                      shadowRadius: 4,
+                    },
+                    android: {
+                      elevation: 4,
+                    },
+                  }),
+                }}>
+                <Text
+                  style={{
+                    color: COLORS.WHITE,
+                    fontSize: 14,
+                    fontWeight: '500',
+                  }}>
+                  Cancel Subscription
+                </Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                 onPress={() => {
+                  getSubscriptionStatus();
+                }}
+                style={{
+                  width: DIMENSIONS.SCREEN_WIDTH * 0.4,
+                  height: (DIMENSIONS.SCREEN_HEIGHT * 6) / 100,
+                  marginLeft: DIMENSIONS.SCREEN_WIDTH * 0.1,
+                  borderRadius: 10,
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  backgroundColor: COLORS.GREEN,
+                  ...Platform.select({
+                    ios: {
+                      shadowColor: '#000000',
+                      shadowOffset: {width: 0, height: 2},
+                      shadowOpacity: 0.3,
+                      shadowRadius: 4,
+                    },
+                    android: {
+                      elevation: 4,
+                    },
+                  }),
+                  
+                }}>
+                <Text
+                  style={{
+                    color: COLORS.BLACK,
+                    fontSize: 14,
+                    fontWeight: '500',
                   }}>
                   {text}
                 </Text>

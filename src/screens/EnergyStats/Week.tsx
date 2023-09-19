@@ -22,7 +22,7 @@ export default function Week() {
   const ScrollRef = useRef(null);
   useEffect(() => {
     setShowSlider(true);
-    console.log('WEWEEWE FILE CHECK', getWeekGraphData);
+
   }, []);
   const {getWeekGraphData, getBoxTwoDataForDashboard} = useSelector(
     (state: any) => state,
@@ -68,7 +68,7 @@ export default function Week() {
           </View>
 
           <View style={{marginHorizontal: 20}}>
-            {getWeekGraphData.message != 'No weeklyusage data available' ? (
+            {getWeekGraphData.message != 'No usage data available' ? (
               <Graph dataOne={getWeekGraphData} />
             ) : (
               <Text

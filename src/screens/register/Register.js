@@ -70,50 +70,6 @@ export default function Register({navigation}) {
   const dispatch = useDispatch();
   const {userRegisterData} = useSelector(state => state);
 
-  // const handleFormSubmit = async values => {
-  //   setForLoading(true);
-  //   try {
-  //     const response = await axios.post(`${API}/createuser`, {
-  //       name: values.name,
-  //       email: values.email,
-  //     });
-
-  //     if (response.data.status != 1) {
-  //       PLATFORM_IOS
-  //         ? Toast.show({
-  //             type: 'success',
-  //             text1: 'Success!!! Please verify your email with OTP.',
-  //           })
-  //         : ToastAndroid.show(
-  //             'Success!!! Please verify your email with OTP.',
-  //             ToastAndroid.SHORT,
-  //           );
-  //       navigation.navigate('VerifyEmail', {
-  //         email: values?.email,
-  //         user_id: response.data?.user_id,
-  //       });
-
-  //       //  const data=[{ email: values?.email },{ name: values?.name },{ mobile: values?.mobile },{ password: values?.password },{user_id:response.data?.user_id}]
-  //       // const data = response.data
-  //       //  console.log('------------------',data);
-
-  //       setForLoading(false);
-
-  //       dispatch(setUserRegisterData(values));
-  //     } else {
-  //       PLATFORM_IOS
-  //         ? Toast.show({
-  //             type: 'error',
-  //             text1: 'User already register',
-  //           })
-  //         : ToastAndroid.show('User already registered', ToastAndroid.SHORT);
-  //       setForLoading(false);
-  //     }
-  //   } catch (error) {
-  //     console.error(error);
-  //     setForLoading(false);
-  //   }
-  // };
   const handleFormSubmit = async values => {
     setForLoading(true);
     try {

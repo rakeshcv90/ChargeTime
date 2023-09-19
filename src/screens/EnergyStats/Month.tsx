@@ -19,7 +19,7 @@ export default function Month() {
   const ScrollRef = useRef(null);
   useEffect(() => {
     setShowSlider(true);
-    console.log('MONTHRasdsadsadasdasdasdasdasd', getMonthData);
+
   }, []);
   const {getMonthData, getBoxTwoDataForDashboard} = useSelector(
     (state: any) => state,
@@ -53,7 +53,7 @@ export default function Month() {
           </View>
 
           <View style={{marginHorizontal: 20}}>
-            {getMonthData.message != 'No monthlyusage data available' ? (
+            {getMonthData.message != 'No usage data available' ? (
               <Graph dataOne={getMonthData} />
             ) : (
               <Text

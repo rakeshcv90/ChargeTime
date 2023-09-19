@@ -9,6 +9,8 @@ import {
   TouchableOpacity,
   SafeAreaView,
   BackHandler,
+  Platform,
+  ToastAndroid,
 } from 'react-native';
 import React, {useState, useEffect} from 'react';
 import COLORS from '../../constants/COLORS';
@@ -22,6 +24,7 @@ import {persistor} from '../../redux/store';
 import {useSelector} from 'react-redux';
 import {API} from '../../api/API';
 import {useDispatch} from 'react-redux';
+import Toast from 'react-native-toast-message';
 import {
   setLogout,
   setPurchaseData,
@@ -67,6 +70,7 @@ const Account = ({navigation}) => {
     axios
       .get(`${API}/planstatuspauseresume/${getUserID}/`)
       .then(res => {
+ 
         dispatch(setSubscriptionStatus(res.data.PlanStatus));
       })
       .catch(err => {
@@ -112,20 +116,49 @@ const Account = ({navigation}) => {
     // },
   ];
   const handleLogOut = async () => {
-    // await AsyncStorage.clear();
-    await AsyncStorage.removeItem('locationID');
-    await AsyncStorage.removeItem('isAuthorized');
-    await persistor.purge();
-    dispatch(setLogout());
-    // navigationRef.navigate('LoginStack');
-    // navigationRef.reset({
-    //   index: 1,
-    //   routes: [{name: 'Login'}], // Replace 'Login' with the appropriate initial screen after logout
-    // });
-    navigationRef.reset({
-      index: 2,
-      routes: [{name: 'LoginStack'}],
-    });
+
+    try {
+      const res = await axios(`${API}/logout/${user_ID}`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+      if (res.data.message == 'Your account is successfully logout') {
+        PLATFORM_IOS
+        ? Toast.show({
+            text1: res.data.message,
+
+            position: 'bottom',
+            type: 'success',
+            duration: 500,
+          })
+        : ToastAndroid.show(res.data.message, ToastAndroid.SHORT);
+        await AsyncStorage.removeItem('locationID');
+        await AsyncStorage.removeItem('isAuthorized');
+        await persistor.purge();
+        dispatch(setLogout());
+
+        navigationRef.reset({
+          index: 2,
+          routes: [{name: 'LoginStack'}],
+        });
+ 
+      }
+      
+    } catch (err) {
+      console.log('Error', err);
+      await AsyncStorage.removeItem('locationID');
+      await AsyncStorage.removeItem('isAuthorized');
+      await persistor.purge();
+      dispatch(setLogout());
+
+      navigationRef.reset({
+        index: 2,
+        routes: [{name: 'LoginStack'}],
+      });
+    }
+    
   };
   const userDetails = async () => {
     // const response = await fetch(`${API}/userexisting/${user_ID}`);
@@ -136,10 +169,7 @@ const Account = ({navigation}) => {
       if (result[0].message === 'sucess') {
         //  setUserData(result);
         dispatch(userProfileData(result));
-      } else {
-        console.log('iiiiiiiiiiii');
       }
-      // setLocationMap(result);
     } catch (error) {
       console.error(error);
     }
@@ -292,6 +322,7 @@ const Account = ({navigation}) => {
           </View>
           <View style={styles.ButtonsContainer}>
             <TouchableOpacity
+            activeOpacity={0.05}
               style={styles.logoutButton}
               onPress={() => handleLogOut()}>
               <Text style={styles.logoutbuttonText}>LOG OUT</Text>
@@ -312,6 +343,10 @@ const styles = StyleSheet.create({
   main_div: {
     width: DIMENSIONS.SCREEN_WIDTH * 0.95,
     height: DIMENSIONS.SCREEN_HEIGHT * 0.9,
+    marginVertical:
+      Platform.OS == 'ios'
+        ? DIMENSIONS.SCREEN_HEIGHT * 0.09
+        : DIMENSIONS.SCREEN_HEIGHT * 0.03,
   },
   heading: {
     color: COLORS.BLACK,

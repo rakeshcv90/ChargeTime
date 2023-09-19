@@ -63,7 +63,7 @@ const ForgetPassword = ({navigation}) => {
         },
         data: values,
       });
-      console.log('First TIme data', values);
+
       if (res.data) {
         if (res.data.success == true) {
           PLATFORM_IOS
@@ -164,7 +164,7 @@ const ForgetPassword = ({navigation}) => {
   };
   const resendOTp = async value => {
     const data = {email: value};
-    console.log('Data ', data);
+  
     setForLoading(true);
     try {
       const res = await axios(`${API}/forgetPassword`, {
@@ -174,9 +174,9 @@ const ForgetPassword = ({navigation}) => {
         },
         data: data,
       });
-      // console.log("Data ",res.data);
+
       if (res.data) {
-        console.log(res.data);
+    
         if (res.data.success == true) {
           PLATFORM_IOS
             ? Toast.show({

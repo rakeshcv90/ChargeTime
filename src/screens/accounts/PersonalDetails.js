@@ -122,7 +122,7 @@ const PersonalDetails = () => {
               mobile: number,
             },
           ];
-          // console.log(updatedData,"------")
+      
 
           dispatch(updatePersionalDetail(updatedData));
           PLATFORM_IOS

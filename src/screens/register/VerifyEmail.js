@@ -70,15 +70,7 @@ export default function VerifyEmail(props) {
       forthDigit +
       fifthDigit +
       sixDigit;
-    console.log(
-      '----------',
-      firstDigit,
-      secondDigit,
-      thirdDigit,
-      forthDigit,
-      fifthDigit,
-      sixDigit,
-    );
+
 
     try {
       if (email !== '' && otp.length == 6) {
@@ -94,7 +86,7 @@ export default function VerifyEmail(props) {
           data: payload,
         });
         if (res.data) {
-          console.log(res.data);
+         
           if (res.data.message !== 'Invalid OTP or OTP expired') {
             PLATFORM_IOS
               ? Toast.show({
@@ -188,7 +180,7 @@ export default function VerifyEmail(props) {
     setRemainingTime(60);
     setTimerActive(true);
     try {
-      console.log(email);
+    
       let payload = new FormData();
       payload.append('pwa_email', email);
       const res = await axios(`${API}/resetemail`, {
@@ -198,7 +190,7 @@ export default function VerifyEmail(props) {
         },
         data: payload,
       });
-      console.log('first', res.data);
+   
       if (res.data) {
         if (res.data.message == 'Email sent successfully') {
           setEmailCheck(true);
@@ -231,7 +223,7 @@ export default function VerifyEmail(props) {
 
   useEffect(() => {
     let stopTimer;
-    console.log('SIGN UPPPPPsad', `${API}/emailverify/${tempID}`);
+
     const sendToAnotherPage = async () => {
       try {
         const response = await axios(`${API}/emailverify/${tempID}`, {
@@ -240,7 +232,7 @@ export default function VerifyEmail(props) {
             'Content-Type': 'application/json',
           },
         });
-        console.log(response.data, 'vvv');
+   
         if (response.data.status.email_verified === '1') {
           navigation.navigate('CompleteProfile', {
             email: email,

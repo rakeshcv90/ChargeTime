@@ -197,7 +197,7 @@ export default function PaymentGateWay({navigation, route}) {
     payload.append('price_stripe_id', getDataForPayment.price_stripe_id);
     payload.append('user_id', getUserID);
     payload.append('voucherCode', coupon == null ? '' : coupon);
-    console.log(payload);
+  
     try {
       const response = await axios.post(`${API}/checkout`, payload, {
         headers: {

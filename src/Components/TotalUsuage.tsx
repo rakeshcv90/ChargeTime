@@ -12,30 +12,7 @@ import {API} from '../api/API';
 import {setKwhData} from '../redux/action';
 
 const TotalUsage = (props: any) => {
-  // const dispatch = useDispatch();
-  // const {getRemainingData, getUserID, getkwhData} = useSelector(
-  //   (state: any) => state,
-  // );
-  // useFocusEffect(
-  //   // overusage && setModalVisible(true);
-  //   useCallback(() => {
-  //     dailyUsuagekwh();
-  //   }, []),
-  // );
 
-  // const dailyUsuagekwh = () => {
-  //   axios
-  //     .get(`${API}/dailyusage/${getUserID}`)
-  //     .then(res => {
-  //       if (res?.data) {
-  //         console.log("DAILTYRWTEW", res.data)
-  //         dispatch(setKwhData(res?.data));
-  //       }
-  //     })
-  //     .catch(err => {
-  //       console.log(err);
-  //     });
-  // };
   return (
     <View
       style={{

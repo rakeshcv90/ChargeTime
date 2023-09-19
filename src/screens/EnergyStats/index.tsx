@@ -51,9 +51,11 @@ import {
   setRemainingData,
   setWeekGraphData,
   setYearGraphData,
+  setSubscriptionStatus
 } from '../../redux/action';
 import ButtonSlider2 from '../../Components/ButtonSlider2';
 import Toast from 'react-native-toast-message';
+
 const mobileW = Math.round(Dimensions.get('screen').width);
 
 function MyTabBar({state, descriptors, navigation}) {
@@ -158,6 +160,8 @@ export default function EnergyStats() {
 
     return () => backHandler.remove();
   }, []);
+
+ 
   const handleBackButton = () => {
     return true;
   };
@@ -172,16 +176,13 @@ export default function EnergyStats() {
     axios
       .get(`${API}/devicecheck/${getUserID}}`)
       .then(res => {
-        console.log(res.data, 'tt');
+      
         if (res.data.status == 'True') {
-          // dispatch(setDeviceId(res.data.message));
+      
           setDeviceIdTemp(res.data.message);
 
-          // fetchMonthGraphData(res.data?.user_id);
-          // fetchQuarterGraphData(res.data.user_id);
-          // console.log('Hellooo..1111..');
-          // setInterval(() => {
-          console.log('Hellooo....');
+      
+       
           fetchGraphData(getUserID);
           fetchBoxTwoDashboardData(getUserID);
           fetchStatusdata(getUserID);
@@ -210,13 +211,15 @@ export default function EnergyStats() {
   //day data start
   const fetchGraphData = (userID: string) => {
     axios
-      .get(`${API}/dailyusagegraph/${userID}`)
+      .get(`${API}/dailyusagedeviceid/${userID}`)
       .then(res => {
-        console.log('GRAPH.........', res.data);
-        dispatch(setGraphData(res?.data));
-
+        dispatch(setGraphData(res.data.Dayusagewithgraph));
+        dispatch(setWeekGraphData(res.data.weeklyusagewithgraph));
+        dispatch(setMonthGraphData(res?.data.monthlyusagewithgraph));
+        dispatch(setQuarterGraphData(res?.data.threemonthusagewithgraph));
+        dispatch(setYearGraphData(res?.data.yearlyusagewithgraph));
         dailyUsuagekwh(getUserID);
-        // navigation.navigate('DrawerStack');
+     
       })
       .catch(err => {
         setIsLoading(false);
@@ -228,7 +231,7 @@ export default function EnergyStats() {
       .get(`${API}/dailyusage/${userId}`)
       .then(res => {
         if (res?.data) {
-          // console.log("DAILTYRWTEW", res.data)
+    
           dispatch(setKwhData(res?.data));
         }
 
@@ -254,69 +257,7 @@ export default function EnergyStats() {
         console.log('first', res.data);
         dispatch(setRemainingData(remaingData));
         setIsLoading(false);
-        fetchWeekGraphData(getUserID);
-      })
-      .catch(err => {
-        setIsLoading(false);
-        console.log(err);
-      });
-  };
-  //day data end
-
-  //week data start
-  const fetchWeekGraphData = (userID: string) => {
-    axios
-      .get(`${API}/weeklyusage/${userID}`)
-      .then(res => {
-        if (res?.data) {
-          console.log('WEqwewqe', res.data);
-          dispatch(setWeekGraphData(res?.data));
-          fetchYearGraphData(getUserID);
-        }
-      })
-      .catch(err => {
-        fetchYearGraphData(getUserID);
-        console.log(err);
-      });
-  };
-  const fetchMonthGraphData = (userID: string) => {
-    axios
-      .get(`${API}/monthlyusage/${userID}`)
-      .then(res => {
-        if (res?.data) {
-          console.log('Month GRAPH', res.data);
-          dispatch(setMonthGraphData(res?.data));
-          fetchQuarterGraphData(getUserID);
-        }
-      })
-      .catch(err => {
-        console.log(err);
-      });
-  };
-  const fetchQuarterGraphData = (userID: string) => {
-    axios
-      .get(`${API}/threemonthusage/${userID}`)
-      .then(res => {
-        if (res?.data) {
-          console.log('Qurewrsdfds GRAPH', res.data);
-          dispatch(setQuarterGraphData(res?.data));
-          dispatch(setDeviceId(deviceIdTemp));
-          setIsLoading(false);
-        }
-      })
-      .catch(err => {
-        console.log(err);
-      });
-  };
-  const fetchYearGraphData = (userID: string) => {
-    axios
-      .get(`${API}/yearlyusage/${userID}`)
-      .then(res => {
-        if (res?.data) {
-          console.log('Year GRAPH', res.data);
-          dispatch(setYearGraphData(res?.data));
-          fetchMonthGraphData(getUserID);
-        }
+        //fetchWeekGraphData(getUserID);
       })
       .catch(err => {
         setIsLoading(false);
@@ -328,7 +269,6 @@ export default function EnergyStats() {
     axios
       .get(`${API}/currentplan/${userId}`)
       .then(res => {
-        console.log('DASHBOARDSADASASDASDASDASDSDA', res.data);
         dispatch(setBoxTwoDataForDashboard(res?.data));
       })
       .catch(err => {
@@ -337,9 +277,10 @@ export default function EnergyStats() {
   };
   const fetchStatusdata = (userId: string) => {
     axios
-      .get(`${API}/chargerstatus/${userId}`)
+      .get(`${API}/chargerStatus/${userId}`)
       .then(res => {
         dispatch(setChargerStatus(res?.data));
+        dispatch(setDeviceId(deviceIdTemp));
       })
       .catch(err => {
         console.log(err);
@@ -592,9 +533,9 @@ export default function EnergyStats() {
           </View>
         ) : (
           <>
-            {/* <ButtonSlider onToggle={handleToggle} /> */}
+           <View style={{marginVertical:Platform.OS=='ios'?-40:-10}}>
             <ButtonSlider2 />
-            {/* < ButtonSlide /> */}
+            </View>
           </>
         )}
       </SafeAreaView>

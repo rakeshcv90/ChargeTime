@@ -169,7 +169,7 @@ const Installation = () => {
         },
       });
       const result = await response.json();
-      console.log(result, 'ttt');
+
       if (result.message == 'Plan Cancelled Successfully') {
         setIsFocus(false);
         getPlanCurrent();
