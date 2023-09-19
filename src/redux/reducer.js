@@ -36,6 +36,7 @@ const initialState = {
   maintainence:false,
   overusage: false,
   resetApp: null,
+  overModelView:false,
 };
 
 const rootReducer = (state = initialState, action) => {
@@ -110,6 +111,8 @@ const rootReducer = (state = initialState, action) => {
         return {...state, subscriptionStatus: action.payload};
       case types.MAINTAINENCE:
         return {...state, maintainence: action.payload};
+        case types.OVER_MODEL_VIEW:
+          return {...state, overModelView: action.payload};
     case types.LOG_OUT:
       return {...initialState};
     case types.RESET_APP:

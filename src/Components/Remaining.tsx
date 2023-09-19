@@ -19,7 +19,11 @@ import {DIMENSIONS} from '../constants/DIMENSIONS';
 import {useDispatch, useSelector} from 'react-redux';
 import axios from 'axios';
 import {API} from '../api/API';
-import {setOverUsage, setRemainingData} from '../redux/action';
+import {
+  setOverModelView,
+  setOverUsage,
+  setRemainingData,
+} from '../redux/action';
 import AnimatedLottieView from 'lottie-react-native';
 import {useFocusEffect} from '@react-navigation/native';
 import {navigationRef} from '../../App';
@@ -33,11 +37,10 @@ import {
 const Remaining = ({...props}) => {
   const dispatch = useDispatch();
   const [totalAllowed, setTotalAllowed] = useState(0);
-  const {getRemainingData, getUserID, overusage} = useSelector(
+  const {getRemainingData, getUserID, overusage, overModelView} = useSelector(
     (state: any) => state,
   );
 
-console.log("Over Data",overusage,getRemainingData)
   const [modalVisible, setModalVisible] = useState(false);
   const [x, setX] = useState<number>(0);
   setUpdateIntervalForType(SensorTypes.gyroscope, 200); // defaults to 100ms
@@ -61,7 +64,7 @@ console.log("Over Data",overusage,getRemainingData)
         } else {
           remaingData = res.data?.kwh_unit_overusage;
           dispatch(setOverUsage(true));
-          setModalVisible(true);
+          // setModalVisible(true);
         }
 
         dispatch(setRemainingData(remaingData));
@@ -71,18 +74,17 @@ console.log("Over Data",overusage,getRemainingData)
       });
   };
   const nav = () => {
-    setModalVisible(!modalVisible);
+    dispatch(setOverModelView(false));
     navigationRef.navigate('HomeOne');
-
   };
   const OverusageModal = () => {
     return (
       <Modal
         animationType="fade"
         transparent={true}
-        visible={modalVisible}
+        visible={overModelView}
         onRequestClose={() => {
-          setModalVisible(!modalVisible);
+          dispatch(setOverModelView(false));
         }}>
         <View style={styles.centeredView}>
           <View style={styles.modalView}>
@@ -109,7 +111,7 @@ console.log("Over Data",overusage,getRemainingData)
                   borderRadius: 20,
                   padding: 10,
                 }}
-                onPress={() => setModalVisible(false)}>
+                onPress={() => dispatch(setOverModelView(false))}>
                 <Text style={styles.textStyle}>Cancel</Text>
               </Pressable>
               <Pressable
@@ -151,7 +153,7 @@ console.log("Over Data",overusage,getRemainingData)
             fontSize: 12,
             lineHeight: 14,
             textTransform: 'capitalize',
-            color: COLORS.BLACK,
+            color: overusage ? COLORS.WHITE : COLORS.BLACK,
             position: 'absolute',
             top: 10,
             left: 10,
@@ -170,7 +172,7 @@ console.log("Over Data",overusage,getRemainingData)
               fontWeight: '800',
               fontSize: 16,
               lineHeight: 20,
-              color: COLORS.BLACK,
+              color: overusage ? COLORS.WHITE : COLORS.BLACK,
             }}>
             {' '}
             {getRemainingData ? getRemainingData : 0}
@@ -181,7 +183,7 @@ console.log("Over Data",overusage,getRemainingData)
               fontWeight: '400',
               fontSize: 10,
               lineHeight: 12,
-              color: 'rgba(61, 61, 61, 0.6)',
+              color: overusage ? COLORS.WHITE : 'rgba(61, 61, 61, 0.6)',
             }}>
             Units Left To Be Used
           </Text>
@@ -191,8 +193,15 @@ console.log("Over Data",overusage,getRemainingData)
             style={{
               width: '100%',
               height: '100%',
-              flexDirection: 'column-reverse',
               backgroundColor: COLORS.RED,
+              flexDirection: 'column-reverse',
+              shadowColor: '#000000',
+              shadowOffset: {width: 0, height: 2},
+              // shadowOpacity: 0.8,
+              shadowRadius: 5,
+              elevation: 5,
+              borderWidth: 0,
+              borderRadius: 10,
               zIndex: -1,
             }}
           />
@@ -205,7 +214,7 @@ console.log("Over Data",overusage,getRemainingData)
               width: '100%',
               // borderRadius: 10,
               // height:  getRemainingData < totalAllowed ?`${getRemainingData / totalAllowed}%` : '1%',
-              height: `${(getRemainingData / totalAllowed) * 100}%`,
+              // height: `${(getRemainingData / totalAllowed) * 100}%`,
               zIndex: -1,
               flexDirection: 'column-reverse',
             }}
@@ -225,7 +234,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
 
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    // backgroundColor: 'rgba(0, 0, 0, 0.5)',
   },
   modalView: {
     margin: 20,
@@ -233,11 +242,11 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     padding: 35,
     alignItems: 'center',
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
+    // shadowColor: '#000',
+    // shadowOffset: {
+    //   width: 0,
+    //   height: 2,
+    // },
     shadowOpacity: 0.25,
     shadowRadius: 4,
     elevation: 5,

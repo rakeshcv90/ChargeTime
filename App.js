@@ -17,6 +17,7 @@ import {API} from './src/api/API';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {
   setChargerStatus,
+  setOverModelView,
   setOverUsage,
   setRemainingData,
   setSubscriptionStatus,
@@ -366,7 +367,26 @@ export default function App() {
       return unsubscribe;
     }
   }, []);
-
+  useEffect(() => {
+    remainigUsuageData();
+  }, []);
+  const remainigUsuageData = async () => {
+    let remaingData;
+    const getUserID = await AsyncStorage.getItem('userId');
+    axios
+      .get(`${API}/remainingusage/${getUserID}`)
+      .then(res => {
+        if (res.data?.kwh_unit_remaining > 0) {
+          dispatch(setOverModelView(false));
+        } else {
+          remaingData = res.data?.kwh_unit_overusage;
+          dispatch(setOverModelView(true));
+        }
+      })
+      .catch(err => {
+        console.log(err);
+      });
+  };
   return (
     <>
       <NavigationContainer ref={navigationRef}>

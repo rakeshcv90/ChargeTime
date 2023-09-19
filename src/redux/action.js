@@ -109,6 +109,9 @@ export const setSubscriptionStatus = data => {
 export const setMaintainence = data => {
   return {type: types.MAINTAINENCE, payload: data};
 };
+export const setOverModelView = data => {
+  return {type: types.OVER_MODEL_VIEW, payload: data};
+};
 export const setLogout = () => {
   return {type: types.LOG_OUT};
 };
