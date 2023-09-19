@@ -36,6 +36,7 @@ import {
   setPlanStatus,
   setPurchaseData,
 } from '../../redux/action';
+import RemainingHorizontal from '../../Components/RemainingHorizontal';
 
 export default function SliderOne(props) {
   const [forLoading, setForLoading] = useState(false);
@@ -90,7 +91,7 @@ export default function SliderOne(props) {
         {getPurchaseData.data != 'Package not found' &&
           getPurchaseData.data.energy_plan.toLowerCase() ===
             props.route.params.item.package_name.toLowerCase() && (
-            <Remaining RemainingFill={50} KWH={400} data={'energy'} />
+            <RemainingHorizontal RemainingFill={50} KWH={400} data={'energy'} />
           )}
         {getPurchaseData.data != 'Package not found' &&
           getPurchaseData.data.energy_plan.toLowerCase() ===

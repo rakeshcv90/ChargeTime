@@ -34,7 +34,7 @@ import {
   SensorTypes,
 } from 'react-native-sensors';
 
-const Remaining = ({...props}) => {
+const RemainingHorizontal = ({...props}) => {
   const dispatch = useDispatch();
   const [totalAllowed, setTotalAllowed] = useState(0);
   const {getRemainingData, getUserID, overusage, overModelView} = useSelector(
@@ -128,7 +128,7 @@ const Remaining = ({...props}) => {
 
   return (
     <>
-      <View
+      {/* <View
         style={{
           backgroundColor: '#F5F5F5',
           width:
@@ -210,14 +210,14 @@ const Remaining = ({...props}) => {
               loop
               style={{
                 // marginBottom:
-                //   ((getRemainingData / totalAllowed) * 100) <= 30 ? 0 : -10,
+                //   (getRemainingData / totalAllowed) * 100 <= 30 ? 0 : -10,
                 zIndex: -1,
                 width: `100%`,
-                marginBottom: -10
-                // height: `80.4%`,
+                // height: `120%`,
+                // marginBottom: 0,
+                overflow: 'hidden',
               }}
             />
-            {/* <Text>`{((getRemainingData / totalAllowed) * 100) <= 10 ? 0 : -10}`</Text> */}
           </>
         ) : (
           <>
@@ -240,23 +240,212 @@ const Remaining = ({...props}) => {
               autoPlay
               loop
               style={{
-                marginBottom:
-                  ((getRemainingData / totalAllowed) * 100) <= 30 ? 0 : -10,
+                // marginBottom:
+                //   (getRemainingData / totalAllowed) * 100 <= 30 ? 0 : -10,
                 zIndex: -1,
                 width: `100%`,
-                // height: `80.4%`,
+                // height: `120%`,
+                // marginBottom: 0,
+                overflow: 'hidden',
               }}
             />
-            {/* <Text>`{((getRemainingData / totalAllowed) * 100) <= 10 ? 0 : -10}`</Text> */}
           </>
         )}
+      </View> */}
+      <View
+        style={{
+          backgroundColor: '#F5F5F5',
+          width: DIMENSIONS.SCREEN_WIDTH * 0.9,
+          height: DIMENSIONS.SCREEN_WIDTH * 0.35,
+          marginVertical: DIMENSIONS.SCREEN_HEIGHT * 0.02,
+          flexDirection: 'row',
+          shadowColor: '#000000',
+          shadowOffset: {width: 0, height: 2},
+          shadowOpacity: 0.8,
+          shadowRadius: 5,
+          elevation: 5,
+          borderWidth: 0,
+          borderRadius: 10,
+        //   overflow: 'hidden',
+        }}>
+        <View
+          style={{
+            backgroundColor: '#F5F5F5',
+            width: DIMENSIONS.SCREEN_WIDTH * 0.45,
+            height: DIMENSIONS.SCREEN_WIDTH * 0.3,
+            marginTop: DIMENSIONS.SCREEN_HEIGHT * 0.025,
+            flexDirection: 'column-reverse',
+         
+          }}>
+          {overusage ? (
+            <>
+              <LinearGradient
+                colors={[COLORS.RED, COLORS.RED]}
+                start={{x: 0, y: 0}}
+                end={{x: 0, y: 1}}
+                style={{
+                  width: '100%',
+                  
+                  height: `${100 - 20}%`,
+                  // height: `${30 - 20}%`,
+                  zIndex: -1,
+                  // flexDirection: 'column-reverse',
+                }}
+              />
+              <AnimatedLottieView
+                source={require('../../assets/red_wave.json')} // Replace with your animation file
+                autoPlay
+                loop
+                style={{
+                  //   marginBottom: -20,
+                  //   ((getRemainingData / totalAllowed) * 100) <= 30 ? 0 : -10,
+                  zIndex: -1,
+                  width: `100%`,
+                  //   marginBottom: -30,
+                  // height: `80.4%`,
+                }}
+              />
+              {/* <Text>`{((getRemainingData / totalAllowed) * 100) <= 10 ? 0 : -10}`</Text> */}
+            </>
+          ) : (
+            <>
+              <LinearGradient
+                colors={['#A8CF4D', '#A8CF4D']}
+                start={{x: 0, y: 0}}
+                end={{x: 0, y: 1}}
+                style={{
+                  width: '100%',
+                  // borderRadius: 10,
+                  // height:  getRemainingData < totalAllowed ?`${getRemainingData / totalAllowed}%` : '1%',
+                 height: `${(getRemainingData / totalAllowed) * 100 - 20}%`,
+                  // height: `${30 - 20}%`,
+                  zIndex: -1,
+                  // flexDirection: 'column-reverse',
+                }}
+              />
+              <AnimatedLottieView
+                source={require('../../assets/wave.json')} // Replace with your animation file
+                autoPlay
+                loop
+                style={{
+                  //   marginBottom: 15,
+                  // (getRemainingData / totalAllowed) * 100 <= 30 ? 0 : -10,
+                  zIndex: -1,
+                  width: `100%`,
+                  // height: `80.4%`,
+                }}
+              />
+            </>
+          )}
+        </View>
+        <View
+          style={{position: 'absolute', right: '50%', top: '40%', zIndex: 10}}>
+          <View
+            style={{
+              top: '40%',
+              alignItems: 'center',
+              position: 'absolute',
+              alignSelf: 'center',
+            }}>
+            <Text
+              style={{
+                fontWeight: '800',
+                fontSize: 16,
+                lineHeight: 20,
+                color: overusage ? COLORS.WHITE : COLORS.BLACK,
+              }}>
+              {' '}
+              {getRemainingData ? getRemainingData : 0}
+              {' kWh'}
+            </Text>
+            <Text
+              style={{
+                fontWeight: '400',
+                fontSize: 10,
+                lineHeight: 12,
+                color: overusage ? COLORS.WHITE : 'rgba(61, 61, 61, 0.6)',
+              }}>
+              Units Left To Be Used
+            </Text>
+          </View>
+        </View>
+        <View
+          style={{
+            backgroundColor: '#F5F5F5',
+            width: DIMENSIONS.SCREEN_WIDTH * 0.45,
+            height: DIMENSIONS.SCREEN_WIDTH * 0.3,
+            marginTop: DIMENSIONS.SCREEN_HEIGHT * 0.025,
+            flexDirection: 'column-reverse',
+         
+          }}>
+          {overusage ? (
+            <>
+              <LinearGradient
+                colors={[COLORS.RED, COLORS.RED]}
+                start={{x: 0, y: 0}}
+                end={{x: 0, y: 1}}
+                style={{
+                  width: '100%',
+                  
+                  height: `${100 - 20}%`,
+                  // height: `${30 - 20}%`,
+                  zIndex: -1,
+                  // flexDirection: 'column-reverse',
+                }}
+              />
+              <AnimatedLottieView
+                source={require('../../assets/red_wave.json')} // Replace with your animation file
+                autoPlay
+                loop
+                style={{
+                  //   marginBottom: -20,
+                  //   ((getRemainingData / totalAllowed) * 100) <= 30 ? 0 : -10,
+                  zIndex: -1,
+                  width: `100%`,
+                  //   marginBottom: -30,
+                  // height: `80.4%`,
+                }}
+              />
+              {/* <Text>`{((getRemainingData / totalAllowed) * 100) <= 10 ? 0 : -10}`</Text> */}
+            </>
+          ) : (
+            <>
+              <LinearGradient
+                colors={['#A8CF4D', '#A8CF4D']}
+                start={{x: 0, y: 0}}
+                end={{x: 0, y: 1}}
+                style={{
+                  width: '100%',
+                  // borderRadius: 10,
+                  // height:  getRemainingData < totalAllowed ?`${getRemainingData / totalAllowed}%` : '1%',
+                 height: `${(getRemainingData / totalAllowed) * 100 - 20}%`,
+                  // height: `${30 - 20}%`,
+                  zIndex: -1,
+                  // flexDirection: 'column-reverse',
+                }}
+              />
+              <AnimatedLottieView
+                source={require('../../assets/wave.json')} // Replace with your animation file
+                autoPlay
+                loop
+                style={{
+                  //   marginBottom: 15,
+                  // (getRemainingData / totalAllowed) * 100 <= 30 ? 0 : -10,
+                  zIndex: -1,
+                  width: `100%`,
+                  // height: `80.4%`,
+                }}
+              />
+            </>
+          )}
+        </View>
       </View>
       <OverusageModal />
     </>
   );
 };
 
-export default Remaining;
+export default RemainingHorizontal;
 
 const styles = StyleSheet.create({
   centeredView: {
