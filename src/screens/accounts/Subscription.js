@@ -41,6 +41,7 @@ import {navigationRef} from '../../../App';
 import axios from 'axios';
 import Remaining from '../../Components/Remaining';
 import ActivityLoader from '../../Components/ActivityLoader';
+import RemainingHorizontal from '../../Components/RemainingHorizontal';
 
 const mobileW = Math.round(Dimensions.get('screen').width);
 const Subscription = ({navigation, route}) => {
@@ -380,7 +381,7 @@ const Subscription = ({navigation, route}) => {
             <View style={styles.managing_width}>
               <SubBoxOne />
               <SubBoxTwo />
-              <Remaining data={'energy'} />
+              <RemainingHorizontal data={'energy'} />
             </View>
             {/* <View style={styles.mainDiv_installation}> */}
             {/* <WaveAnimation /> */}
