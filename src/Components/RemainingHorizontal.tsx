@@ -147,37 +147,38 @@ const RemainingHorizontal = ({...props}) => {
             marginTop: DIMENSIONS.SCREEN_HEIGHT * 0.025,
             flexDirection: 'column-reverse',
             marginRight: -1,
+            
           }}>
           {overusage ? (
             <>
               <View
-                style={{
-                  width: '100%',
-                  height: `${100 - 20}%`,
-                  // height: `${30 - 20}%`,
-                  zIndex: -1,
-                  backgroundColor: 'rgba(248, 84, 84, 3)',
-                  // flexDirection: 'column-reverse',
-                }}
-              />
+              style={{
+                width: '100%',
+                height: `${100 - 20}%`,
+                // height: `${30 - 20}%`,
+               // zIndex: -1,
+                backgroundColor: PLATFORM_IOS?'rgba(248, 84, 84, 1)':'rgba(248, 98, 98, 1)',
+                // flexDirection: 'column-reverse',
+              }}
+            />
               <AnimatedLottieView
                 source={require('../../assets/red_wave.json')} // Replace with your animation file
                 autoPlay
                 loop
                 style={{
-                  marginBottom: -1,
-                  //   ((getRemainingData / totalAllowed) * 100) <= 30 ? 0 : -10,
-                  zIndex: -1,
-                  width: `100%`,
-                  //   marginBottom: -30,
-                  // height: `80.4%`,
-                }}
+                  marginBottom:
+                (getRemainingData / totalAllowed) * 100 <= 30 ? -1 : -1,
+                zIndex: -1,
+                width: `100%`,
+                // height: `80.4%`,
+              }}
               />
+            
             </>
           ) : (
             <>
               <LinearGradient
-                colors={['#A8CF4D', '#A8CF4D']}
+                colors={['#AFD35E', '#AFD35E']}
                 start={{x: 0, y: 0}}
                 end={{x: 0, y: 1}}
                 style={{
@@ -195,8 +196,8 @@ const RemainingHorizontal = ({...props}) => {
                 autoPlay
                 loop
                 style={{
-                  //   marginBottom: 15,
-                  // (getRemainingData / totalAllowed) * 100 <= 30 ? 0 : -10,
+                    marginBottom:
+                  (getRemainingData / totalAllowed) * 100 <= 30 ? -1 : -1,
                   zIndex: -1,
                   width: `100%`,
                   // height: `80.4%`,
@@ -239,31 +240,29 @@ const RemainingHorizontal = ({...props}) => {
         <View
           style={{
             backgroundColor: '#F5F5F5',
-            width: DIMENSIONS.SCREEN_WIDTH * 0.45,
+            width: DIMENSIONS.SCREEN_WIDTH * 0.453,
             height: DIMENSIONS.SCREEN_WIDTH * 0.3,
             marginTop: DIMENSIONS.SCREEN_HEIGHT * 0.025,
             flexDirection: 'column-reverse',
           }}>
           {overusage ? (
             <>
-              <LinearGradient
-                colors={[COLORS.RED, COLORS.RED]}
-                start={{x: 0, y: 0}}
-                end={{x: 0, y: 1}}
-                style={{
-                  width: '100%',
-                  height: `${100 - 20}%`,
-                  // height: `${30 - 20}%`,
-                  zIndex: -1,
-                  // flexDirection: 'column-reverse',
-                }}
-              />
+            <View
+              style={{
+                width: '100%',
+                height: `${100 - 20}%`,
+                // height: `${30 - 20}%`,
+                zIndex: -1,
+                backgroundColor: PLATFORM_IOS?'rgba(248, 84, 84, 1)':'rgba(248, 98, 98, 1)',
+                // flexDirection: 'column-reverse',
+              }}
+            />
               <AnimatedLottieView
                 source={require('../../assets/red_wave.json')} // Replace with your animation file
                 autoPlay
                 loop
                 style={{
-                  marginBottom: -1,
+                  // marginBottom: -1,
                   //   ((getRemainingData / totalAllowed) * 100) <= 30 ? 0 : -10,
                   zIndex: -1,
                   width: `100%`,
@@ -275,13 +274,12 @@ const RemainingHorizontal = ({...props}) => {
           ) : (
             <>
               <LinearGradient
-                colors={['#A8CF4D', '#A8CF4D']}
+                colors={['#AFD35E', '#AFD35E']}
                 start={{x: 0, y: 0}}
                 end={{x: 0, y: 1}}
                 style={{
                   width: '100%',
                   // borderRadius: 10,
-                  // height:  getRemainingData < totalAllowed ?`${getRemainingData / totalAllowed}%` : '1%',
                   height: `${(getRemainingData / totalAllowed) * 100 - 20}%`,
                   // height: `${30 - 20}%`,
                   zIndex: -1,
@@ -293,8 +291,8 @@ const RemainingHorizontal = ({...props}) => {
                 autoPlay
                 loop
                 style={{
-                  //   marginBottom: 15,
-                  // (getRemainingData / totalAllowed) * 100 <= 30 ? 0 : -10,
+                  marginBottom:
+                  (getRemainingData / totalAllowed) * 100 <= 30 ? -1 : -1,
                   zIndex: -1,
                   width: `100%`,
                   // height: `80.4%`,
