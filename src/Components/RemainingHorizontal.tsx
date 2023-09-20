@@ -1,8 +1,3 @@
-/* eslint-disable react/no-unstable-nested-components */
-/* eslint-disable react-native/no-inline-styles */
-/* eslint-disable react-hooks/exhaustive-deps */
-/* eslint-disable prettier/prettier */
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import {
   Animated,
   Dimensions,
@@ -15,7 +10,7 @@ import {
 import React, {useCallback, useEffect, useRef, useState} from 'react';
 import COLORS from '../constants/COLORS';
 import LinearGradient from 'react-native-linear-gradient';
-import {DIMENSIONS} from '../constants/DIMENSIONS';
+import {DIMENSIONS, PLATFORM_IOS} from '../constants/DIMENSIONS';
 import {useDispatch, useSelector} from 'react-redux';
 import axios from 'axios';
 import {API} from '../api/API';
@@ -128,130 +123,6 @@ const RemainingHorizontal = ({...props}) => {
 
   return (
     <>
-      {/* <View
-        style={{
-          backgroundColor: '#F5F5F5',
-          width:
-            props?.data !== 'energy'
-              ? DIMENSIONS.SCREEN_WIDTH * 0.4
-              : DIMENSIONS.SCREEN_WIDTH * 0.9,
-          height: DIMENSIONS.SCREEN_WIDTH * 0.35,
-          marginVertical: DIMENSIONS.SCREEN_HEIGHT * 0.02,
-          flexDirection: 'column-reverse',
-          shadowColor: '#000000',
-          shadowOffset: {width: 0, height: 2},
-          shadowOpacity: 0.8,
-          shadowRadius: 5,
-          elevation: 5,
-          borderWidth: 0,
-          borderRadius: 10,
-        }}>
-        <Text
-          style={{
-            padding: 5,
-            fontWeight: '600',
-            fontSize: 12,
-            lineHeight: 14,
-            textTransform: 'capitalize',
-            color: overusage ? COLORS.WHITE : COLORS.BLACK,
-            position: 'absolute',
-            top: 10,
-            left: 10,
-          }}>
-          {overusage ? 'Overusage' : 'Remaining Usage'}
-        </Text>
-        <View
-          style={{
-            top: '40%',
-            alignItems: 'center',
-            position: 'absolute',
-            alignSelf: 'center',
-          }}>
-          <Text
-            style={{
-              fontWeight: '800',
-              fontSize: 16,
-              lineHeight: 20,
-              color: overusage ? COLORS.WHITE : COLORS.BLACK,
-            }}>
-            {' '}
-            {getRemainingData ? getRemainingData : 0}
-            {' kWh'}
-          </Text>
-          <Text
-            style={{
-              fontWeight: '400',
-              fontSize: 10,
-              lineHeight: 12,
-              color: overusage ? COLORS.WHITE : 'rgba(61, 61, 61, 0.6)',
-            }}>
-            Units Left To Be Used
-          </Text>
-        </View>
-        {overusage ? (
-          <>
-            <LinearGradient
-              colors={[COLORS.RED, COLORS.RED]}
-              start={{x: 0, y: 0}}
-              end={{x: 0, y: 1}}
-              style={{
-                width: '100%',
-                // borderRadius: 10,
-                // height:  getRemainingData < totalAllowed ?`${getRemainingData / totalAllowed}%` : '1%',
-                height: `${100 - 20}%`,
-                // height: `${30 - 20}%`,
-                zIndex: -1,
-                // flexDirection: 'column-reverse',
-              }}
-            />
-            <AnimatedLottieView
-              source={require('../../assets/red_wave.json')} // Replace with your animation file
-              autoPlay
-              loop
-              style={{
-                // marginBottom:
-                //   (getRemainingData / totalAllowed) * 100 <= 30 ? 0 : -10,
-                zIndex: -1,
-                width: `100%`,
-                // height: `120%`,
-                // marginBottom: 0,
-                overflow: 'hidden',
-              }}
-            />
-          </>
-        ) : (
-          <>
-            <LinearGradient
-              colors={['#A8CF4D', '#A8CF4D']}
-              start={{x: 0, y: 0}}
-              end={{x: 0, y: 1}}
-              style={{
-                width: '100%',
-                // borderRadius: 10,
-                // height:  getRemainingData < totalAllowed ?`${getRemainingData / totalAllowed}%` : '1%',
-                height: `${(getRemainingData / totalAllowed) * 100 - 20}%`,
-                // height: `${30 - 20}%`,
-                zIndex: -1,
-                // flexDirection: 'column-reverse',
-              }}
-            />
-            <AnimatedLottieView
-              source={require('../../assets/wave.json')} // Replace with your animation file
-              autoPlay
-              loop
-              style={{
-                // marginBottom:
-                //   (getRemainingData / totalAllowed) * 100 <= 30 ? 0 : -10,
-                zIndex: -1,
-                width: `100%`,
-                // height: `120%`,
-                // marginBottom: 0,
-                overflow: 'hidden',
-              }}
-            />
-          </>
-        )}
-      </View> */}
       <View
         style={{
           backgroundColor: '#F5F5F5',
@@ -266,7 +137,7 @@ const RemainingHorizontal = ({...props}) => {
           elevation: 5,
           borderWidth: 0,
           borderRadius: 10,
-        //   overflow: 'hidden',
+          overflow: 'hidden',
         }}>
         <View
           style={{
@@ -275,20 +146,17 @@ const RemainingHorizontal = ({...props}) => {
             height: DIMENSIONS.SCREEN_WIDTH * 0.3,
             marginTop: DIMENSIONS.SCREEN_HEIGHT * 0.025,
             flexDirection: 'column-reverse',
-         
+            marginRight: -1,
           }}>
           {overusage ? (
             <>
-              <LinearGradient
-                colors={[COLORS.RED, COLORS.RED]}
-                start={{x: 0, y: 0}}
-                end={{x: 0, y: 1}}
+              <View
                 style={{
                   width: '100%',
-                  
                   height: `${100 - 20}%`,
                   // height: `${30 - 20}%`,
                   zIndex: -1,
+                  backgroundColor: 'rgba(248, 84, 84, 3)',
                   // flexDirection: 'column-reverse',
                 }}
               />
@@ -297,7 +165,7 @@ const RemainingHorizontal = ({...props}) => {
                 autoPlay
                 loop
                 style={{
-                  //   marginBottom: -20,
+                  marginBottom: -1,
                   //   ((getRemainingData / totalAllowed) * 100) <= 30 ? 0 : -10,
                   zIndex: -1,
                   width: `100%`,
@@ -305,7 +173,6 @@ const RemainingHorizontal = ({...props}) => {
                   // height: `80.4%`,
                 }}
               />
-              {/* <Text>`{((getRemainingData / totalAllowed) * 100) <= 10 ? 0 : -10}`</Text> */}
             </>
           ) : (
             <>
@@ -317,7 +184,7 @@ const RemainingHorizontal = ({...props}) => {
                   width: '100%',
                   // borderRadius: 10,
                   // height:  getRemainingData < totalAllowed ?`${getRemainingData / totalAllowed}%` : '1%',
-                 height: `${(getRemainingData / totalAllowed) * 100 - 20}%`,
+                  height: `${(getRemainingData / totalAllowed) * 100 - 20}%`,
                   // height: `${30 - 20}%`,
                   zIndex: -1,
                   // flexDirection: 'column-reverse',
@@ -376,7 +243,6 @@ const RemainingHorizontal = ({...props}) => {
             height: DIMENSIONS.SCREEN_WIDTH * 0.3,
             marginTop: DIMENSIONS.SCREEN_HEIGHT * 0.025,
             flexDirection: 'column-reverse',
-         
           }}>
           {overusage ? (
             <>
@@ -386,7 +252,6 @@ const RemainingHorizontal = ({...props}) => {
                 end={{x: 0, y: 1}}
                 style={{
                   width: '100%',
-                  
                   height: `${100 - 20}%`,
                   // height: `${30 - 20}%`,
                   zIndex: -1,
@@ -398,7 +263,7 @@ const RemainingHorizontal = ({...props}) => {
                 autoPlay
                 loop
                 style={{
-                  //   marginBottom: -20,
+                  marginBottom: -1,
                   //   ((getRemainingData / totalAllowed) * 100) <= 30 ? 0 : -10,
                   zIndex: -1,
                   width: `100%`,
@@ -406,7 +271,6 @@ const RemainingHorizontal = ({...props}) => {
                   // height: `80.4%`,
                 }}
               />
-              {/* <Text>`{((getRemainingData / totalAllowed) * 100) <= 10 ? 0 : -10}`</Text> */}
             </>
           ) : (
             <>
@@ -418,7 +282,7 @@ const RemainingHorizontal = ({...props}) => {
                   width: '100%',
                   // borderRadius: 10,
                   // height:  getRemainingData < totalAllowed ?`${getRemainingData / totalAllowed}%` : '1%',
-                 height: `${(getRemainingData / totalAllowed) * 100 - 20}%`,
+                  height: `${(getRemainingData / totalAllowed) * 100 - 20}%`,
                   // height: `${30 - 20}%`,
                   zIndex: -1,
                   // flexDirection: 'column-reverse',

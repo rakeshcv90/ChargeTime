@@ -15,7 +15,7 @@ import {
 import React, {useCallback, useEffect, useRef, useState} from 'react';
 import COLORS from '../constants/COLORS';
 import LinearGradient from 'react-native-linear-gradient';
-import {DIMENSIONS} from '../constants/DIMENSIONS';
+import {DIMENSIONS, PLATFORM_IOS} from '../constants/DIMENSIONS';
 import {useDispatch, useSelector} from 'react-redux';
 import axios from 'axios';
 import {API} from '../api/API';
@@ -145,6 +145,7 @@ const Remaining = ({...props}) => {
           elevation: 5,
           borderWidth: 0,
           borderRadius: 10,
+          overflow: PLATFORM_IOS ? 'visible' : 'hidden',
         }}>
         <Text
           style={{
@@ -241,7 +242,7 @@ const Remaining = ({...props}) => {
               loop
               style={{
                 marginBottom:
-                  ((getRemainingData / totalAllowed) * 100) <= 30 ? 0 : -10,
+                  (getRemainingData / totalAllowed) * 100 <= 30 ? 0 : -10,
                 zIndex: -1,
                 width: `100%`,
                 // height: `80.4%`,
