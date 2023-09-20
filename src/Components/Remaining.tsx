@@ -167,6 +167,7 @@ const Remaining = ({...props}) => {
             alignItems: 'center',
             position: 'absolute',
             alignSelf: 'center',
+            zIndex:1
           }}>
           <Text
             style={{
@@ -192,7 +193,10 @@ const Remaining = ({...props}) => {
         {overusage ? (
           <>
             <LinearGradient
-              colors={[COLORS.RED, COLORS.RED]}
+              colors={[
+                PLATFORM_IOS ? 'rgba(248, 84, 84, 1)' : 'rgba(248, 98, 98, 1)',
+                PLATFORM_IOS ? 'rgba(248, 84, 84, 1)' : 'rgba(248, 98, 98, 1)',
+              ]}
               start={{x: 0, y: 0}}
               end={{x: 0, y: 1}}
               style={{
@@ -201,7 +205,7 @@ const Remaining = ({...props}) => {
                 // height:  getRemainingData < totalAllowed ?`${getRemainingData / totalAllowed}%` : '1%',
                 height: `${100 - 20}%`,
                 // height: `${30 - 20}%`,
-                zIndex: -1,
+                //zIndex: -1,
                 // flexDirection: 'column-reverse',
               }}
             />
@@ -212,9 +216,12 @@ const Remaining = ({...props}) => {
               style={{
                 // marginBottom:
                 //   ((getRemainingData / totalAllowed) * 100) <= 30 ? 0 : -10,
+                
                 zIndex: -1,
                 width: `100%`,
-                marginBottom: -10
+                // marginBottom: -10,
+                marginBottom:
+                (getRemainingData / totalAllowed) * 100 <= 30 ? -10 : -10,
                 // height: `80.4%`,
               }}
             />
@@ -223,7 +230,7 @@ const Remaining = ({...props}) => {
         ) : (
           <>
             <LinearGradient
-              colors={['#A8CF4D', '#A8CF4D']}
+              colors={['#AFD35E', '#AFD35E']}
               start={{x: 0, y: 0}}
               end={{x: 0, y: 1}}
               style={{
@@ -232,7 +239,7 @@ const Remaining = ({...props}) => {
                 // height:  getRemainingData < totalAllowed ?`${getRemainingData / totalAllowed}%` : '1%',
                 height: `${(getRemainingData / totalAllowed) * 100 - 20}%`,
                 // height: `${30 - 20}%`,
-                zIndex: -1,
+                // zIndex: -1,
                 // flexDirection: 'column-reverse',
               }}
             />
@@ -242,7 +249,7 @@ const Remaining = ({...props}) => {
               loop
               style={{
                 marginBottom:
-                  (getRemainingData / totalAllowed) * 100 <= 30 ? 0 : -10,
+                  (getRemainingData / totalAllowed) * 100 <= 30 ? -1 : -10,
                 zIndex: -1,
                 width: `100%`,
                 // height: `80.4%`,
