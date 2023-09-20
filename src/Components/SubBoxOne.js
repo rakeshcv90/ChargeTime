@@ -28,53 +28,53 @@ const SubBoxOne = () => {
 
   const getPurchaseData = useSelector(state => state.getPurchaseData);
 
-
   return (
+  
     <View
       style={
-        Platform.OS === 'android'
+        Platform.OS == 'android'
           ? styles.mainDiv_installation1
           : styles.mainDiv_installation
       }>
-      <TouchableOpacity style={styles.install_touchable}>
-        {/* <Address style={styles.img_width} /> */}
+      <View style={styles.install_touchable}>
         <InstallBase style={styles.img_width} />
         <Text style={styles.installation_text}>Installation Base</Text>
-      </TouchableOpacity>
+      </View>
       {getPurchaseData.length !== 0 && (
-        <View style={styles.shadowProp}>
+        <>
           <View style={styles.location_div}>
             <Vanderberg style={styles.img_width} />
             <Text style={styles.force_base}>
+              {' '}
               {getPurchaseData.data.location}
             </Text>
           </View>
           <Image
-            // style={styles.img_width}
-            source={require('../../assets/images/dotted.png')}
+            source={require('../../assets/images/dotted1.png')}
             resizeMode="stretch"
-            style={{width: mobileW}}
+            style={{
+              width: mobileW - 40,
+              alignSelf: 'center',
+            }}
           />
           <View style={styles.mainDiv_state_zip}>
-            <View style={styles.state_div}>
-              <Connecticut style={styles.img_width} />
-              <Text style={styles.force_base}>
-                {getPurchaseData.data.pwa_state}
-              </Text>
-            </View>
+            <Connecticut style={styles.img_width} />
+            <Text style={styles.force_base}>
+              {getPurchaseData.data.pwa_state}
+            </Text>
+
             <View style={styles.state_div}>
               <Image
-                //style={styles.img_width}
                 source={require('../../assets/images/zip_code.png')}
                 resizeMode="stretch"
-                style={{width: 22, height: 22}}
+                style={{width: 25, height: 25}}
               />
               <Text style={styles.force_base}>
                 {getPurchaseData.data.pwa_zip}
               </Text>
             </View>
           </View>
-        </View>
+        </>
       )}
     </View>
   );
@@ -88,30 +88,23 @@ const styles = StyleSheet.create({
     // paddingVertical:15
   },
   mainDiv_installation: {
+    shadowColor: '#000000',
+    shadowOffset: {width: 0, height: 6},
+    shadowOpacity: 0.35,
+    shadowRadius: 5.62,
+    elevation: 8,
+    backgroundColor: 'white',
+    borderRadius: 8,
     marginTop: DIMENSIONS.SCREEN_HEIGHT * 0.03,
     marginBottom: DIMENSIONS.SCREEN_HEIGHT * 0.01,
-    shadowColor: '#000000',
-    shadowOffset: {width: 0, height: 6},
-    shadowOpacity: 0.2,
-    shadowRadius: 5.62,
-    elevation: 8,
-  },
-  mainDiv_installation1: {
-    overflow: 'hidden',
-    borderRadius: 10,
-    marginTop: Platform.OS === 'ios' ? 0 : (DIMENSIONS.SCREEN_HEIGHT * 2) / 100,
-    // marginBottom: Platform.OS === 'ios' ? 0 : 10,
-    shadowColor: '#000000',
-    shadowOffset: {width: 0, height: 6},
-    shadowOpacity: 0.2,
-    shadowRadius: 5.62,
-    elevation: 8,
   },
   install_touchable: {
     flexDirection: 'row',
     backgroundColor: COLORS.GREEN,
     alignItems: 'center',
     paddingVertical: 15,
+    borderTopLeftRadius: 10,
+    borderTopRightRadius: 10,
   },
   img_width: {
     marginLeft: 20,
@@ -139,7 +132,8 @@ const styles = StyleSheet.create({
     },
     shadowOpacity: 1,
     shadowRadius: 4,
-    elevation: Platform.OS === 'android' ? 8 : 0,
+    elevation: 8,
+    // elevation: Platform.OS === 'android' ? 8 : 0,
   },
   force_base: {
     fontWeight: '400',
@@ -152,9 +146,11 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    paddingRight: 10,
+    // paddingRight: 10,
     paddingVertical: 10,
     backgroundColor: COLORS.GRAY,
+    borderBottomLeftRadius: 10,
+    borderBottomRightRadius: 10,
   },
   state_div: {
     flexDirection: 'row',
@@ -185,7 +181,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     borderWidth: 1,
     borderColor: COLORS.GREEN,
-    borderRadius: 5,
     backgroundColor: COLORS.WHITE,
     marginTop: 20,
     paddingHorizontal: 10,
@@ -221,5 +216,18 @@ const styles = StyleSheet.create({
     fontWeight: 700,
     fontSize: 14,
     color: COLORS.WHITE,
+  },
+  mainDiv_installation1: {
+    overflow: 'hidden',
+    borderRadius: 10,
+
+    shadowColor: '#000000',
+    shadowOffset: {
+      width: 4,
+      height: 6,
+    },
+    shadowOpacity: 0.2,
+    shadowRadius: 5.62,
+    elevation: Platform.OS === 'android' ? 8 : 0,
   },
 });

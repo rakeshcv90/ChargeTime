@@ -19,7 +19,6 @@ import {DIMENSIONS} from '../constants/DIMENSIONS';
 const SubBoxTwo = () => {
   const getPurchaseData = useSelector(state => state.getPurchaseData);
 
-
   return (
     <View
       style={
@@ -73,43 +72,34 @@ const SubBoxTwo = () => {
 };
 
 export default SubBoxTwo;
+
 const styles = StyleSheet.create({
   managing_width: {
     paddingHorizontal: 20,
-    // paddingVertical:15
   },
   mainDiv_installation: {
     marginTop: DIMENSIONS.SCREEN_HEIGHT * 0.03,
-    marginBottom: DIMENSIONS.SCREEN_HEIGHT * 0.01,
+    marginBottom: DIMENSIONS.SCREEN_HEIGHT * 0.015,
     shadowColor: '#000000',
-    shadowOffset: {width: 0, height: 6},
-    shadowOpacity: 0.2,
-    shadowRadius: 5.62,
-    elevation: 8,
-  },
-  mainDiv_installation1: {
-    overflow: 'hidden',
+    shadowOffset: {width: 0, height: 2},
+    shadowOpacity: 0.8,
+    shadowRadius: 5,
+    elevation: 5,
+    borderWidth: 0,
     borderRadius: 10,
-    marginTop: Platform.OS === 'ios' ? 0 : (DIMENSIONS.SCREEN_HEIGHT * 3) / 100,
-    marginBottom: Platform.OS === 'ios' ? 0 : 10,
-
-    shadowColor: '#000000',
-    shadowOffset: {
-      width: 4,
-      height: 6,
-    },
-    shadowOpacity: 0.2,
-    shadowRadius: 5.62,
-    elevation: Platform.OS === 'android' ? 8 : 0,
   },
+
   install_touchable: {
     flexDirection: 'row',
     backgroundColor: COLORS.GREEN,
     alignItems: 'center',
     paddingVertical: 10,
+
+    borderTopLeftRadius: 10,
+    borderTopRightRadius: 10,
   },
   img_width: {
-    marginLeft: 10,
+    marginLeft: 15,
     width: 20,
     height: 20,
   },
@@ -128,7 +118,7 @@ const styles = StyleSheet.create({
   mainDiv_state_zip: {
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'space-around',
+    justifyContent: 'space-between',
     paddingRight: 10,
     paddingVertical: 10,
     // backgroundColor: COLORS.GRAY,
@@ -143,9 +133,11 @@ const styles = StyleSheet.create({
     // alignItems:'center',
     paddingVertical: 20,
     backgroundColor: COLORS.GRAY,
+    borderBottomLeftRadius: 10,
+    borderBottomRightRadius: 10,
   },
   kwh_mieq_text: {
-    fontWeight: 700,
+    fontWeight: 800,
     fontSize: 16,
     paddingTop: 8,
     color: COLORS.BLACK,
@@ -179,6 +171,20 @@ const styles = StyleSheet.create({
   unit_allowed: {
     fontWeight: 400,
     fontSize: 10,
-    color: COLORS.BLACK,
+  },
+  mainDiv_installation1: {
+    overflow: 'hidden',
+    borderRadius: 10,
+    marginTop: Platform.OS === 'ios' ? 0 : (DIMENSIONS.SCREEN_HEIGHT * 3) / 100,
+    marginBottom: Platform.OS === 'ios' ? 0 : 15,
+
+    shadowColor: '#000000',
+    shadowOffset: {
+      width: 4,
+      height: 6,
+    },
+    shadowOpacity: 0.2,
+    shadowRadius: 5.62,
+    elevation: Platform.OS === 'android' ? 8 : 0,
   },
 });
