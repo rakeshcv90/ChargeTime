@@ -41,9 +41,13 @@ const PasswordRegex =
 const validationSchema = Yup.object().shape({
   // name: Yup.string().required('Full Name is required'),
   name: Yup.string()
-    .required(' Name is required')
-    .matches(/^[A-Za-z].*/, 'Name must be start with a character')
-    .min(3, 'Name must contain at least 3 characters'),
+    .required('First Name is required')
+    .matches(/^[A-Za-z].*/, 'First Name must be start with a character')
+    .min(3, 'First Name must contain at least 3 characters'),
+    lname: Yup.string()
+    .required(' Last Name is required')
+    .matches(/^[A-Za-z].*/, 'Last Name must be start with a character')
+    .min(3, 'Last Name must contain at least 3 characters'),
   // email: Yup.string().email('Invalid Email').required('Email is required'),
   email: Yup.string()
     .matches(/^[\w.\-]+@[\w.\-]+\.\w{2,4}$/, 'Invalid Email Format')
@@ -72,9 +76,10 @@ export default function Register({navigation}) {
 
   const handleFormSubmit = async values => {
     setForLoading(true);
+  
     try {
       const response = await axios.post(`${API}/createuser`, {
-        name: values.name,
+        name: values.name+values.lname,
         email: values.email,
       });
 
@@ -111,8 +116,6 @@ export default function Register({navigation}) {
             email: values?.email,
             user_id: response.data?.user_id,
           });
-
-    
 
           setForLoading(false);
 
@@ -151,6 +154,7 @@ export default function Register({navigation}) {
           <Formik
             initialValues={{
               name: userRegisterData.name,
+              lname: userRegisterData.lname,
               email: userRegisterData.email,
               mobile: userRegisterData.mobile,
               password: '',
@@ -176,15 +180,30 @@ export default function Register({navigation}) {
                     autoFocus
                     onChangeText={handleChange('name')}
                     onBlur={handleBlur('name')}
-                    text="Full Name"
+                    text="FIrst Name"
                     IconRight={() => <Admin />}
                     mV={10}
-                    placeholder="Ex. John Doe"
+                    placeholder="Ex. John"
                     bW={1}
                     textWidth={'30%'}
                     placeholderTextColor={COLORS.HALFBLACK}
                   />
-
+                  <Input
+                    IconLeft={null}
+                    errors={errors.lname}
+                    touched={touched.lname}
+                    value={values.lname}
+                    autoFocus
+                    onChangeText={handleChange('lname')}
+                    onBlur={handleBlur('lname')}
+                    text="Last Name"
+                    IconRight={() => <Admin />}
+                    mV={10}
+                    placeholder="Ex. Doe"
+                    bW={1}
+                    textWidth={'30%'}
+                    placeholderTextColor={COLORS.HALFBLACK}
+                  />
                   <Input
                     IconLeft={null}
                     errors={errors.email}

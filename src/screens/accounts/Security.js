@@ -1,24 +1,35 @@
-import { View, Text, SafeAreaView, StyleSheet, TextInput, TouchableOpacity, ToastAndroid, Image, Platform, Dimensions } from 'react-native'
-import React, { useEffect } from 'react'
+import {
+  View,
+  Text,
+  SafeAreaView,
+  StyleSheet,
+  TextInput,
+  TouchableOpacity,
+  ToastAndroid,
+  Image,
+  Platform,
+  Dimensions,
+} from 'react-native';
+import React, {useEffect} from 'react';
 import * as Yup from 'yup';
-import COLORS from '../../constants/COLORS'
-import HorizontalLine from '../../Components/HorizontalLine'
-import Header from '../../Components/Header'
-import Input from '../../Components/Input'
-import { Key } from '../../../assets/svgs/Key'
-import { Eye } from '../../../assets/svgs/Eye'
-import { Formik } from 'formik';
-import { useState } from 'react';
-import { useSelector } from 'react-redux';
+import COLORS from '../../constants/COLORS';
+import HorizontalLine from '../../Components/HorizontalLine';
+import Header from '../../Components/Header';
+import Input from '../../Components/Input';
+import {Key} from '../../../assets/svgs/Key';
+import {Eye} from '../../../assets/svgs/Eye';
+import {Formik} from 'formik';
+import {useState} from 'react';
+import {useSelector} from 'react-redux';
 import axios from 'axios';
-import { API } from '../../api/API';
+import {API} from '../../api/API';
 import Toast from 'react-native-toast-message';
-import { PLATFORM_IOS } from '../../constants/DIMENSIONS';
-import { navigationRef } from '../../../App';
-import { ms } from 'react-native-size-matters';
+import {PLATFORM_IOS} from '../../constants/DIMENSIONS';
+import {navigationRef} from '../../../App';
+import {ms} from 'react-native-size-matters';
 
 const Security = () => {
-  const userProfileData = useSelector((state) => state.userProfileData)
+  const userProfileData = useSelector(state => state.userProfileData);
   const [isEditable, setIsEditable] = useState(false);
   const [currentPassword, setCurrentPassword] = useState('');
   const [newPassword, setNewPassword] = useState('');
@@ -33,54 +44,69 @@ const Security = () => {
   const [errors, setErrors] = useState({});
 
   const mobileW = Math.round(Dimensions.get('screen').width);
-
+  const PasswordRegex = /[!@#$%^&*(),.?":{}|<>]/g;
   const onPress = async () => {
     if (currentPassword.trim().length <= 0) {
       PLATFORM_IOS
         ? Toast.show({
-          type: 'error',
-          text1: 'Please Enter Old Password',
-        })
+            type: 'error',
+            text1: 'Please Enter Old Password',
+          })
         : ToastAndroid.show('Please Enter Old Password', ToastAndroid.SHORT);
-    }
-    else if (newPassword.trim().length <= 0) {
+    } else if (newPassword.trim().length <= 0) {
       PLATFORM_IOS
         ? Toast.show({
-          type: 'error',
-          text1: 'Please Enter New Password',
-        })
+            type: 'error',
+            text1: 'Please Enter New Password',
+          })
         : ToastAndroid.show('Please Enter New Password', ToastAndroid.SHORT);
-    }
-
-    else if (confirmPassword.trim().length <= 0) {
+    } else if (PasswordRegex.test(newPassword[0])) {
       PLATFORM_IOS
         ? Toast.show({
-          type: 'error',
-          text1: 'Please Enter Confirm Password',
-        })
-        : ToastAndroid.show('Please Enter Confirm Password', ToastAndroid.SHORT);
+            type: 'error',
+            text1: 'First Place Special Characters Not Allowed',
+          })
+        : ToastAndroid.show(
+            'First Place Special Characters Not Allowed',
+            ToastAndroid.SHORT,
+          );
+    } else if (PasswordRegex.test(confirmPassword[0])) {
+      PLATFORM_IOS
+        ? Toast.show({
+            type: 'error',
+            text1: 'First Place Special Characters Not Allowed',
+          })
+        : ToastAndroid.show(
+            'First Place Special Characters Not Allowed',
+            ToastAndroid.SHORT,
+          );
+    } else if (confirmPassword.trim().length <= 0) {
+      PLATFORM_IOS
+        ? Toast.show({
+            type: 'error',
+            text1: 'Please Enter Confirm Password',
+          })
+        : ToastAndroid.show(
+            'Please Enter Confirm Password',
+            ToastAndroid.SHORT,
+          );
     } else if (confirmPassword != newPassword) {
       PLATFORM_IOS
         ? Toast.show({
-          type: 'error',
-          text1: 'Confirm Password Not Match',
-        })
+            type: 'error',
+            text1: 'Confirm Password Not Match',
+          })
         : ToastAndroid.show('Confirm Password Not Match', ToastAndroid.SHORT);
+    } else {
+      // UpdatePassword();
     }
-    else{
-      UpdatePassword();
-    }
- 
-
-  }
+  };
 
   const mail = userProfileData[0]?.email;
   const enableEdit = () => {
-  
-    setIsEditable(true)
-  }
+    setIsEditable(true);
+  };
   const UpdatePassword = async () => {
-  
     try {
       // const values = { password: newPassword, confirmPassword };
 
@@ -97,20 +123,19 @@ const Security = () => {
           conifrm_password: confirmPassword,
         }),
       })
-
         .then(res => res.json())
         .then(data => {
           if (data.success !== false) {
             PLATFORM_IOS
               ? Toast.show({
-                type: 'success',
-                text1: 'Password updated Successfully',
-              })
+                  type: 'success',
+                  text1: 'Password updated Successfully',
+                })
               : ToastAndroid.show(
-                'Password updated Successfully',
-                ToastAndroid.SHORT,
-              );
-            setIsEditable(false)
+                  'Password updated Successfully',
+                  ToastAndroid.SHORT,
+                );
+            setIsEditable(false);
             // navigationRef.navigate('Account');
             setCurrentPassword(' ');
             setNewPassword(' ');
@@ -119,17 +144,20 @@ const Security = () => {
           } else {
             PLATFORM_IOS
               ? Toast.show({
-                type: 'error',
-                text1: 'Current password does not match',
-                // position: 'bottom',
-              })
-              : ToastAndroid.show('Current password does not match', ToastAndroid.SHORT);
+                  type: 'error',
+                  text1: 'Current password does not match',
+                  // position: 'bottom',
+                })
+              : ToastAndroid.show(
+                  'Current password does not match',
+                  ToastAndroid.SHORT,
+                );
           }
         });
     } catch (err) {
       if (err.inner) {
         const validationErrors = {};
-        err.inner.forEach((error) => {
+        err.inner.forEach(error => {
           validationErrors[error.path] = error.message;
         });
         setErrors(validationErrors);
@@ -138,23 +166,29 @@ const Security = () => {
   };
 
   const keyPress = () => {
-    setKeyPressed(!keyPressed)
-  }
-
+    setKeyPressed(!keyPressed);
+  };
 
   return (
+    <SafeAreaView style={{backgroundColor: COLORS.CREAM, flex: 1}}>
+      <Header
+        headerName="Security"
+        editShow={true}
+        onPress={onPress}
+        enableEdit={enableEdit}
+        editButton={isEditable}
+      />
 
-    <SafeAreaView style={{ backgroundColor: COLORS.CREAM, flex: 1 }}>
-      <Header headerName="Security" editShow={true} onPress={onPress} enableEdit={enableEdit} editButton={isEditable} />
-
-
-      {Platform.OS == 'android' ? <HorizontalLine style={styles.line} /> : <View
-        style={{
-
-
-        }}>
-        <Image source={require('../../../assets/images/dotted.png')} style={{ width: mobileW * 0.97, }} />
-      </View>}
+      {Platform.OS == 'android' ? (
+        <HorizontalLine style={styles.line} />
+      ) : (
+        <View style={{}}>
+          <Image
+            source={require('../../../assets/images/dotted.png')}
+            style={{width: mobileW * 0.97}}
+          />
+        </View>
+      )}
 
       <View style={[styles.mainDiv_container]}>
         <Input
@@ -176,7 +210,6 @@ const Security = () => {
           bW={1}
           bR={3}
           textWidth={ms(120)}
-
           style={{
             color: COLORS.BLACK,
             fontFamily: 'Roboto',
@@ -195,8 +228,8 @@ const Security = () => {
           passwordInput={true}
           error={errors.newPassword}
           pasButton={() => {
-            setHidePassword(!hidePassword)
-            setShowNew(!showNew)
+            setHidePassword(!hidePassword);
+            setShowNew(!showNew);
           }}
           secureTextEntry={hidePassword}
           passwordInputIcon={!showNew}
@@ -227,9 +260,8 @@ const Security = () => {
           passwordInput={true}
           error={errors.confirmPassword}
           pasButton={() => {
-            setPassword(!Password)
-            setShowNew1(!showNew1)
-
+            setPassword(!Password);
+            setShowNew1(!showNew1);
           }}
           secureTextEntry={Password}
           passwordInputIcon={!showNew1}
@@ -250,12 +282,10 @@ const Security = () => {
         {/* {errors.password && touched.password && (
                     <Text style={{color: 'red'}}>{errors.password}</Text>
                   )} */}
-
-
       </View>
     </SafeAreaView>
-  )
-}
+  );
+};
 const styles = StyleSheet.create({
   mainDiv_container: {
     paddingHorizontal: 20,
@@ -284,7 +314,7 @@ const styles = StyleSheet.create({
   },
   shadowProp: {
     backgroundColor: 'white',
-    shadowColor: Platform.OS === 'android' ? 'black' : "rgba(0,0,0,.555)", // Shadow color
+    shadowColor: Platform.OS === 'android' ? 'black' : 'rgba(0,0,0,.555)', // Shadow color
     shadowOffset: {
       width: 6,
       height: 4,
@@ -329,4 +359,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default Security
+export default Security;

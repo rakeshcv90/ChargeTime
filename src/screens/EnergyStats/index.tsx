@@ -316,12 +316,14 @@ export default function EnergyStats() {
                 style={{width: 150, height: 150}}
               />
               <AnimatedLottieView
-                source={{
-                  uri: 'https://assets7.lottiefiles.com/packages/lf20_qgq2nqsy.json',
-                }} // Replace with your animation file
+                // source={{
+                //   uri: 'https://assets7.lottiefiles.com/packages/lf20_qgq2nqsy.json',
+                // }} // Replace with your animation file
+                source={require('../../../assets/question.json')} 
+                
                 autoPlay
                 loop
-                style={{width: 50, height: 50}}
+                style={{width: 100, height: 100,marginTop:-0,marginHorizontal:-5}}
               />
             </View>
             <Text

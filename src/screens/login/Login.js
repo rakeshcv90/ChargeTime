@@ -135,12 +135,12 @@ export default function Login({navigation}) {
         setForLoading(true);
         // setShowPackage(true);
         dispatch(setBasePackage([]));
-        dispatch(setIsAuthorized(true));
+        // dispatch(setIsAuthorized(true));
         setForLoading(false);
         navigation.navigate('DrawerStack');
       } else {
         dispatch(setBasePackage(response.data.locations));
-        dispatch(setIsAuthorized(true));
+        // dispatch(setIsAuthorized(true));
         setForLoading(false);
         navigation.navigate('DrawerStack');
       }
@@ -175,11 +175,7 @@ export default function Login({navigation}) {
             'locationID',
             JSON.stringify(res.data?.locationid),
           );
-          AsyncStorage.setItem(
-            'userId',
-            JSON.stringify(res.data?.user_id),
-          );
-          
+          AsyncStorage.setItem('userId', JSON.stringify(res.data?.user_id));
 
           PLATFORM_IOS
             ? Toast.show({
@@ -231,7 +227,7 @@ export default function Login({navigation}) {
               ),
             );
           } else {
-            dispatch(setPackageStatus(false));
+          //  dispatch(setPackageStatus(false));
             dispatch(setDeviceId(res.data.message));
             // dispatch(setIsAuthorized(true));
             dispatch(setEmailData(res.data?.email));
@@ -310,7 +306,6 @@ export default function Login({navigation}) {
       .get(`${API}/dailyusage/${userId}`)
       .then(res => {
         if (res?.data) {
-         
           dispatch(setKwhData(res?.data));
         }
 

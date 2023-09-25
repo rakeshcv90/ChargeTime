@@ -88,7 +88,7 @@ export const DrawerScreenPart = ({navigation}) => {
   );
 };
 export const ChargerStatus = () => {
-  const getChargerStatus = useSelector(state => state.getChargerStatus);
+  // const getChargerStatus = useSelector(state => state.getChargerStatus);
 
   return (
     <View>
@@ -505,9 +505,9 @@ const AccountStack = () => {
 
 export default function Router() {
   // const [isAuthorized, setIsAuthorized] = useState(false);
-  let loginDataString;
-  const getLocationID = useSelector(state => state.getLocationID);
-  const getPackageStatus = useSelector(state => state.getPackageStatus);
+  // let loginDataString;
+  // const getLocationID = useSelector(state => state.getLocationID);
+  // const getPackageStatus = useSelector(state => state.getPackageStatus);
   const isAuthorized = useSelector(state => state.isAuthorized);
 
   useEffect(() => {
@@ -544,12 +544,9 @@ export default function Router() {
 
   return (
     <Stack.Navigator screenOptions={screenOptions}>
-      {/* {(isFirstTime == null || isFirstTime == undefined) && (
-        <>
-          <Stack.Screen name="SplashStack" component={SplashStack} />
-        </>
-      )} */}
-      {!isAuthorized ? (
+    <Stack.Screen name="LoginStack" component={LoginStack} />
+      
+      {/* {!isAuthorized ? (
         <>
           <Stack.Screen name="LoginStack" component={LoginStack} />
         </>
@@ -557,7 +554,7 @@ export default function Router() {
         <>
           <Stack.Screen name="DrawerStack" component={DrawerNavigation} />
         </>
-      )}
+      )} */}
     </Stack.Navigator>
   );
 }

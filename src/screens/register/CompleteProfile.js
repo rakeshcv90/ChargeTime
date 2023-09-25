@@ -103,7 +103,7 @@ export default function CompleteProfile(props) {
         payload.append('pwa_email', userRegisterData.email);
         payload.append('pwa_mobile', userRegisterData.mobile);
         payload.append('pwa_password', userRegisterData.password);
-        payload.append('pwa_name', userRegisterData.name);
+        payload.append('pwa_name', userRegisterData.name+" "+userRegisterData.lname);
 
         const res = await axios({
           url: `${API}/completeProfile`,

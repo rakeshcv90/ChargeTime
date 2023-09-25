@@ -5,6 +5,7 @@ import {
   Pressable,
   StyleSheet,
   Text,
+  TouchableOpacity,
   View,
 } from 'react-native';
 import React, {useCallback, useEffect, useRef, useState} from 'react';
@@ -101,19 +102,19 @@ const RemainingHorizontal = ({...props}) => {
               You have utilized your package, please purchase a new package.
             </Text>
             <View style={styles.button_one}>
-              <Pressable
+              <TouchableOpacity
                 style={{
                   borderRadius: 20,
                   padding: 10,
                 }}
                 onPress={() => dispatch(setOverModelView(false))}>
                 <Text style={styles.textStyle}>Cancel</Text>
-              </Pressable>
-              <Pressable
+              </TouchableOpacity>
+              <TouchableOpacity
                 style={[styles.button, styles.buttonClose]}
-                onPress={nav}>
+                onPress={()=>{nav}}>
                 <Text style={styles.textStyle}>Purchase Plan</Text>
-              </Pressable>
+              </TouchableOpacity>
             </View>
           </View>
         </View>
@@ -247,12 +248,12 @@ const RemainingHorizontal = ({...props}) => {
           }}>
           {overusage ? (
             <>
-            <View
+           <View
               style={{
                 width: '100%',
                 height: `${100 - 20}%`,
                 // height: `${30 - 20}%`,
-                zIndex: -1,
+               // zIndex: -1,
                 backgroundColor: PLATFORM_IOS?'rgba(248, 84, 84, 1)':'rgba(248, 98, 98, 1)',
                 // flexDirection: 'column-reverse',
               }}
@@ -262,13 +263,12 @@ const RemainingHorizontal = ({...props}) => {
                 autoPlay
                 loop
                 style={{
-                  // marginBottom: -1,
-                  //   ((getRemainingData / totalAllowed) * 100) <= 30 ? 0 : -10,
-                  zIndex: -1,
-                  width: `100%`,
-                  //   marginBottom: -30,
-                  // height: `80.4%`,
-                }}
+                  marginBottom:
+                (getRemainingData / totalAllowed) * 100 <= 30 ? -1 : -1,
+                zIndex: -1,
+                width: `100%`,
+                // height: `80.4%`,
+              }}
               />
             </>
           ) : (
@@ -302,7 +302,7 @@ const RemainingHorizontal = ({...props}) => {
           )}
         </View>
       </View>
-      <OverusageModal />
+      {/* <OverusageModal /> */}
     </>
   );
 };

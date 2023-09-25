@@ -36,7 +36,7 @@ const Header = ({ headerName, showRightButton, onPress, enableEdit, editButton, 
         <BackButton />
       </TouchableOpacity>
       <Text style={styles.headerText}>{headerName}</Text>
-      {editShow ? <TouchableOpacity style={styles.rightButton} onPress={() => {
+      <TouchableOpacity style={styles.rightButton} onPress={() => {
         if (!rightButton) {
           enableEdit();
           setRightButton(true)
@@ -48,7 +48,7 @@ const Header = ({ headerName, showRightButton, onPress, enableEdit, editButton, 
         {rightButton ? <Save /> : <Edit />}
         {/* {showRightButton && <Edit />} */}
         {/* {renderIcon()} */}
-      </TouchableOpacity> : null}
+      </TouchableOpacity> 
 
     </View>
 

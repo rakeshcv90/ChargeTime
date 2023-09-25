@@ -10,6 +10,7 @@ import {
   Dimensions,
   Image,
   ScrollView,
+  ActivityIndicator
 } from 'react-native';
 import React, {useEffect, useState} from 'react';
 import COLORS from '../../constants/COLORS';
@@ -30,7 +31,7 @@ import {navigationRef} from '../../../App';
 import ActivityLoader from '../../Components/ActivityLoader';
 import {useDispatch} from 'react-redux';
 import {setDataForPayment} from '../../redux/action';
-import DownGradeData from '../downgrade/DownGradeData';
+// import DownGradeData from '../downgrade/DownGradeData';
 
 const mobileW = Math.round(Dimensions.get('screen').width);
 
@@ -43,7 +44,7 @@ export default function PlanSummary({route, navigation}) {
   const [data, setData] = useState('');
   const [forLoading, setForLoading] = useState(false);
   const [data1,setData1]=useState('');
-  DownGradeData;
+  // DownGradeData;
   const {id, package_name, total_price, salestax, stripe_voucher_id} =
     route.params?.data;
 
@@ -72,11 +73,11 @@ export default function PlanSummary({route, navigation}) {
       .then(res => {
  
         setData1(res.data)
-        setForLoading(false);
         setData(res.data.locations);
         dispatch(setDataForPayment(res.data?.locations[0]));
         setTax(res.data.locations[0].salestax);
         setTotalSalextax(res.data.locations[0].totalSalexTax);
+        setForLoading(false);
       })
       .catch(err => {
         setForLoading(false);
@@ -102,7 +103,7 @@ export default function PlanSummary({route, navigation}) {
               <InstallationBase data={route.params.data} />
             </View>
             <View style={{marginBottom: 10}}>
-              <BoxFour data={data} />
+              <BoxFour data={data} />   
             </View>
           </View>
 

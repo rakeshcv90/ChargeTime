@@ -10,6 +10,7 @@ import {
   Pressable,
   StyleSheet,
   Text,
+  TouchableOpacity,
   View,
 } from 'react-native';
 import React, {useCallback, useEffect, useRef, useState} from 'react';
@@ -106,19 +107,19 @@ const Remaining = ({...props}) => {
               You have utilized your package, please purchase a new package.
             </Text>
             <View style={styles.button_one}>
-              <Pressable
+              <TouchableOpacity
                 style={{
                   borderRadius: 20,
                   padding: 10,
                 }}
                 onPress={() => dispatch(setOverModelView(false))}>
                 <Text style={styles.textStyle}>Cancel</Text>
-              </Pressable>
-              <Pressable
+              </TouchableOpacity>
+              <TouchableOpacity
                 style={[styles.button, styles.buttonClose]}
                 onPress={nav}>
                 <Text style={styles.textStyle}>Purchase Plan</Text>
-              </Pressable>
+              </TouchableOpacity>
             </View>
           </View>
         </View>
@@ -213,6 +214,7 @@ const Remaining = ({...props}) => {
               source={require('../../assets/red_wave.json')} // Replace with your animation file
               autoPlay
               loop
+             
               style={{
                 // marginBottom:
                 //   ((getRemainingData / totalAllowed) * 100) <= 30 ? 0 : -10,
@@ -247,6 +249,7 @@ const Remaining = ({...props}) => {
               source={require('../../assets/wave.json')} // Replace with your animation file
               autoPlay
               loop
+            
               style={{
                 marginBottom:
                   (getRemainingData / totalAllowed) * 100 <= 30 ? -1 : -10,
