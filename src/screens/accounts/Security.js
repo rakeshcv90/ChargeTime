@@ -46,6 +46,7 @@ const Security = () => {
   const mobileW = Math.round(Dimensions.get('screen').width);
   const PasswordRegex = /[!@#$%^&*(),.?":{}|<>]/g;
   const onPress = async () => {
+   
     if (currentPassword.trim().length <= 0) {
       PLATFORM_IOS
         ? Toast.show({
@@ -70,35 +71,45 @@ const Security = () => {
             'First Place Special Characters Not Allowed',
             ToastAndroid.SHORT,
           );
-    } else if (PasswordRegex.test(confirmPassword[0])) {
+    } else if (newPassword.trim().length <6) {
       PLATFORM_IOS
         ? Toast.show({
             type: 'error',
-            text1: 'First Place Special Characters Not Allowed',
+            text1: 'Password must be atleast 6 characters',
           })
-        : ToastAndroid.show(
-            'First Place Special Characters Not Allowed',
-            ToastAndroid.SHORT,
-          );
-    } else if (confirmPassword.trim().length <= 0) {
-      PLATFORM_IOS
-        ? Toast.show({
-            type: 'error',
-            text1: 'Please Enter Confirm Password',
-          })
-        : ToastAndroid.show(
-            'Please Enter Confirm Password',
-            ToastAndroid.SHORT,
-          );
-    } else if (confirmPassword != newPassword) {
-      PLATFORM_IOS
-        ? Toast.show({
-            type: 'error',
-            text1: 'Confirm Password Not Match',
-          })
-        : ToastAndroid.show('Confirm Password Not Match', ToastAndroid.SHORT);
-    } else {
-      // UpdatePassword();
+        : ToastAndroid.show('Please Enter New Password', ToastAndroid.SHORT);
+    } 
+    // else if (PasswordRegex.test(confirmPassword[0])) {
+    //   PLATFORM_IOS
+    //     ? Toast.show({
+    //         type: 'error',
+    //         text1: 'First Place Special Characters Not Allowed',
+    //       })
+    //     : ToastAndroid.show(
+    //         'First Place Special Characters Not Allowed',
+    //         ToastAndroid.SHORT,
+    //       );
+    // } else if (confirmPassword.trim().length <= 0) {
+    //   PLATFORM_IOS
+    //     ? Toast.show({
+    //         type: 'error',
+    //         text1: 'Please Enter Confirm Password',
+    //       })
+    //     : ToastAndroid.show(
+    //         'Please Enter Confirm Password',
+    //         ToastAndroid.SHORT,
+    //       );
+    // } else if (confirmPassword != newPassword) {
+    //   PLATFORM_IOS
+    //     ? Toast.show({
+    //         type: 'error',
+    //         text1: 'Confirm Password Not Match',
+    //       })
+    //     : ToastAndroid.show('Confirm Password Not Match', ToastAndroid.SHORT);
+    // } 
+    else {
+       UpdatePassword();
+     
     }
   };
 
@@ -108,10 +119,11 @@ const Security = () => {
   };
   const UpdatePassword = async () => {
     try {
+     
       // const values = { password: newPassword, confirmPassword };
 
       // await ValidateSchema.validate(values, { abortEarly: false });
-      await fetch(`${API}/changePassword `, {
+      await fetch(`${API}/changePassword`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -125,6 +137,7 @@ const Security = () => {
       })
         .then(res => res.json())
         .then(data => {
+       
           if (data.success !== false) {
             PLATFORM_IOS
               ? Toast.show({

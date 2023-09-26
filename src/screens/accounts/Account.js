@@ -70,11 +70,11 @@ const Account = ({navigation}) => {
     axios
       .get(`${API}/planstatuspauseresume/${getUserID}/`)
       .then(res => {
- 
+ console.log("FDFDFDFFD",res.data)
         dispatch(setSubscriptionStatus(res.data.PlanStatus));
       })
       .catch(err => {
-        console.log(err);
+        console.log("Error4444",err);
       });
   };
   const Screen = [
@@ -168,10 +168,11 @@ const Account = ({navigation}) => {
 
       if (result[0].message === 'sucess') {
         //  setUserData(result);
+       
         dispatch(userProfileData(result));
       }
     } catch (error) {
-      console.error(error);
+      console.error("Error222",error);
     }
   };
 
@@ -195,7 +196,7 @@ const Account = ({navigation}) => {
       })
       .catch(err => {
         // setForLoading(false);
-        console.log('xcvvcxvcxv', err);
+        console.log('xcvvcxvcxv33333', err);
       });
   };
   const handleAllGetCard = async () => {
@@ -211,7 +212,7 @@ const Account = ({navigation}) => {
         setSavedCard([]);
       }
     } catch (error) {
-      console.log('ERROR', error);
+      console.log('ERROR111', error);
     }
   };
   const handleLinkPress = screen => {

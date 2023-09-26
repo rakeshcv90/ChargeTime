@@ -242,7 +242,8 @@ export default function PaymentGateWay({navigation, route}) {
     payload.append('price_stripe_id', getDataForPayment.price_stripe_id);
     payload.append('user_id', getUserID);
     payload.append('voucherCode', coupon == null ? '' : coupon);
-
+    console.log("RSRSRSRSRS",payload)
+  
     try {
       const response = await axios.post(`${API}/checkout`, payload, {
         headers: {
@@ -267,6 +268,7 @@ export default function PaymentGateWay({navigation, route}) {
     } catch (err) {
       setLoader(false);
       if (err.response) {
+        
         PLATFORM_IOS
           ? Toast.show({
               type: 'success',
@@ -277,7 +279,7 @@ export default function PaymentGateWay({navigation, route}) {
               ToastAndroid.SHORT,
             );
       } else {
-        console.log(err);
+        console.log("test111111",err.response.data);
       }
     }
   };
@@ -394,37 +396,38 @@ export default function PaymentGateWay({navigation, route}) {
     }
   };
   const coupenDetail = data => {
-    if (data == null) {
-      setCoupenError('Enter Coupon Code');
-      setCoupenStates(true);
-      setColor(false);
-    } else if (data.trim().length <= 0) {
-      setCoupenError('Enter Coupon Code');
-      setCoupenStates(true);
-      setColor(false);
-    } else {
-      setLoader(true);
-      axios
-        .get(
-          `${API}/couponpricetblvalid/${data}/${route.params.details.locations[0].price_stripe_id}`,
-        )
-        .then(res => {
-          setLoader(false);
-          if (res.data.couponstatus == 'true' && voucherStatus) {
-            setCoupenError('Coupon Applied!');
-            setCoupenStates(true);
-            setColor(true);
-          } else {
-            setCoupenError('Coupon Expired/Invalid!');
-            setCoupenStates(true);
-            setColor(false);
-          }
-        })
-        .catch(err => {
-          console.log(err);
-          setLoader(false);
-        });
-    }
+  
+    // if (data == null) {
+    //   setCoupenError('Enter Coupon Code');
+    //   setCoupenStates(true);
+    //   setColor(false);
+    // } else if (data.trim().length <= 0) {
+    //   setCoupenError('Enter Coupon Code');
+    //   setCoupenStates(true);
+    //   setColor(false);
+    // } else {
+    //   setLoader(true);
+    //   axios
+    //     .get(
+    //       `${API}/couponpricetblvalid/${data}/${route.params.details.locations[0].coupon_promotion_code[0]}`,
+    //     )
+    //     .then(res => {
+    //       setLoader(false);
+    //       if (res.data.couponstatus == 'true' && voucherStatus) {
+    //         setCoupenError('Coupon Applied!');
+    //         setCoupenStates(true);
+    //         setColor(true);
+    //       } else {
+    //         setCoupenError('Coupon Expired/Invalid!');
+    //         setCoupenStates(true);
+    //         setColor(false);
+    //       }
+    //     })
+    //     .catch(err => {
+    //       console.log(err);
+    //       setLoader(false);
+    //     });
+    // }
   };
   return (
     <SafeAreaView style={{backgroundColor: COLORS.CREAM, flex: 1}}>
@@ -687,7 +690,7 @@ export default function PaymentGateWay({navigation, route}) {
                           <View style={{gap: 5, width: 100}}>
                             <Text
                               style={{
-                                color: 'gray',
+                                color: 'gray', 
                                 fontWeight: '600',
                                 fontSize: 8,
                               }}>

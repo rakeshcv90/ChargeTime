@@ -267,7 +267,7 @@ export default function Login({navigation}) {
             ToastAndroid.SHORT,
           );
       setForLoading(false);
-      console.log(err);
+      console.log("Error-1",err);
     }
   };
 
@@ -277,7 +277,7 @@ export default function Login({navigation}) {
     axios
       .get(`${API}/dailyusagedeviceid/${userID}`)
       .then(res => {
-        console.log('My Data Is', res.data.Dayusagewithgraph);
+  
         dispatch(setGraphData(res.data.Dayusagewithgraph));
         dispatch(setWeekGraphData(res.data.weeklyusagewithgraph));
         dispatch(setMonthGraphData(res?.data.monthlyusagewithgraph));
@@ -312,7 +312,7 @@ export default function Login({navigation}) {
         remainigUsuageData(userId);
       })
       .catch(err => {
-        console.log(err);
+        console.log("Error-2",err);
       });
   };
   const remainigUsuageData = userId => {
@@ -324,15 +324,17 @@ export default function Login({navigation}) {
         if (res.data?.kwh_unit_remaining >= 0) {
           remaingData = res.data?.kwh_unit_remaining;
           dispatch(setOverUsage(false));
+          console.log("reaminibngcvbbcvb ")
         } else {
           remaingData = res.data?.kwh_unit_overusage;
+          console.log("Over Use ")
           dispatch(setOverUsage(true));
         }
         dispatch(setRemainingData(remaingData));
         setForLoading(false);
       })
       .catch(err => {
-        console.log(err);
+        console.log("Error-3",err);
       });
   };
 
@@ -347,19 +349,19 @@ export default function Login({navigation}) {
         }
       })
       .catch(err => {
-        console.log(err);
+        console.log("Error-4",err);
       });
   };
   const fetchStatusdata = userId => {
     axios
-      .get(`${API}/chargerStatus/${userId}`)
+      .get(`${API}/chargerstatus/${userId}`)
       .then(res => {
         getSubscriptionStatus(userId);
 
         dispatch(setChargerStatus(res?.data));
       })
       .catch(err => {
-        console.log(err);
+        console.log("Error-5",err);
       });
   };
   const getPlanCurrent = userId => {
@@ -375,9 +377,9 @@ export default function Login({navigation}) {
       })
       .catch(err => {
         setForLoading(false);
-        navigation.navigate('DrawerStack');
+      navigation.navigate('DrawerStack');
         dispatch(setIsAuthorized(true));
-        console.log(err);
+        console.log("Error-6",err);
       });
   };
   const getSubscriptionStatus = data => {
@@ -387,7 +389,7 @@ export default function Login({navigation}) {
         dispatch(setSubscriptionStatus(res.data.PlanStatus));
       })
       .catch(err => {
-        console.log(err);
+        console.log("Error-7",err);
       });
   };
 

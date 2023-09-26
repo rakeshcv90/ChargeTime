@@ -45,14 +45,14 @@ export default function PlanSummary({route, navigation}) {
   const [forLoading, setForLoading] = useState(false);
   const [data1,setData1]=useState('');
   // DownGradeData;
-  const {id, package_name, total_price, salestax, stripe_voucher_id} =
+  const {id, package_name, total_price, salestax, coupon_promotion_code,coupon_id} =
     route.params?.data;
 
 
   useEffect(() => {
     getPlanSummary();
-    if (stripe_voucher_id) {
-      getVoucherDetails(stripe_voucher_id);
+    if (coupon_id) {
+      getVoucherDetails(coupon_id);
     }
   }, []);
   const getVoucherDetails = data => {
@@ -61,9 +61,10 @@ export default function PlanSummary({route, navigation}) {
       .then(res => {
   
         setvoucherStatus(res.data.valid);
+      
       })
       .catch(err => {
-        console.log(err);
+        console.log("ffffffffff",err);
       });
   };
   const getPlanSummary = () => {

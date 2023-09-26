@@ -59,6 +59,7 @@ const PurchseButton = ({data}) => {
         <TouchableOpacity
           style={styles.btn_purchage}
           onPress={() =>
+            
             navigationRef.navigate('PlanSummary', {
               data: data[0] == undefined ? data : data[0],
             })

@@ -30,6 +30,7 @@ import {API} from '../../api/API';
 import ActivityLoader from '../../Components/ActivityLoader';
 import axios from 'axios';
 import {ms} from 'react-native-size-matters';
+
 const mobileW = Math.round(Dimensions.get('screen').width);
 
 const validationSchema = Yup.object().shape({
@@ -257,6 +258,7 @@ const ForgetPassword = ({navigation}) => {
                     )}
                   </View>
                 </View>
+                
                 <TouchableOpacity
                   onPress={() => handleSubmit()}
                   style={{
@@ -445,7 +447,7 @@ const ForgetPassword = ({navigation}) => {
                       ) {
                         setSixDigit('');
                         // setfifthDigit('');
-                        // otp5.current.focus();s
+                         otp5.current.focus();
                       }
                     }}
                     onSubmitEditing={verifyOTP}

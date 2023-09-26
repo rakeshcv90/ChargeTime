@@ -78,7 +78,7 @@ export default function Home(route) {
         setIsLoading(false);
       }
     } catch (error) {
-      console.error('Error fetching data:', error);
+      console.error('Error fetching data44444444:', error);
       setIsLoading(false);
     }
   };

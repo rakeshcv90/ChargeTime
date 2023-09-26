@@ -266,6 +266,7 @@ export default function PaymentGateWay({navigation, route}) {
 
   const handleDeleteCard = async value => {
     setLoader(true);
+    console.log("cdsfdfdfd",value)
     try {
       const response = await fetch(`${API}/deletecard/${value}`, {
         method: 'DELETE',
@@ -307,7 +308,7 @@ export default function PaymentGateWay({navigation, route}) {
     } catch (error) {
       setModalVisible(false);
       setLoader(false);
-      console.error('Error deleting card', error);
+      console.error('Error deleting card111111', error);
     }
   };
 

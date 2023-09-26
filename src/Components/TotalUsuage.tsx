@@ -53,6 +53,7 @@ const TotalUsage = (props: any) => {
             alignContent: 'center',
             alignSelf: 'center',
           }}>
+          
           <Text
             style={{
               fontWeight: '800',
