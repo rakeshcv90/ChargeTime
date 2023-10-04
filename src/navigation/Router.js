@@ -461,21 +461,18 @@ const HomeStack = () => {
     </Stack.Navigator>
   );
 };
-// const SplashStack = () => {
-//   return (
-//     <Stack.Navigator screenOptions={screenOptions}>
-//       {/* <Stack.Screen name="Splash" component={Splash} /> */}
-//       {/* <Stack.Screen name="Introduction" component={Introduction} /> */}
-//       <Stack.Screen name="Login" component={Login} />
-//       <Stack.Screen name="Register" component={Register} />
-//       <Stack.Screen name="VerifyEmail" component={VerifyEmail} />
-//       <Stack.Screen name="CompleteProfile" component={CompleteProfile} />
-//       <Stack.Screen name="ForgetPassword" component={ForgetPassword} />
-//       <Stack.Screen name="ResetPassword" component={ResetPassword} />
-//       <Stack.Screen name="DrawerStack" component={DrawerNavigation} />
-//     </Stack.Navigator>
-//   );
-// };
+const MainStack = () => {
+  return (
+    <Stack.Navigator screenOptions={screenOptions}>
+      <Stack.Screen name="DrawerStack" component={DrawerNavigation} />
+      <Stack.Screen name="LoginStack" component={LoginStack} />
+      <Stack.Screen name="HomeStack" component={HomeStack} />
+      <Stack.Screen name="AccountStack" component={AccountStack} />
+      <Stack.Screen name="EnergyOptions" component={EnergyOptions} />
+    </Stack.Navigator>
+  );
+};
+
 const EnergyOptions = () => {
   return (
     <Stack.Navigator screenOptions={screenOptions}>
@@ -517,7 +514,7 @@ export default function Router() {
   // let loginDataString;
   // const getLocationID = useSelector(state => state.getLocationID);
   // const getPackageStatus = useSelector(state => state.getPackageStatus);
-  const isAuthorized = useSelector(state => state.isAuthorized);
+  const {isAuthorized} = useSelector(state => state);
 
   useEffect(() => {
     checkLogin();
@@ -552,17 +549,17 @@ export default function Router() {
 
   return (
     <Stack.Navigator screenOptions={screenOptions}>
-      <Stack.Screen name="LoginStack" component={LoginStack} />
+      {/* <Stack.Screen name="LoginStack" component={LoginStack} /> */}
 
-      {/* {!isAuthorized ? (
+      {!isAuthorized ? (
         <>
           <Stack.Screen name="LoginStack" component={LoginStack} />
         </>
       ) : (
         <>
-          <Stack.Screen name="DrawerStack" component={DrawerNavigation} />
+          <Stack.Screen name="MainStack" component={MainStack} />
         </>
-      )} */}
+      )}
     </Stack.Navigator>
   );
 }
