@@ -388,6 +388,17 @@ const styles = StyleSheet.create({
     padding: 13,
     borderRadius: 10,
     width: '100%',
+    ...Platform.select({
+      ios: {
+        shadowColor: '#000000',
+        shadowOffset: {width: 0, height: 2},
+        shadowOpacity: 0.3,
+        shadowRadius: 4,
+      },
+      android: {
+        elevation: 4,
+      },
+    }),
   },
   postCodeContainer: {
     backgroundColor: COLORS.CREAM,

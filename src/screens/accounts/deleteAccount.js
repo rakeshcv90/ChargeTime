@@ -133,7 +133,8 @@ const DeleteAccountScreen = () => {
             //fontFamily: 'Roboto',
             fontWeight: '400',
             // paddingLeft: 10,
-            // paddingTop: 10,
+            paddingTop: DIMENSIONS.SCREEN_HEIGHT*0.02,
+            padding:DIMENSIONS.SCREEN_HEIGHT*0.02,
             textAlignVertical: 'top',
           }}
           multiline

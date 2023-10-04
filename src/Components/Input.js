@@ -111,7 +111,7 @@ const Input: FC<Props> = ({...Props}) => {
                 <Image
                   source={require('../../assets/images/Vector.png')}
                   style={{width: 25, height: 25}}
-                  resizeMode="center"
+                  resizeMode="contain"
                 />
               ) : (
                 // <Eye />

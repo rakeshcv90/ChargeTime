@@ -61,7 +61,7 @@ const BoxTwo = ({data}) => {
             resizeMode="contain"
             style={{width: 30, height: 30}}
           />
-          {/* <MileOne /> */}
+         
           <Text style={styles.kwh_mieq_text}>
             {data?.dollar_mi ? data?.dollar_mi : '0.11'}
           </Text>
@@ -81,12 +81,12 @@ const styles = StyleSheet.create({
     marginTop: DIMENSIONS.SCREEN_HEIGHT * 0.03,
     marginBottom: DIMENSIONS.SCREEN_HEIGHT * 0.015,
     shadowColor: '#000000',
-    shadowOffset: {width: 0, height: 2},
-    shadowOpacity: 0.8,
-    shadowRadius: 5,
-    elevation: 5,
-    borderWidth: 0,
-    borderRadius: 10,
+    shadowOffset: {width: 0, height: 6},
+    shadowOpacity: 0.35,
+    shadowRadius: 5.62,
+    elevation: 8,
+    backgroundColor: 'white',
+    borderRadius: 8,
   },
 
   install_touchable: {
@@ -134,6 +134,7 @@ const styles = StyleSheet.create({
     paddingVertical: 20,
     backgroundColor: COLORS.GRAY,
     borderBottomLeftRadius: 10,
+    borderBottomRightRadius:10
   },
   kwh_mieq_text: {
     fontWeight: 800,

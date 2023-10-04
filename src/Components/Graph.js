@@ -7,11 +7,13 @@ import {
   TouchableWithoutFeedback,
   TouchableOpacity,
 } from 'react-native';
-import React, {useState} from 'react';
+import React, {useCallback, useEffect, useState} from 'react';
 import {LineChart} from 'react-native-chart-kit';
 import COLORS from '../constants/COLORS';
 import {DIMENSIONS} from '../constants/DIMENSIONS';
 import ActivityLoader from './ActivityLoader';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import {useFocusEffect} from '@react-navigation/native';
 
 const Graph = ({dataOne}) => {
   const [isLoading, setIsLoading] = useState(true);
@@ -21,6 +23,9 @@ const Graph = ({dataOne}) => {
   const [openBox, setOpenBox] = useState(false);
   const [index, setIndex] = useState(-1);
   const [customViewPosition, setCustomViewPosition] = useState(0);
+  const [screenWidth, setScreenWidth] = useState(1032);
+  const [forLoading, setForLoading] = useState(false);
+
   const data = {
     labels: dataOne.Date,
     datasets: [
@@ -34,20 +39,33 @@ const Graph = ({dataOne}) => {
     ],
     // dataOne.Usage
   };
+  // useFocusEffect(() => {
+  //   getWidth();
+  // });
+  useFocusEffect(
+    useCallback(() => {
+      getWidth();
+    }, []),
+  );
+  const getWidth = async () => {
+    let data = await AsyncStorage.getItem('graph_Width');
 
+    setScreenWidth(data);
+  };
   return (
     <TouchableWithoutFeedback onPress={() => console.log('first')}>
       <>
-      {data.labels != undefined && (
-        <Text
-          style={{
-            color: COLORS.BLACK,
-            fontSize: 14,
-            fontWeight: 'bold',
-            marginLeft: 10,
-          }}>
-          kWh
-        </Text>
+        {forLoading ? <ActivityLoader /> : ''}
+        {data.labels != undefined && (
+          <Text
+            style={{
+              color: COLORS.BLACK,
+              fontSize: 14,
+              fontWeight: 'bold',
+              marginLeft: 10,
+            }}>
+            kWh
+          </Text>
         )}
         <View style={styles.container}>
           <ScrollView
@@ -57,7 +75,7 @@ const Graph = ({dataOne}) => {
             {data.labels != undefined && (
               <LineChart
                 data={data}
-                width={DIMENSIONS.SCREEN_WIDTH * 2.4}
+                width={screenWidth}
                 verticalLabelRotation={45}
                 height={DIMENSIONS.SCREEN_WIDTH * 0.95}
                 withVerticalLines={false}

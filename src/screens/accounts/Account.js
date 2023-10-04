@@ -34,6 +34,7 @@ import {
 import axios from 'axios';
 import {setCardDetails} from '../../redux/action';
 import {ScrollView} from 'react-native-gesture-handler';
+import { CommonActions } from '@react-navigation/native';
 
 const mobileW = Math.round(Dimensions.get('screen').width);
 const mobileH = Math.round(Dimensions.get('screen').height);
@@ -70,11 +71,10 @@ const Account = ({navigation}) => {
     axios
       .get(`${API}/planstatuspauseresume/${getUserID}/`)
       .then(res => {
- console.log("FDFDFDFFD",res.data)
         dispatch(setSubscriptionStatus(res.data.PlanStatus));
       })
       .catch(err => {
-        console.log("Error4444",err);
+        console.log('Error4444', err);
       });
   };
   const Screen = [
@@ -116,7 +116,6 @@ const Account = ({navigation}) => {
     // },
   ];
   const handleLogOut = async () => {
-
     try {
       const res = await axios(`${API}/logout/${user_ID}`, {
         method: 'POST',
@@ -126,39 +125,59 @@ const Account = ({navigation}) => {
       });
       if (res.data.message == 'Your account is successfully logout') {
         PLATFORM_IOS
-        ? Toast.show({
-            text1: res.data.message,
+          ? Toast.show({
+              text1: res.data.message,
 
-            position: 'bottom',
-            type: 'success',
-            duration: 500,
-          })
-        : ToastAndroid.show(res.data.message, ToastAndroid.SHORT);
-        await AsyncStorage.removeItem('locationID');
-        await AsyncStorage.removeItem('isAuthorized');
+              position: 'bottom',
+              type: 'success',
+              duration: 500,
+            })
+          : ToastAndroid.show(res.data.message, ToastAndroid.SHORT);
+        // await AsyncStorage.removeItem('locationID');
+        // await AsyncStorage.removeItem('isAuthorized');
+        await AsyncStorage.clear();
         await persistor.purge();
         dispatch(setLogout());
 
-        navigationRef.reset({
-          index: 2,
-          routes: [{name: 'LoginStack'}],
-        });
- 
+        // navigation.reset({
+        //   index: 0,
+        //   routes: [{name: 'LoginStack'}],
+        // });
+        navigation.dispatch(
+          CommonActions.reset({
+            index: 0,
+            routes: [
+              {
+                name: 'LoginStack',
+              },
+            ],
+          })
+        );
       }
-      
     } catch (err) {
       console.log('Error', err);
-      await AsyncStorage.removeItem('locationID');
-      await AsyncStorage.removeItem('isAuthorized');
+      // await AsyncStorage.removeItem('locationID');
+      // await AsyncStorage.removeItem('isAuthorized');
+      await AsyncStorage.clear();
       await persistor.purge();
       dispatch(setLogout());
 
-      navigationRef.reset({
-        index: 2,
-        routes: [{name: 'LoginStack'}],
-      });
+
+      // navigation.reset({
+      //   index: 0,
+      //   routes: [{name: 'LoginStack'}],
+      // });
     }
-    
+    navigation.dispatch(
+      CommonActions.reset({
+        index: 0,
+        routes: [
+          {
+            name: 'LoginStack',
+          },
+        ],
+      })
+    );
   };
   const userDetails = async () => {
     // const response = await fetch(`${API}/userexisting/${user_ID}`);
@@ -168,11 +187,11 @@ const Account = ({navigation}) => {
 
       if (result[0].message === 'sucess') {
         //  setUserData(result);
-       
+
         dispatch(userProfileData(result));
       }
     } catch (error) {
-      console.error("Error222",error);
+      console.error('Error222', error);
     }
   };
 
@@ -237,6 +256,7 @@ const Account = ({navigation}) => {
               <View style={styles.row}>
                 <Image
                   source={item.image}
+                  resizeMode="cover"
                   style={[
                     styles.icon,
                     {
@@ -261,7 +281,11 @@ const Account = ({navigation}) => {
                 />
                 <Text style={styles.title}>{item.title} </Text>
                 <View style={styles.sideImageContainer}>
-                  <Image source={item.side_image} style={styles.side_icon} />
+                  <Image
+                    source={item.side_image}
+                    style={styles.side_icon}
+                    resizeMode="contain"
+                  />
                 </View>
               </View>
               <View
@@ -323,7 +347,7 @@ const Account = ({navigation}) => {
           </View>
           <View style={styles.ButtonsContainer}>
             <TouchableOpacity
-            activeOpacity={0.05}
+              activeOpacity={0.05}
               style={styles.logoutButton}
               onPress={() => handleLogOut()}>
               <Text style={styles.logoutbuttonText}>LOG OUT</Text>
@@ -431,8 +455,8 @@ const styles = StyleSheet.create({
     marginRight: 20,
   },
   side_icon: {
-    width: 8,
-    height: 8,
+    width: 10,
+    height: 15,
     marginLeft: 120,
   },
   dropdown: {

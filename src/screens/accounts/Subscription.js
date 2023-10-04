@@ -52,12 +52,13 @@ const Subscription = ({navigation, route}) => {
   );
 
   const [text, setText] = useState(
-    subscriptionStatus == '0' ? 'Pause Subscription' : 'Resume Subscription',
+    subscriptionStatus == '0' || subscriptionStatus == null? 'Pause Subscription' : 'Resume Subscription',
   );
 
   const [forLoading, setForLoading] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
   const [getData, setGetData] = useState([]);
+
 
   const dispatch = useDispatch();
   useEffect(() => {
@@ -69,15 +70,16 @@ const Subscription = ({navigation, route}) => {
     axios
       .get(`${API}/planstatuspauseresume/${getUserID}/`)
       .then(res => {
+       
         dispatch(setSubscriptionStatus(res.data.PlanStatus));
-        if (res.data.PlanStatus == '0') {
+        if (res.data.PlanStatus == '0'||res.data.PlanStatus == null) {
           setText('Pause Subscription');
         } else {
           setText('Resume Subscription');
         }
       })
       .catch(err => {
-        console.log(err);
+        console.log("1111144444",err);
       });
   };
 
@@ -237,7 +239,7 @@ const Subscription = ({navigation, route}) => {
         })
         .catch(err => {
           setForLoading(false);
-          console.log(err);
+          console.log("dddd1111",err);
         });
     } else {
       axios
@@ -262,7 +264,7 @@ const Subscription = ({navigation, route}) => {
     axios
       .get(`${API}/planstatuspauseresume/${getUserID}/`)
       .then(res => {
-        if (res.data.PlanStatus == '0') {
+        if (res.data.PlanStatus == '0'||res.data.PlanStatus == null) {
           setText('Pause Subscription');
         } else {
           setText('Resume Subscription');
@@ -270,20 +272,22 @@ const Subscription = ({navigation, route}) => {
         dispatch(setSubscriptionStatus(res.data.PlanStatus));
       })
       .catch(err => {
-        console.log(err);
+        console.log("dddd",err);
       });
   };
+
   return (
     <>
       <SafeAreaView style={{backgroundColor: COLORS.CREAM, flex: 1}}>
-        <Header headerName="Subscription" />
+        <Header headerName="Subscription"  editShow={false} />
         {Platform.OS == 'android' ? (
           <HorizontalLine style={styles.line} />
         ) : (
           <View>
             <Image
               source={require('../../../assets/images/dotted.png')}
-              style={{width: mobileW * 0.97}}
+              style={{width: mobileW * 0.99}}
+              resizeMode='stretch'
             />
           </View>
         )}
@@ -394,6 +398,7 @@ const Subscription = ({navigation, route}) => {
                 ...styles.managing_width,
                 marginTop: PLATFORM_IOS ? -12 : 0,
               }}>
+             
               <PriceValiditySubs data={getPurchaseData.data} />
             </View>
 

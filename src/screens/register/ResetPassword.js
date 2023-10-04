@@ -26,20 +26,29 @@ import {ms} from 'react-native-size-matters';
 import {Toast} from 'react-native-toast-message/lib/src/Toast';
 import ActivityLoader from '../../Components/ActivityLoader';
 const PasswordRegex =
-  /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+  /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%&*()-_+='":;,.?/~`[{}<>€£¥÷×])[A-Za-z\d!@#$%&*()-_+='":;,.?/~`[{}<>€£¥÷×]{8,}$/;
 const validationSchema = Yup.object().shape({
+  // password: Yup.string()
+  //   .matches(
+  //     PasswordRegex,
+  //     'Password must contain 1 uppercase and 1 lowercase letter, 1 digit and 1 special character, and the length must be at least 8',
+  //   )
+  //   .required('Password is required'),
+  // password_confirmation: Yup.string()
+  //   .matches(
+  //     PasswordRegex,
+  //     'Password must contain 1 uppercase and 1 lowercase letter, 1 digit and 1 special character, and the length must be at least 8',
+  //   )
+  //   .required('Password is required'),
   password: Yup.string()
     .matches(
       PasswordRegex,
-      'Password must contain 1 uppercase and 1 lowercase letter, 1 digit and 1 special character, and the length must be at least 8',
+      'The password must contain 1 uppercase letter and 1 lowercase letter, 1 digit and 1 special character, and must be at least 8 in length.',
     )
-    .required('Password is required'),
+    .required('Please Enter New Password '),
   password_confirmation: Yup.string()
-    .matches(
-      PasswordRegex,
-      'Password must contain 1 uppercase and 1 lowercase letter, 1 digit and 1 special character, and the length must be at least 8',
-    )
-    .required('Password is required'),
+    .oneOf([Yup.ref('newPassword'), ''], 'Confirm Password Not Match')
+    .required('Please Enter Re_enter Password'),
 });
 
 const mobileW = Math.round(Dimensions.get('screen').width);
@@ -66,15 +75,14 @@ const ResetPassword = props => {
       })
         .then(res => res.json())
         .then(data => {
-         
           if (data.success !== false) {
             PLATFORM_IOS
               ? Toast.show({
                   type: 'success',
-                  text1: 'Password Reset  successfully.',
+                  text1: 'Password Reset Successfully.',
                 })
               : ToastAndroid.show(
-                  'Password Reset  successfully.',
+                  'Password Reset Successfully.',
                   ToastAndroid.SHORT,
                 );
             navigation.navigate('Login');
@@ -166,7 +174,7 @@ const ResetPassword = props => {
                       placeholderTextColor={COLORS.HALFBLACK}
                       autoCapitalize="none"
                     />
-                    {values.password !== values.password_confirmation &&
+                    {/* {values.password !== values.password_confirmation &&
                     touched.password &&
                     touched.password_confirmation ? (
                       <Text style={{color: 'red'}}>
@@ -174,7 +182,7 @@ const ResetPassword = props => {
                       </Text>
                     ) : (
                       <Text />
-                    )}
+                    )} */}
                   </View>
                 </View>
                 <View

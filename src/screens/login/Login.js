@@ -32,7 +32,7 @@ import COLORS from '../../constants/COLORS';
 import Toast from 'react-native-toast-message';
 import {API} from '../../api/API';
 import Input from '../../Components/Input';
-import {PLATFORM_IOS} from '../../constants/DIMENSIONS';
+import {DIMENSIONS, PLATFORM_IOS} from '../../constants/DIMENSIONS';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {Message} from '../../../assets/images/Message';
 import {Eye} from '../../../assets/images/Eye';
@@ -65,6 +65,7 @@ import {navigationRef} from '../../../App';
 import messaging from '@react-native-firebase/messaging';
 import {ms} from 'react-native-size-matters';
 import {Alert, PermissionsAndroid} from 'react-native';
+import Clipboard from '@react-native-clipboard/clipboard';
 const mobileH = Math.round(Dimensions.get('window').height);
 const mobileW = Math.round(Dimensions.get('window').width);
 
@@ -137,12 +138,12 @@ export default function Login({navigation}) {
         dispatch(setBasePackage([]));
         // dispatch(setIsAuthorized(true));
         setForLoading(false);
-        navigation.navigate('DrawerStack');
+        navigationRef.navigate('DrawerStack');
       } else {
         dispatch(setBasePackage(response.data.locations));
         // dispatch(setIsAuthorized(true));
         setForLoading(false);
-        navigation.navigate('DrawerStack');
+        navigationRef.navigate('DrawerStack');
       }
     } catch (error) {
       console.error('Error fetching data:', error);
@@ -176,7 +177,7 @@ export default function Login({navigation}) {
             JSON.stringify(res.data?.locationid),
           );
           AsyncStorage.setItem('userId', JSON.stringify(res.data?.user_id));
-
+          AsyncStorage.setItem('graph_Width', JSON.stringify(1032));
           PLATFORM_IOS
             ? Toast.show({
                 type: 'success',
@@ -219,7 +220,7 @@ export default function Login({navigation}) {
             dispatch(setPackageStatus(true));
             dispatch(setUserID(res.data?.user_id));
             dispatch(getLocationID(res.data?.locationid));
-            // dispatch(setIsAuthorized(true));
+            dispatch(setIsAuthorized(true));
             getPlanCurrent(res.data?.user_id);
             dispatch(
               setDeviceId(
@@ -227,9 +228,9 @@ export default function Login({navigation}) {
               ),
             );
           } else {
-          //  dispatch(setPackageStatus(false));
+            //  dispatch(setPackageStatus(false));
             dispatch(setDeviceId(res.data.message));
-            // dispatch(setIsAuthorized(true));
+            dispatch(setIsAuthorized(true));
             dispatch(setEmailData(res.data?.email));
             dispatch(setUserID(res.data?.user_id));
             dispatch(getLocationID(res.data?.locationid));
@@ -267,7 +268,7 @@ export default function Login({navigation}) {
             ToastAndroid.SHORT,
           );
       setForLoading(false);
-      console.log("Error-1",err);
+      console.log('Error-1', err);
     }
   };
 
@@ -277,7 +278,6 @@ export default function Login({navigation}) {
     axios
       .get(`${API}/dailyusagedeviceid/${userID}`)
       .then(res => {
-  
         dispatch(setGraphData(res.data.Dayusagewithgraph));
         dispatch(setWeekGraphData(res.data.weeklyusagewithgraph));
         dispatch(setMonthGraphData(res?.data.monthlyusagewithgraph));
@@ -312,7 +312,7 @@ export default function Login({navigation}) {
         remainigUsuageData(userId);
       })
       .catch(err => {
-        console.log("Error-2",err);
+        console.log('Error-2', err);
       });
   };
   const remainigUsuageData = userId => {
@@ -321,20 +321,19 @@ export default function Login({navigation}) {
     axios
       .get(`${API}/remainingusage/${userId}`)
       .then(res => {
-        if (res.data?.kwh_unit_remaining >= 0) {
+        if (res.data?.kwh_unit_remaining > 0) {
           remaingData = res.data?.kwh_unit_remaining;
           dispatch(setOverUsage(false));
-          console.log("reaminibngcvbbcvb ")
         } else {
           remaingData = res.data?.kwh_unit_overusage;
-          console.log("Over Use ")
+
           dispatch(setOverUsage(true));
         }
         dispatch(setRemainingData(remaingData));
         setForLoading(false);
       })
       .catch(err => {
-        console.log("Error-3",err);
+        console.log('Error-3', err);
       });
   };
 
@@ -349,7 +348,7 @@ export default function Login({navigation}) {
         }
       })
       .catch(err => {
-        console.log("Error-4",err);
+        console.log('Error-4', err);
       });
   };
   const fetchStatusdata = userId => {
@@ -361,7 +360,7 @@ export default function Login({navigation}) {
         dispatch(setChargerStatus(res?.data));
       })
       .catch(err => {
-        console.log("Error-5",err);
+        console.log('Error-5', err);
       });
   };
   const getPlanCurrent = userId => {
@@ -377,9 +376,9 @@ export default function Login({navigation}) {
       })
       .catch(err => {
         setForLoading(false);
-      navigation.navigate('DrawerStack');
+        navigation.navigate('DrawerStack');
         dispatch(setIsAuthorized(true));
-        console.log("Error-6",err);
+        console.log('Error-6', err);
       });
   };
   const getSubscriptionStatus = data => {
@@ -389,10 +388,13 @@ export default function Login({navigation}) {
         dispatch(setSubscriptionStatus(res.data.PlanStatus));
       })
       .catch(err => {
-        console.log("Error-7",err);
+        console.log('Error-7', err);
       });
   };
-
+  const sendToForgetpassword =() => {
+   Clipboard.setString('');
+    navigation.navigate('ForgetPassword');
+  };
   return (
     <SafeAreaView style={{backgroundColor: COLORS.CREAM, flex: 1}}>
       <KeyboardAvoidingView behavior="position" style={{marginTop: 10}}>
@@ -445,7 +447,9 @@ export default function Login({navigation}) {
               style={{width: 18, height: 18}}
             />
             <TouchableOpacity
-              onPress={() => navigation.navigate('ForgetPassword')}>
+              onPress={()=>
+                sendToForgetpassword()
+              }>
               <Text style={styles.forgot_password}>Forgot my password?</Text>
             </TouchableOpacity>
           </View>

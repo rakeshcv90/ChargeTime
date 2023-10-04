@@ -37,7 +37,7 @@ const mobileH = Math.round(Dimensions.get('window').height);
 const mobileW = Math.round(Dimensions.get('screen').width);
 const PasswordRegex =
   // /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
-  /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[!@#$%^&*()\-_=+[{\]}\\|;:'",<.>/?]).{8,}$/;
+  /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%&*()-_+='":;,.?/~`[{}<>€£¥÷×])[A-Za-z\d!@#$%&*()-_+='":;,.?/~`[{}<>€£¥÷×]{8,}$/;
 const validationSchema = Yup.object().shape({
   // name: Yup.string().required('Full Name is required'),
   name: Yup.string()
@@ -106,10 +106,10 @@ export default function Register({navigation}) {
           PLATFORM_IOS
             ? Toast.show({
                 type: 'success',
-                text1: 'Success!!! Please verify your email with OTP.',
+                text1: 'Please verify email with Authentication Key.',
               })
             : ToastAndroid.show(
-                'Success!!! Please verify your email with OTP.',
+                'Please verify email with Authentication Key.',
                 ToastAndroid.SHORT,
               );
           navigation.navigate('VerifyEmail', {
@@ -180,7 +180,7 @@ export default function Register({navigation}) {
                     autoFocus
                     onChangeText={handleChange('name')}
                     onBlur={handleBlur('name')}
-                    text="FIrst Name"
+                    text="First Name"
                     IconRight={() => <Admin />}
                     mV={10}
                     placeholder="Ex. John"
@@ -193,7 +193,7 @@ export default function Register({navigation}) {
                     errors={errors.lname}
                     touched={touched.lname}
                     value={values.lname}
-                    autoFocus
+                   // autoFocus
                     onChangeText={handleChange('lname')}
                     onBlur={handleBlur('lname')}
                     text="Last Name"
@@ -251,7 +251,6 @@ export default function Register({navigation}) {
                     passwordInput={true}
                     pasButton={() => setShowPassword(!showPassword)}
                     passwordInputIcon={showPassword}
-                    // IconRight={() => <StrongPass />}
                     mV={10}
                     placeholder="Create a strong password"
                     bW={1}
@@ -259,23 +258,7 @@ export default function Register({navigation}) {
                     placeholderTextColor={COLORS.HALFBLACK}
                     secureTextEntry={showPassword}
                   />
-                  {/* IconLeft={null}
-
-            errors={errors.name}
-            touched={touched.name}
-            placeholderTextColor={COLORS.BLACK}
-            text="Password"
-
-            passwordInput={true}
-            pasButton={() => setShowPassword(!showPassword)}
-            secureTextEntry={showPassword}
-            passwordInputIcon={showPassword}
-            onChangeText={text => setPassword(text)}
-            value={password}
-            mV={5}
-            placeholder="Enter your password"
-            bW={1}
-            textWidth={'30%'} */}
+       
                 </View>
 
                 <View
@@ -294,6 +277,17 @@ export default function Register({navigation}) {
                       padding: 13,
                       borderRadius: 10,
                       width: '100%',
+                      ...Platform.select({
+                        ios: {
+                          shadowColor: '#000000',
+                          shadowOffset: {width: 0, height: 2},
+                          shadowOpacity: 0.3,
+                          shadowRadius: 4,
+                        },
+                        android: {
+                          elevation: 4,
+                        },
+                      }),
                     }}>
                     <Text
                       style={{

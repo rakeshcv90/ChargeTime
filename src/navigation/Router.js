@@ -61,7 +61,8 @@ import ForDownGrade from '../Components/ForDownGrade';
 const Drawer = createDrawerNavigator();
 const Stack = createNativeStackNavigator();
 const screenOptions = {
-  headerShown: false, // Hide the header for all screens
+  headerShown: false,
+  gestureEnabled: false, // Hide the header for all screens
 };
 export const DrawerScreenPart = ({navigation}) => {
   const getEmailData = useSelector(state => state.getEmailData);
@@ -109,36 +110,46 @@ const DrawerNavigation = () => {
       screenOptions={{
         headerShown: false,
         drawerStyle: {
-          width: Dimensions.get('window').width / 1.55,
+          width: Dimensions.get('window').width / 1.65,
         },
+        gestureEnabled: false,
       }}
-      gestureEnabled={false}
       drawerContent={props => <CustomDrawerContent {...props} />}>
       {getPackageStatus ? (
         <>
           <Drawer.Screen
             options={{
-              // sw: 20,
               drawerActiveBackgroundColor: '#fff',
               drawerIcon: ({focused, color, size}) => {
                 setFocus(focused);
                 return (
                   <Image
+                    resizeMode="cover"
                     source={
                       !focused
                         ? require('../../assets/images/home_white.png')
                         : require('../../assets/images/home_green.png')
                     }
-                    style={{width: 25, height: 30, padding: 0, margin: -10}}
+                    style={{width: 35, height: 25}}
                   />
                 );
+              },
+              drawerItemStyle: {
+                marginHorizontal: -7,
+                
               },
               drawerLabelStyle: {
                 backgroundColor: focus ? 'rgba(177, 211, 79, 0.8)' : '#fff',
                 paddingVertical: 10,
                 paddingLeft: 10,
                 width: '200%',
-                marginLeft: -15,
+                // marginTop: -20,
+                marginLeft: -30,
+                color:'black',
+                fontWeight:'700',
+                borderRadius: 5,
+
+                overflow: 'hidden',
               },
               drawerActiveTintColor: 'black',
               title: 'Home',
@@ -148,6 +159,9 @@ const DrawerNavigation = () => {
           />
           <Drawer.Screen
             options={{
+              drawerItemStyle: {
+                marginHorizontal: -7,
+              },
               drawerActiveBackgroundColor: '#fff',
               drawerIcon: ({focused, color, size}) => {
                 setFocusOne(focused);
@@ -158,23 +172,22 @@ const DrawerNavigation = () => {
                         ? require('../../assets/images/testing.png')
                         : require('../../assets/images/energy_green.png')
                     }
-                    style={{
-                      width: 28,
-                      height: 30,
-                      padding: 0,
-                      margin: -10,
-                      marginTop: -30,
-                    }}
+                    style={{width: 35, height: 25}}
                   />
                 );
               },
               drawerLabelStyle: {
                 backgroundColor: focusOne ? 'rgba(177, 211, 79, 0.8)' : '#fff',
                 paddingVertical: 10,
-                marginTop: -20,
                 paddingLeft: 10,
                 width: '200%',
-                marginLeft: -17,
+                color:'black',
+                fontWeight:'700',
+                marginLeft: -30,
+
+                borderRadius: 5,
+
+                overflow: 'hidden',
               },
               drawerActiveTintColor: 'black',
               title: 'Energy',
@@ -191,22 +204,31 @@ const DrawerNavigation = () => {
               setFocus(focused);
               return (
                 <Image
+                  resizeMode="cover"
                   source={
                     !focused
                       ? require('../../assets/images/home_white.png')
                       : require('../../assets/images/home_green.png')
                   }
-                  style={{width: 25, height: 30, margin: -10, marginTop: -30}}
+                  style={{width: 35, height: 25}}
                 />
               );
+            },
+            drawerItemStyle: {
+              marginHorizontal: -7,
             },
             drawerLabelStyle: {
               backgroundColor: focus ? 'rgba(177, 211, 79, 0.8)' : '#fff',
               paddingVertical: 10,
               paddingLeft: 10,
               width: '200%',
-              marginTop: -20,
-              marginLeft: -15,
+              color:'black',
+              fontWeight:'700',
+              marginLeft: -30,
+
+              borderRadius: 5,
+
+              overflow: 'hidden',
             },
             drawerActiveTintColor: 'black',
             title: 'Home',
@@ -215,38 +237,14 @@ const DrawerNavigation = () => {
           component={HomeStack}
         />
       )}
-      {/* <Drawer.Screen
-        options={{
-          drawerActiveBackgroundColor: '#fff',
-          drawerIcon: ({focused, color, size}) => {
-            setFocusOne(focused);
-            return (
-              <Image
-                source={
-                  !focused
-                    ? require('../../assets/images/testing.png')
-                    : require('../../assets/images/energy_green.png')
-                }
-                style={{width: 50, height: 40, padding: 0, margin: -10}}
-              />
-            );
-          },
-          drawerLabelStyle: {
-            backgroundColor: focusOne ? 'rgba(177, 211, 79, 0.8)' : '#fff',
-            paddingVertical: 10,
-            paddingLeft: 10,
-            width: '200%',
-            marginLeft: -15,
-          },
-          drawerActiveTintColor: 'black',
-          title: 'Energy',
-        }}
-        name="EnergyOptions"
-        component={EnergyOptions}
-      /> */}
+
       <Drawer.Screen
         options={{
           drawerActiveBackgroundColor: '#fff',
+          drawerItemStyle: {
+            marginTop: -5,
+            marginHorizontal: -9,
+          },
           drawerIcon: ({focused, color, size}) => {
             setFocusTwo(focused);
             return (
@@ -256,13 +254,7 @@ const DrawerNavigation = () => {
                     ? require('../../assets/images/account_white.png')
                     : require('../../assets/images/green_account.png')
                 }
-                style={{
-                  width: 25,
-                  height: 30,
-                  padding: 0,
-                  margin: -10,
-                  marginTop: -30,
-                }}
+                style={{width: 40, height: 25}}
               />
             );
           },
@@ -270,9 +262,13 @@ const DrawerNavigation = () => {
             backgroundColor: focusTwo ? 'rgba(177, 211, 79, 0.8)' : '#fff',
             paddingVertical: 10,
             paddingLeft: 10,
-            marginTop: -20,
             width: '200%',
-            marginLeft: -15,
+            color:'black',
+            fontWeight:'700',
+            marginLeft: -30,
+            borderRadius: 5,
+
+            overflow: 'hidden',
           },
           drawerActiveTintColor: 'black',
           title: 'Account',
@@ -284,19 +280,25 @@ const DrawerNavigation = () => {
       <Drawer.Screen
         options={{
           drawerActiveBackgroundColor: '#fff',
+
           drawerIcon: ({focused, color, size}) => {
             return (
               <Image
                 source={require('../../assets/images/contact_us.png')}
-                resizeMode="center"
+                resizeMode="stretch"
                 style={{width: 25, height: 25, padding: 0, margin: -7}}
               />
             );
           },
-          drawerItemStyle: {marginTop: (DIMENSIONS.SCREEN_HEIGHT * 15) / 100},
+          drawerItemStyle: {
+            marginTop: (DIMENSIONS.SCREEN_HEIGHT * 15) / 100,
+            marginLeft: (DIMENSIONS.SCREEN_WIDTH * 4) / 100,
+          },
           drawerLabelStyle: {
             backgroundColor: '#fff',
             marginLeft: -17,
+            color:'black',
+            fontWeight:'700',
           },
           drawerActiveTintColor: 'black',
           //title: 'Contact Us',
@@ -307,18 +309,21 @@ const DrawerNavigation = () => {
       <Drawer.Screen
         options={{
           drawerActiveBackgroundColor: '#fff',
+
           drawerIcon: ({focused, color, size}) => {
             return (
               <Image
                 source={require('../../assets/images/privacy.png')}
                 resizeMode="stretch"
-                style={{width: 17, height: 17, padding: 0, margin: -5}}
+                style={{width: 17, height: 17, padding: 0, marginLeft: 4}}
               />
             );
           },
           drawerLabelStyle: {
             backgroundColor: '#fff',
-            marginLeft: -15,
+            marginLeft: -17,
+            color:'black',
+            fontWeight:'700',
           },
           drawerActiveTintColor: 'black',
         }}
@@ -333,13 +338,15 @@ const DrawerNavigation = () => {
               <Image
                 source={require('../../assets/images/terms.png')}
                 resizeMode="stretch"
-                style={{width: 17, height: 17, padding: 0, margin: -5}}
+                style={{width: 17, height: 17, padding: 0, marginLeft: 4}}
               />
             );
           },
           drawerLabelStyle: {
             backgroundColor: '#fff',
-            marginLeft: -15,
+            marginLeft: -17,
+            color:'black',
+            fontWeight:'700',
           },
           drawerActiveTintColor: 'black',
         }}
@@ -394,8 +401,7 @@ const DrawerNavigation = () => {
                       shadowOpacity: 0.29,
                       shadowRadius: 4.65,
                       elevation: 7,
-                    }}
-                    >
+                    }}>
                     {iconComponent}
                   </View>
                 ) : (
@@ -432,7 +438,11 @@ const LoginStack = () => {
     <Stack.Navigator screenOptions={screenOptions}>
       <Stack.Screen name="Splash" component={Splash} />
       <Stack.Screen name="Introduction" component={Introduction} />
-      <Stack.Screen name="Login" component={Login} />
+      <Stack.Screen
+        name="Login"
+        component={Login}
+        options={{gestureEnabled: false}}
+      />
       <Stack.Screen name="Register" component={Register} />
       <Stack.Screen name="VerifyEmail" component={VerifyEmail} />
       <Stack.Screen name="CompleteProfile" component={CompleteProfile} />
@@ -452,21 +462,21 @@ const HomeStack = () => {
     </Stack.Navigator>
   );
 };
-const SplashStack = () => {
-  return (
-    <Stack.Navigator screenOptions={screenOptions}>
-      {/* <Stack.Screen name="Splash" component={Splash} /> */}
-      {/* <Stack.Screen name="Introduction" component={Introduction} /> */}
-      <Stack.Screen name="Login" component={Login} />
-      <Stack.Screen name="Register" component={Register} />
-      <Stack.Screen name="VerifyEmail" component={VerifyEmail} />
-      <Stack.Screen name="CompleteProfile" component={CompleteProfile} />
-      <Stack.Screen name="ForgetPassword" component={ForgetPassword} />
-      <Stack.Screen name="ResetPassword" component={ResetPassword} />
-      <Stack.Screen name="DrawerStack" component={DrawerNavigation} />
-    </Stack.Navigator>
-  );
-};
+// const SplashStack = () => {
+//   return (
+//     <Stack.Navigator screenOptions={screenOptions}>
+//       {/* <Stack.Screen name="Splash" component={Splash} /> */}
+//       {/* <Stack.Screen name="Introduction" component={Introduction} /> */}
+//       <Stack.Screen name="Login" component={Login} />
+//       <Stack.Screen name="Register" component={Register} />
+//       <Stack.Screen name="VerifyEmail" component={VerifyEmail} />
+//       <Stack.Screen name="CompleteProfile" component={CompleteProfile} />
+//       <Stack.Screen name="ForgetPassword" component={ForgetPassword} />
+//       <Stack.Screen name="ResetPassword" component={ResetPassword} />
+//       <Stack.Screen name="DrawerStack" component={DrawerNavigation} />
+//     </Stack.Navigator>
+//   );
+// };
 const EnergyOptions = () => {
   return (
     <Stack.Navigator screenOptions={screenOptions}>
@@ -530,7 +540,6 @@ export default function Router() {
 
       authorized = await AsyncStorage.getItem('isAuthorized');
 
-
       // if (loginDataString !== null) {
       //   const loginData = JSON.parse(loginDataString);
       //   setIsAuthorized(true);
@@ -544,8 +553,8 @@ export default function Router() {
 
   return (
     <Stack.Navigator screenOptions={screenOptions}>
-    <Stack.Screen name="LoginStack" component={LoginStack} />
-      
+      <Stack.Screen name="LoginStack" component={LoginStack} />
+
       {/* {!isAuthorized ? (
         <>
           <Stack.Screen name="LoginStack" component={LoginStack} />

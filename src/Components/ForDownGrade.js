@@ -38,14 +38,16 @@ export default function ForDownGrade({route, navigation}) {
   //   const {id, package_name, total_price, salestax} = route.params.data;
 
   useEffect(() => {
-    if (route.params.dataOne.stripe_voucher_id) {
-      getVoucherDetails(route.params.dataOne.stripe_voucher_id);
+    if (route.params.dataOne.coupon_id) {
+      getVoucherDetails(route.params.dataOne.coupon_id);
     }
   }, []);
   const getVoucherDetails = data => {
+
     axios
       .get(`${API}/couponret/${data}`)
       .then(res => {
+        console.log("FFFFFFFFFFff",res.data)
         setvoucherStatus(res.data.valid);
       })
       .catch(err => {

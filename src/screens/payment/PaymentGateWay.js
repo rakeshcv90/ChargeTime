@@ -60,7 +60,7 @@ const validationSchema = Yup.object().shape({
     .matches(/^[A-Za-z].*/, 'Name must be start with a character')
     .min(3, 'Name must contain at least 3 characters'),
   cardNumber: Yup.string()
-    // .required('Invalid Card Number')
+    .required('Invalid Card Number')
     .min(19, 'Card number must be 16 digits'),
 
   // .matches(/^[0-9]{16}$/, 'Card number must be 16 digits'),
@@ -121,10 +121,10 @@ export default function PaymentGateWay({navigation, route}) {
   const [focusIndex, setFocusedIndex] = useState(0);
   const [coupon, setCoupen] = useState(null);
   const [coupenStates, setCoupenStates] = useState(false);
-  const [couponerror, setCoupenError] = useState('');
+  const [couponerror, setCoupenError] = useState(null);
   const [color, setColor] = useState(false);
   const voucherStatus = route.params.voucherStatus;
-
+  const [cardData, setCardData] = useState();
 
   const {getDataForPayment, getUserID, getEmailDAta} = useSelector(
     state => state,
@@ -135,34 +135,13 @@ export default function PaymentGateWay({navigation, route}) {
     handleAllGetCard();
   }, []);
   const [modalVisible, setModalVisible] = useState(false);
+  const [modalVisible1, setModalVisible1] = useState(false);
   const [loader, setLoader] = useState(false);
-  const inputRef = useRef(null);
+
   const dispatch = useDispatch();
 
-  // const getCardDetails = useSelector(state => state.getCardDetails);
   const [card, setCard] = useState([]);
-  const [cardId, setCardId] = useState('');
-  const [cardDetails, setCardDetails1] = useState({
-    // cardHolderName: card[0].cust_name,
-    // card_number: card[0].card_number,
-    // card_cvv: card[0].card_cvc,
-    // validTill: card[0].card_exp_month + '/' + card[0].card_exp_year,
-    // card_exp_year:'',
-  });
-  const [card_name, setCard_Name] = useState(card[0]?.cust_name ?? '');
-  const [card_Number, setCard_Number] = useState(
-    String(card[0]?.card_number).replace(
-      /^(\d{4})(\d{4})(\d{4})(\d{4})$/,
-      '$1 $2 $3 $4',
-    ) ?? '',
-  );
-  const [card_cvv, setCard_Cvv] = useState(String(card[0]?.card_cvc) ?? '');
-  const [validity, setValidity] = useState(
-    String(card[0]?.card_exp_month + '/' + card[0]?.card_exp_year) ?? '',
-  );
- 
 
- 
   const handleGetCard = async () => {
     try {
       const response = await fetch(`${API}/getcarddetails/${getUserID}`);
@@ -179,62 +158,14 @@ export default function PaymentGateWay({navigation, route}) {
     }
   };
 
-  const validTillData = card[0]?.card_exp_month + '/' + card[0]?.card_exp_year;
-
-  const newPAYMENT = async values => {
-    //setLoader(true);
-    let payload = new FormData();
-
-    let exp_month = validTillData.split('/')[0];
-    let exp_year = validTillData.split('/')[1];
-    payload.append('kwh_unit', route.params.data.kwh);
-    payload.append('card_number', values.card_number);
-    payload.append('card_cvc', values.card_cvc);
-    payload.append('card_exp_month', values.card_exp_month);
-    payload.append('card_exp_year', values.card_exp_year);
-    payload.append('item_details', getDataForPayment.package_name);
-    payload.append('price', getDataForPayment.total_price);
-    payload.append('price_stripe_id', getDataForPayment.price_stripe_id);
-    payload.append('user_id', getUserID);
-    payload.append('voucherCode', coupon == null ? '' : coupon);
-  
-    try {
-      const response = await axios.post(`${API}/checkout`, payload, {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-        },
-      });
-
-      if ((response.data.status = 'success')) {
-        setLoader(false);
-        setModalVisible(true);
-      }
-    } catch (err) {
-      setLoader(false);
-      console.log(err.response.data.message);
-      if (err.response) {
-        PLATFORM_IOS
-          ? Toast.show({
-              type: 'success',
-              text1: 'Invalid Card Details !',
-            })
-          : ToastAndroid.show('Invalid Card Details !', ToastAndroid.SHORT);
-      } else {
-        console.log(err);
-      }
-    }
-  };
-
-  const handlePaymentSubmit = async values => {
+  const handlePaymentSubmit = async () => {
     setLoader(true);
     let payload = new FormData();
-
-    let exp_month = values?.validTill?.split('/')[0];
-    let exp_year = values?.validTill?.split('/')[1];
-
+    let exp_month = cardData?.validTill?.split('/')[0];
+    let exp_year = cardData?.validTill?.split('/')[1];
     payload.append('kwh_unit', route.params.data.kwh);
-    payload.append('card_number', values.cardNumber.replace(/\s/g, ''));
-    payload.append('card_cvc', values.cvv);
+    payload.append('card_number', cardData.cardNumber.replace(/\s/g, ''));
+    payload.append('card_cvc', cardData.cvv);
     payload.append('card_exp_month', exp_month);
     payload.append('card_exp_year', exp_year);
     payload.append('item_details', getDataForPayment.package_name);
@@ -242,20 +173,16 @@ export default function PaymentGateWay({navigation, route}) {
     payload.append('price_stripe_id', getDataForPayment.price_stripe_id);
     payload.append('user_id', getUserID);
     payload.append('voucherCode', coupon == null ? '' : coupon);
-    console.log("RSRSRSRSRS",payload)
-  
     try {
       const response = await axios.post(`${API}/checkout`, payload, {
         headers: {
           'Content-Type': 'multipart/form-data',
         },
       });
-
       if ((response.data.status = 'success')) {
         // handleAddCard(values)
-
         setModalVisible(true);
-
+        setModalVisible1(false);
         setLoader(false);
       } else {
         PLATFORM_IOS
@@ -264,11 +191,12 @@ export default function PaymentGateWay({navigation, route}) {
               text1: 'Invalid Card Details !',
             })
           : ToastAndroid.show('Invalid Card Details !', ToastAndroid.SHORT);
+        setModalVisible1(false);
+        setLoader(false);
       }
     } catch (err) {
       setLoader(false);
       if (err.response) {
-        
         PLATFORM_IOS
           ? Toast.show({
               type: 'success',
@@ -278,8 +206,12 @@ export default function PaymentGateWay({navigation, route}) {
               'Server Busy Please Try Later.',
               ToastAndroid.SHORT,
             );
+        setModalVisible1(false);
+        setLoader(false);
       } else {
-        console.log("test111111",err.response.data);
+        console.log('test111111', err.response.data);
+        setModalVisible1(false);
+        setLoader(false);
       }
     }
   };
@@ -349,20 +281,7 @@ export default function PaymentGateWay({navigation, route}) {
 
     return maskedNumber;
   }
-  // const PlanStatus = () => {
-  //   axios
-  //     .get(`${API}/planstatus/${getUserID}`)
-  //     .then(res => {
-  //       const name = res.data.subscriptions.filter(
-  //         item => item.subscription_status == 'scheduled',
-  //       );
-  //       dispatch(setPlanStatus(name[0].item_name));
-  //       navigationRef.navigate('HomeOne');
-  //     })
-  //     .catch(err => {
-  //       console.log(err);
-  //     });
-  // };
+
   const handleAllGetCard = async () => {
     try {
       const response = await fetch(`${API}/getcarddetails/${getUserID}`);
@@ -396,38 +315,59 @@ export default function PaymentGateWay({navigation, route}) {
     }
   };
   const coupenDetail = data => {
-  
-    // if (data == null) {
-    //   setCoupenError('Enter Coupon Code');
-    //   setCoupenStates(true);
-    //   setColor(false);
-    // } else if (data.trim().length <= 0) {
-    //   setCoupenError('Enter Coupon Code');
-    //   setCoupenStates(true);
-    //   setColor(false);
-    // } else {
-    //   setLoader(true);
-    //   axios
-    //     .get(
-    //       `${API}/couponpricetblvalid/${data}/${route.params.details.locations[0].coupon_promotion_code[0]}`,
-    //     )
-    //     .then(res => {
-    //       setLoader(false);
-    //       if (res.data.couponstatus == 'true' && voucherStatus) {
-    //         setCoupenError('Coupon Applied!');
-    //         setCoupenStates(true);
-    //         setColor(true);
-    //       } else {
-    //         setCoupenError('Coupon Expired/Invalid!');
-    //         setCoupenStates(true);
-    //         setColor(false);
-    //       }
-    //     })
-    //     .catch(err => {
-    //       console.log(err);
-    //       setLoader(false);
-    //     });
-    // }
+    if (data == null) {
+      setCoupenError('Enter Coupon Code');
+      setCoupenStates(true);
+      setColor(false);
+    } else if (data.trim().length <= 0) {
+      setCoupenError('Enter Coupon Code');
+      setCoupenStates(true);
+      setColor(false);
+    } else {
+      setLoader(true);
+      axios
+        .get(
+          `${API}/couponpricetblvalid/${data}/${route.params.details.locations[0].price_stripe_id}`,
+        )
+        .then(res => {
+          setLoader(false);
+          console.log('fsfdsfds', res.data.couponstatus);
+          if (res.data.couponstatus == 'true' && voucherStatus) {
+            setCoupenError('Coupon Applied!');
+            setCoupenStates(true);
+            setColor(true);
+          } else {
+            setCoupenError('Coupon Expired/Invalid!');
+            setCoupenStates(true);
+            setColor(false);
+          }
+        })
+        .catch(err => {
+          console.log(err);
+          setLoader(false);
+        });
+    }
+  };
+  const checkCoupeonDetails = () => {
+    if (coupon == null) {
+      setModalVisible1(true);
+    } else if (coupon && couponerror == 'Coupon Expired/Invalid!') {
+      PLATFORM_IOS
+      ? Toast.show({
+          type: 'error',
+          text1: 'Coupon Expired/Invalid!',
+        })
+      : ToastAndroid.show('Coupon Expired/Invalid!', ToastAndroid.SHORT);
+    } else if (coupon && couponerror == null) {
+      PLATFORM_IOS
+      ? Toast.show({
+          type: 'error',
+          text1: 'Apply Coupon First',
+        })
+      : ToastAndroid.show('Apply Coupon First', ToastAndroid.SHORT);
+    } else if (coupon && couponerror == 'Coupon Applied!') {
+      setModalVisible1(true);
+    }
   };
   return (
     <SafeAreaView style={{backgroundColor: COLORS.CREAM, flex: 1}}>
@@ -485,9 +425,14 @@ export default function PaymentGateWay({navigation, route}) {
                 cardNumber: '',
                 validTill: '',
                 cvv: '',
+                
               }}
-              onSubmit={values => handlePaymentSubmit(values)}
-              validationSchema={validationSchema}>
+              onSubmit={values => {
+                setCardData(values);
+                checkCoupeonDetails();
+              }}
+               validationSchema={validationSchema}
+            >
               {({
                 values,
                 handleChange,
@@ -509,7 +454,7 @@ export default function PaymentGateWay({navigation, route}) {
                         // defaultIndex={focusIndex >= 0 ? focusIndex : 0}
                         renderItem={({item, index}) => {
                           return (
-                            <View style={{}}>
+                            <View>
                               <ImageBackground
                                 source={getCardType(item.card_number)}
                                 resizeMode="contain"
@@ -603,7 +548,7 @@ export default function PaymentGateWay({navigation, route}) {
                                   marginLeft: -70,
                                   //height: DIMENSIONS.SCREEN_HEIGHT * 0.05,
                                   alignItems: 'center',
-                                  marginVertical: 10,
+                                  marginTop: DIMENSIONS.SCREEN_HEIGHT * 0.03,
                                   justifyContent: 'center',
                                   alignSelf: 'center',
                                   padding: 15,
@@ -621,7 +566,26 @@ export default function PaymentGateWay({navigation, route}) {
                                   }),
                                 }}>
                                 <TouchableOpacity
-                                  onPress={() => newPAYMENT(item)}>
+                                  onPress={() => {
+                                    setFieldValue(
+                                      'cardHolderName',
+                                      item.cust_name,
+                                    );
+                                    setFieldValue(
+                                      'cardNumber',
+                                      item.card_number.toString()+' ',
+                                    );
+                                    setFieldValue(
+                                      'validTill',
+                                      item.card_exp_month +
+                                        '/' +
+                                        item.card_exp_year,
+                                    );
+                                    setFieldValue(
+                                      'cvv',
+                                      item.card_cvc.toString(),
+                                    );
+                                  }}>
                                   <Text
                                     style={{
                                       fontSize: 14,
@@ -674,7 +638,7 @@ export default function PaymentGateWay({navigation, route}) {
                       style={{
                         width: DIMENSIONS.SCREEN_WIDTH * 0.9,
                         height: 210,
-                        marginBottom: 50
+                        marginBottom: 50,
                       }}>
                       <View style={styles.cardNumber_position}>
                         <Text
@@ -690,7 +654,7 @@ export default function PaymentGateWay({navigation, route}) {
                           <View style={{gap: 5, width: 100}}>
                             <Text
                               style={{
-                                color: 'gray', 
+                                color: 'gray',
                                 fontWeight: '600',
                                 fontSize: 8,
                               }}>
@@ -988,6 +952,47 @@ export default function PaymentGateWay({navigation, route}) {
           </View>
         </View>
       </ScrollView>
+      <Modal
+        animationType="slide"
+        transparent={true}
+        visible={modalVisible1}
+        onRequestClose={() => {
+          setModalVisible(!modalVisible1);
+        }}>
+        <View style={styles.centeredView}>
+          <View style={styles.modalView}>
+            <Text style={styles.modalText}>Confirm Payment</Text>
+            <Image
+              source={require('../../../assets/images/Master.png')} // Replace with your animation file
+              resizeMode="contain"
+              style={{
+                width: DIMENSIONS.SCREEN_WIDTH * 0.7,
+
+                height: 150,
+              }}
+            />
+
+            <View style={{flexDirection: 'row'}}>
+              <View style={styles.button_one}>
+                <TouchableOpacity
+                  style={[styles.button, styles.buttonClose]}
+                  onPress={() => {
+                    setModalVisible1(false);
+                  }}>
+                  <Text style={styles.textStyle}>Cancel</Text>
+                </TouchableOpacity>
+              </View>
+              <View style={[styles.button_one, {marginHorizontal: 15}]}>
+                <TouchableOpacity
+                  style={[styles.button, styles.buttonClose]}
+                  onPress={handlePaymentSubmit}>
+                  <Text style={styles.textStyle}>Submit</Text>
+                </TouchableOpacity>
+              </View>
+            </View>
+          </View>
+        </View>
+      </Modal>
     </SafeAreaView>
   );
 }
@@ -1069,6 +1074,17 @@ const styles = StyleSheet.create({
     marginTop: 20,
     alignItems: 'center',
     justifyContent: 'center',
+    ...Platform.select({
+      ios: {
+        shadowColor: '#000000',
+        shadowOffset: {width: 0, height: 2},
+        shadowOpacity: 0.3,
+        shadowRadius: 4,
+      },
+      android: {
+        elevation: 4,
+      },
+    }),
   },
   button: {
     padding: 10,
@@ -1102,7 +1118,7 @@ const styles = StyleSheet.create({
     marginHorizontal: mobileW * 0.37,
     justifyContent: 'center',
     alignItems: 'center',
-    marginTop: 10,
+    marginTop: -(DIMENSIONS.SCREEN_WIDTH * 8) / 100,
   },
   activeDot: {
     backgroundColor: COLORS.GREEN, // Customize the active dot color as desired

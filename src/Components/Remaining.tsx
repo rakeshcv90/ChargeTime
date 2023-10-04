@@ -46,12 +46,12 @@ const Remaining = ({...props}) => {
   const [x, setX] = useState<number>(0);
   setUpdateIntervalForType(SensorTypes.gyroscope, 200); // defaults to 100ms
   useFocusEffect(
-    // overusage && setModalVisible(true);
+   
     useCallback(() => {
       remainigUsuageData();
     }, []),
   );
-
+console.log("cvcvcvcvcvcvcvcv",overusage,modalVisible)
   const remainigUsuageData = () => {
     let remaingData;
 
@@ -65,7 +65,7 @@ const Remaining = ({...props}) => {
         } else {
           remaingData = res.data?.kwh_unit_overusage;
           dispatch(setOverUsage(true));
-          // setModalVisible(true);
+           setModalVisible(true);
         }
 
         dispatch(setRemainingData(remaingData));
@@ -75,7 +75,7 @@ const Remaining = ({...props}) => {
       });
   };
   const nav = () => {
-    dispatch(setOverModelView(false));
+    setModalVisible(!modalVisible);
     navigationRef.navigate('HomeOne');
   };
   const OverusageModal = () => {
@@ -83,9 +83,10 @@ const Remaining = ({...props}) => {
       <Modal
         animationType="fade"
         transparent={true}
-        visible={overModelView}
+        visible={modalVisible}
         onRequestClose={() => {
-          dispatch(setOverModelView(false));
+          // dispatch(setOverModelView(false));
+          setModalVisible(!modalVisible);
         }}>
         <View style={styles.centeredView}>
           <View style={styles.modalView}>
@@ -112,7 +113,7 @@ const Remaining = ({...props}) => {
                   borderRadius: 20,
                   padding: 10,
                 }}
-                onPress={() => dispatch(setOverModelView(false))}>
+                onPress={() =>setModalVisible(false)}>
                 <Text style={styles.textStyle}>Cancel</Text>
               </TouchableOpacity>
               <TouchableOpacity
@@ -262,7 +263,7 @@ const Remaining = ({...props}) => {
           </>
         )}
       </View>
-      <OverusageModal />
+      {/* <OverusageModal /> */}
     </>
   );
 };

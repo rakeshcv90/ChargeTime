@@ -100,10 +100,10 @@ export default function PlanSummary({route, navigation}) {
             </Text>
           </View>
           <View style={{marginHorizontal: 20}}>
-            <View style={{marginBottom: 10}}>
+            <View style={{marginVertical:20}}>
               <InstallationBase data={route.params.data} />
             </View>
-            <View style={{marginBottom: 10}}>
+            <View style={{marginVertical:20}}>
               <BoxFour data={data} />   
             </View>
           </View>
@@ -131,6 +131,9 @@ export default function PlanSummary({route, navigation}) {
                 backgroundColor: COLORS.GRAY,
                 paddingHorizontal: 10,
                 paddingVertical: 20,
+                borderBottomLeftRadius:10,
+                borderBottomRightRadius:10
+         
               }}>
               <View>
                 <Text
@@ -270,7 +273,8 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.2,
     shadowRadius: 5.62,
     elevation: 8,
-    backgroundColor: 'white',
+    // backgroundColor: 'white',
+    
   },
   bottom_tab: {
     paddingHorizontal: 20,
@@ -286,6 +290,8 @@ const styles = StyleSheet.create({
     backgroundColor: COLORS.GREEN,
     alignItems: 'center',
     paddingVertical: 10,
+    borderTopRightRadius:10,
+    borderTopLeftRadius:10
   },
   img_width: {
     marginHorizontal: 20,

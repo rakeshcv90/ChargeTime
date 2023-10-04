@@ -79,7 +79,7 @@ const styles = StyleSheet.create({
   },
   shadowProp: {
     backgroundColor: 'white',
-    shadowColor: 'rgba(0, 0, 0, 1)',
+    // shadowColor: 'rgba(0, 0, 0, 1)',
     shadowOffset: {
       width: 6,
       height: 4,

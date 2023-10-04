@@ -26,7 +26,7 @@ export default function Year() {
   );
 
   const [toggleState, setToggleState] = useState(false);
-  {console.log("cxvbcbvcvbcvbcvb",getYearData.TotalUsedKwhs)}
+
   const handleToggle = (value: any) => setToggleState(value);
   return (
     <>

@@ -54,10 +54,7 @@ const BoxFour = ({data}) => {
         />
         <View style={styles.mainDiv_state_zip}>
           <View style={styles.state_div}>
-            {/* <Image
-              style={styles.img_width}
-              source={require('../../assets/images/connecticut.png')}
-            /> */}
+           
             <Connecticut style={styles.img_width} />
             <Text style={styles.force_base}>
               {data[0]?.date} - {data[0]?.thirty_days_ago}
@@ -104,6 +101,9 @@ const styles = StyleSheet.create({
     backgroundColor: COLORS.GREEN,
     alignItems: 'center',
     paddingVertical: 10,
+    // borderRadius:10,
+    borderTopLeftRadius:10,
+    borderTopRightRadius:10,
   },
   img_width: {
     marginLeft: 20,
@@ -146,6 +146,8 @@ const styles = StyleSheet.create({
     paddingRight: 10,
     paddingVertical: 10,
     backgroundColor: COLORS.GRAY,
+    borderBottomLeftRadius:10,
+    borderBottomRightRadius:10
   },
   state_div: {
     flexDirection: 'row',
