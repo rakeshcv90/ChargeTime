@@ -772,10 +772,11 @@ export default function PaymentGateWay({navigation, route}) {
                 {Platform.OS == 'android' ? (
                   <HorizontalLine style={styles.line} />
                 ) : (
-                  <View>
+                  <View style={{ paddingHorizontal: -20,}}>
                     <Image
                       source={require('../../../assets/images/dotted.png')}
-                      style={{width: mobileW * 0.98}}
+                      style={{width: mobileW * 1,  }}
+                      resizeMode='stretch'
                     />
                   </View>
                 )}

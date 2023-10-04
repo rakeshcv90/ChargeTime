@@ -60,6 +60,7 @@ const TotalUsage = (props: any) => {
               fontSize: 16,
               lineHeight: 20,
               color: COLORS.BLACK,
+              textAlign:'center'
             }}>
             {props.data ? props.data?.toFixed(2) + ' kWh' : 0 + ' kWh'}
           </Text>

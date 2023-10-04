@@ -128,6 +128,7 @@ const InstallationBase = ({data}) => {
         {/* <Text style={styles.force_base}>{data[0]=="undefined"?setBasePackage[0].location}</Text> */}
         {/* </View> */}
       </View>
+      <View style={{backgroundColor:COLORS.WHITE}}>
       <Image
         source={require('../../assets/images/dotted1.png')}
         resizeMode="stretch"
@@ -136,6 +137,7 @@ const InstallationBase = ({data}) => {
           alignSelf: 'center',
         }}
       />
+      </View>
       <View style={styles.mainDiv_state_zip}>
         {/* <View style={styles.state_div}> */}
         {/* <Image

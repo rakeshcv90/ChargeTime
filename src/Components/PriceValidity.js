@@ -40,6 +40,7 @@ const PriceValidity = ({data}) => {
         <Text style={styles.installation_text2}>Installation Base:</Text>
         <Text style={styles.force_base}>{data?.location}</Text>
       </View>
+      <View style={{backgroundColor:COLORS.WHITE}}>
       <Image
         // style={styles.img_width}
         source={require('../../assets/images/dotted.png')}
@@ -48,11 +49,13 @@ const PriceValidity = ({data}) => {
           alignSelf: 'center',
           width: Platform.OS === 'android' ? mobileW : mobileW - 40,
         }}
-      />
+      /></View>
+      
       <View style={styles.location_div}>
         <Text style={styles.installation_text2}>Package Name:</Text>
         <Text style={styles.force_base}>{data?.energy_plan}</Text>
       </View>
+      <View style={{backgroundColor:COLORS.WHITE}}>
       <Image
         // style={styles.img_width}
         source={require('../../assets/images/dotted.png')}
@@ -61,11 +64,12 @@ const PriceValidity = ({data}) => {
           alignSelf: 'center',
           width: Platform.OS === 'android' ? mobileW : mobileW - 40,
         }}
-      />
+      /></View>
       <View style={styles.location_div}>
         <Text style={styles.installation_text2}>Price: </Text>
         <Text style={styles.force_base}>$ {data?.energy_price}</Text>
       </View>
+      <View style={{backgroundColor:COLORS.WHITE}}>
       <Image
         // style={styles.img_width}
         source={require('../../assets/images/dotted.png')}
@@ -74,7 +78,7 @@ const PriceValidity = ({data}) => {
           alignSelf: 'center',
           width: Platform.OS === 'android' ? mobileW : mobileW - 40,
         }}
-      />
+      /></View>
       <View
         style={[
           styles.location_div,

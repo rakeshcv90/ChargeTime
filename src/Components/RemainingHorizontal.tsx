@@ -234,7 +234,7 @@ const RemainingHorizontal = ({...props}) => {
                 lineHeight: 12,
                 color: overusage ? COLORS.WHITE : 'rgba(61, 61, 61, 0.6)',
               }}>
-              Units Left To Be Used
+           {overusage ? 'Units Used' : 'Units Left To Be Used'}
             </Text>
           </View>
         </View>

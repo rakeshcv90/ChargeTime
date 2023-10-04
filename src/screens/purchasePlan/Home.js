@@ -58,7 +58,6 @@ export default function Home(route) {
   useEffect(() => {
     fetchData();
 
-
     getBasePackage.length == 0 ? setShowPackage(true) : setShowPackage(false);
   }, []);
 
@@ -120,11 +119,11 @@ export default function Home(route) {
               style={{
                 flex: 1,
                 backgroundColor: '#EEEEEE',
-                padding:5
+                padding: 5,
                 // flex: 1,
                 // height: 50,
                 // backgroundColor: isFocused ? '#B1D34F' : '#EEEEEE',
-        
+
                 // borderRadius: isFocused ? 0 : 0,
                 // shadowColor: 'rgba(0, 0, 0, 1)',
                 // shadowOffset: {
@@ -136,31 +135,32 @@ export default function Home(route) {
                 // elevation: Platform.OS === 'android' && isFocused ? 8 : 0,
                 // justifyContent: 'center',
               }}>
-                   <View
+              <View
                 style={{
                   borderRadius: isFocused ? 10 : 10,
                   paddingVertical: 13,
-                   ...Platform.select({
-                  ios: {
-                    shadowColor: '#000000',
-                    shadowOffset: {width: 0, height: 2},
-                    shadowOpacity: 0.3,
-                    shadowRadius: 4,
-                  },
-                  android: {
-                    elevation: 4,
-                  },
-                }),
+                  ...Platform.select({
+                    ios: {
+                      shadowColor: '#000000',
+                      shadowOffset: {width: 0, height: 2},
+                      shadowOpacity: 0.3,
+                      shadowRadius: 4,
+                    },
+                    android: {
+                      elevation: isFocused ? 4 : 0,
+
+                    },
+                  }),
                   backgroundColor: isFocused ? '#B1D34F' : null,
                 }}>
-              <Text
-                style={{
-                  fontWeight: isFocused ? '600' : '400',
-                  fontSize: 12,
-                  textAlign: 'center',
-                }}>
-                {label}
-              </Text>
+                <Text
+                  style={{
+                    fontWeight: isFocused ? '600' : '400',
+                    fontSize: 12,
+                    textAlign: 'center',
+                  }}>
+                  {label}
+                </Text>
               </View>
             </TouchableOpacity>
           );

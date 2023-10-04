@@ -35,14 +35,11 @@ const mobileW = Math.round(Dimensions.get('screen').width);
 export default function VerifyEmail(props) {
   const {navigation, route} = props;
   const {email, user_id} = route?.params;
-
   const [emailCheck, setEmailCheck] = useState(false);
   const [tempID, setTempID] = useState('');
   const [stopTimer, setStopTimer] = useState(false);
   const [statusCheck, setStatusCheck] = useState(false);
-
   const [forLoading, setForLoading] = useState(false);
-
   const [remainingTime, setRemainingTime] = useState(60);
   const [timerActive, setTimerActive] = useState(true);
   const [disablebutton, setdisableButton] = useState(false);
@@ -302,7 +299,7 @@ export default function VerifyEmail(props) {
   };
   const fetchCopiedText = async () => {
     const text = await Clipboard.getString();
-    setOtp(text);
+    // setOtp(text);
   };
 
   return (
@@ -379,13 +376,14 @@ export default function VerifyEmail(props) {
                 style={{
                   alignSelf: 'center',
                   position: 'relative',
-                  right: mobileW / 1.9,
+                  right: mobileW / 1.8,
                   backgroundColor: COLORS.CREAM,
                   padding: 10,
                   color: COLORS.BLACK,
                   fontWeight: 400,
                   lineHeight: 26,
                   fontSize: 14,
+                  
                 }}>
                 OR
               </Text>
@@ -468,9 +466,9 @@ export default function VerifyEmail(props) {
                             handleBackspace(index);
                           }
                         }}
-                        onPressIn={({nativeEvent}) => {
-                          fetchCopiedText();
-                        }}
+                        // onPressIn={({nativeEvent}) => {
+                        //   fetchCopiedText();
+                        // }}
                       />
                     </View>
                   ))}

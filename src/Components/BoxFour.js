@@ -35,13 +35,18 @@ const BoxFour = ({data}) => {
           ? styles.mainDiv_installation1
           : styles.mainDiv_installation
       }>
-      <TouchableOpacity style={styles.install_touchable}>
+      <View style={styles.install_touchable}>
         <Address style={styles.img_width} />
         <Text style={styles.installation_text}>Plan Details</Text>
-      </TouchableOpacity>
+      </View>
       <View style={styles.shadowProp}>
         <View style={styles.location_div}>
-          <Vanderberg style={styles.img_width} />
+          <Image
+            source={require('../../assets/images/plan.png')}
+            resizeMode="cover"
+            style={styles.img_width}
+          />
+          {/* <Vanderberg style={styles.img_width} /> */}
           <Text style={styles.force_base}>
             {data[0] == undefined ? data.package_name : data[0].package_name}
           </Text>
@@ -54,8 +59,15 @@ const BoxFour = ({data}) => {
         />
         <View style={styles.mainDiv_state_zip}>
           <View style={styles.state_div}>
-           
-            <Connecticut style={styles.img_width} />
+            {/* <Connecticut style={styles.img_width} /> */}
+            <Image
+              source={require('../../assets/images/date.png')}
+              resizeMode="cover"
+              style={[styles.img_width,{
+                width: 16,
+                height: 16,
+              }]}
+            />
             <Text style={styles.force_base}>
               {data[0]?.date} - {data[0]?.thirty_days_ago}
             </Text>
@@ -102,11 +114,13 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingVertical: 10,
     // borderRadius:10,
-    borderTopLeftRadius:10,
-    borderTopRightRadius:10,
+    borderTopLeftRadius: 10,
+    borderTopRightRadius: 10,
   },
   img_width: {
     marginLeft: 20,
+    width: 18,
+    height: 18,
   },
   installation_text: {
     fontWeight: '700',
@@ -146,8 +160,8 @@ const styles = StyleSheet.create({
     paddingRight: 10,
     paddingVertical: 10,
     backgroundColor: COLORS.GRAY,
-    borderBottomLeftRadius:10,
-    borderBottomRightRadius:10
+    borderBottomLeftRadius: 10,
+    borderBottomRightRadius: 10,
   },
   state_div: {
     flexDirection: 'row',

@@ -136,7 +136,6 @@ const DrawerNavigation = () => {
               },
               drawerItemStyle: {
                 marginHorizontal: -7,
-                
               },
               drawerLabelStyle: {
                 backgroundColor: focus ? 'rgba(177, 211, 79, 0.8)' : '#fff',
@@ -145,8 +144,8 @@ const DrawerNavigation = () => {
                 width: '200%',
                 // marginTop: -20,
                 marginLeft: -30,
-                color:'black',
-                fontWeight:'700',
+                color: 'black',
+                fontWeight: '700',
                 borderRadius: 5,
 
                 overflow: 'hidden',
@@ -181,8 +180,8 @@ const DrawerNavigation = () => {
                 paddingVertical: 10,
                 paddingLeft: 10,
                 width: '200%',
-                color:'black',
-                fontWeight:'700',
+                color: 'black',
+                fontWeight: '700',
                 marginLeft: -30,
 
                 borderRadius: 5,
@@ -222,8 +221,8 @@ const DrawerNavigation = () => {
               paddingVertical: 10,
               paddingLeft: 10,
               width: '200%',
-              color:'black',
-              fontWeight:'700',
+              color: 'black',
+              fontWeight: '700',
               marginLeft: -30,
 
               borderRadius: 5,
@@ -263,8 +262,8 @@ const DrawerNavigation = () => {
             paddingVertical: 10,
             paddingLeft: 10,
             width: '200%',
-            color:'black',
-            fontWeight:'700',
+            color: 'black',
+            fontWeight: '700',
             marginLeft: -30,
             borderRadius: 5,
 
@@ -286,7 +285,7 @@ const DrawerNavigation = () => {
               <Image
                 source={require('../../assets/images/contact_us.png')}
                 resizeMode="stretch"
-                style={{width: 25, height: 25, padding: 0, margin: -7}}
+                style={{width: 25, height: 25, padding: 0, margin: 0}}
               />
             );
           },
@@ -296,9 +295,9 @@ const DrawerNavigation = () => {
           },
           drawerLabelStyle: {
             backgroundColor: '#fff',
-            marginLeft: -17,
-            color:'black',
-            fontWeight:'700',
+            marginLeft: -15,
+            color: 'black',
+            fontWeight: '700',
           },
           drawerActiveTintColor: 'black',
           //title: 'Contact Us',
@@ -322,8 +321,8 @@ const DrawerNavigation = () => {
           drawerLabelStyle: {
             backgroundColor: '#fff',
             marginLeft: -17,
-            color:'black',
-            fontWeight:'700',
+            color: 'black',
+            fontWeight: '700',
           },
           drawerActiveTintColor: 'black',
         }}
@@ -345,8 +344,8 @@ const DrawerNavigation = () => {
           drawerLabelStyle: {
             backgroundColor: '#fff',
             marginLeft: -17,
-            color:'black',
-            fontWeight:'700',
+            color: 'black',
+            fontWeight: '700',
           },
           drawerActiveTintColor: 'black',
         }}

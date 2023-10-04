@@ -29,7 +29,6 @@ const SubBoxOne = () => {
   const getPurchaseData = useSelector(state => state.getPurchaseData);
 
   return (
-  
     <View
       style={
         Platform.OS == 'android'
@@ -49,17 +48,20 @@ const SubBoxOne = () => {
               {getPurchaseData.data.location}
             </Text>
           </View>
-          <Image
-            source={require('../../assets/images/dotted1.png')}
-            resizeMode="stretch"
-            style={{
-              width: mobileW - 40,
-              alignSelf: 'center',
-            }}
-          />
+          <View style={{backgroundColor: COLORS.WHITE}}>
+            <Image
+              // style={styles.img_width}
+              source={require('../../assets/images/dotted.png')}
+              resizeMode="stretch"
+              style={{
+                alignSelf: 'center',
+                width: Platform.OS === 'android' ? mobileW : mobileW - 40,
+              }}
+            />
+          </View>
           <View style={styles.mainDiv_state_zip}>
             <Connecticut style={styles.img_width} />
-            <Text style={styles.force_base}>
+            <Text style={[styles.force_base,{marginLeft:-30}]}>
               {getPurchaseData.data.pwa_state}
             </Text>
 

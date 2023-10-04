@@ -241,12 +241,12 @@ export default function HomeOne(route) {
                    ...Platform.select({
                   ios: {
                     shadowColor: '#000000',
-                    shadowOffset: {width: 0, height: 2},
+                    shadowOffset: {width: 0, height: 6},
                     shadowOpacity: 0.3,
                     shadowRadius: 4,
                   },
                   android: {
-                    elevation: 4,
+                    elevation: isFocused ? 4 : 0,
                   },
                 }),
                   backgroundColor: isFocused ? '#B1D34F' : null,

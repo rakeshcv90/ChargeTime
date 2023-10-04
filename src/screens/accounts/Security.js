@@ -107,6 +107,7 @@ const Security = () => {
             setErrors({});
             action.resetForm();
             setLoader(false);
+            setShowButton(false)
           } else {
             PLATFORM_IOS
               ? Toast.show({
@@ -120,6 +121,7 @@ const Security = () => {
                 );
             action.resetForm();
             setLoader(false);
+            setShowButton(false)
           }
         });
     } catch (err) {
@@ -257,7 +259,7 @@ const Security = () => {
                   secureTextEntry={Password}
                   passwordInputIcon={!showNew1}
                   placeholder=""
-                  errors={errors.conpassword}
+                  errors={showButton?errors.conpassword:undefined}
                   touched={touched.conpassword}
                   value={values.conpassword}
                   onChangeText={handleChange('conpassword')}
@@ -296,14 +298,14 @@ const Security = () => {
                   }}>
                   <TouchableOpacity
                     onPress={() => {
-                      // setFieldValue('conpassword', '');
-                      // setFieldValue('newPassword', '');
-                      // setFieldValue('oldPassword','');
-                      // setFieldTouched('conpassword', false);
-                      // setFieldTouched('newPassword',false);
-                      // setFieldTouched('oldPassword',false);
-                      // setFieldError('conpassword', '')
-                      resetForm();
+                      setFieldValue('conpassword', '');
+                      setFieldValue('newPassword', '');
+                      setFieldValue('oldPassword','');
+                      setFieldTouched('conpassword', false);
+                      setFieldTouched('newPassword',false);
+                      setFieldTouched('oldPassword',false);
+                      setFieldError('conpassword', '')
+                      // resetForm();
 
                       setShowButton(false);
                       setTimeout(() => {

@@ -148,11 +148,11 @@ const ForgetPassword = ({navigation}) => {
             PLATFORM_IOS
               ? Toast.show({
                   type: 'error',
-                  text1: 'Invalid Authentication Key or expired',
+                  text1: 'Invalid/Expired Code',
                   // position: 'bottom',
                 })
               : ToastAndroid.show(
-                  'Invalid Authentication Key or expired',
+                  'Invalid/Expired Code',
                   ToastAndroid.SHORT,
                 );
 
@@ -359,6 +359,7 @@ const ForgetPassword = ({navigation}) => {
                 <View style={styles.otp_box}>
                   {[...Array(6)].map((_, index) => (
                     <View style={styles.otp_box}>
+                      <TouchableOpacity onLongPress={()=>{console.log("Cvdfgdgdfg222222")}} >
                       <TextInput
                         key={index}
                         ref={ref => (inputRefs.current[index] = ref)}
@@ -373,11 +374,15 @@ const ForgetPassword = ({navigation}) => {
                             handleBackspace(index);
                           }
                         }}
-                        onPressIn={({nativeEvent}) => {
-                          fetchCopiedText();
-                        }}
+                        // onTextInput={()=>{console.log("Cvdfgdgdfg")}}
+                        // onPressIn={({nativeEvent}) => {
+                        //   fetchCopiedText();
+                        // }}
+                        
                       />
+                      </TouchableOpacity>
                     </View>
+                    
                   ))}
                 </View>
                 <View style={{marginVertical: 10, alignSelf: 'center'}}>

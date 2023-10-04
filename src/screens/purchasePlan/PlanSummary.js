@@ -108,7 +108,7 @@ export default function PlanSummary({route, navigation}) {
             </View>
           </View>
 
-          <View style={styles.plan_pricing_div}>
+          <View style={ Platform.OS == 'android'?styles.plan_pricing_div1:styles.plan_pricing_div}>
             <View>
               <TouchableOpacity style={styles.install_touchable}>
                 <PlanPricing style={styles.img_width} />
@@ -180,7 +180,7 @@ export default function PlanSummary({route, navigation}) {
                     paddingBottom: 5,
                     color: COLORS.BLACK,
                   }}>
-                  {tax}%
+                    ${tax}%
                 </Text>
                 <Text
                   style={{
@@ -258,13 +258,7 @@ export default function PlanSummary({route, navigation}) {
   );
 }
 const styles = StyleSheet.create({
-  // mainDiv_installation_one: {
-  //   // overflow: 'hidden',
-  //   // borderWidth:0.5,
-  //   borderRadius: 20,
-  //   marginTop: Platform.OS === 'ios' ? 10 : 20,
-  //   marginHorizontal: 20,
-  // },
+ 
   plan_pricing_div: {
     marginTop: Platform.OS === 'ios' ? 15 : 10,
     marginHorizontal: 20,
@@ -273,7 +267,30 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.2,
     shadowRadius: 5.62,
     elevation: 8,
+    
     // backgroundColor: 'white',
+    
+  },
+  plan_pricing_div1: {
+    marginTop: Platform.OS === 'ios' ? 15 : 10,
+    marginHorizontal: 20,
+    // shadowColor: '#000000',
+    // shadowOffset: {width: 0, height: 6},
+    // shadowOpacity: 0.2,
+    // shadowRadius: 5.62,
+    // elevation: 8,
+    
+    overflow: 'hidden',
+    borderRadius: 10,
+
+    shadowColor: '#000000',
+    shadowOffset: {
+      width: 4,
+      height: 6,
+    },
+    shadowOpacity: 0.2,
+    shadowRadius: 5.62,
+    elevation: Platform.OS === 'android' ? 8 : 0,
     
   },
   bottom_tab: {

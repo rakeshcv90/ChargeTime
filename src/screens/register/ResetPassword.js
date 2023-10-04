@@ -91,11 +91,11 @@ const ResetPassword = props => {
             PLATFORM_IOS
               ? Toast.show({
                   type: 'error',
-                  text1: 'Password not Reset  successfully.',
+                  text1: 'Password not Reset Successfully.',
                   // position: 'bottom',
                 })
               : ToastAndroid.show(
-                  'Password not Reset  successfully.',
+                  'Password not Reset Successfully.',
                   ToastAndroid.SHORT,
                 );
             setForLoading(false);

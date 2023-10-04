@@ -44,7 +44,7 @@ const validationSchema = Yup.object().shape({
     .required('First Name is required')
     .matches(/^[A-Za-z].*/, 'First Name must be start with a character')
     .min(3, 'First Name must contain at least 3 characters'),
-    lname: Yup.string()
+  lname: Yup.string()
     .required(' Last Name is required')
     .matches(/^[A-Za-z].*/, 'Last Name must be start with a character')
     .min(3, 'Last Name must contain at least 3 characters'),

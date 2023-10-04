@@ -50,6 +50,7 @@ import {
 } from '../../redux/action';
 import {Toast} from 'react-native-toast-message/lib/src/Toast';
 import Carousel from 'react-native-reanimated-carousel';
+import {CardNumber} from '../../../assets/svgs/CardNumber';
 
 const mobileW = Math.round(Dimensions.get('screen').width);
 const mobileH = Math.round(Dimensions.get('window').height);
@@ -57,7 +58,7 @@ const validationSchema = Yup.object().shape({
   // cardHolderName: Yup.string().required('Card Holder Name is required'),
   cardHolderName: Yup.string()
     .required('Card Holder Name is required')
-    .matches(/^[A-Za-z].*/, 'Name must be start with a character')
+    .matches(/^[a-zA-Z]*$/, 'Name must be start with a character')
     .min(3, 'Name must contain at least 3 characters'),
   cardNumber: Yup.string()
     .required('Invalid Card Number')
@@ -353,18 +354,18 @@ export default function PaymentGateWay({navigation, route}) {
       setModalVisible1(true);
     } else if (coupon && couponerror == 'Coupon Expired/Invalid!') {
       PLATFORM_IOS
-      ? Toast.show({
-          type: 'error',
-          text1: 'Coupon Expired/Invalid!',
-        })
-      : ToastAndroid.show('Coupon Expired/Invalid!', ToastAndroid.SHORT);
+        ? Toast.show({
+            type: 'error',
+            text1: 'Coupon Expired/Invalid!',
+          })
+        : ToastAndroid.show('Coupon Expired/Invalid!', ToastAndroid.SHORT);
     } else if (coupon && couponerror == null) {
       PLATFORM_IOS
-      ? Toast.show({
-          type: 'error',
-          text1: 'Apply Coupon First',
-        })
-      : ToastAndroid.show('Apply Coupon First', ToastAndroid.SHORT);
+        ? Toast.show({
+            type: 'error',
+            text1: 'Apply Coupon First',
+          })
+        : ToastAndroid.show('Apply Coupon First', ToastAndroid.SHORT);
     } else if (coupon && couponerror == 'Coupon Applied!') {
       setModalVisible1(true);
     }
@@ -425,14 +426,12 @@ export default function PaymentGateWay({navigation, route}) {
                 cardNumber: '',
                 validTill: '',
                 cvv: '',
-                
               }}
               onSubmit={values => {
                 setCardData(values);
                 checkCoupeonDetails();
               }}
-               validationSchema={validationSchema}
-            >
+              validationSchema={validationSchema}>
               {({
                 values,
                 handleChange,
@@ -573,7 +572,7 @@ export default function PaymentGateWay({navigation, route}) {
                                     );
                                     setFieldValue(
                                       'cardNumber',
-                                      item.card_number.toString()+' ',
+                                      item.card_number.toString() + ' ',
                                     );
                                     setFieldValue(
                                       'validTill',
@@ -715,12 +714,15 @@ export default function PaymentGateWay({navigation, route}) {
                   )}
 
                   {Platform.OS == 'android' ? (
-                    <HorizontalLine style={styles.line} />
+                    <View style={{marginTop: DIMENSIONS.SCREEN_HEIGHT * 0.03}}>
+                      <HorizontalLine style={styles.line} />
+                    </View>
                   ) : (
-                    <View style={{paddingVertical: 20}}>
+                    <View style={{marginVertical: 10}}>
                       <Image
                         source={require('../../../assets/images/dotted.png')}
                         style={{width: mobileW * 0.98}}
+                        resizeMode="stretch"
                       />
                     </View>
                   )}
@@ -762,7 +764,7 @@ export default function PaymentGateWay({navigation, route}) {
                     onBlur={handleBlur('cardNumber')}
                     maxLength={19}
                     text="Card Number"
-                    IconRight={() => <Message />}
+                    IconRight={() => <CardNumber />}
                     mV={15}
                     placeholder="xxxx  xxxx 1234 5678"
                     bW={1}
@@ -1115,10 +1117,13 @@ const styles = StyleSheet.create({
   },
   dotsContainer: {
     flexDirection: 'row',
-    marginHorizontal: mobileW * 0.37,
+    marginHorizontal: mobileW * 0.3,
     justifyContent: 'center',
     alignItems: 'center',
-    marginTop: -(DIMENSIONS.SCREEN_WIDTH * 8) / 100,
+    marginTop:
+      Platform.OS == 'ios'
+        ? -(DIMENSIONS.SCREEN_WIDTH * 10) / 100
+        : -(DIMENSIONS.SCREEN_WIDTH * 5) / 100,
   },
   activeDot: {
     backgroundColor: COLORS.GREEN, // Customize the active dot color as desired

@@ -52,34 +52,34 @@ const Subscription = ({navigation, route}) => {
   );
 
   const [text, setText] = useState(
-    subscriptionStatus == '0' || subscriptionStatus == null? 'Pause Subscription' : 'Resume Subscription',
+    subscriptionStatus == '0' || subscriptionStatus == null
+      ? 'Pause Subscription'
+      : 'Resume Subscription',
   );
 
   const [forLoading, setForLoading] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
   const [getData, setGetData] = useState([]);
 
-
   const dispatch = useDispatch();
   useEffect(() => {
     getPlanCurrent();
-    getSubscription();
+    getSubscriptionStatus1();
   }, []);
 
   const getSubscription = () => {
     axios
       .get(`${API}/planstatuspauseresume/${getUserID}/`)
       .then(res => {
-       
         dispatch(setSubscriptionStatus(res.data.PlanStatus));
-        if (res.data.PlanStatus == '0'||res.data.PlanStatus == null) {
+        if (res.data.PlanStatus == '0' || res.data.PlanStatus == null) {
           setText('Pause Subscription');
         } else {
           setText('Resume Subscription');
         }
       })
       .catch(err => {
-        console.log("1111144444",err);
+        console.log('1111144444', err);
       });
   };
 
@@ -221,65 +221,92 @@ const Subscription = ({navigation, route}) => {
       </Modal>
     );
   };
-  const getSubscriptionStatus = () => {
+  const getSubscriptionStatus = async () => {
     setForLoading(true);
-    if (text == 'Pause Subscription') {
-      axios
-        .get(`${API}/subscription_pause/${getUserID}`)
-        .then(res => {
-          setForLoading(false);
-          getSubscriptionStatus1();
+    try {
+      const res = await axios({
+        url:
+          text == 'Pause Subscription'
+            ? `${API}/subscription_pause/${getUserID}`
+            : `${API}/subscription_resume/${getUserID}`,
+      });
+      if (res.data) {
+        setForLoading(false);
+        getSubscriptionStatus1();
 
-          PLATFORM_IOS
-            ? Toast.show({
-                type: 'success',
-                text1: res.data.subscription,
-              })
-            : ToastAndroid.show(res.data.subscription, ToastAndroid.SHORT);
-        })
-        .catch(err => {
-          setForLoading(false);
-          console.log("dddd1111",err);
-        });
-    } else {
-      axios
-        .get(`${API}/subscription_resume/${getUserID}`)
-        .then(res => {
-          setForLoading(false);
-          getSubscriptionStatus1();
-          PLATFORM_IOS
-            ? Toast.show({
-                type: 'success',
-                text1: res.data.subscription,
-              })
-            : ToastAndroid.show(res.data.subscription, ToastAndroid.SHORT);
-        })
-        .catch(err => {
-          setForLoading(false);
-          console.log(err);
-        });
+        PLATFORM_IOS
+          ? Toast.show({
+              type: 'success',
+              text1: res.data.subscription,
+            })
+          : ToastAndroid.show(res.data.subscription, ToastAndroid.SHORT);
+      }
+    } catch (error) {
+      setForLoading(false);
+      console.log('dddd1111', err);
     }
+    // if (text == 'Pause Subscription') {
+    //   axios
+    //     .get(`${API}/subscription_pause/${getUserID}`)
+    //     .then(res => {
+    //       setForLoading(false);
+    //       getSubscriptionStatus1();
+
+    //       PLATFORM_IOS
+    //         ? Toast.show({
+    //             type: 'success',
+    //             text1: res.data.subscription,
+    //           })
+    //         : ToastAndroid.show(res.data.subscription, ToastAndroid.SHORT);
+    //     })
+    //     .catch(err => {
+    //       setForLoading(false);
+    //       console.log('dddd1111', err);
+    //     });
+    // } else {
+    //   axios
+    //     .get(`${API}/subscription_resume/${getUserID}`)
+    //     .then(res => {
+    //       setForLoading(false);
+    //       getSubscriptionStatus1();
+    //       PLATFORM_IOS
+    //         ? Toast.show({
+    //             type: 'success',
+    //             text1: res.data.subscription,
+    //           })
+    //         : ToastAndroid.show(res.data.subscription, ToastAndroid.SHORT);
+    //     })
+    //     .catch(err => {
+    //       setForLoading(false);
+    //       console.log(err);
+    //     });
+    // }
   };
-  const getSubscriptionStatus1 = () => {
-    axios
-      .get(`${API}/planstatuspauseresume/${getUserID}/`)
-      .then(res => {
-        if (res.data.PlanStatus == '0'||res.data.PlanStatus == null) {
+  const getSubscriptionStatus1 = async () => {
+    try {
+      const res = await axios({
+        url: `http://troes.io/Admin/public/api/planstatuspauseresume/${getUserID}/`,
+        // url: `${API}/planstatuspauseresume/${getUserID}/`,
+        method: 'get'
+      });
+      if (res.data) {
+        console.log(res.data)
+        if (res.data.PlanStatus == '0' || res.data.PlanStatus == null) {
           setText('Pause Subscription');
         } else {
           setText('Resume Subscription');
         }
         dispatch(setSubscriptionStatus(res.data.PlanStatus));
-      })
-      .catch(err => {
-        console.log("dddd",err);
-      });
+      }
+    } catch (error) {
+      console.log('dddd143', error);
+    }
   };
 
   return (
     <>
       <SafeAreaView style={{backgroundColor: COLORS.CREAM, flex: 1}}>
-        <Header headerName="Subscription"  editShow={false} />
+        <Header headerName="Subscription" editShow={false} />
         {Platform.OS == 'android' ? (
           <HorizontalLine style={styles.line} />
         ) : (
@@ -287,7 +314,7 @@ const Subscription = ({navigation, route}) => {
             <Image
               source={require('../../../assets/images/dotted.png')}
               style={{width: mobileW * 0.99}}
-              resizeMode='stretch'
+              resizeMode="stretch"
             />
           </View>
         )}
@@ -322,10 +349,10 @@ const Subscription = ({navigation, route}) => {
                 // source={{
                 //   uri: 'https://assets7.lottiefiles.com/packages/lf20_qgq2nqsy.json',
                 // }} // Replace with your animation file
-                source={require('../../../assets/question.json')} 
+                source={require('../../../assets/question.json')}
                 autoPlay
                 loop
-                style={{width: 100, height: 100,marginVertical:-5}}
+                style={{width: 100, height: 100, marginVertical: -5}}
               />
             </View>
             <Text
@@ -398,7 +425,6 @@ const Subscription = ({navigation, route}) => {
                 ...styles.managing_width,
                 marginTop: PLATFORM_IOS ? -12 : 0,
               }}>
-             
               <PriceValiditySubs data={getPurchaseData.data} />
             </View>
 
@@ -486,8 +512,8 @@ const Subscription = ({navigation, route}) => {
                 flexDirection: 'row',
 
                 ...styles.managing_width,
-               
-                marginVertical:20
+
+                marginVertical: 20,
               }}>
               <TouchableOpacity
                 onPress={() => {
@@ -522,7 +548,7 @@ const Subscription = ({navigation, route}) => {
                 </Text>
               </TouchableOpacity>
               <TouchableOpacity
-                 onPress={() => {
+                onPress={() => {
                   getSubscriptionStatus();
                 }}
                 style={{
@@ -544,7 +570,6 @@ const Subscription = ({navigation, route}) => {
                       elevation: 4,
                     },
                   }),
-                  
                 }}>
                 <Text
                   style={{
