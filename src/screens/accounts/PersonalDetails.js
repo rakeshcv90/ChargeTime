@@ -49,6 +49,8 @@ const PersonalDetails = () => {
   const [nameError, setNameError] = useState(false);
   const user_ID = getUserID;
 
+  const [showButton, setShowButton] = useState(false);
+
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -60,6 +62,7 @@ const PersonalDetails = () => {
   const isDark = theme === 'dark';
 
   const onPress = () => {
+
     if (name.trim().length <= 0) {
       PLATFORM_IOS
         ? Toast.show({
@@ -95,9 +98,6 @@ const PersonalDetails = () => {
       updatePersonalDetails();
     }
   };
-  const enableEdit = () => {
-    setIsEditable(true);
-  };
 
   const updatePersonalDetails = async () => {
     // setIsEditable(true);
@@ -122,7 +122,6 @@ const PersonalDetails = () => {
               mobile: number,
             },
           ];
-      
 
           dispatch(updatePersionalDetail(updatedData));
           PLATFORM_IOS
@@ -135,6 +134,7 @@ const PersonalDetails = () => {
                 ToastAndroid.SHORT,
               );
           setIsEditable(false);
+          setShowButton(false);
         } else {
           PLATFORM_IOS
             ? Toast.show({
@@ -154,9 +154,9 @@ const PersonalDetails = () => {
       <Header
         headerName="Personal Details"
         editShow={true}
-        onPress={onPress}
-        enableEdit={enableEdit}
-        editButton={isEditable}
+        // onPress={onPress}
+        // enableEdit={enableEdit}
+        // editButton={isEditable}
       />
       {Platform.OS == 'android' ? (
         <HorizontalLine style={styles.line} />
@@ -164,7 +164,8 @@ const PersonalDetails = () => {
         <View>
           <Image
             source={require('../../../assets/images/dotted.png')}
-            style={{width: mobileW * 0.97}}
+            style={{width: mobileW * 0.99}}
+            resizeMode='stretch'
           />
         </View>
       )}
@@ -189,7 +190,7 @@ const PersonalDetails = () => {
           }}
           onChangeText={name => {
             setName(name);
-            if (!name.match(/^(?=.[a-zA-Z])([a-zA-Z0-9]+)$/)) {
+            if (!name.match(/^(?=.[a-zA-Z])([a-zA-Z0-9_ ]+)$/)) {
               setNameError(true);
             } else {
               setNameError(false);
@@ -200,8 +201,10 @@ const PersonalDetails = () => {
 
         {nameError ? (
           <Text style={{color: 'red'}}>Name should be start with letter.</Text>
-        ) : name&&name.length < 3 ? (
-          <Text style={{color: 'red'}}>Name cannot be lesser than 3 letters</Text>
+        ) : name && name.length < 3 ? (
+          <Text style={{color: 'red'}}>
+            Name cannot be lesser than 3 letters
+          </Text>
         ) : (
           ''
         )}
@@ -266,6 +269,137 @@ const PersonalDetails = () => {
             fontWeight: '200',
           }}
         />
+        {showButton && (
+          <View
+            style={{
+              flexDirection: 'row',
+              justifyContent: 'flex-end',
+              marginVertical: (DIMENSIONS.SCREEN_HEIGHT * 2) / 100,
+
+              marginRight: -30,
+            }}>
+            <TouchableOpacity
+              onPress={() => {
+                setName(userProfileData[0]?.name);
+                setNumber(userProfileData[0]?.mobile);
+                setShowButton(false);
+              
+                setTimeout(() => {
+                  setIsEditable(false);
+                }, 100);
+
+                
+              }}
+              style={{
+                width: DIMENSIONS.SCREEN_WIDTH * 0.3,
+                height: (DIMENSIONS.SCREEN_HEIGHT * 5) / 100,
+                backgroundColor: '#ffffff',
+                justifyContent: 'center',
+                alignItems: 'center',
+                borderRadius: 10,
+
+                alignSelf: 'flex-end',
+                ...Platform.select({
+                  ios: {
+                    shadowColor: '#000000',
+                    shadowOffset: {width: 0, height: 2},
+                    shadowOpacity: 0.3,
+                    shadowRadius: 4,
+                  },
+                  android: {
+                    elevation: 4,
+                  },
+                }),
+              }}>
+              <Text
+                style={{
+                  color: COLORS.BLACK,
+                  fontSize: 17,
+                  fontWeight: '700',
+                }}>
+                Cancel
+              </Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              onPress={() => onPress()}
+              style={{
+                width: DIMENSIONS.SCREEN_WIDTH * 0.3,
+                height: (DIMENSIONS.SCREEN_HEIGHT * 5) / 100,
+                backgroundColor: '#B1D34F',
+                justifyContent: 'center',
+                alignItems: 'center',
+                marginHorizontal: 10,
+                borderRadius: 10,
+
+                ...Platform.select({
+                  ios: {
+                    shadowColor: '#000000',
+                    shadowOffset: {width: 0, height: 2},
+                    shadowOpacity: 0.3,
+                    shadowRadius: 4,
+                  },
+                  android: {
+                    elevation: 4,
+                  },
+                }),
+              }}>
+              <Text
+                style={{
+                  color: COLORS.BLACK,
+                  fontSize: 17,
+                  fontWeight: '700',
+                }}>
+                Save
+              </Text>
+            </TouchableOpacity>
+          </View>
+        )}
+        {!showButton && (
+          <View
+            style={{
+              flexDirection: 'row',
+              justifyContent: 'flex-end',
+              marginVertical: (DIMENSIONS.SCREEN_HEIGHT * 2) / 100,
+
+              marginRight: -30,
+            }}>
+            <TouchableOpacity
+              onPress={() => {
+                setIsEditable(true);
+                setShowButton(true);
+              }}
+              style={{
+                width: DIMENSIONS.SCREEN_WIDTH * 0.3,
+                height: (DIMENSIONS.SCREEN_HEIGHT * 5) / 100,
+                backgroundColor: '#B1D34F',
+                justifyContent: 'center',
+                alignItems: 'center',
+                marginHorizontal: 10,
+                borderRadius: 10,
+
+                ...Platform.select({
+                  ios: {
+                    shadowColor: '#000000',
+                    shadowOffset: {width: 0, height: 2},
+                    shadowOpacity: 0.3,
+                    shadowRadius: 4,
+                  },
+                  android: {
+                    elevation: 4,
+                  },
+                }),
+              }}>
+              <Text
+                style={{
+                  color: COLORS.BLACK,
+                  fontSize: 17,
+                  fontWeight: '700',
+                }}>
+                Edit
+              </Text>
+            </TouchableOpacity>
+          </View>
+        )}
       </View>
 
       <View style={styles.bottom}>

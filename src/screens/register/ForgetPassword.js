@@ -17,7 +17,7 @@ import {
   ToastAndroid,
   KeyboardAvoidingView,
 } from 'react-native';
-import React, {useRef, useState} from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import * as Yup from 'yup';
 import {Formik} from 'formik';
@@ -30,6 +30,8 @@ import {API} from '../../api/API';
 import ActivityLoader from '../../Components/ActivityLoader';
 import axios from 'axios';
 import {ms} from 'react-native-size-matters';
+import Clipboard from '@react-native-clipboard/clipboard';
+
 const mobileW = Math.round(Dimensions.get('screen').width);
 
 const validationSchema = Yup.object().shape({
@@ -40,19 +42,32 @@ const ForgetPassword = ({navigation}) => {
   const [forLoading, setForLoading] = useState(false);
   const [showOTP, setShowOTP] = useState(false);
   const [email, setEmail] = useState('');
-  const [firstDigit, setFirstDigit] = useState('');
-  const [secondDigit, setsecondDigit] = useState('');
-  const [thirdDigit, setthirdDigit] = useState('');
-  const [forthDigit, setforthDigit] = useState('');
-  const [fifthDigit, setfifthDigit] = useState('');
-  const [sixDigit, setSixDigit] = useState('');
+  const [otp, setOtp] = useState('');
+  const [remainingTime, setRemainingTime] = useState(60);
+  const [timerActive, setTimerActive] = useState(true);
+  const [disablebutton, setdisableButton] = useState(false);
+  const inputRefs = useRef([]);
 
-  const otp1 = useRef(null);
-  const otp2 = useRef(null);
-  const otp3 = useRef(null);
-  const otp4 = useRef(null);
-  const otp5 = useRef(null);
-  const otp6 = useRef(null);
+  useEffect(() => {
+    if (timerActive && remainingTime > 0) {
+      const timer = setInterval(() => {
+        setRemainingTime(prevTime => prevTime - 1);
+        setdisableButton(true)
+
+      }, 1000);
+
+      return () => clearInterval(timer);
+    } else if (remainingTime === 0) {
+      setdisableButton(false);
+      setTimerActive(false);
+  
+    }
+  }, [remainingTime, timerActive]);
+
+  const fetchCopiedText = async () => {
+    const text = await Clipboard.getString();
+    setOtp(text);
+  };
   const handleRemberPassWord = async values => {
     setForLoading(true);
     try {
@@ -69,9 +84,12 @@ const ForgetPassword = ({navigation}) => {
           PLATFORM_IOS
             ? Toast.show({
                 type: 'success',
-                text1: 'Otp sent successfully.',
+                text1: 'Authentication Key sent successfully.',
               })
-            : ToastAndroid.show('Otp sent successfully.', ToastAndroid.SHORT);
+            : ToastAndroid.show(
+                'Authentication Key sent successfully.',
+                ToastAndroid.SHORT,
+              );
           // navigation.navigate('ResetPassword', {email: values});
           setForLoading(false);
           setShowOTP(true);
@@ -96,19 +114,13 @@ const ForgetPassword = ({navigation}) => {
 
   const verifyOTP = async () => {
     setForLoading(true);
-    const otp =
-      firstDigit +
-      secondDigit +
-      thirdDigit +
-      forthDigit +
-      fifthDigit +
-      sixDigit;
 
     try {
       if (email !== '' && otp !== '') {
         let payload = new FormData();
         payload.append('email', email);
         payload.append('randomotp', otp);
+        console.log('ddddddddddddddd', payload);
 
         const res = await axios(`${API}/forgetverifyOtp`, {
           method: 'POST',
@@ -122,27 +134,31 @@ const ForgetPassword = ({navigation}) => {
             PLATFORM_IOS
               ? Toast.show({
                   type: 'success',
-                  text1: 'OTP verification successfull.',
+                  text1: 'Authentication Successful',
                 })
               : ToastAndroid.show(
-                  'OTP verification successfull.',
+                  'Authentication Successful',
                   ToastAndroid.SHORT,
                 );
             navigation.navigate('ResetPassword', {email: email});
+            setOtp('');
+            Clipboard.setString('');
             setForLoading(false);
           } else {
             PLATFORM_IOS
               ? Toast.show({
                   type: 'error',
-                  text1: 'Invalid OTP or OTP expired',
+                  text1: 'Invalid/Expired Code',
                   // position: 'bottom',
                 })
               : ToastAndroid.show(
-                  'Invalid OTP or OTP expired',
+                  'Invalid/Expired Code',
                   ToastAndroid.SHORT,
                 );
 
             setForLoading(false);
+            Clipboard.setString('');
+            setOtp('');
           }
         }
       } else {
@@ -158,13 +174,19 @@ const ForgetPassword = ({navigation}) => {
             );
       }
       setForLoading(false);
+      Clipboard.setString('');
+      setOtp('');
     } catch (error) {
       setForLoading(false);
+      Clipboard.setString('');
+      setOtp('');
     }
   };
   const resendOTp = async value => {
     const data = {email: value};
-  
+    setdisableButton(true);
+    setRemainingTime(60);
+    setTimerActive(true);
     setForLoading(true);
     try {
       const res = await axios(`${API}/forgetPassword`, {
@@ -176,16 +198,20 @@ const ForgetPassword = ({navigation}) => {
       });
 
       if (res.data) {
-    
         if (res.data.success == true) {
           PLATFORM_IOS
             ? Toast.show({
                 type: 'success',
-                text1: 'Otp Resent successfully.',
+                text1: 'Authentication Key Resent successfully.',
               })
-            : ToastAndroid.show('Otp Resent successfully.', ToastAndroid.SHORT);
+            : ToastAndroid.show(
+                'Authentication Key Resent successfully.',
+                ToastAndroid.SHORT,
+              );
           // navigation.navigate('ResetPassword', {email: values});
           setForLoading(false);
+          Clipboard.setString('');
+          setOtp('');
 
           setEmail(value);
         } else {
@@ -198,12 +224,42 @@ const ForgetPassword = ({navigation}) => {
             : ToastAndroid.show('User not found!', ToastAndroid.SHORT);
 
           setForLoading(false);
+          Clipboard.setString('');
+          setOtp('');
+          setEmail(value);
         }
       }
     } catch (err) {
       console.log(err);
       setForLoading(false);
+      Clipboard.setString('');
+      setOtp('');
+      setEmail(value);
     }
+  };
+
+  const handleInputChange = (text, index) => {
+    if (text && index < 5) {
+      inputRefs.current[index + 1].focus();
+    }
+
+    setOtp(prevOtp => {
+      let newOtp = prevOtp.split('');
+      newOtp[index] = text;
+      return newOtp.join('');
+    });
+  };
+
+  const handleBackspace = index => {
+    if (index > 0) {
+      inputRefs.current[index - 1].focus();
+    }
+
+    setOtp(prevOtp => {
+      let newOtp = prevOtp.split('');
+      newOtp[index] = '';
+      return newOtp.join('');
+    });
   };
 
   return (
@@ -249,16 +305,20 @@ const ForgetPassword = ({navigation}) => {
                       placeholder="Enter your Email"
                       bW={1}
                       textWidth={ms(45)}
-                      placeholderTextColor={COLORS.HALFBLACK}
+                      placeholderTextColor={COLORS.BLACK}
                       autoCapitalize="none"
+                      editable={!showOTP}
                     />
                     {errors.email && touched.email && (
                       <Text style={{color: 'red'}}>{errors.email}</Text>
                     )}
                   </View>
+                 
                 </View>
+
                 <TouchableOpacity
                   onPress={() => handleSubmit()}
+                  disabled={showOTP}
                   style={{
                     // marginTop: 5,
                     backgroundColor: showOTP ? COLORS.HALFBLACK : COLORS.GREEN,
@@ -294,163 +354,47 @@ const ForgetPassword = ({navigation}) => {
             <>
               <View style={styles.mainDiv_verify_email}>
                 <Text style={styles.havenot_received_email}>
-                  Enter the OTP Below
+                  Enter the Code Below
                 </Text>
                 <View style={styles.otp_box}>
-                  <TextInput
-                    ref={otp1}
-                    onChangeText={value => {
-                      if (value != '') {
-                        otp2.current.focus();
-                        setFirstDigit(value);
-                      }
-                      // else setFirstDigit('');
-                    }}
-                    keyboardType="numeric"
-                    maxLength={1}
-                    style={styles.textInput_otp}
-                    value={firstDigit}
-                    onKeyPress={({nativeEvent}) => {
-                      if (
-                        nativeEvent.key == 'Backspace' &&
-                        setFirstDigit != ' '
-                      ) {
-                        setFirstDigit('');
-                      }
-                    }}
-                  />
-                  <TextInput
-                    ref={otp2}
-                    onChangeText={value => {
-                      if (value != '') {
-                        otp3.current.focus();
-                        setsecondDigit(value);
-                      }
-                      // else {
-                      //   otp1.current.focus();
-                      //   setFirstDigit('');
-                      // }
-                    }}
-                    keyboardType="numeric"
-                    maxLength={1}
-                    style={styles.textInput_otp}
-                    value={secondDigit}
-                    onKeyPress={({nativeEvent}) => {
-                      if (
-                        nativeEvent.key == 'Backspace' &&
-                        setsecondDigit != ' '
-                      ) {
-                        setsecondDigit('');
-                        otp1.current.focus();
-                      }
-                    }}
-                  />
-                  <TextInput
-                    keyboardType="numeric"
-                    ref={otp3}
-                    onChangeText={value => {
-                      if (value != '') {
-                        otp4.current.focus();
-                        setthirdDigit(value);
-                      }
-                      // else {
-                      //   otp2.current.focus();
-                      //   setsecondDigit('');
-                      // }
-                    }}
-                    maxLength={1}
-                    style={styles.textInput_otp}
-                    value={thirdDigit}
-                    onKeyPress={({nativeEvent}) => {
-                      if (
-                        nativeEvent.key == 'Backspace' &&
-                        setthirdDigit != ' '
-                      ) {
-                        setthirdDigit('');
-                        otp2.current.focus();
-                      }
-                    }}
-                  />
-                  <TextInput
-                    keyboardType="numeric"
-                    ref={otp4}
-                    onChangeText={value => {
-                      if (value != '') {
-                        otp5.current.focus();
-                        setforthDigit(value);
-                      }
-                      // else {
-                      //   otp3.current.focus();
-                      //   setthirdDigit('');
-                      // }
-                    }}
-                    maxLength={1}
-                    style={styles.textInput_otp}
-                    value={forthDigit}
-                    onKeyPress={({nativeEvent}) => {
-                      if (
-                        nativeEvent.key == 'Backspace' &&
-                        setforthDigit != ''
-                      ) {
-                        setforthDigit('');
-                        otp3.current.focus();
-                      }
-                    }}
-                  />
-                  <TextInput
-                    keyboardType="numeric"
-                    ref={otp5}
-                    onChangeText={value => {
-                      if (value != '') {
-                        otp6.current.focus();
-                        setfifthDigit(value);
-                      }
-                      // else {
-                      //   otp4.current.focus();
-                      //   setforthDigit('');
-                      // }
-                    }}
-                    maxLength={1}
-                    style={styles.textInput_otp}
-                    value={fifthDigit}
-                    onKeyPress={({nativeEvent}) => {
-                      if (
-                        nativeEvent.key == 'Backspace' &&
-                        setfifthDigit != ' '
-                      ) {
-                        setfifthDigit('');
-                        otp4.current.focus();
-                      }
-                    }}
-                  />
-                  <TextInput
-                    keyboardType="numeric"
-                    ref={otp6}
-                    onChangeText={value => {
-                      if (value != '') {
-                        setSixDigit(value);
-                      }
-                      // else {
-                      //   otp5.current.focus();
-                      //   setfifthDigit('');
-                      // }
-                    }}
-                    maxLength={1}
-                    style={styles.textInput_otp}
-                    value={sixDigit}
-                    onKeyPress={({nativeEvent}) => {
-                      if (
-                        nativeEvent.key == 'Backspace' ||
-                        setSixDigit != ' '
-                      ) {
-                        setSixDigit('');
-                        // setfifthDigit('');
-                        // otp5.current.focus();s
-                      }
-                    }}
-                    onSubmitEditing={verifyOTP}
-                  />
+                  {[...Array(6)].map((_, index) => (
+                    <View style={styles.otp_box}>
+                      <TouchableOpacity onLongPress={()=>{console.log("Cvdfgdgdfg222222")}} >
+                      <TextInput
+                        key={index}
+                        ref={ref => (inputRefs.current[index] = ref)}
+                        keyboardType="numeric"
+                        maxLength={1}
+                        style={styles.textInput_otp}
+                        // value={firstDigit}
+                        value={otp[index]}
+                        onChangeText={text => handleInputChange(text, index)}
+                        onKeyPress={({nativeEvent}) => {
+                          if (nativeEvent.key === 'Backspace') {
+                            handleBackspace(index);
+                          }
+                        }}
+                        // onTextInput={()=>{console.log("Cvdfgdgdfg")}}
+                        // onPressIn={({nativeEvent}) => {
+                        //   fetchCopiedText();
+                        // }}
+                        
+                      />
+                      </TouchableOpacity>
+                    </View>
+                    
+                  ))}
                 </View>
+                <View style={{marginVertical: 10, alignSelf: 'center'}}>
+                    {remainingTime > 0 ? (
+                      <Text>Resend Code in {remainingTime} seconds</Text>
+                    ) : (
+                      <View>
+                        <Text>Previous Code Expired </Text>
+                        <Text>Click Resend Code Button</Text>
+                      </View>
+                    )}
+                  </View>
               </View>
               <View style={styles.otp_yet}>
                 <Text
@@ -459,12 +403,13 @@ const ForgetPassword = ({navigation}) => {
                     fontSize: 14,
                     fontWeight: '600',
                   }}>
-                  Haven't received the OTP yet?
+                  Haven't received the Code yet?
                 </Text>
                 <TouchableOpacity
                   style={styles.resend_OTP_btn}
+                  disabled={disablebutton}
                   onPress={() => resendOTp(email)}>
-                  <Text style={styles.resend_otp_text}>Resend OTP</Text>
+                  <Text style={styles.resend_otp_text}>Resend Code</Text>
                 </TouchableOpacity>
               </View>
               <TouchableOpacity
@@ -494,7 +439,7 @@ const ForgetPassword = ({navigation}) => {
                     fontSize: 14,
                     color: COLORS.BLACK,
                   }}>
-                  Confirm OTP
+                  Confirm Code
                 </Text>
               </TouchableOpacity>
             </>

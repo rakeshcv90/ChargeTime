@@ -58,7 +58,6 @@ export default function Home(route) {
   useEffect(() => {
     fetchData();
 
-
     getBasePackage.length == 0 ? setShowPackage(true) : setShowPackage(false);
   }, []);
 
@@ -78,7 +77,7 @@ export default function Home(route) {
         setIsLoading(false);
       }
     } catch (error) {
-      console.error('Error fetching data:', error);
+      console.error('Error fetching data44444444:', error);
       setIsLoading(false);
     }
   };
@@ -119,29 +118,50 @@ export default function Home(route) {
               onPress={onPress}
               style={{
                 flex: 1,
-                height: 50,
-                backgroundColor: isFocused ? '#B1D34F' : '#EEEEEE',
-                // paddingHorizontal: Platform.OS === 'android' ? 17 : 15,
-                // paddingVertical: 13,
-                borderRadius: isFocused ? 0 : 0,
-                shadowColor: 'rgba(0, 0, 0, 1)',
-                shadowOffset: {
-                  width: isFocused ? 6 : 0,
-                  height: isFocused ? 4 : 0,
-                },
-                shadowOpacity: isFocused ? 3 : 0,
-                shadowRadius: isFocused ? 2 : 0,
-                elevation: Platform.OS === 'android' && isFocused ? 8 : 0,
-                justifyContent: 'center',
+                backgroundColor: '#EEEEEE',
+                padding: 5,
+                // flex: 1,
+                // height: 50,
+                // backgroundColor: isFocused ? '#B1D34F' : '#EEEEEE',
+
+                // borderRadius: isFocused ? 0 : 0,
+                // shadowColor: 'rgba(0, 0, 0, 1)',
+                // shadowOffset: {
+                //   width: isFocused ? 6 : 0,
+                //   height: isFocused ? 4 : 0,
+                // },
+                // shadowOpacity: isFocused ? 3 : 0,
+                // shadowRadius: isFocused ? 2 : 0,
+                // elevation: Platform.OS === 'android' && isFocused ? 8 : 0,
+                // justifyContent: 'center',
               }}>
-              <Text
+              <View
                 style={{
-                  fontWeight: isFocused ? '600' : '400',
-                  fontSize: 12,
-                  textAlign: 'center',
+                  borderRadius: isFocused ? 10 : 10,
+                  paddingVertical: 13,
+                  ...Platform.select({
+                    ios: {
+                      shadowColor: '#000000',
+                      shadowOffset: {width: 0, height: 2},
+                      shadowOpacity: 0.3,
+                      shadowRadius: 4,
+                    },
+                    android: {
+                      elevation: isFocused ? 4 : 0,
+
+                    },
+                  }),
+                  backgroundColor: isFocused ? '#B1D34F' : null,
                 }}>
-                {label}
-              </Text>
+                <Text
+                  style={{
+                    fontWeight: isFocused ? '600' : '400',
+                    fontSize: 12,
+                    textAlign: 'center',
+                  }}>
+                  {label}
+                </Text>
+              </View>
             </TouchableOpacity>
           );
         })}

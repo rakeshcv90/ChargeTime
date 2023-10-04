@@ -119,7 +119,7 @@ const BoxFive = ({data, purchageData, disabled}) => {
           </TouchableOpacity>
         </View>
         <View style={styles.dollar_div}>
-          {/* <Image source={require('../../assets/images/price.png')} /> */}
+          {/* <Image source={require('../../assets/images/price.png')} style={{width:18,height:18}}resizeMode='contain'/> */}
           <Dolllar />
           <Text style={styles.per_month}>${data?.total_price} /month</Text>
         </View>
@@ -132,19 +132,11 @@ const BoxFive = ({data, purchageData, disabled}) => {
 export default BoxFive;
 const styles = StyleSheet.create({
   managing_width: {
-    paddingHorizontal: 20,
-    // paddingVertical:15
+  
   },
   shadowProp: {
     backgroundColor: 'white',
-    // shadowColor: 'rgba(0, 0, 0, 1)',
-    // shadowOffset: {
-    //   width: 6,
-    //   height: 4,
-    // },
-    // shadowOpacity: 1,
-    // shadowRadius: 4,
-    // elevation: Platform.OS === 'android' ? 8 : 0,
+
   },
   mainDiv_installation: {
     borderWidth: 1,
@@ -233,12 +225,14 @@ const styles = StyleSheet.create({
   dollar_div: {
     flexDirection: 'row',
     alignItems: 'center',
+    width:DIMENSIONS.SCREEN_WIDTH*.35,
+
   },
   per_month: {
     fontWeight: 500,
-    fontSize: 18,
+    fontSize: 15,
     color: COLORS.BLACK,
-    paddingLeft: 7,
+    paddingLeft: 2,
   },
   btn_purchage: {
     paddingHorizontal: 18,

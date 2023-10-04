@@ -40,6 +40,7 @@ import {
 } from '../../redux/action';
 import {Toast} from 'react-native-toast-message/lib/src/Toast';
 import {setBasePackage as setUpdateBasePackage} from '../../redux/action';
+import ActivityLoader from '../../Components/ActivityLoader';
 const mobileW = Math.round(Dimensions.get('screen').width);
 const mobileH = Math.round(Dimensions.get('window').height);
 
@@ -63,6 +64,9 @@ const Installation = () => {
   const [isFocus, setIsFocus] = useState(false);
   const [forLoading, setForLoading] = useState(false);
   const [apiData, setApiData] = useState(getBasePackage || []);
+  const [loader, setLoader] = useState(false);
+
+  const [showButton, setShowButton] = useState(false);
 
   const dispatch = useDispatch();
   useEffect(() => {
@@ -161,6 +165,7 @@ const Installation = () => {
 
   const PlanCancel = async () => {
     setIsFocus(true);
+    setLoader(true)
     try {
       const response = await fetch(`${API}/plancancel/${user_id}`, {
         method: 'POST',
@@ -183,15 +188,20 @@ const Installation = () => {
               'Your current plan has been cancelled.',
               ToastAndroid.SHORT,
             );
+            setLoader(false)
+            setShowButton(false)
       } else {
         InstalltionUpdate();
       }
     } catch (error) {
       console.error(error);
+      setLoader(false)
+      setShowButton(false)
     }
   };
   const InstalltionUpdate = async () => {
     setForLoading(true);
+    setLoader(true)
 
     if ((locationId && addlineone && newZipcode && newState) || addlinetwo) {
       try {
@@ -251,6 +261,7 @@ const Installation = () => {
             dispatch(updatedLocationId(locationId));
             fetchData();
             setForLoading(false);
+            setLoader(false)
             PLATFORM_IOS
               ? Toast.show({
                   type: 'success',
@@ -262,6 +273,8 @@ const Installation = () => {
                 );
 
             setForLoading(false);
+            setLoader(false)
+            setShowButton(false)
           } else {
             PLATFORM_IOS
               ? Toast.show({
@@ -271,16 +284,22 @@ const Installation = () => {
                 })
               : ToastAndroid.show('Profile Not Updated', ToastAndroid.SHORT);
             setForLoading(false);
+            setLoader(false)
+            setShowButton(false)
           }
+
         }
       } catch (err) {
         console.log(err);
         setForLoading(false);
+        setLoader(false)
+        setShowButton(false)
       }
     }
   };
 
   const handleOk = () => {
+   
     PlanCancel();
 
     setIsEditable(false);
@@ -362,19 +381,21 @@ const Installation = () => {
         headerName="Installation"
         editShow={true}
         onPress={onPress}
-        enableEdit={enableEdit}
-        editButton={isEditable}
+        // enableEdit={enableEdit}
+        // editButton={isEditable}
       />
       {Platform.OS === 'android' ? (
         <HorizontalLine style={styles.line} />
       ) : (
         <View>
           <Image
-            source={require('../../../assets/images/dotted.png')}
-            style={{width: mobileW * 0.97}}
+           source={require('../../../assets/images/dotted.png')}
+           style={{width: mobileW * 0.99}}
+           resizeMode='stretch'
           />
         </View>
       )}
+       <ActivityLoader visible={loader} />
       <View style={styles.mainDiv_container}>
         <View style={styles.postCodeContainer}>
           {renderLabel()}
@@ -490,7 +511,132 @@ const Installation = () => {
           </View>
         </View>
       </View>
+      {showButton && (
+        <View
+          style={{
+            flexDirection: 'row',
+            justifyContent: 'flex-end',
+            marginVertical: (DIMENSIONS.SCREEN_HEIGHT * 1) / 100,
+            marginRight: (DIMENSIONS.SCREEN_HEIGHT * 1) / 100,
+          }}>
+          <TouchableOpacity
+            onPress={() => {
+              setAddLineTwo(userProfileData[0]?.pwa_add2);
+              setAddLineOne(userProfileData[0]?.pwa_add1);
+              setShowButton(false);
 
+              setTimeout(() => {
+                setIsEditable(false);
+              }, 100);
+            }}
+            style={{
+              width: DIMENSIONS.SCREEN_WIDTH * 0.3,
+              height: (DIMENSIONS.SCREEN_HEIGHT * 5) / 100,
+              backgroundColor: '#ffffff',
+              justifyContent: 'center',
+              alignItems: 'center',
+              borderRadius: 10,
+
+              alignSelf: 'flex-end',
+              ...Platform.select({
+                ios: {
+                  shadowColor: '#000000',
+                  shadowOffset: {width: 0, height: 2},
+                  shadowOpacity: 0.3,
+                  shadowRadius: 4,
+                },
+                android: {
+                  elevation: 4,
+                },
+              }),
+            }}>
+            <Text
+              style={{
+                color: COLORS.BLACK,
+                fontSize: 17,
+                fontWeight: '700',
+              }}>
+              Cancel
+            </Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            onPress={() => onPress()}
+            style={{
+              width: DIMENSIONS.SCREEN_WIDTH * 0.3,
+              height: (DIMENSIONS.SCREEN_HEIGHT * 5) / 100,
+              backgroundColor: '#B1D34F',
+              justifyContent: 'center',
+              alignItems: 'center',
+              marginHorizontal: 10,
+              borderRadius: 10,
+
+              ...Platform.select({
+                ios: {
+                  shadowColor: '#000000',
+                  shadowOffset: {width: 0, height: 2},
+                  shadowOpacity: 0.3,
+                  shadowRadius: 4,
+                },
+                android: {
+                  elevation: 4,
+                },
+              }),
+            }}>
+            <Text
+              style={{
+                color: COLORS.BLACK,
+                fontSize: 17,
+                fontWeight: '700',
+              }}>
+              Save
+            </Text>
+          </TouchableOpacity>
+        </View>
+      )}
+      {!showButton && (
+        <View
+          style={{
+            flexDirection: 'row',
+            justifyContent: 'flex-end',
+            marginVertical: (DIMENSIONS.SCREEN_HEIGHT * 1) / 100,
+          }}>
+          <TouchableOpacity
+            onPress={() => {
+              setIsEditable(true);
+              setShowButton(true);
+            }}
+            style={{
+              width: DIMENSIONS.SCREEN_WIDTH * 0.3,
+              height: (DIMENSIONS.SCREEN_HEIGHT * 5) / 100,
+              backgroundColor: '#B1D34F',
+              justifyContent: 'center',
+              alignItems: 'center',
+              marginRight: (DIMENSIONS.SCREEN_HEIGHT * 2) / 100,
+              borderRadius: 10,
+
+              ...Platform.select({
+                ios: {
+                  shadowColor: '#000000',
+                  shadowOffset: {width: 0, height: 2},
+                  shadowOpacity: 0.3,
+                  shadowRadius: 4,
+                },
+                android: {
+                  elevation: 4,
+                },
+              }),
+            }}>
+            <Text
+              style={{
+                color: COLORS.BLACK,
+                fontSize: 17,
+                fontWeight: '700',
+              }}>
+              Edit
+            </Text>
+          </TouchableOpacity>
+        </View>
+      )}
       {isModalVisible ? <ConfirmModal /> : null}
     </SafeAreaView>
   );

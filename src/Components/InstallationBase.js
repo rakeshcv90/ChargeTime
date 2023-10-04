@@ -128,6 +128,7 @@ const InstallationBase = ({data}) => {
         {/* <Text style={styles.force_base}>{data[0]=="undefined"?setBasePackage[0].location}</Text> */}
         {/* </View> */}
       </View>
+      <View style={{backgroundColor:COLORS.WHITE}}>
       <Image
         source={require('../../assets/images/dotted1.png')}
         resizeMode="stretch"
@@ -136,6 +137,7 @@ const InstallationBase = ({data}) => {
           alignSelf: 'center',
         }}
       />
+      </View>
       <View style={styles.mainDiv_state_zip}>
         {/* <View style={styles.state_div}> */}
         {/* <Image
@@ -143,7 +145,7 @@ const InstallationBase = ({data}) => {
             source={require('../../assets/images/connecticut.png')}
           /> */}
         <Connecticut style={styles.img_width} />
-        <Text style={styles.force_base}>
+        <Text style={[styles.force_base,{marginLeft:-DIMENSIONS.SCREEN_WIDTH*0.14}]}>
           {data[0] == undefined ? data?.state : data[0].state}
         </Text>
         {/* <Text style={styles.force_base}>{setBasePackage[0].state}</Text> */}
@@ -151,7 +153,7 @@ const InstallationBase = ({data}) => {
 
         <View style={styles.state_div}>
           <Image
-            //style={styles.img_width}
+           
             source={require('../../assets/images/zip_code.png')}
             resizeMode="stretch"
             style={{width: 25, height: 25}}
@@ -159,8 +161,7 @@ const InstallationBase = ({data}) => {
           <Text style={styles.force_base}>
             {data[0] == undefined ? data?.ZIP_code : data[0].ZIP_code}
           </Text>
-          {/* <Text style={styles.force_base}>{setBasePackage[0].ZIP_code}</Text> */}
-          {/* </View> */}
+        
         </View>
       </View>
     </View>

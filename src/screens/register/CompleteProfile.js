@@ -103,7 +103,7 @@ export default function CompleteProfile(props) {
         payload.append('pwa_email', userRegisterData.email);
         payload.append('pwa_mobile', userRegisterData.mobile);
         payload.append('pwa_password', userRegisterData.password);
-        payload.append('pwa_name', userRegisterData.name);
+        payload.append('pwa_name', userRegisterData.name+" "+userRegisterData.lname);
 
         const res = await axios({
           url: `${API}/completeProfile`,
@@ -388,6 +388,17 @@ const styles = StyleSheet.create({
     padding: 13,
     borderRadius: 10,
     width: '100%',
+    ...Platform.select({
+      ios: {
+        shadowColor: '#000000',
+        shadowOffset: {width: 0, height: 2},
+        shadowOpacity: 0.3,
+        shadowRadius: 4,
+      },
+      android: {
+        elevation: 4,
+      },
+    }),
   },
   postCodeContainer: {
     backgroundColor: COLORS.CREAM,

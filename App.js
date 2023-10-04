@@ -228,7 +228,7 @@ export default function App() {
         axios
           .get(`${API}/remainingusage/${getUserID}`)
           .then(res => {
-            if (res.data?.kwh_unit_remaining >= 0) {
+            if (res.data?.kwh_unit_remaining > 0) {
               remaingData = res.data?.kwh_unit_remaining;
               dispatch(setOverUsage(false));
             } else {
@@ -367,26 +367,26 @@ export default function App() {
       return unsubscribe;
     }
   }, []);
-  useEffect(() => {
-    remainigUsuageData();
-  }, []);
-  const remainigUsuageData = async () => {
-    let remaingData;
-    const getUserID = await AsyncStorage.getItem('userId');
-    axios
-      .get(`${API}/remainingusage/${getUserID}`)
-      .then(res => {
-        if (res.data?.kwh_unit_remaining > 0) {
-          dispatch(setOverModelView(false));
-        } else {
-          remaingData = res.data?.kwh_unit_overusage;
-          dispatch(setOverModelView(true));
-        }
-      })
-      .catch(err => {
-        console.log(err);
-      });
-  };
+  // useEffect(() => {
+  //   remainigUsuageData();
+  // }, []);
+  // const remainigUsuageData = async () => {
+  //   let remaingData;
+  //   const getUserID = await AsyncStorage.getItem('userId');
+  //   axios
+  //     .get(`${API}/remainingusage/${getUserID}`)
+  //     .then(res => {
+  //       if (res.data?.kwh_unit_remaining > 0) {
+  //         dispatch(setOverModelView(false));
+  //       } else {
+  //         remaingData = res.data?.kwh_unit_overusage;
+  //         dispatch(setOverModelView(true));
+  //       }
+  //     })
+  //     .catch(err => {
+  //       console.log(err);
+  //     });
+  // };
   return (
     <>
       <NavigationContainer ref={navigationRef}>

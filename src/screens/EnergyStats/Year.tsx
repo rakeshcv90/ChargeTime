@@ -46,7 +46,7 @@ export default function Year() {
               marginTop: 10,
             }}>
             <Remaining RemainingFill={50} KWH={400} />
-            <TotalUsage data={getYearData?.Totalusedkwhs} location={'Yearly'} />
+            <TotalUsage data={getYearData?.TotalUsedKwhs} location={'Yearly'} />
           </View>
 
           <View style={{marginHorizontal: 20}}>

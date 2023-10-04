@@ -122,7 +122,6 @@ export default function HomeOne(route) {
 
   useEffect(() => {
     fetchData();
- 
   }, []);
 
   useEffect(() => {
@@ -230,29 +229,38 @@ export default function HomeOne(route) {
               onPress={onPress}
               style={{
                 flex: 1,
-                backgroundColor: isFocused ? '#B1D34F' : '#EEEEEE',
-                //paddingHorizontal: 12,
-                paddingVertical: 13,
-                // borderRadius:10,
-                borderRadius: isFocused ? 10 : 0,
-                // shadowColor: 'rgba(0, 0, 0, 1)',
-                // shadowOffset: {
-                //   width: isFocused ? 6 : 0,
-                //   height: isFocused ? 4 : 0,
-                // },
-                //shadowOpacity: isFocused ? 1 : 0,
-                shadowRadius: isFocused ? 4 : 0,
-                elevation: Platform.OS === 'android' && isFocused ? 8 : 0,
-              }}>
-              <Text
+                backgroundColor: '#EEEEEE',
+                padding:5
+            
+              }}
+              >
+              <View
                 style={{
-                  color: isFocused ? 'black' : 'black',
-                  fontWeight: isFocused ? '600' : '400',
-                  fontSize: 12,
-                  textAlign: 'center',
+                  borderRadius: isFocused ? 10 : 10,
+                  paddingVertical: 13,
+                   ...Platform.select({
+                  ios: {
+                    shadowColor: '#000000',
+                    shadowOffset: {width: 0, height: 6},
+                    shadowOpacity: 0.3,
+                    shadowRadius: 4,
+                  },
+                  android: {
+                    elevation: isFocused ? 4 : 0,
+                  },
+                }),
+                  backgroundColor: isFocused ? '#B1D34F' : null,
                 }}>
-                {label}
-              </Text>
+                <Text
+                  style={{
+                    color: isFocused ? 'black' : 'black',
+                    fontWeight: isFocused ? '600' : '400',
+                    fontSize: 12,
+                    textAlign: 'center',
+                  }}>
+                  {label}
+                </Text>
+              </View>
             </TouchableOpacity>
           );
         })}
@@ -263,33 +271,34 @@ export default function HomeOne(route) {
 
   return (
     <SafeAreaView style={{backgroundColor: COLORS.CREAM, flex: 1}}>
-     
-  
-      {getPurchaseData.data != 'Package not found'?
-        getPurchaseData.data.energy_plan.toLowerCase() ===
-          myTest.toLowerCase() && (
-          <View
-            style={{
-              position: 'absolute',
-              right: PLATFORM_IOS ? (mobileW * 25) / 100 : (mobileW * 25) / 100,
-              alignSelf: 'flex-end',
-              top: PLATFORM_IOS ? (mobileH * -2) / 100 : (mobileH * -6) / 100,
-              // marginVertical:PLATFORM_IOS ? -20: -40,
-              zIndex: 5,
-            }}>
-            <AnimatedLottieView
-              source={{
-                uri: 'https://assets3.lottiefiles.com/packages/lf20_OrMyddm62t.json',
-              }} // Replace with your animation file
-              autoPlay
-              loop
+      {getPurchaseData.data != 'Package not found'
+        ? getPurchaseData.data.energy_plan.toLowerCase() ===
+            myTest.toLowerCase() && (
+            <View
               style={{
-                width: (mobileW * 25) / 100,
-                height: (mobileH * 25) / 100,
-              }}
-            />
-          </View>
-        ):null}
+                position: 'absolute',
+                right: PLATFORM_IOS
+                  ? (mobileW * 25) / 100
+                  : (mobileW * 25) / 100,
+                alignSelf: 'flex-end',
+                top: PLATFORM_IOS ? (mobileH * -2) / 100 : (mobileH * -6) / 100,
+                // marginVertical:PLATFORM_IOS ? -20: -40,
+                zIndex: 5,
+              }}>
+              <AnimatedLottieView
+                source={{
+                  uri: 'https://assets3.lottiefiles.com/packages/lf20_OrMyddm62t.json',
+                }} // Replace with your animation file
+                autoPlay
+                loop
+                style={{
+                  width: (mobileW * 25) / 100,
+                  height: (mobileH * 25) / 100,
+                }}
+              />
+            </View>
+          )
+        : null}
 
       <DrawerOpen top={PLATFORM_IOS ? 70 : 30} />
       <View style={[styles.charging_imag_style]}>
@@ -338,7 +347,6 @@ export default function HomeOne(route) {
           {getBasePackage?.length >= 1 &&
             getBasePackage &&
             getBasePackage.map((item, ind) => {
-         
               let purchageData =
                 getPurchaseData.data != 'Package not found'
                   ? item.kwh > getPurchaseData.data.kwh
@@ -358,7 +366,6 @@ export default function HomeOne(route) {
                   component={SliderOne}
                   initialParams={{item: item, purchageData: purchageData}}
                 />
-                
               );
             })}
         </Tab.Navigator>

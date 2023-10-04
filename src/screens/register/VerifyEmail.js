@@ -27,6 +27,7 @@ import {PLATFORM_IOS} from '../../constants/DIMENSIONS';
 import ActivityLoader from '../../Components/ActivityLoader';
 import AnimatedLottieView from 'lottie-react-native';
 import {useSelector} from 'react-redux';
+import Clipboard from '@react-native-clipboard/clipboard';
 
 //   const mobileH = Math.round(Dimensions.get('window').height);
 const mobileW = Math.round(Dimensions.get('screen').width);
@@ -34,49 +35,54 @@ const mobileW = Math.round(Dimensions.get('screen').width);
 export default function VerifyEmail(props) {
   const {navigation, route} = props;
   const {email, user_id} = route?.params;
-
   const [emailCheck, setEmailCheck] = useState(false);
   const [tempID, setTempID] = useState('');
   const [stopTimer, setStopTimer] = useState(false);
   const [statusCheck, setStatusCheck] = useState(false);
-
   const [forLoading, setForLoading] = useState(false);
-  const [firstDigit, setFirstDigit] = useState('');
-  const [secondDigit, setsecondDigit] = useState('');
-  const [thirdDigit, setthirdDigit] = useState('');
-  const [forthDigit, setforthDigit] = useState('');
-  const [fifthDigit, setfifthDigit] = useState('');
-  const [sixDigit, setSixDigit] = useState('');
   const [remainingTime, setRemainingTime] = useState(60);
   const [timerActive, setTimerActive] = useState(true);
   const [disablebutton, setdisableButton] = useState(false);
+  const [otp, setOtp] = useState('');
+  const inputRefs = useRef([]);
 
-  const otp1 = useRef(null);
-  const otp2 = useRef(null);
-  const otp3 = useRef(null);
-  const otp4 = useRef(null);
-  const otp5 = useRef(null);
-  const otp6 = useRef(null);
   const theme = useColorScheme();
   const isDark = theme === 'dark';
-  const inputRefs = useRef([]);
+
   const {userRegisterData} = useSelector(state => state);
   const verifyOTP = async () => {
-    setForLoading(true);
-    const otp =
-      firstDigit +
-      secondDigit +
-      thirdDigit +
-      forthDigit +
-      fifthDigit +
-      sixDigit;
 
-
-    try {
-      if (email !== '' && otp.length == 6) {
+    if (otp.length == 0) {
+      PLATFORM_IOS
+        ? Toast.show({
+            type: 'error',
+            text1: 'Enter Authentication Key',
+            // position: 'bottom',
+          })
+        : ToastAndroid.show('Enter Authentication Key', ToastAndroid.SHORT);
+    } else if (otp.length < 6) {
+      PLATFORM_IOS
+        ? Toast.show({
+            type: 'error',
+            text1: 'Enter Authentication Key',
+            // position: 'bottom',
+          })
+        : ToastAndroid.show('Enter Authentication Key', ToastAndroid.SHORT);
+    } else if (email == '') {
+      PLATFORM_IOS
+        ? Toast.show({
+            type: 'error',
+            text1: 'Enter Email ID ',
+            // position: 'bottom',
+          })
+        : ToastAndroid.show('Enter Email ID', ToastAndroid.SHORT);
+    } else {
+      setForLoading(true);
+      try {
         let payload = new FormData();
         payload.append('email', email);
         payload.append('otp', otp);
+        console.log('Payload', payload);
         const res = await axios({
           url: `${API}/verifyotp`,
           method: 'POST',
@@ -86,15 +92,14 @@ export default function VerifyEmail(props) {
           data: payload,
         });
         if (res.data) {
-         
           if (res.data.message !== 'Invalid OTP or OTP expired') {
             PLATFORM_IOS
               ? Toast.show({
                   type: 'success',
-                  text1: 'OTP verification successfull.',
+                  text1: 'Authentication Successful.',
                 })
               : ToastAndroid.show(
-                  'OTP verification successfull.',
+                  'Authentication Successful.',
                   ToastAndroid.SHORT,
                 );
             navigation.navigate('CompleteProfile', {
@@ -106,33 +111,33 @@ export default function VerifyEmail(props) {
             PLATFORM_IOS
               ? Toast.show({
                   type: 'error',
-                  text1: 'Invalid OTP or OTP expired',
+                  text1: 'Authentication Key Invalid/expired',
                   // position: 'bottom',
                 })
               : ToastAndroid.show(
-                  'Invalid OTP or OTP expired',
+                  'Authentication Key Invalid/expired',
                   ToastAndroid.SHORT,
                 );
 
             setForLoading(false);
           }
+        } else {
+          PLATFORM_IOS
+            ? Toast.show({
+                type: 'error',
+                text1: 'Please fill required details',
+                // position: 'bottom',
+              })
+            : ToastAndroid.show(
+                'Please fill required details',
+                ToastAndroid.SHORT,
+              );
         }
-      } else {
-        PLATFORM_IOS
-          ? Toast.show({
-              type: 'error',
-              text1: 'Please fill required details',
-              // position: 'bottom',
-            })
-          : ToastAndroid.show(
-              'Please fill required details',
-              ToastAndroid.SHORT,
-            );
+        setForLoading(false);
+      } catch (error) {
+        console.error('sdsfsfs11111', error);
+        setForLoading(false);
       }
-      setForLoading(false);
-    } catch (error) {
-      console.error(error);
-      setForLoading(false);
     }
   };
   const resendOTp = async () => {
@@ -153,20 +158,23 @@ export default function VerifyEmail(props) {
             PLATFORM_IOS
               ? Toast.show({
                   type: 'success',
-                  text1: 'New OTP sent successfully',
+                  text1: 'New Authentication Key Sent Successfully',
                 })
               : ToastAndroid.show(
-                  'New OTP sent successfully',
+                  'New Authentication Key Sent Successfully',
                   ToastAndroid.SHORT,
                 );
           } else {
             PLATFORM_IOS
               ? Toast.show({
                   type: 'error',
-                  text1: 'Otp not send',
+                  text1: 'Authentication Key not send',
                   // position: 'bottom',
                 })
-              : ToastAndroid.show('Otp not send', ToastAndroid.SHORT);
+              : ToastAndroid.show(
+                  'Authentication Key not send',
+                  ToastAndroid.SHORT,
+                );
           }
         });
     } catch (error) {
@@ -180,7 +188,6 @@ export default function VerifyEmail(props) {
     setRemainingTime(60);
     setTimerActive(true);
     try {
-    
       let payload = new FormData();
       payload.append('pwa_email', email);
       const res = await axios(`${API}/resetemail`, {
@@ -190,7 +197,7 @@ export default function VerifyEmail(props) {
         },
         data: payload,
       });
-   
+
       if (res.data) {
         if (res.data.message == 'Email sent successfully') {
           setEmailCheck(true);
@@ -199,12 +206,9 @@ export default function VerifyEmail(props) {
           PLATFORM_IOS
             ? Toast.show({
                 type: 'success',
-                text1: 'Verification email resent',
+                text1: 'Email sent',
               })
-            : ToastAndroid.show(
-                'Verification email resent',
-                ToastAndroid.SHORT,
-              );
+            : ToastAndroid.show('Email sent', ToastAndroid.SHORT);
         } else {
           PLATFORM_IOS
             ? Toast.show({
@@ -232,7 +236,7 @@ export default function VerifyEmail(props) {
             'Content-Type': 'application/json',
           },
         });
-   
+
         if (response.data.status.email_verified === '1') {
           navigation.navigate('CompleteProfile', {
             email: email,
@@ -256,7 +260,6 @@ export default function VerifyEmail(props) {
       clearInterval(stopTimer);
     };
   }, [emailCheck, tempID]);
-
   useEffect(() => {
     if (timerActive && remainingTime > 0) {
       const timer = setInterval(() => {
@@ -270,6 +273,34 @@ export default function VerifyEmail(props) {
       //setStatusCheck(false);
     }
   }, [remainingTime, timerActive]);
+
+  const handleInputChange = (text, index) => {
+    if (text && index < 5) {
+      inputRefs.current[index + 1].focus();
+    }
+
+    setOtp(prevOtp => {
+      let newOtp = prevOtp.split('');
+      newOtp[index] = text;
+      return newOtp.join('');
+    });
+  };
+
+  const handleBackspace = index => {
+    if (index > 0) {
+      inputRefs.current[index - 1].focus();
+    }
+
+    setOtp(prevOtp => {
+      let newOtp = prevOtp.split('');
+      newOtp[index] = '';
+      return newOtp.join('');
+    });
+  };
+  const fetchCopiedText = async () => {
+    const text = await Clipboard.getString();
+    // setOtp(text);
+  };
 
   return (
     <SafeAreaView style={{backgroundColor: COLORS.CREAM, flex: 1}}>
@@ -287,7 +318,7 @@ export default function VerifyEmail(props) {
               <Text style={styles.sendOtp_text}>
                 {statusCheck
                   ? 'We have sent a verification email to:'
-                  : 'We have sent a confirmation OTP email to:'}
+                  : 'We have sent a confirmation Code email to:'}
               </Text>
               <TextInput
                 style={[
@@ -303,7 +334,7 @@ export default function VerifyEmail(props) {
                 {statusCheck
                   ? `Check your inbox and click on the button to confirm your account.
 `
-                  : 'Check your inbox and input the OTP here to confirm your account.'}
+                  : 'Check your inbox and input the Code here to confirm your account.'}
               </Text>
             </View>
             <View style={styles.otp_yet}>
@@ -314,15 +345,15 @@ export default function VerifyEmail(props) {
                     : {color: COLORS.BLACK, fontSize: 14, fontWeight: '600'}
                 }>
                 {statusCheck
-                  ? 'Verify with OTP instead.'
-                  : "Haven't received the OTP yet?"}
+                  ? 'Verify with Code instead.'
+                  : "Haven't received the Code yet?"}
               </Text>
               <TouchableOpacity
                 style={styles.resend_OTP_btn}
                 disabled={remainingTime > 0 ? true : false}
                 onPress={resendOTp}>
                 <Text style={styles.resend_otp_text}>
-                  {statusCheck ? 'Send OTP' : 'Resend OTP'}
+                  {statusCheck ? 'Send Code' : 'Resend Code'}
                 </Text>
               </TouchableOpacity>
             </View>
@@ -345,7 +376,7 @@ export default function VerifyEmail(props) {
                 style={{
                   alignSelf: 'center',
                   position: 'relative',
-                  right: mobileW / 1.9,
+                  right: mobileW / 1.8,
                   backgroundColor: COLORS.CREAM,
                   padding: 10,
                   color: COLORS.BLACK,
@@ -416,10 +447,32 @@ export default function VerifyEmail(props) {
             ) : (
               <View style={styles.mainDiv_verify_email}>
                 <Text style={styles.havenot_received_email}>
-                  Enter the OTP Below
+                  Enter the Code Below
                 </Text>
                 <View style={styles.otp_box}>
-                  <TextInput
+                  {[...Array(6)].map((_, index) => (
+                    <View style={styles.otp_box}>
+                      <TextInput
+                        key={index}
+                        ref={ref => (inputRefs.current[index] = ref)}
+                        keyboardType="numeric"
+                        maxLength={1}
+                        style={styles.textInput_otp}
+                        // value={firstDigit}
+                        value={otp[index]}
+                        onChangeText={text => handleInputChange(text, index)}
+                        onKeyPress={({nativeEvent}) => {
+                          if (nativeEvent.key === 'Backspace') {
+                            handleBackspace(index);
+                          }
+                        }}
+                        // onPressIn={({nativeEvent}) => {
+                        //   fetchCopiedText();
+                        // }}
+                      />
+                    </View>
+                  ))}
+                  {/* <TextInput
                     ref={otp1}
                     onChangeText={value => {
                       if (value != '') {
@@ -550,15 +603,15 @@ export default function VerifyEmail(props) {
                       }
                     }}
                     onSubmitEditing={verifyOTP}
-                  />
+                  /> */}
                 </View>
                 <View style={{marginVertical: 10, alignSelf: 'center'}}>
                   {remainingTime > 0 ? (
-                    <Text>Resend OTP in {remainingTime} seconds</Text>
+                    <Text>Resend Code in {remainingTime} seconds</Text>
                   ) : (
                     <View>
-                      <Text>Previous OTP Expired </Text>
-                      <Text>Click Resend OTP Button</Text>
+                      <Text>Previous Code Expired </Text>
+                      <Text>Click Resend Code Button</Text>
                     </View>
                   )}
                 </View>

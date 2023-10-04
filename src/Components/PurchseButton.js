@@ -59,6 +59,7 @@ const PurchseButton = ({data}) => {
         <TouchableOpacity
           style={styles.btn_purchage}
           onPress={() =>
+            
             navigationRef.navigate('PlanSummary', {
               data: data[0] == undefined ? data : data[0],
             })
@@ -78,7 +79,7 @@ const styles = StyleSheet.create({
   },
   shadowProp: {
     backgroundColor: 'white',
-    shadowColor: 'rgba(0, 0, 0, 1)',
+    // shadowColor: 'rgba(0, 0, 0, 1)',
     shadowOffset: {
       width: 6,
       height: 4,

@@ -51,10 +51,11 @@ import {
   setRemainingData,
   setWeekGraphData,
   setYearGraphData,
-  setSubscriptionStatus
+  setSubscriptionStatus,
 } from '../../redux/action';
 import ButtonSlider2 from '../../Components/ButtonSlider2';
 import Toast from 'react-native-toast-message';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const mobileW = Math.round(Dimensions.get('screen').width);
 
@@ -93,7 +94,28 @@ function MyTabBar({state, descriptors, navigation}) {
 
         const isFocused = state.index === index;
 
-        const onPress = () => {
+        const onPress = async () => {
+     
+          let data = 0;
+
+          if (route.name == 'Day') {
+            data = DIMENSIONS.SCREEN_WIDTH * 2.4;
+            // AsyncStorage.setItem(
+            //   'graph_Width',
+            //   JSON.stringify(DIMENSIONS.SCREEN_WIDTH * 2.4),
+            // );
+          } else if (route.name == 'Week') {
+            data = DIMENSIONS.SCREEN_WIDTH * 2;
+          } else if (route.name == 'Month') {
+            data = DIMENSIONS.SCREEN_WIDTH * 8;
+          } else if (route.name == 'Year') {
+            data = DIMENSIONS.SCREEN_WIDTH * 1;
+          } else if (route.name == 'Quarter') {
+            data = DIMENSIONS.SCREEN_WIDTH *9;
+          } else {
+            data = DIMENSIONS.SCREEN_WIDTH * 2.4;
+          }
+          AsyncStorage.setItem('graph_Width', JSON.stringify(data));
           const event = navigation.emit({
             type: 'tabPress',
             target: route.key,
@@ -150,6 +172,7 @@ export default function EnergyStats() {
   const {getChargerStatus, getDeviceID, getUserID} = useSelector(
     (state: any) => state,
   );
+
   const [toggleState, setToggleState] = useState(false);
   const dispatch = useDispatch();
   useEffect(() => {
@@ -161,7 +184,6 @@ export default function EnergyStats() {
     return () => backHandler.remove();
   }, []);
 
- 
   const handleBackButton = () => {
     return true;
   };
@@ -176,16 +198,12 @@ export default function EnergyStats() {
     axios
       .get(`${API}/devicecheck/${getUserID}}`)
       .then(res => {
-      
         if (res.data.status == 'True') {
-      
+          console.log("bbbbbbbb",res.data.message)
           setDeviceIdTemp(res.data.message);
-
-      
-       
           fetchGraphData(getUserID);
           fetchBoxTwoDashboardData(getUserID);
-          fetchStatusdata(getUserID);
+         fetchStatusdata(getUserID);
           // }, 3000);
         } else {
           setIsLoading(false);
@@ -204,7 +222,7 @@ export default function EnergyStats() {
       })
       .catch(err => {
         setIsLoading(false);
-        console.log(err);
+        console.log("rererererere",err);
       });
   };
 
@@ -219,11 +237,10 @@ export default function EnergyStats() {
         dispatch(setQuarterGraphData(res?.data.threemonthusagewithgraph));
         dispatch(setYearGraphData(res?.data.yearlyusagewithgraph));
         dailyUsuagekwh(getUserID);
-     
       })
       .catch(err => {
         setIsLoading(false);
-        console.log(err);
+        console.log("TRTRT",err);
       });
   };
   const dailyUsuagekwh = (userId: string) => {
@@ -231,14 +248,13 @@ export default function EnergyStats() {
       .get(`${API}/dailyusage/${userId}`)
       .then(res => {
         if (res?.data) {
-    
           dispatch(setKwhData(res?.data));
         }
 
         remainigUsuageData(getUserID);
       })
       .catch(err => {
-        console.log(err);
+        console.log("TRTRT11111111",err);
       });
   };
   const remainigUsuageData = (userId: string) => {
@@ -247,7 +263,7 @@ export default function EnergyStats() {
     axios
       .get(`${API}/remainingusage/${userId}`)
       .then(res => {
-        if (res.data?.kwh_unit_remaining >= 0) {
+        if (res.data?.kwh_unit_remaining > 0) {
           remaingData = res.data?.kwh_unit_remaining;
           dispatch(setOverUsage(false));
         } else {
@@ -261,7 +277,7 @@ export default function EnergyStats() {
       })
       .catch(err => {
         setIsLoading(false);
-        console.log(err);
+        console.log("TRTRT333333333",err);
       });
   };
 
@@ -272,18 +288,18 @@ export default function EnergyStats() {
         dispatch(setBoxTwoDataForDashboard(res?.data));
       })
       .catch(err => {
-        console.log(err);
+        console.log("TRTRT444444444",err);
       });
   };
   const fetchStatusdata = (userId: string) => {
     axios
-      .get(`${API}/chargerStatus/${userId}`)
+      .get(`${API}/chargerstatus/${userId}`)
       .then(res => {
         dispatch(setChargerStatus(res?.data));
         dispatch(setDeviceId(deviceIdTemp));
       })
       .catch(err => {
-        console.log(err);
+        console.log("TRTRT5555555555",err);
       });
   };
 
@@ -316,12 +332,18 @@ export default function EnergyStats() {
                 style={{width: 150, height: 150}}
               />
               <AnimatedLottieView
-                source={{
-                  uri: 'https://assets7.lottiefiles.com/packages/lf20_qgq2nqsy.json',
-                }} // Replace with your animation file
+                // source={{
+                //   uri: 'https://assets7.lottiefiles.com/packages/lf20_qgq2nqsy.json',
+                // }} // Replace with your animation file
+                source={require('../../../assets/question.json')}
                 autoPlay
                 loop
-                style={{width: 50, height: 50}}
+                style={{
+                  width: 100,
+                  height: 100,
+                  marginTop: -0,
+                  marginHorizontal: -5,
+                }}
               />
             </View>
             <Text
@@ -533,8 +555,8 @@ export default function EnergyStats() {
           </View>
         ) : (
           <>
-           <View style={{marginVertical:Platform.OS=='ios'?-40:-10}}>
-            <ButtonSlider2 />
+            <View style={{marginVertical: Platform.OS == 'ios' ? -40 : -10}}>
+              <ButtonSlider2 />
             </View>
           </>
         )}

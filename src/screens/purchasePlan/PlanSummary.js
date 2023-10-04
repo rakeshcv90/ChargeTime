@@ -10,6 +10,7 @@ import {
   Dimensions,
   Image,
   ScrollView,
+  ActivityIndicator
 } from 'react-native';
 import React, {useEffect, useState} from 'react';
 import COLORS from '../../constants/COLORS';
@@ -30,7 +31,7 @@ import {navigationRef} from '../../../App';
 import ActivityLoader from '../../Components/ActivityLoader';
 import {useDispatch} from 'react-redux';
 import {setDataForPayment} from '../../redux/action';
-import DownGradeData from '../downgrade/DownGradeData';
+// import DownGradeData from '../downgrade/DownGradeData';
 
 const mobileW = Math.round(Dimensions.get('screen').width);
 
@@ -43,15 +44,15 @@ export default function PlanSummary({route, navigation}) {
   const [data, setData] = useState('');
   const [forLoading, setForLoading] = useState(false);
   const [data1,setData1]=useState('');
-  DownGradeData;
-  const {id, package_name, total_price, salestax, stripe_voucher_id} =
+  // DownGradeData;
+  const {id, package_name, total_price, salestax, coupon_promotion_code,coupon_id} =
     route.params?.data;
 
 
   useEffect(() => {
     getPlanSummary();
-    if (stripe_voucher_id) {
-      getVoucherDetails(stripe_voucher_id);
+    if (coupon_id) {
+      getVoucherDetails(coupon_id);
     }
   }, []);
   const getVoucherDetails = data => {
@@ -60,9 +61,10 @@ export default function PlanSummary({route, navigation}) {
       .then(res => {
   
         setvoucherStatus(res.data.valid);
+      
       })
       .catch(err => {
-        console.log(err);
+        console.log("ffffffffff",err);
       });
   };
   const getPlanSummary = () => {
@@ -72,11 +74,11 @@ export default function PlanSummary({route, navigation}) {
       .then(res => {
  
         setData1(res.data)
-        setForLoading(false);
         setData(res.data.locations);
         dispatch(setDataForPayment(res.data?.locations[0]));
         setTax(res.data.locations[0].salestax);
         setTotalSalextax(res.data.locations[0].totalSalexTax);
+        setForLoading(false);
       })
       .catch(err => {
         setForLoading(false);
@@ -98,15 +100,15 @@ export default function PlanSummary({route, navigation}) {
             </Text>
           </View>
           <View style={{marginHorizontal: 20}}>
-            <View style={{marginBottom: 10}}>
+            <View style={{marginVertical:20}}>
               <InstallationBase data={route.params.data} />
             </View>
-            <View style={{marginBottom: 10}}>
-              <BoxFour data={data} />
+            <View style={{marginVertical:20}}>
+              <BoxFour data={data} />   
             </View>
           </View>
 
-          <View style={styles.plan_pricing_div}>
+          <View style={ Platform.OS == 'android'?styles.plan_pricing_div1:styles.plan_pricing_div}>
             <View>
               <TouchableOpacity style={styles.install_touchable}>
                 <PlanPricing style={styles.img_width} />
@@ -129,6 +131,9 @@ export default function PlanSummary({route, navigation}) {
                 backgroundColor: COLORS.GRAY,
                 paddingHorizontal: 10,
                 paddingVertical: 20,
+                borderBottomLeftRadius:10,
+                borderBottomRightRadius:10
+         
               }}>
               <View>
                 <Text
@@ -175,7 +180,7 @@ export default function PlanSummary({route, navigation}) {
                     paddingBottom: 5,
                     color: COLORS.BLACK,
                   }}>
-                  {tax}%
+                    ${tax}%
                 </Text>
                 <Text
                   style={{
@@ -253,13 +258,7 @@ export default function PlanSummary({route, navigation}) {
   );
 }
 const styles = StyleSheet.create({
-  // mainDiv_installation_one: {
-  //   // overflow: 'hidden',
-  //   // borderWidth:0.5,
-  //   borderRadius: 20,
-  //   marginTop: Platform.OS === 'ios' ? 10 : 20,
-  //   marginHorizontal: 20,
-  // },
+ 
   plan_pricing_div: {
     marginTop: Platform.OS === 'ios' ? 15 : 10,
     marginHorizontal: 20,
@@ -268,7 +267,31 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.2,
     shadowRadius: 5.62,
     elevation: 8,
-    backgroundColor: 'white',
+    
+    // backgroundColor: 'white',
+    
+  },
+  plan_pricing_div1: {
+    marginTop: Platform.OS === 'ios' ? 15 : 10,
+    marginHorizontal: 20,
+    // shadowColor: '#000000',
+    // shadowOffset: {width: 0, height: 6},
+    // shadowOpacity: 0.2,
+    // shadowRadius: 5.62,
+    // elevation: 8,
+    
+    overflow: 'hidden',
+    borderRadius: 10,
+
+    shadowColor: '#000000',
+    shadowOffset: {
+      width: 4,
+      height: 6,
+    },
+    shadowOpacity: 0.2,
+    shadowRadius: 5.62,
+    elevation: Platform.OS === 'android' ? 8 : 0,
+    
   },
   bottom_tab: {
     paddingHorizontal: 20,
@@ -284,6 +307,8 @@ const styles = StyleSheet.create({
     backgroundColor: COLORS.GREEN,
     alignItems: 'center',
     paddingVertical: 10,
+    borderTopRightRadius:10,
+    borderTopLeftRadius:10
   },
   img_width: {
     marginHorizontal: 20,

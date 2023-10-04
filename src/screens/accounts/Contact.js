@@ -71,7 +71,8 @@ const Contact = () => {
         <View>
           <Image
             source={require('../../../assets/images/dotted.png')}
-            style={{width: mobileW * 0.97}}
+            style={{width: mobileW * 0.99}}
+            resizeMode='stretch'
           />
         </View>
       )}

@@ -208,6 +208,7 @@ const styles = StyleSheet.create({
     textAlignVertical: 'center',
     textAlign: 'center',
     marginRight: 10,
+    marginLeft:10,
     alignSelf: 'center',
     // left: DIMENSIONS.SCREEN_WIDTH * 0.41,
     //  zIndex: 2,

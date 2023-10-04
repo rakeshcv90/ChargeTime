@@ -64,7 +64,7 @@ const validationSchema = Yup.object().shape({
     .matches(/^[A-Za-z].*/, 'Name must be start with a character')
     .min(3, 'Name must contain at least 3 characters'),
   cardNumber: Yup.string()
-    // .required('Invalid Card Number')6
+    .required('Card Number is required')
     .min(19, 'Card number must be of 16 digits'),
   validTill: Yup.string()
     .required('Expiry date is required')
@@ -145,8 +145,6 @@ export default function PaymentGateWay({navigation, route}) {
     const cardType = creditCardType(cardNumber ? cardNumber : creditCard)[0]
       ?.type;
 
-
-
     if (cardType === 'visa') {
       return require('../../../assets/images/Visa.png');
     } else if (cardType === 'master') {
@@ -161,7 +159,6 @@ export default function PaymentGateWay({navigation, route}) {
   };
 
   useEffect(() => {
-  
     getCardType(cardDetails?.card_number ?? '');
     handleGetCard();
   }, [creditCard, cardDetails, cardId]);
@@ -226,26 +223,29 @@ export default function PaymentGateWay({navigation, route}) {
       }
     } catch (error) {
       setLoader(false);
-      console.error("Add Card Error",error);
+      console.error('Add Card Error', error);
     }
   };
 
   const handleGetCard = async () => {
+
     try {
       const response = await fetch(`${API}/getcarddetails/${user_ID}`);
       const result = await response.json();
-  
-   
+
       if (result[0]?.length > 0) {
-   
+  
+        // setSavedCard(result[0].sort((b, a) => a.status - b.status));
         setSavedCard(result[0].sort((b, a) => a.status - b.status));
-    
+
         const statusOneObjects = result[0].filter(item => item.status === 1);
-     
       } else {
+     
+        setSavedCard(result[0].sort((b, a) => a.status - b.status));
       }
     } catch (error) {
       console.log('ERROR', error);
+
     }
   };
   const card_id = cardId;
@@ -266,6 +266,7 @@ export default function PaymentGateWay({navigation, route}) {
 
   const handleDeleteCard = async value => {
     setLoader(true);
+    console.log('cdsfdfdfd', value);
     try {
       const response = await fetch(`${API}/deletecard/${value}`, {
         method: 'DELETE',
@@ -307,7 +308,7 @@ export default function PaymentGateWay({navigation, route}) {
     } catch (error) {
       setModalVisible(false);
       setLoader(false);
-      console.error('Error deleting card', error);
+      console.error('Error deleting card111111', error);
     }
   };
 
@@ -365,8 +366,9 @@ export default function PaymentGateWay({navigation, route}) {
       ) : (
         <View>
           <Image
-            source={require('../../../assets/images/dotted.png')}
-            style={{width: mobileW * 0.97}}
+             source={require('../../../assets/images/dotted.png')}
+             style={{width: mobileW * 0.99}}
+             resizeMode='stretch'
           />
         </View>
       )}
@@ -411,11 +413,10 @@ export default function PaymentGateWay({navigation, route}) {
                           <View style={{}}>
                             <ImageBackground
                               source={getCardType(item.card_number)}
-                               resizeMode="contain"
+                              resizeMode="contain"
                               style={{
                                 width: DIMENSIONS.SCREEN_WIDTH * 0.9,
-                             
-                               
+
                                 height: mvs(190),
                                 // height:200,
                               }}>
@@ -644,23 +645,19 @@ export default function PaymentGateWay({navigation, route}) {
                           savedCard[0].status === 1 &&
                           (!currentCard || currentCard.status === 1)
                         ) {
-                          
                         } else if (
                           savedCard &&
                           savedCard.length === 1 &&
                           savedCard[0].status === 0
                         ) {
-                       
                           handleMakeDefaultCard(savedCard[0].id);
                         } else if (
                           savedCard &&
                           savedCard.length > 1 &&
                           currentCard.status === 0
                         ) {
-                      
                           handleMakeDefaultCard(currentCard.id);
                         }
-                      
                       } else {
                         PLATFORM_IOS
                           ? Toast.show({
@@ -730,7 +727,34 @@ export default function PaymentGateWay({navigation, route}) {
                   </TouchableOpacity>
                   <TouchableOpacity
                     onPress={() => {
-                      setModalVisible(true);
+                   
+                      if (savedCard.length > 0) {
+                        setModalVisible(true);
+                      } else {
+                        PLATFORM_IOS
+                          ? Toast.show({
+                              type: 'success',
+                              text1: 'NO ADDED CARD !',
+                            })
+                          : ToastAndroid.show(
+                              'NO ADDED CARD !',
+                              ToastAndroid.SHORT,
+                            );
+                      }
+                      // if (currentCard.status === 1 || currentCard.status === 0) {
+                      //   handleDeleteCard(currentCard.id);
+                      // } else if (savedCard.length > 0) {
+
+                      //   handleDeleteCard(savedCard[0]?.id);
+                      // } else {
+                      //   PLATFORM_IOS
+                      //     ? Toast.show({
+                      //         type: 'success',
+                      //         text1: 'NO CARD ADDED !',
+                      //       })
+                      //     : ToastAndroid.show('NO CARD ADDED !', ToastAndroid.SHORT);
+                      // }
+                      // setModalVisible(true);
                     }}
                     style={{
                       marginLeft: 35,
@@ -748,10 +772,11 @@ export default function PaymentGateWay({navigation, route}) {
                 {Platform.OS == 'android' ? (
                   <HorizontalLine style={styles.line} />
                 ) : (
-                  <View>
+                  <View style={{ paddingHorizontal: -20,}}>
                     <Image
                       source={require('../../../assets/images/dotted.png')}
-                      style={{width: mobileW * 0.98}}
+                      style={{width: mobileW * 1,  }}
+                      resizeMode='stretch'
                     />
                   </View>
                 )}
@@ -843,7 +868,7 @@ export default function PaymentGateWay({navigation, route}) {
                           formattedValidTill =
                             validTill.slice(0, 2) + '/' + validTill.slice(2);
                         }
-                   
+
                         // Update the valid till value
                         handleChange('validTill')(formattedValidTill);
                         setCardDetails1({
@@ -890,7 +915,8 @@ export default function PaymentGateWay({navigation, route}) {
                     />
                   </View>
                 </View>
-                <View
+                <TouchableOpacity
+                onPress={handleSubmit}
                   style={{
                     backgroundColor: COLORS.GREEN,
                     width: DIMENSIONS.SCREEN_WIDTH * 0.4,
@@ -916,7 +942,7 @@ export default function PaymentGateWay({navigation, route}) {
                       },
                     }),
                   }}>
-                  <TouchableOpacity onPress={handleSubmit} style={{}}>
+              
                     <Text
                       style={{
                         fontSize: 14,
@@ -929,8 +955,8 @@ export default function PaymentGateWay({navigation, route}) {
                       }}>
                       ADD CARD
                     </Text>
-                  </TouchableOpacity>
-                </View>
+                 
+                </TouchableOpacity>
               </>
             )}
           </Formik>
@@ -943,8 +969,6 @@ export default function PaymentGateWay({navigation, route}) {
             if (currentCard.status === 1 || currentCard.status === 0) {
               handleDeleteCard(currentCard.id);
             } else if (savedCard.length > 0) {
-            
-
               handleDeleteCard(savedCard[0]?.id);
             } else {
               PLATFORM_IOS

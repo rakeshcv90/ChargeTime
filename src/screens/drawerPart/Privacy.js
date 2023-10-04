@@ -14,7 +14,9 @@ export default function Privacy() {
 
 
         }}>
-        <Image source={require('../../../assets/images/dotted.png')} style={{ width: mobileW * 0.97 }} />
+        <Image  source={require('../../../assets/images/dotted.png')}
+          style={{width: mobileW * 0.99}}
+          resizeMode='stretch' />
       </View>}
     </SafeAreaView>
   )

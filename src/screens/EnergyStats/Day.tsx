@@ -59,7 +59,7 @@ const Day = (props: any) => {
         dispatch(setYearGraphData(res?.data.yearlyusagewithgraph));
       })
       .catch(err => {
-        console.log(err);
+        console.log("fetchGraphData11",err);
       });
   };
   const handleRefresh = () => {
@@ -90,7 +90,7 @@ const Day = (props: any) => {
         dispatch(setRemainingData(remaingData));
       })
       .catch(err => {
-        console.log(err);
+        console.log("remainigUsuageData1",err);
       });
   };
 
@@ -104,20 +104,21 @@ const Day = (props: any) => {
         }
       })
       .catch(err => {
-        console.log(err);
+        console.log("dailyUsuagekwh11",err);
       });
   };
 
   const fetchStatusdata = (userId: string) => {
     axios
-      .get(`${API}/chargerStatus/${userId}`)
+      .get(`${API}/chargerstatus/${userId}`)
       .then(res => {
         dispatch(setChargerStatus(res?.data));
       })
       .catch(err => {
-        console.log(err);
+        console.log("fetchStatusdata111",err);
       });
   };
+
   return (
     <>
       <View style={{flex: 1, backgroundColor: COLORS.CREAM}}>

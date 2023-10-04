@@ -10,12 +10,13 @@ import {
   Pressable,
   StyleSheet,
   Text,
+  TouchableOpacity,
   View,
 } from 'react-native';
 import React, {useCallback, useEffect, useRef, useState} from 'react';
 import COLORS from '../constants/COLORS';
 import LinearGradient from 'react-native-linear-gradient';
-import {DIMENSIONS} from '../constants/DIMENSIONS';
+import {DIMENSIONS, PLATFORM_IOS} from '../constants/DIMENSIONS';
 import {useDispatch, useSelector} from 'react-redux';
 import axios from 'axios';
 import {API} from '../api/API';
@@ -45,7 +46,7 @@ const Remaining = ({...props}) => {
   const [x, setX] = useState<number>(0);
   setUpdateIntervalForType(SensorTypes.gyroscope, 200); // defaults to 100ms
   useFocusEffect(
-    // overusage && setModalVisible(true);
+   
     useCallback(() => {
       remainigUsuageData();
     }, []),
@@ -64,7 +65,7 @@ const Remaining = ({...props}) => {
         } else {
           remaingData = res.data?.kwh_unit_overusage;
           dispatch(setOverUsage(true));
-          // setModalVisible(true);
+           setModalVisible(true);
         }
 
         dispatch(setRemainingData(remaingData));
@@ -74,7 +75,7 @@ const Remaining = ({...props}) => {
       });
   };
   const nav = () => {
-    dispatch(setOverModelView(false));
+    setModalVisible(!modalVisible);
     navigationRef.navigate('HomeOne');
   };
   const OverusageModal = () => {
@@ -82,9 +83,10 @@ const Remaining = ({...props}) => {
       <Modal
         animationType="fade"
         transparent={true}
-        visible={overModelView}
+        visible={modalVisible}
         onRequestClose={() => {
-          dispatch(setOverModelView(false));
+          // dispatch(setOverModelView(false));
+          setModalVisible(!modalVisible);
         }}>
         <View style={styles.centeredView}>
           <View style={styles.modalView}>
@@ -106,19 +108,19 @@ const Remaining = ({...props}) => {
               You have utilized your package, please purchase a new package.
             </Text>
             <View style={styles.button_one}>
-              <Pressable
+              <TouchableOpacity
                 style={{
                   borderRadius: 20,
                   padding: 10,
                 }}
-                onPress={() => dispatch(setOverModelView(false))}>
+                onPress={() =>setModalVisible(false)}>
                 <Text style={styles.textStyle}>Cancel</Text>
-              </Pressable>
-              <Pressable
+              </TouchableOpacity>
+              <TouchableOpacity
                 style={[styles.button, styles.buttonClose]}
                 onPress={nav}>
                 <Text style={styles.textStyle}>Purchase Plan</Text>
-              </Pressable>
+              </TouchableOpacity>
             </View>
           </View>
         </View>
@@ -145,6 +147,7 @@ const Remaining = ({...props}) => {
           elevation: 5,
           borderWidth: 0,
           borderRadius: 10,
+          overflow: PLATFORM_IOS ? 'visible' : 'hidden',
         }}>
         <Text
           style={{
@@ -166,6 +169,7 @@ const Remaining = ({...props}) => {
             alignItems: 'center',
             position: 'absolute',
             alignSelf: 'center',
+            zIndex:1
           }}>
           <Text
             style={{
@@ -185,13 +189,16 @@ const Remaining = ({...props}) => {
               lineHeight: 12,
               color: overusage ? COLORS.WHITE : 'rgba(61, 61, 61, 0.6)',
             }}>
-            Units Left To Be Used
+          {overusage ? 'Units Used' : 'Units Left To Be Used'}
           </Text>
         </View>
         {overusage ? (
           <>
             <LinearGradient
-              colors={[COLORS.RED, COLORS.RED]}
+              colors={[
+                PLATFORM_IOS ? 'rgba(248, 84, 84, 1)' : 'rgba(248, 98, 98, 1)',
+                PLATFORM_IOS ? 'rgba(248, 84, 84, 1)' : 'rgba(248, 98, 98, 1)',
+              ]}
               start={{x: 0, y: 0}}
               end={{x: 0, y: 1}}
               style={{
@@ -200,7 +207,7 @@ const Remaining = ({...props}) => {
                 // height:  getRemainingData < totalAllowed ?`${getRemainingData / totalAllowed}%` : '1%',
                 height: `${100 - 20}%`,
                 // height: `${30 - 20}%`,
-                zIndex: -1,
+                //zIndex: -1,
                 // flexDirection: 'column-reverse',
               }}
             />
@@ -208,12 +215,16 @@ const Remaining = ({...props}) => {
               source={require('../../assets/red_wave.json')} // Replace with your animation file
               autoPlay
               loop
+             
               style={{
                 // marginBottom:
                 //   ((getRemainingData / totalAllowed) * 100) <= 30 ? 0 : -10,
+                
                 zIndex: -1,
                 width: `100%`,
-                marginBottom: -10
+                // marginBottom: -10,
+                marginBottom:
+                (getRemainingData / totalAllowed) * 100 <= 30 ? -10 : -10,
                 // height: `80.4%`,
               }}
             />
@@ -222,7 +233,7 @@ const Remaining = ({...props}) => {
         ) : (
           <>
             <LinearGradient
-              colors={['#A8CF4D', '#A8CF4D']}
+              colors={['#AFD35E', '#AFD35E']}
               start={{x: 0, y: 0}}
               end={{x: 0, y: 1}}
               style={{
@@ -231,7 +242,7 @@ const Remaining = ({...props}) => {
                 // height:  getRemainingData < totalAllowed ?`${getRemainingData / totalAllowed}%` : '1%',
                 height: `${(getRemainingData / totalAllowed) * 100 - 20}%`,
                 // height: `${30 - 20}%`,
-                zIndex: -1,
+                // zIndex: -1,
                 // flexDirection: 'column-reverse',
               }}
             />
@@ -239,9 +250,10 @@ const Remaining = ({...props}) => {
               source={require('../../assets/wave.json')} // Replace with your animation file
               autoPlay
               loop
+            
               style={{
                 marginBottom:
-                  ((getRemainingData / totalAllowed) * 100) <= 30 ? 0 : -10,
+                  (getRemainingData / totalAllowed) * 100 <= 30 ? -1 : -10,
                 zIndex: -1,
                 width: `100%`,
                 // height: `80.4%`,
@@ -251,7 +263,7 @@ const Remaining = ({...props}) => {
           </>
         )}
       </View>
-      <OverusageModal />
+      {/* <OverusageModal /> */}
     </>
   );
 };
