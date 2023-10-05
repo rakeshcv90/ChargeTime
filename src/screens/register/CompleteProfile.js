@@ -210,6 +210,7 @@ export default function CompleteProfile(props) {
                   onFocus={() => setIsFocus(true)}
                   onBlur={() => setIsFocus(false)}
                   onChange={item => handleSelect(item.id, item)}
+                  itemTextStyle={{color:'black'}}
                 />
               </View>
 
@@ -325,6 +326,8 @@ const styles = StyleSheet.create({
   mainDiv_container: {
     paddingHorizontal: 20,
     paddingTop: 30,
+    marginBottom:30
+
   },
 
   mainDiv_complete_profile: {
@@ -383,10 +386,12 @@ const styles = StyleSheet.create({
   },
   create_profile_Touchable: {
     marginTop: 10,
+  
     backgroundColor: COLORS.GREEN,
     alignItems: 'center',
     padding: 13,
     borderRadius: 10,
+  
     width: '100%',
     ...Platform.select({
       ios: {
@@ -408,7 +413,7 @@ const styles = StyleSheet.create({
     marginTop: 20,
   },
   dropdown: {
-    height: 50,
+    height: 55,
     borderColor: '#808080',
     borderWidth: 1,
     borderRadius: 5,
@@ -445,7 +450,8 @@ const styles = StyleSheet.create({
   },
   dropdownContainer: {
     backgroundColor: COLORS.CREAM, // Set your desired background color here
-    borderColor: COLORS.GREEN, // Set your desired background color here
+    borderColor: COLORS.GREEN, 
+   // Set your desired background color here
   },
   placeholderStyle: {
     fontSize: 14,

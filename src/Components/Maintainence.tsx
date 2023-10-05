@@ -33,7 +33,7 @@ const Maintainence = ({isVisible}: any) => {
             style={{
               color: COLORS.BLACK,
               fontWeight: '500',
-              fontFamily: 'Roboto',
+              //fontFamily: 'Roboto',
               lineHeight: 20,
               fontSize: 14,
               marginBottom: 15,

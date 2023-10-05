@@ -56,18 +56,18 @@ export default function VerifyEmail(props) {
       PLATFORM_IOS
         ? Toast.show({
             type: 'error',
-            text1: 'Enter Authentication Key',
+            text1: 'Enter Code',
             // position: 'bottom',
           })
-        : ToastAndroid.show('Enter Authentication Key', ToastAndroid.SHORT);
+        : ToastAndroid.show('Enter Code Key', ToastAndroid.SHORT);
     } else if (otp.length < 6) {
       PLATFORM_IOS
         ? Toast.show({
             type: 'error',
-            text1: 'Enter Authentication Key',
+            text1: 'Enter Code Key',
             // position: 'bottom',
           })
-        : ToastAndroid.show('Enter Authentication Key', ToastAndroid.SHORT);
+        : ToastAndroid.show('Enter Code Key', ToastAndroid.SHORT);
     } else if (email == '') {
       PLATFORM_IOS
         ? Toast.show({
@@ -96,10 +96,10 @@ export default function VerifyEmail(props) {
             PLATFORM_IOS
               ? Toast.show({
                   type: 'success',
-                  text1: 'Authentication Successful.',
+                  text1: 'Email Verified.',
                 })
               : ToastAndroid.show(
-                  'Authentication Successful.',
+                  'Email Verified.',
                   ToastAndroid.SHORT,
                 );
             navigation.navigate('CompleteProfile', {
@@ -111,11 +111,11 @@ export default function VerifyEmail(props) {
             PLATFORM_IOS
               ? Toast.show({
                   type: 'error',
-                  text1: 'Authentication Key Invalid/expired',
+                  text1: 'Code Invalid/expired',
                   // position: 'bottom',
                 })
               : ToastAndroid.show(
-                  'Authentication Key Invalid/expired',
+                  'Code Invalid/expired',
                   ToastAndroid.SHORT,
                 );
 
@@ -158,21 +158,21 @@ export default function VerifyEmail(props) {
             PLATFORM_IOS
               ? Toast.show({
                   type: 'success',
-                  text1: 'New Authentication Key Sent Successfully',
+                  text1: 'New Code Sent Successfully',
                 })
               : ToastAndroid.show(
-                  'New Authentication Key Sent Successfully',
+                  'New Code Sent Successfully',
                   ToastAndroid.SHORT,
                 );
           } else {
             PLATFORM_IOS
               ? Toast.show({
                   type: 'error',
-                  text1: 'Authentication Key not send',
+                  text1: 'Code not send',
                   // position: 'bottom',
                 })
               : ToastAndroid.show(
-                  'Authentication Key not send',
+                  'Code not send',
                   ToastAndroid.SHORT,
                 );
           }
@@ -206,9 +206,9 @@ export default function VerifyEmail(props) {
           PLATFORM_IOS
             ? Toast.show({
                 type: 'success',
-                text1: 'Email sent',
+                text1: 'Email resent',
               })
-            : ToastAndroid.show('Email sent', ToastAndroid.SHORT);
+            : ToastAndroid.show('Email resent', ToastAndroid.SHORT);
         } else {
           PLATFORM_IOS
             ? Toast.show({
@@ -318,7 +318,7 @@ export default function VerifyEmail(props) {
               <Text style={styles.sendOtp_text}>
                 {statusCheck
                   ? 'We have sent a verification email to:'
-                  : 'We have sent a confirmation Code email to:'}
+                  : 'We have sent a confirmation code to your email:'}
               </Text>
               <TextInput
                 style={[
@@ -346,7 +346,7 @@ export default function VerifyEmail(props) {
                 }>
                 {statusCheck
                   ? 'Verify with Code instead.'
-                  : "Haven't received the Code yet?"}
+                  : "Haven't received the code yet?"}
               </Text>
               <TouchableOpacity
                 style={styles.resend_OTP_btn}
@@ -424,13 +424,13 @@ export default function VerifyEmail(props) {
                   loop
                   style={{width: 100, height: 100, alignSelf: 'center'}}
                 />
-                <View style={{marginVertical: 10, alignSelf: 'center'}}>
+                <View style={{marginVertical: 20, alignSelf: 'center'}}>
                   {remainingTime > 0 ? (
                     <Text>Resend Link in {remainingTime} seconds</Text>
                   ) : (
                     <View>
-                      <Text>Previous Email Link Expired</Text>
-                      <Text>Click Resend Link Button</Text>
+                      <Text>Previous Email Link Expired. Click Resend Link Button</Text>
+                      {/* <Text>Click Resend Link Button</Text> */}
                     </View>
                   )}
                 </View>
@@ -605,13 +605,13 @@ export default function VerifyEmail(props) {
                     onSubmitEditing={verifyOTP}
                   /> */}
                 </View>
-                <View style={{marginVertical: 10, alignSelf: 'center'}}>
+                <View style={{marginVertical: 20, alignSelf: 'center'}}>
                   {remainingTime > 0 ? (
                     <Text>Resend Code in {remainingTime} seconds</Text>
                   ) : (
                     <View>
-                      <Text>Previous Code Expired </Text>
-                      <Text>Click Resend Code Button</Text>
+                      <Text>Previous Code Expired. Click Resend Code Button </Text>
+                      {/* <Text>Click Resend Code Button</Text> */}
                     </View>
                   )}
                 </View>
@@ -754,7 +754,7 @@ const styles = StyleSheet.create({
     paddingTop: 15,
   },
   textInput_otp: {
-    width: 45,
+    width: 50,
     height: 45,
     borderRadius: 10,
     backgroundColor: COLORS.BROWN,

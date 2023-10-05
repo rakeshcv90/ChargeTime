@@ -106,10 +106,10 @@ export default function Register({navigation}) {
           PLATFORM_IOS
             ? Toast.show({
                 type: 'success',
-                text1: 'Please verify email with Authentication Key.',
+                text1: 'Please verify email with Code.',
               })
             : ToastAndroid.show(
-                'Please verify email with Authentication Key.',
+                'Please verify email with Code.',
                 ToastAndroid.SHORT,
               );
           navigation.navigate('VerifyEmail', {
