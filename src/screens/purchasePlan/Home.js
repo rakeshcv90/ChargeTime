@@ -158,6 +158,7 @@ export default function Home(route) {
                     fontWeight: isFocused ? '600' : '400',
                     fontSize: 12,
                     textAlign: 'center',
+                    color:'black'
                   }}>
                   {label}
                 </Text>

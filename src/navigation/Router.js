@@ -127,8 +127,8 @@ const DrawerNavigation = () => {
                     resizeMode="cover"
                     source={
                       !focused
-                        ? require('../../assets/images/home_white.png')
-                        : require('../../assets/images/home_green.png')
+                      ? require('../../assets/images/NewHome1.png')
+                      : require('../../assets/images/NewHome.png')
                     }
                     style={{width: 35, height: 25}}
                   />
@@ -136,16 +136,17 @@ const DrawerNavigation = () => {
               },
               drawerItemStyle: {
                 marginHorizontal: -7,
+                
               },
               drawerLabelStyle: {
-                backgroundColor: focus ? 'rgba(177, 211, 79, 0.8)' : '#fff',
+                backgroundColor: focus ? 'rgba(177, 211, 79, 0.8)' : 'rgba(255, 255, 255, 0)',
                 paddingVertical: 10,
                 paddingLeft: 10,
                 width: '200%',
                 // marginTop: -20,
                 marginLeft: -30,
-                color: 'black',
-                fontWeight: '700',
+                color:'black',
+                fontWeight:'700',
                 borderRadius: 5,
 
                 overflow: 'hidden',
@@ -168,20 +169,20 @@ const DrawerNavigation = () => {
                   <Image
                     source={
                       !focused
-                        ? require('../../assets/images/testing.png')
-                        : require('../../assets/images/energy_green.png')
+                        ? require('../../assets/images/NewEnergy1.png')
+                        : require('../../assets/images/NewEnergy.png')
                     }
                     style={{width: 35, height: 25}}
                   />
                 );
               },
               drawerLabelStyle: {
-                backgroundColor: focusOne ? 'rgba(177, 211, 79, 0.8)' : '#fff',
+                backgroundColor: focusOne ? 'rgba(177, 211, 79, 0.8)' : 'rgba(255, 255, 255, 0)',
                 paddingVertical: 10,
                 paddingLeft: 10,
                 width: '200%',
-                color: 'black',
-                fontWeight: '700',
+                color:'black',
+                fontWeight:'700',
                 marginLeft: -30,
 
                 borderRadius: 5,
@@ -206,8 +207,8 @@ const DrawerNavigation = () => {
                   resizeMode="cover"
                   source={
                     !focused
-                      ? require('../../assets/images/home_white.png')
-                      : require('../../assets/images/home_green.png')
+                      ? require('../../assets/images/NewHome1.png')
+                      : require('../../assets/images/NewHome.png')
                   }
                   style={{width: 35, height: 25}}
                 />
@@ -215,14 +216,15 @@ const DrawerNavigation = () => {
             },
             drawerItemStyle: {
               marginHorizontal: -7,
+              
             },
             drawerLabelStyle: {
-              backgroundColor: focus ? 'rgba(177, 211, 79, 0.8)' : '#fff',
+              backgroundColor: focus ? 'rgba(177, 211, 79, 0.8)' : 'rgba(255, 255, 255, 0)',
               paddingVertical: 10,
               paddingLeft: 10,
               width: '200%',
-              color: 'black',
-              fontWeight: '700',
+              color:'black',
+              fontWeight:'700',
               marginLeft: -30,
 
               borderRadius: 5,
@@ -243,6 +245,7 @@ const DrawerNavigation = () => {
           drawerItemStyle: {
             marginTop: -5,
             marginHorizontal: -9,
+            
           },
           drawerIcon: ({focused, color, size}) => {
             setFocusTwo(focused);
@@ -250,26 +253,26 @@ const DrawerNavigation = () => {
               <Image
                 source={
                   !focused
-                    ? require('../../assets/images/account_white.png')
-                    : require('../../assets/images/green_account.png')
+                    ? require('../../assets/images/NewAccount1.png')
+                    : require('../../assets/images/NewAccount.png')
                 }
                 style={{width: 40, height: 25}}
               />
             );
           },
           drawerLabelStyle: {
-            backgroundColor: focusTwo ? 'rgba(177, 211, 79, 0.8)' : '#fff',
+            backgroundColor: focusTwo ? 'rgba(177, 211, 79, 0.8)' : 'rgba(255, 255, 255, 0)',
             paddingVertical: 10,
             paddingLeft: 10,
             width: '200%',
-            color: 'black',
-            fontWeight: '700',
+            color:'black',
+            fontWeight:'700',
             marginLeft: -30,
             borderRadius: 5,
 
             overflow: 'hidden',
           },
-          drawerActiveTintColor: 'black',
+         drawerActiveTintColor: 'black',
           title: 'Account',
         }}
         name="AccountStack"
@@ -285,19 +288,20 @@ const DrawerNavigation = () => {
               <Image
                 source={require('../../assets/images/contact_us.png')}
                 resizeMode="stretch"
-                style={{width: 25, height: 25, padding: 0, margin: 0}}
+                style={{width: 25, height: 25, padding: 0, margin: -7}}
               />
             );
           },
           drawerItemStyle: {
             marginTop: (DIMENSIONS.SCREEN_HEIGHT * 15) / 100,
             marginLeft: (DIMENSIONS.SCREEN_WIDTH * 4) / 100,
+
           },
           drawerLabelStyle: {
             backgroundColor: '#fff',
-            marginLeft: -15,
-            color: 'black',
-            fontWeight: '700',
+            marginLeft: -17,
+            color:'black',
+            fontWeight:'700',
           },
           drawerActiveTintColor: 'black',
           //title: 'Contact Us',
@@ -321,8 +325,8 @@ const DrawerNavigation = () => {
           drawerLabelStyle: {
             backgroundColor: '#fff',
             marginLeft: -17,
-            color: 'black',
-            fontWeight: '700',
+            color:'black',
+            fontWeight:'700',
           },
           drawerActiveTintColor: 'black',
         }}
@@ -344,8 +348,8 @@ const DrawerNavigation = () => {
           drawerLabelStyle: {
             backgroundColor: '#fff',
             marginLeft: -17,
-            color: 'black',
-            fontWeight: '700',
+            color:'black',
+            fontWeight:'700',
           },
           drawerActiveTintColor: 'black',
         }}

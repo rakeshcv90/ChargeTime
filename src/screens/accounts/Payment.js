@@ -920,12 +920,12 @@ export default function PaymentGateWay({navigation, route}) {
                   style={{
                     backgroundColor: COLORS.GREEN,
                     width: DIMENSIONS.SCREEN_WIDTH * 0.4,
-                    height: '7%',
+                    height: (DIMENSIONS.SCREEN_HEIGHT * 7) / 100,
                     borderRadius: 12,
                     paddingVertical:
                       Platform.OS == 'ios'
-                        ? (DIMENSIONS.SCREEN_WIDTH * 5) / 100
-                        : (DIMENSIONS.SCREEN_WIDTH * 4) / 100,
+                        ? (DIMENSIONS.SCREEN_WIDTH * 3.5) / 100
+                        : (DIMENSIONS.SCREEN_WIDTH * 5) / 100,
                     paddingHorizontal: 24,
 
                     alignSelf: 'flex-end',

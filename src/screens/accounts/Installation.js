@@ -419,6 +419,7 @@ const Installation = () => {
             // onFocus={() => setIsFocus(false)}
             // onBlur={() => setIsFocus(false)}
             onChange={item => handleSelect(item.id, item)}
+            itemTextStyle={{color:'black'}}
           />
         </View>
         <Input

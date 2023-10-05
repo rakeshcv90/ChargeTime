@@ -84,10 +84,10 @@ const ForgetPassword = ({navigation}) => {
           PLATFORM_IOS
             ? Toast.show({
                 type: 'success',
-                text1: 'Authentication Key sent successfully.',
+                text1: 'Code sent successfully.',
               })
             : ToastAndroid.show(
-                'Authentication Key sent successfully.',
+                'Code sent successfully.',
                 ToastAndroid.SHORT,
               );
           // navigation.navigate('ResetPassword', {email: values});
@@ -202,10 +202,10 @@ const ForgetPassword = ({navigation}) => {
           PLATFORM_IOS
             ? Toast.show({
                 type: 'success',
-                text1: 'Authentication Key Resent successfully.',
+                text1: 'Code Resent successfully.',
               })
             : ToastAndroid.show(
-                'Authentication Key Resent successfully.',
+                'Code Resent successfully.',
                 ToastAndroid.SHORT,
               );
           // navigation.navigate('ResetPassword', {email: values});
@@ -305,7 +305,7 @@ const ForgetPassword = ({navigation}) => {
                       placeholder="Enter your Email"
                       bW={1}
                       textWidth={ms(45)}
-                      placeholderTextColor={COLORS.BLACK}
+                      placeholderTextColor={'gray'}
                       autoCapitalize="none"
                       editable={!showOTP}
                     />
