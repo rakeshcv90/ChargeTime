@@ -17,6 +17,8 @@ import {API} from './src/api/API';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {
   setChargerStatus,
+  setMaintainence,
+  setMaintainenceMessage,
   setOverModelView,
   setOverUsage,
   setRemainingData,
@@ -119,6 +121,7 @@ export default function App() {
     }
 
     async function onDisplayNotification(data) {
+      console.log('Notification Data', data);
       const notificationId = '';
       const getUserID = await AsyncStorage.getItem('userId');
 
@@ -282,6 +285,19 @@ export default function App() {
           dispatch(setSubscriptionStatus(0));
           console.log('byyyyyy');
         }
+      } else if (notification_id === '0') {
+        notifee.displayNotification({
+          title: data?.data?.title,
+          body: data.data.message,
+
+          android: {
+            channelId: channelId,
+            smallIcon: 'custom_notification_icon',
+            largeIcon: require('./assets/ic_launcher.png'),
+          },
+        });
+        dispatch(setMaintainence(true))
+        dispatch(setMaintainenceMessage(data.data.message))
       } else {
         notifee.displayNotification({
           title: data?.data?.title,
