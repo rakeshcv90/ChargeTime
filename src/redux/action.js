@@ -112,6 +112,9 @@ export const setMaintainence = data => {
 export const setOverModelView = data => {
   return {type: types.OVER_MODEL_VIEW, payload: data};
 };
+export const setOverusageCount = data => {
+  return {type: types.OVERUSAGE_COUNT, payload: data};
+};
 export const setLogout = () => {
   return {type: types.LOG_OUT};
 };

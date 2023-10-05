@@ -16,8 +16,8 @@ import {useDispatch, useSelector} from 'react-redux';
 import axios from 'axios';
 import {API} from '../api/API';
 import {
-  setOverModelView,
   setOverUsage,
+  setOverusageCount,
   setRemainingData,
 } from '../redux/action';
 import AnimatedLottieView from 'lottie-react-native';
@@ -33,7 +33,7 @@ import {
 const RemainingHorizontal = ({...props}) => {
   const dispatch = useDispatch();
   const [totalAllowed, setTotalAllowed] = useState(0);
-  const {getRemainingData, getUserID, overusage, overModelView} = useSelector(
+  const {getRemainingData, getUserID, overusage, overusageCount} = useSelector(
     (state: any) => state,
   );
 
@@ -57,10 +57,15 @@ const RemainingHorizontal = ({...props}) => {
         if (res.data?.kwh_unit_remaining > 0) {
           remaingData = res.data?.kwh_unit_remaining;
           dispatch(setOverUsage(false));
+          dispatch(setOverusageCount(0));
         } else {
           remaingData = res.data?.kwh_unit_overusage;
           dispatch(setOverUsage(true));
-          // setModalVisible(true);
+          console.log(overusageCount, 'OVERUSAGECOUNT');
+          if (overusageCount < 1) {
+            setModalVisible(true);
+            dispatch(setOverusageCount(overusage + 1));
+          }
         }
 
         dispatch(setRemainingData(remaingData));
@@ -70,7 +75,8 @@ const RemainingHorizontal = ({...props}) => {
       });
   };
   const nav = () => {
-    dispatch(setOverModelView(false));
+    setModalVisible(!modalVisible);
+    dispatch(setOverusageCount(overusage + 1));
     navigationRef.navigate('HomeOne');
   };
   const OverusageModal = () => {
@@ -78,9 +84,10 @@ const RemainingHorizontal = ({...props}) => {
       <Modal
         animationType="fade"
         transparent={true}
-        visible={overModelView}
+        visible={modalVisible}
         onRequestClose={() => {
-          dispatch(setOverModelView(false));
+          // dispatch(setOverModelView(false));
+          setModalVisible(!modalVisible);
         }}>
         <View style={styles.centeredView}>
           <View style={styles.modalView}>
@@ -107,7 +114,10 @@ const RemainingHorizontal = ({...props}) => {
                   borderRadius: 20,
                   padding: 10,
                 }}
-                onPress={() => dispatch(setOverModelView(false))}>
+                onPress={() => {
+                  dispatch(setOverusageCount(overusage + 1));
+                  setModalVisible(false);
+                }}>
                 <Text style={styles.textStyle}>Cancel</Text>
               </TouchableOpacity>
               <TouchableOpacity
@@ -302,7 +312,7 @@ const RemainingHorizontal = ({...props}) => {
           )}
         </View>
       </View>
-      {/* <OverusageModal /> */}
+      <OverusageModal />
     </>
   );
 };
