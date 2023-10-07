@@ -35,7 +35,7 @@ import Clipboard from '@react-native-clipboard/clipboard';
 const mobileW = Math.round(Dimensions.get('screen').width);
 
 const validationSchema = Yup.object().shape({
-  email: Yup.string().email('Invalid Email').required('Email is required'),
+  email: Yup.string().email('Invalid Email').required('Email is Required'),
 });
 
 const ForgetPassword = ({navigation}) => {
@@ -47,6 +47,19 @@ const ForgetPassword = ({navigation}) => {
   const [timerActive, setTimerActive] = useState(true);
   const [disablebutton, setdisableButton] = useState(false);
   const inputRefs = useRef([]);
+  const [firstDigit, setFirstDigit] = useState('');
+  const [secondDigit, setsecondDigit] = useState('');
+  const [thirdDigit, setthirdDigit] = useState('');
+  const [forthDigit, setforthDigit] = useState('');
+  const [fifthDigit, setfifthDigit] = useState('');
+  const [sixDigit, setSixDigit] = useState('');
+
+  const otp1 = useRef(null);
+  const otp2 = useRef(null);
+  const otp3 = useRef(null);
+  const otp4 = useRef(null);
+  const otp5 = useRef(null);
+  const otp6 = useRef(null);
 
   useEffect(() => {
     if (timerActive && remainingTime > 0) {
@@ -113,7 +126,40 @@ const ForgetPassword = ({navigation}) => {
   };
 
   const verifyOTP = async () => {
-    setForLoading(true);
+    const otp =
+    firstDigit +
+    secondDigit +
+    thirdDigit +
+    forthDigit +
+    fifthDigit +
+    sixDigit;
+    if (otp.length == 0) {
+      PLATFORM_IOS
+        ? Toast.show({
+            type: 'error',
+            text1: 'Enter Code',
+            // position: 'bottom',
+          })
+        : ToastAndroid.show('Enter Code Key', ToastAndroid.SHORT);
+    } else if (otp.length < 6) {
+      PLATFORM_IOS
+        ? Toast.show({
+            type: 'error',
+            text1: 'Enter Code Key',
+            // position: 'bottom',
+          })
+        : ToastAndroid.show('Enter Code Key', ToastAndroid.SHORT);
+    } else if (email == '') {
+      PLATFORM_IOS
+        ? Toast.show({
+            type: 'error',
+            text1: 'Enter Email ID ',
+            // position: 'bottom',
+          })
+        : ToastAndroid.show('Enter Email ID', ToastAndroid.SHORT);
+    } else{
+      setForLoading(true);
+    
 
     try {
       if (email !== '' && otp !== '') {
@@ -161,26 +207,13 @@ const ForgetPassword = ({navigation}) => {
             setOtp('');
           }
         }
-      } else {
-        PLATFORM_IOS
-          ? Toast.show({
-              type: 'error',
-              text1: 'Please fill required details',
-              // position: 'bottom',
-            })
-          : ToastAndroid.show(
-              'Please fill required details',
-              ToastAndroid.SHORT,
-            );
-      }
-      setForLoading(false);
-      Clipboard.setString('');
-      setOtp('');
+      } 
+     
     } catch (error) {
       setForLoading(false);
       Clipboard.setString('');
       setOtp('');
-    }
+    }}
   };
   const resendOTp = async value => {
     const data = {email: value};
@@ -202,10 +235,10 @@ const ForgetPassword = ({navigation}) => {
           PLATFORM_IOS
             ? Toast.show({
                 type: 'success',
-                text1: 'Code Resent successfully.',
+                text1: 'Code Resent Successfully.',
               })
             : ToastAndroid.show(
-                'Code Resent successfully.',
+                'Code Resent Successfully.',
                 ToastAndroid.SHORT,
               );
           // navigation.navigate('ResetPassword', {email: values});
@@ -353,11 +386,15 @@ const ForgetPassword = ({navigation}) => {
           {showOTP && (
             <>
               <View style={styles.mainDiv_verify_email}>
-                <Text style={styles.havenot_received_email}>
+                <Text  style={{
+                    color: COLORS.BLACK,
+                    fontSize: 14,
+                    fontWeight: '600',
+                  }}>
                   Enter the Code Below
                 </Text>
                 <View style={styles.otp_box}>
-                  {[...Array(6)].map((_, index) => (
+                  {/* {[...Array(6)].map((_, index) => (
                     <View style={styles.otp_box}>
                       <TouchableOpacity onLongPress={()=>{console.log("Cvdfgdgdfg222222")}} >
                       <TextInput
@@ -383,15 +420,153 @@ const ForgetPassword = ({navigation}) => {
                       </TouchableOpacity>
                     </View>
                     
-                  ))}
+                  ))} */}
+                  <TextInput
+                    ref={otp1}
+                    onChangeText={value => {
+                      if (value.length>=1) {
+                        setFirstDigit(value);
+                        otp2.current.focus();
+                      }
+                      // else setFirstDigit('');1
+                    }}
+                    keyboardType="numeric"
+                    maxLength={1}
+                    style={styles.textInput_otp}
+                    value={firstDigit}
+                    onKeyPress={({nativeEvent}) => {
+                      if (
+                        nativeEvent.key == 'Backspace' &&
+                        setFirstDigit != ' '
+                      ) {
+                        setFirstDigit('');
+                      }
+                    }}
+                  />
+                  <TextInput
+                    ref={otp2}
+                    onChangeText={value => {
+                      if (value.length>=1) {
+                        setsecondDigit(value);
+                        otp3.current.focus();
+                      }
+                    }}
+                    keyboardType="numeric"
+                    maxLength={1}
+                    style={styles.textInput_otp}
+                    value={secondDigit}
+                    onKeyPress={({nativeEvent}) => {
+                      if (
+                        nativeEvent.key == 'Backspace' &&
+                        setsecondDigit != ' '
+                      ) {
+                        setsecondDigit('');
+                        // otp1.current.focus();
+                      }
+                    }}
+                  />
+                  <TextInput
+                    keyboardType="numeric"
+                    ref={otp3}
+                    onChangeText={value => {
+                      if (value.length>=1) {
+                        setthirdDigit(value);
+                        otp4.current.focus();
+                      }
+                    }}
+                    maxLength={1}
+                    style={styles.textInput_otp}
+                    value={thirdDigit}
+                    onKeyPress={({nativeEvent}) => {
+                      if (
+                        nativeEvent.key == 'Backspace' &&
+                        setthirdDigit != ' '
+                      ) {
+                        setthirdDigit('');
+                        // otp2.current.focus();
+                      }
+                    }}
+                  />
+                  <TextInput
+                    keyboardType="numeric"
+                    ref={otp4}
+                    onChangeText={value => {
+                      if (value.length>=1) {
+                        setforthDigit(value);
+                        otp5.current.focus();
+                      }
+                    }}
+                    maxLength={1}
+                    style={styles.textInput_otp}
+                    value={forthDigit}
+                    onKeyPress={({nativeEvent}) => {
+                      if (
+                        nativeEvent.key == 'Backspace' &&
+                        setforthDigit != ''
+                      ) {
+                        setforthDigit('');
+                        // otp3.current.focus();
+                      }
+                    }}
+                  />
+                  <TextInput
+                    keyboardType="numeric"
+                    ref={otp5}
+                    onChangeText={value => {
+                      if (value.length>=1) {
+                        setfifthDigit(value);
+                        otp6.current.focus();
+                       
+                      }
+                    }}
+                    maxLength={1}
+                    style={styles.textInput_otp}
+                    value={fifthDigit}
+                    onKeyPress={({nativeEvent}) => {
+                      if (
+                        nativeEvent.key == 'Backspace' &&
+                        setfifthDigit != ' '
+                      ) {
+                        setfifthDigit('');
+                        // otp4.current.focus();
+                      }
+                    }}
+                  />
+                  <TextInput
+                    keyboardType="numeric"
+                    ref={otp6}
+                    onChangeText={value => {
+                      if(value.length>=1){
+                        setSixDigit(value)
+                        otp6.current.focus();
+                      }else if(value.length<1){
+                        setSixDigit('')
+                        // otp5.current.focus();
+                      }
+                 
+                    }}
+                    maxLength={1}
+                    style={styles.textInput_otp}
+                    value={sixDigit}
+                    // onKeyPress={({nativeEvent}) => {
+                    //   if (
+                    //     nativeEvent.key == 'Backspace' &&
+                    //     setSixDigit != ' '
+                    //   ) {
+                    //     setSixDigit('');
+                    //     // otp5.current.focus();
+                    //   }
+                    // }}
+                    // onSubmitEditing={verifyOTP}
+                  />
                 </View>
-                <View style={{marginVertical: 10, alignSelf: 'center'}}>
+                <View style={{marginTop: 20, alignSelf: 'center'}}>
                     {remainingTime > 0 ? (
                       <Text>Resend Code in {remainingTime} seconds</Text>
                     ) : (
                       <View>
-                        <Text>Previous Code Expired </Text>
-                        <Text>Click Resend Code Button</Text>
+                        <Text>Previous Code Expired. Click Resend Code Button</Text>
+                        {/* <Text>Click Resend Code Button</Text> */}
                       </View>
                     )}
                   </View>
@@ -403,7 +578,7 @@ const ForgetPassword = ({navigation}) => {
                     fontSize: 14,
                     fontWeight: '600',
                   }}>
-                  Haven't received the Code yet?
+                  Haven't received the code yet?
                 </Text>
                 <TouchableOpacity
                   style={styles.resend_OTP_btn}

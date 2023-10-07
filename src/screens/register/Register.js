@@ -41,17 +41,17 @@ const PasswordRegex =
 const validationSchema = Yup.object().shape({
   // name: Yup.string().required('Full Name is required'),
   name: Yup.string()
-    .required('First Name is required')
+    .required('First Name is Required')
     .matches(/^[A-Za-z].*/, 'First Name must be start with a character')
     .min(3, 'First Name must contain at least 3 characters'),
   lname: Yup.string()
-    .required(' Last Name is required')
+    .required(' Last Name is Required')
     .matches(/^[A-Za-z].*/, 'Last Name must be start with a character')
     .min(3, 'Last Name must contain at least 3 characters'),
   // email: Yup.string().email('Invalid Email').required('Email is required'),
   email: Yup.string()
     .matches(/^[\w.\-]+@[\w.\-]+\.\w{2,4}$/, 'Invalid Email Format')
-    .required('Email is required'),
+    .required('Email is Required'),
   // mobile: Yup.string().min(10).required('Phone No. is required'),
   mobile: Yup.string()
     .test('is-ten-digits', 'Phone No. must be a 10-digit number', value => {
@@ -60,13 +60,13 @@ const validationSchema = Yup.object().shape({
       }
       return true; // Allows an empty field, but shows a different required error message
     })
-    .required('Phone No. is required'),
+    .required('Phone No. is Required'),
   password: Yup.string()
     .matches(
       PasswordRegex,
-      'Password must contain 1 Upper-Case letter, 1 Lower-Case letter, 1 Digit, 1 Special character(@,$,-,^,&, !), and the length must be at least 8 characters',
+      'Password must contain 1 Upper-Case letter, 1 Lower-Case letter, 1 Digit, 1 Special Character(@,$,-,^,&, !), and the length must be at least 8 characters',
     )
-    .required('Password is required'),
+    .required('Password is Required'),
 });
 export default function Register({navigation}) {
   const [forLoading, setForLoading] = useState(false);
@@ -106,10 +106,10 @@ export default function Register({navigation}) {
           PLATFORM_IOS
             ? Toast.show({
                 type: 'success',
-                text1: 'Please verify email with Code.',
+                text1: 'Please verify your email with code.',
               })
             : ToastAndroid.show(
-                'Please verify email with Code.',
+                'Please verify your email with code.',
                 ToastAndroid.SHORT,
               );
           navigation.navigate('VerifyEmail', {

@@ -42,11 +42,11 @@ const PurchseButton = ({data}) => {
             flexDirection: 'row',
           }}>
           <Text style={styles.per_month}>
-            ${data[0] == undefined ? data?.total_price : data[0].total_price}
+            ${data[0] == undefined ? data?.total_price : data[0].total_price}/
           </Text>
           <Text
             style={{
-              fontSize: 12,
+              fontSize: 15,
               color: COLORS.BLACK,
               paddingLeft: 2,
               lineHeight: 24,

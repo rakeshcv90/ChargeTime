@@ -21,6 +21,7 @@ import {
   setOverUsage,
   setRemainingData,
   setSubscriptionStatus,
+  userProfileData,
 } from './src/redux/action';
 import {PermissionsAndroid} from 'react-native';
 export const navigationRef = createNavigationContainerRef();
@@ -129,6 +130,7 @@ export default function App() {
       const message = data?.data?.message;
       const notification_id = data?.data?.notification_id;
       if (notification_id === 'Em-004') {
+     
         notifee.displayNotification({
           title: data?.data?.title,
           body: data.data.message,
@@ -146,7 +148,9 @@ export default function App() {
           .catch(err => {
             console.log(err);
           });
+   
       } else if (notification_id === 'Em-006') {
+     
         notifee.displayNotification({
           title: data?.data?.title,
           body: data.data.message,
@@ -164,6 +168,7 @@ export default function App() {
           .catch(err => {
             console.log(err);
           });
+  
       } else if (notification_id === 'Tr-001') {
         notifee.displayNotification({
           title: data?.data?.title,
@@ -282,10 +287,38 @@ export default function App() {
           dispatch(setSubscriptionStatus(0));
           console.log('byyyyyy');
         }
-      } else {
+      } else if(notification_id === 'Event'){
+        console.log("ddddddddddd",data.data)
         notifee.displayNotification({
-          title: data?.data?.title,
-          body: data.data.message,
+          title:data?.data?.title,
+          body:data.data.message,
+
+          android: {
+            channelId: channelId,
+            smallIcon: 'custom_notification_icon',
+            largeIcon: require('./assets/ic_launcher.png'),
+          },
+        });
+           
+    try {
+      const response = await fetch(`${API}/userexisting/${getUserID}`);
+      const result = await response.json();
+
+      if (result[0].message === 'sucess') {
+        //  setUserData(result);
+
+        dispatch(userProfileData(result));
+      }
+    } catch (error) {
+      console.error('Error222', error);
+    }
+
+      }
+      else {
+       
+        notifee.displayNotification({
+          title:data?.data?.title,
+          body:data.data.message,
 
           android: {
             channelId: channelId,

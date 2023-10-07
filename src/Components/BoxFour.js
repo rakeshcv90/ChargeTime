@@ -36,7 +36,12 @@ const BoxFour = ({data}) => {
           : styles.mainDiv_installation
       }>
       <View style={styles.install_touchable}>
-        <Address style={styles.img_width} />
+        {/* <Address style={styles.img_width} /> */}
+        <Image
+          style={styles.img_width}
+          resizeMode="contain"
+          source={require('../../assets/images/details.png')}
+        />
         <Text style={styles.installation_text}>Plan Details</Text>
       </View>
       <View style={styles.shadowProp}>
@@ -51,12 +56,13 @@ const BoxFour = ({data}) => {
             {data[0] == undefined ? data.package_name : data[0].package_name}
           </Text>
         </View>
+        <View style={{backgroundColor:COLORS.WHITE}}>
         <Image
           // style={styles.img_width}
           source={require('../../assets/images/dotted.png')}
           resizeMode="stretch"
           style={{alignSelf: 'center', width: mobileW - 40}}
-        />
+        /></View>
         <View style={styles.mainDiv_state_zip}>
           <View style={styles.state_div}>
             {/* <Connecticut style={styles.img_width} /> */}

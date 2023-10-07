@@ -121,7 +121,7 @@ const BoxFive = ({data, purchageData, disabled}) => {
         <View style={styles.dollar_div}>
           {/* <Image source={require('../../assets/images/price.png')} style={{width:18,height:18}}resizeMode='contain'/> */}
           <Dolllar />
-          <Text style={styles.per_month}>${data?.total_price} /month</Text>
+          <Text style={styles.per_month}>${data?.total_price}/ month</Text>
         </View>
       </View>
       <ShowModal />

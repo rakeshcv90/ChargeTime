@@ -140,12 +140,13 @@ const InstallationBase = ({data}) => {
       </View>
       <View style={styles.mainDiv_state_zip}>
         {/* <View style={styles.state_div}> */}
-        {/* <Image
-            style={styles.img_width}
+        <Image
+            style={[styles.img_width,{  width:16,
+              height:16}]}
             source={require('../../assets/images/connecticut.png')}
-          /> */}
-        <Connecticut style={styles.img_width} />
-        <Text style={[styles.force_base,{marginLeft:-DIMENSIONS.SCREEN_WIDTH*0.14}]}>
+          />
+        {/* <Connecticut style={styles.img_width} /> */}
+        <Text style={[styles.force_base,{marginLeft:Platform.OS=='ios'?-DIMENSIONS.SCREEN_WIDTH*0.08:-DIMENSIONS.SCREEN_WIDTH*0.11}]}>
           {data[0] == undefined ? data?.state : data[0].state}
         </Text>
         {/* <Text style={styles.force_base}>{setBasePackage[0].state}</Text> */}

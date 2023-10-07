@@ -176,9 +176,10 @@ export default function CompleteProfile(props) {
     <SafeAreaView style={{backgroundColor: COLORS.CREAM, flex: 1}}>
       <ScrollView
         showsVerticalScrollIndicator={false}
-        scrollEnabled={false}
+        automaticallyAdjustContentInsets={false}
+        // scrollEnabled={false}
         keyboardShouldPersistTaps="handled">
-        <KeyboardAvoidingView behavior="position">
+        {/* <KeyboardAvoidingView behavior="position"> */}
           {forLoading ? <ActivityLoader /> : ''}
           <Image
             source={require('../../../assets/images/res.png')}
@@ -210,7 +211,7 @@ export default function CompleteProfile(props) {
                   onFocus={() => setIsFocus(true)}
                   onBlur={() => setIsFocus(false)}
                   onChange={item => handleSelect(item.id, item)}
-                  itemTextStyle={{color:'black'}}
+                  itemTextStyle={{color:'black',}}
                 />
               </View>
 
@@ -310,7 +311,7 @@ export default function CompleteProfile(props) {
               </TouchableOpacity>
             </View>
           </View>
-        </KeyboardAvoidingView>
+        {/* </KeyboardAvoidingView> */}
       </ScrollView>
     </SafeAreaView>
   );
@@ -431,11 +432,12 @@ const styles = StyleSheet.create({
     color: COLORS.BLACK,
     marginLeft: 15,
     lineHeight: 16,
-    fontWeight: '700',
+    fontWeight: '500',
     // letterSpacing: 0.4
   },
   selectedTextStyle: {
-    fontSize: 16,
+    fontSize: 15,
+    marginTop:-10,
     color: COLORS.BLACK,
   },
   iconStyle: {
@@ -444,13 +446,14 @@ const styles = StyleSheet.create({
   },
   inputSearchStyle: {
    // height: 40,
-    fontSize: 16,
+    fontSize: 14,
    backgroundColor: COLORS.CREAM,
    borderColor:'COLORS.GREEN',
   },
   dropdownContainer: {
     backgroundColor: COLORS.CREAM, // Set your desired background color here
     borderColor: COLORS.GREEN, 
+    
    // Set your desired background color here
   },
   placeholderStyle: {

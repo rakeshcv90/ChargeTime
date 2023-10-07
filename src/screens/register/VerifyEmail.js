@@ -45,13 +45,31 @@ export default function VerifyEmail(props) {
   const [disablebutton, setdisableButton] = useState(false);
   const [otp, setOtp] = useState('');
   const inputRefs = useRef([]);
+  const [firstDigit, setFirstDigit] = useState('');
+  const [secondDigit, setsecondDigit] = useState('');
+  const [thirdDigit, setthirdDigit] = useState('');
+  const [forthDigit, setforthDigit] = useState('');
+  const [fifthDigit, setfifthDigit] = useState('');
+  const [sixDigit, setSixDigit] = useState('');
 
   const theme = useColorScheme();
   const isDark = theme === 'dark';
-
+  const otp1 = useRef();
+  const otp2 = useRef();
+  const otp3 = useRef();
+  const otp4 = useRef();
+  const otp5 = useRef();
+  const otp6 = useRef();
   const {userRegisterData} = useSelector(state => state);
   const verifyOTP = async () => {
 
+    const otp =
+      firstDigit +
+      secondDigit +
+      thirdDigit +
+      forthDigit +
+      fifthDigit +
+      sixDigit;
     if (otp.length == 0) {
       PLATFORM_IOS
         ? Toast.show({
@@ -76,7 +94,8 @@ export default function VerifyEmail(props) {
             // position: 'bottom',
           })
         : ToastAndroid.show('Enter Email ID', ToastAndroid.SHORT);
-    } else {
+    } 
+    else {
       setForLoading(true);
       try {
         let payload = new FormData();
@@ -111,11 +130,11 @@ export default function VerifyEmail(props) {
             PLATFORM_IOS
               ? Toast.show({
                   type: 'error',
-                  text1: 'Code Invalid/expired',
+                  text1: 'Code Invalid/Expired',
                   // position: 'bottom',
                 })
               : ToastAndroid.show(
-                  'Code Invalid/expired',
+                  'Code Invalid/Expired',
                   ToastAndroid.SHORT,
                 );
 
@@ -184,6 +203,7 @@ export default function VerifyEmail(props) {
   };
 
   const resendLink = async () => {
+ 
     setdisableButton(true);
     setRemainingTime(60);
     setTimerActive(true);
@@ -200,15 +220,25 @@ export default function VerifyEmail(props) {
 
       if (res.data) {
         if (res.data.message == 'Email sent successfully') {
-          setEmailCheck(true);
-          setStatusCheck(true);
-          setTempID(res.data.id);
-          PLATFORM_IOS
+          
+          if(statusCheck){
+            PLATFORM_IOS
             ? Toast.show({
                 type: 'success',
                 text1: 'Email resent',
               })
             : ToastAndroid.show('Email resent', ToastAndroid.SHORT);
+          }else{
+            PLATFORM_IOS
+            ? Toast.show({
+                type: 'success',
+                text1: 'Email sent',
+              })
+            : ToastAndroid.show('Email sent', ToastAndroid.SHORT);
+          }
+          setEmailCheck(true);
+          setStatusCheck(true);
+          setTempID(res.data.id);
         } else {
           PLATFORM_IOS
             ? Toast.show({
@@ -274,33 +304,33 @@ export default function VerifyEmail(props) {
     }
   }, [remainingTime, timerActive]);
 
-  const handleInputChange = (text, index) => {
-    if (text && index < 5) {
-      inputRefs.current[index + 1].focus();
-    }
+  // const handleInputChange = (text, index) => {
+  //   if (text && index < 5) {
+  //     inputRefs.current[index + 1].focus();
+  //   }
 
-    setOtp(prevOtp => {
-      let newOtp = prevOtp.split('');
-      newOtp[index] = text;
-      return newOtp.join('');
-    });
-  };
+  //   setOtp(prevOtp => {
+  //     let newOtp = prevOtp.split('');
+  //     newOtp[index] = text;
+  //     return newOtp.join('');
+  //   });
+  // };
 
-  const handleBackspace = index => {
-    if (index > 0) {
-      inputRefs.current[index - 1].focus();
-    }
+  // const handleBackspace = index => {
+  //   if (index > 0) {
+  //     inputRefs.current[index - 1].focus();
+  //   }
 
-    setOtp(prevOtp => {
-      let newOtp = prevOtp.split('');
-      newOtp[index] = '';
-      return newOtp.join('');
-    });
-  };
-  const fetchCopiedText = async () => {
-    const text = await Clipboard.getString();
-    // setOtp(text);
-  };
+  //   setOtp(prevOtp => {
+  //     let newOtp = prevOtp.split('');
+  //     newOtp[index] = '';
+  //     return newOtp.join('');
+  //   });
+  // };
+  // const fetchCopiedText = async () => {
+  //   const text = await Clipboard.getString();
+  //   // setOtp(text);
+  // };
 
   return (
     <SafeAreaView style={{backgroundColor: COLORS.CREAM, flex: 1}}>
@@ -345,7 +375,7 @@ export default function VerifyEmail(props) {
                     : {color: COLORS.BLACK, fontSize: 14, fontWeight: '600'}
                 }>
                 {statusCheck
-                  ? 'Verify with Code instead.'
+                  ? 'Verify with code instead.'
                   : "Haven't received the code yet?"}
               </Text>
               <TouchableOpacity
@@ -426,7 +456,7 @@ export default function VerifyEmail(props) {
                 />
                 <View style={{marginVertical: 20, alignSelf: 'center'}}>
                   {remainingTime > 0 ? (
-                    <Text>Resend Link in {remainingTime} seconds</Text>
+                    <Text>Resend Link in {remainingTime} Seconds</Text>
                   ) : (
                     <View>
                       <Text>Previous Email Link Expired. Click Resend Link Button</Text>
@@ -450,7 +480,7 @@ export default function VerifyEmail(props) {
                   Enter the Code Below
                 </Text>
                 <View style={styles.otp_box}>
-                  {[...Array(6)].map((_, index) => (
+                  {/* {[...Array(6)].map((_, index) => (
                     <View style={styles.otp_box}>
                       <TextInput
                         key={index}
@@ -471,15 +501,15 @@ export default function VerifyEmail(props) {
                         // }}
                       />
                     </View>
-                  ))}
-                  {/* <TextInput
+                  ))} */}
+                  <TextInput
                     ref={otp1}
                     onChangeText={value => {
-                      if (value != '') {
+                      if (value.length>=1) {
                         setFirstDigit(value);
                         otp2.current.focus();
                       }
-                      // else setFirstDigit('');
+                      // else setFirstDigit('');1
                     }}
                     keyboardType="numeric"
                     maxLength={1}
@@ -497,7 +527,7 @@ export default function VerifyEmail(props) {
                   <TextInput
                     ref={otp2}
                     onChangeText={value => {
-                      if (value != '') {
+                      if (value.length>=1) {
                         setsecondDigit(value);
                         otp3.current.focus();
                       }
@@ -512,7 +542,7 @@ export default function VerifyEmail(props) {
                         setsecondDigit != ' '
                       ) {
                         setsecondDigit('');
-                        otp1.current.focus();
+                        // otp1.current.focus();
                       }
                     }}
                   />
@@ -520,7 +550,7 @@ export default function VerifyEmail(props) {
                     keyboardType="numeric"
                     ref={otp3}
                     onChangeText={value => {
-                      if (value != '') {
+                      if (value.length>=1) {
                         setthirdDigit(value);
                         otp4.current.focus();
                       }
@@ -534,7 +564,7 @@ export default function VerifyEmail(props) {
                         setthirdDigit != ' '
                       ) {
                         setthirdDigit('');
-                        otp2.current.focus();
+                        // otp2.current.focus();
                       }
                     }}
                   />
@@ -542,7 +572,7 @@ export default function VerifyEmail(props) {
                     keyboardType="numeric"
                     ref={otp4}
                     onChangeText={value => {
-                      if (value != '') {
+                      if (value.length>=1) {
                         setforthDigit(value);
                         otp5.current.focus();
                       }
@@ -556,7 +586,7 @@ export default function VerifyEmail(props) {
                         setforthDigit != ''
                       ) {
                         setforthDigit('');
-                        otp3.current.focus();
+                        // otp3.current.focus();
                       }
                     }}
                   />
@@ -564,9 +594,10 @@ export default function VerifyEmail(props) {
                     keyboardType="numeric"
                     ref={otp5}
                     onChangeText={value => {
-                      if (value != '') {
+                      if (value.length>=1) {
                         setfifthDigit(value);
                         otp6.current.focus();
+                       
                       }
                     }}
                     maxLength={1}
@@ -578,7 +609,7 @@ export default function VerifyEmail(props) {
                         setfifthDigit != ' '
                       ) {
                         setfifthDigit('');
-                        otp4.current.focus();
+                        // otp4.current.focus();
                       }
                     }}
                   />
@@ -586,28 +617,33 @@ export default function VerifyEmail(props) {
                     keyboardType="numeric"
                     ref={otp6}
                     onChangeText={value => {
-                      if (value != '') {
-                        setSixDigit(value);
+                      if(value.length>=1){
+                        setSixDigit(value)
+                        otp6.current.focus();
+                      }else if(value.length<1){
+                        setSixDigit('')
+                        // otp5.current.focus();
                       }
+                 
                     }}
                     maxLength={1}
                     style={styles.textInput_otp}
                     value={sixDigit}
-                    onKeyPress={({nativeEvent}) => {
-                      if (
-                        nativeEvent.key == 'Backspace' &&
-                        setSixDigit != ' '
-                      ) {
-                        setSixDigit('');
-                        otp5.current.focus();
-                      }
-                    }}
-                    onSubmitEditing={verifyOTP}
-                  /> */}
+                    // onKeyPress={({nativeEvent}) => {
+                    //   if (
+                    //     nativeEvent.key == 'Backspace' &&
+                    //     setSixDigit != ' '
+                    //   ) {
+                    //     setSixDigit('');
+                    //     // otp5.current.focus();
+                    //   }
+                    // }}
+                    // onSubmitEditing={verifyOTP}
+                  />
                 </View>
                 <View style={{marginVertical: 20, alignSelf: 'center'}}>
                   {remainingTime > 0 ? (
-                    <Text>Resend Code in {remainingTime} seconds</Text>
+                    <Text>Resend Code in {remainingTime} Seconds</Text>
                   ) : (
                     <View>
                       <Text>Previous Code Expired. Click Resend Code Button </Text>

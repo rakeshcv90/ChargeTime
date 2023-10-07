@@ -47,8 +47,10 @@ const validationSchema = Yup.object().shape({
     )
     .required('Please Enter New Password '),
   password_confirmation: Yup.string()
-    .oneOf([Yup.ref('newPassword'), ''], 'Confirm Password Not Match')
-    .required('Please Enter Re_enter Password'),
+    // .oneOf([Yup.ref('newPassword'), ''], 'Confirm Password does Not Match')
+
+  .oneOf([Yup.ref('password')], 'Confirm Password Does Not Match')
+    .required('Please Enter Re-enter Password'),
 });
 
 const mobileW = Math.round(Dimensions.get('screen').width);

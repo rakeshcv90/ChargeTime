@@ -57,8 +57,8 @@ const mobileH = Math.round(Dimensions.get('window').height);
 const validationSchema = Yup.object().shape({
   // cardHolderName: Yup.string().required('Card Holder Name is required'),
   cardHolderName: Yup.string()
-    .required('Card Holder Name is required')
-    .matches(/^[a-zA-Z]*$/, 'Name must be start with a character')
+    .required('Card Holder Name is Required')
+    .matches(/^[^-\s][a-zA-Z0-9_\s-]+$/, 'Name must start with a character')
     .min(3, 'Name must contain at least 3 characters'),
   cardNumber: Yup.string()
     .required('Invalid Card Number')
@@ -66,7 +66,7 @@ const validationSchema = Yup.object().shape({
 
   // .matches(/^[0-9]{16}$/, 'Card number must be 16 digits'),
   validTill: Yup.string()
-    .required('Expiry date is required')
+    .required('Expiry date is Required')
     .test(
       'expiration',
       'Year should be greater or equal to the current year',
@@ -113,7 +113,7 @@ const validationSchema = Yup.object().shape({
       },
     ),
   cvv: Yup.string()
-    .required('cvv is required')
+    .required('CVV is Required')
     .matches(/^[0-9]{3}$/, 'CVV must be 3 digits'),
 });
 export default function PaymentGateWay({navigation, route}) {
@@ -478,7 +478,7 @@ export default function PaymentGateWay({navigation, route}) {
                                     <View style={{gap: ms(5), width: ms(100)}}>
                                       <Text
                                         style={{
-                                          color: 'gray',
+                                          color: '#fff',
                                           fontWeight: '600',
                                           fontSize: 8,
                                         }}>
@@ -498,7 +498,7 @@ export default function PaymentGateWay({navigation, route}) {
                                         style={{
                                           fontWeight: '600',
                                           fontSize: 8,
-                                          color: 'gray',
+                                          color: '#fff',
                                         }}>
                                         Expires
                                       </Text>
@@ -520,7 +520,7 @@ export default function PaymentGateWay({navigation, route}) {
                                         style={{
                                           fontWeight: '600',
                                           fontSize: 8,
-                                          color: 'gray',
+                                          color: '#fff',
                                         }}>
                                         CVV
                                       </Text>

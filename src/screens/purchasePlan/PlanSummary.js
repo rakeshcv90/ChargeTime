@@ -188,7 +188,7 @@ export default function PlanSummary({route, navigation}) {
                     fontWeight: '600',
                     color: COLORS.BLACK,
                   }}>
-                  ${totalSalexTax}/-
+                  ${totalSalexTax}
                 </Text>
               </View>
             </View>

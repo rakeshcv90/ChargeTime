@@ -10,6 +10,7 @@ import {useSelector} from 'react-redux';
 
 const Splash = () => {
   const backHandler = useRef(null);
+  const {isAuthorized} = useSelector(state => state);
   const [imageSource, setImageSource] = useState(
     require('../../assets/unnamed.png'),
   );
@@ -50,9 +51,16 @@ const Splash = () => {
         }, 3000);
       } else {
         // Not first time user, show login
+        // setTimeout(async () => {
+        // navigationRef.navigate('Login');
+        // },2000)
+         {!isAuthorized ? (
         setTimeout(async () => {
         navigationRef.navigate('Login');
         },2000)
+      ) : (
+        navigationRef.navigate('DrawerStack')
+      )} 
       }
     } catch (error) {
       console.log('Error checking first time:', error);

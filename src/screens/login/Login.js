@@ -166,6 +166,7 @@ export default function Login({navigation}) {
         },
       });
       if (res.data) {
+
         // AsyncStorage.setItem('loginDataOne', JSON.stringify(data.locationid ));
 
         if (res.data.message == 'Login Successfull') {
@@ -248,10 +249,10 @@ export default function Login({navigation}) {
           PLATFORM_IOS
             ? Toast.show({
                 type: 'error',
-                text1: 'Username or Password is incorrect',
+                text1: 'Username or Password is Incorrect',
               })
             : ToastAndroid.show(
-                'Username or Password is incorrect',
+                'Username or Password is Incorrect',
                 ToastAndroid.SHORT,
               );
           setForLoading(false);

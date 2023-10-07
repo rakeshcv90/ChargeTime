@@ -118,6 +118,7 @@ export default function HomeOne(route) {
   const {getLocationID, getPurchaseData, getBasePackage} = useSelector(
     state => state,
   );
+ 
   const [showLottieView, setShowLottieView] = useState(false);
 
   useEffect(() => {

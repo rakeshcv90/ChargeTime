@@ -1,8 +1,3 @@
-/* eslint-disable prettier/prettier */
-/* eslint-disable no-shadow */
-/* eslint-disable react/no-unstable-nested-components */
-/* eslint-disable react-native/no-inline-styles */
-/* eslint-disable no-unused-vars */
 import {
   View,
   Text,
@@ -14,6 +9,7 @@ import {
   Dimensions,
   Image,
   Platform,
+  TouchableOpacity,
 } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import React, {useState, useEffect} from 'react';
@@ -21,7 +17,7 @@ import {useSelector} from 'react-redux';
 import HorizontalLine from '../../Components/HorizontalLine';
 import {PLATFORM_IOS} from '../../constants/DIMENSIONS';
 import Header from '../../Components/Header';
-import {State, TouchableOpacity} from 'react-native-gesture-handler';
+
 import Toast from 'react-native-toast-message';
 
 import Input from '../../Components/Input';
@@ -39,13 +35,13 @@ import {mvs, ms} from 'react-native-size-matters';
 import {userProfileData as updatePersionalDetail} from '../../redux/action';
 const mobileW = Math.round(Dimensions.get('screen').width);
 
-const PersonalDetails = () => {
+const PersonalDetails = ({route}) => {
   const userProfileData = useSelector(state => state.userProfileData);
   const getUserID = useSelector(state => state.getUserID);
   const [isEditable, setIsEditable] = useState(false);
   const [name, setName] = useState(userProfileData[0]?.name ?? '');
   const [number, setNumber] = useState(userProfileData[0]?.mobile ?? '');
-  const [error, setError] = useState('');
+  const [error, setError] = useState(false);
   const [nameError, setNameError] = useState(false);
   const user_ID = getUserID;
 
@@ -62,7 +58,6 @@ const PersonalDetails = () => {
   const isDark = theme === 'dark';
 
   const onPress = () => {
-
     if (name.trim().length <= 0) {
       PLATFORM_IOS
         ? Toast.show({
@@ -70,7 +65,7 @@ const PersonalDetails = () => {
             text1: 'Please Enter Name',
           })
         : ToastAndroid.show('Please Enter Name', ToastAndroid.SHORT);
-    } else if (name.trim().length <= 3) {
+    } else if (name.trim().length <3) {
       PLATFORM_IOS
         ? Toast.show({
             type: 'error',
@@ -165,7 +160,7 @@ const PersonalDetails = () => {
           <Image
             source={require('../../../assets/images/dotted.png')}
             style={{width: mobileW * 0.99}}
-            resizeMode='stretch'
+            resizeMode="stretch"
           />
         </View>
       )}
@@ -231,21 +226,24 @@ const PersonalDetails = () => {
           }}
           onChangeText={text => {
             const cleanedText = text.replace(/\D/g, '');
-            if (cleanedText !== text) {
-              setError(true);
-            } else {
+            if (cleanedText.match(/^[0-9]{10}$/)) {
               setError(false);
+              
+            } else {
+              setError(true);
+         
             }
             // Limit the length of the input to 10 characters
             const limitedText = cleanedText.slice(0, 10);
-            // Update the state with the validated input
+            // Update the state with the validated in
             setNumber(limitedText);
           }}
           value={number}
         />
+
         {error && (
           <Text style={{color: 'red', marginTop: -15, paddingBottom: 10}}>
-            Mobile number should contain digits only.
+            Number cannot be lesser than 10 digits
           </Text>
         )}
 
@@ -283,12 +281,12 @@ const PersonalDetails = () => {
                 setName(userProfileData[0]?.name);
                 setNumber(userProfileData[0]?.mobile);
                 setShowButton(false);
-              
+                setNameError(false)
+                setError(false)
+
                 setTimeout(() => {
                   setIsEditable(false);
                 }, 100);
-
-                
               }}
               style={{
                 width: DIMENSIONS.SCREEN_WIDTH * 0.3,
@@ -322,6 +320,7 @@ const PersonalDetails = () => {
             </TouchableOpacity>
             <TouchableOpacity
               onPress={() => onPress()}
+              disabled={(nameError||error)}
               style={{
                 width: DIMENSIONS.SCREEN_WIDTH * 0.3,
                 height: (DIMENSIONS.SCREEN_HEIGHT * 5) / 100,
@@ -364,6 +363,7 @@ const PersonalDetails = () => {
               marginRight: -30,
             }}>
             <TouchableOpacity
+      
               onPress={() => {
                 setIsEditable(true);
                 setShowButton(true);
@@ -430,7 +430,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignContent: 'center',
     justifyContent: 'center',
-    bottom: mobileW * 0.3,
+    bottom: mobileW * 0.2,
   },
 
   mainDiv_container: {

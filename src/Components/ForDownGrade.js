@@ -334,7 +334,7 @@ export default function ForDownGrade({route, navigation}) {
                       fontWeight: '600',
                       color: COLORS.BLACK,
                     }}>
-                    ${dataOne?.totalSalexTax}/-
+                    ${dataOne?.totalSalexTax}
                   </Text>
                 </View>
               </View>

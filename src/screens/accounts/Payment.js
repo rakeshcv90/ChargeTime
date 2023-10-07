@@ -58,16 +58,16 @@ import CardDeleteConfirmation from '../../Components/CardDeleteConfirmation';
 const mobileW = Math.round(Dimensions.get('screen').width);
 const mobileH = Math.round(Dimensions.get('window').height);
 const validationSchema = Yup.object().shape({
-  // cardHolderName: Yup.string().required('Card Holder Name is required'),
+
   cardHolderName: Yup.string()
-    .required('Card Holder Name is required')
+    .required('Card Holder Name is Required')
     .matches(/^[A-Za-z].*/, 'Name must be start with a character')
     .min(3, 'Name must contain at least 3 characters'),
   cardNumber: Yup.string()
-    .required('Card Number is required')
+    .required('Card Number is Required')
     .min(19, 'Card number must be of 16 digits'),
   validTill: Yup.string()
-    .required('Expiry date is required')
+    .required('Expiry date is Required')
     .test(
       'expiration',
       'Year should be greater or equal to the current year',
@@ -107,7 +107,7 @@ const validationSchema = Yup.object().shape({
     ),
 
   cvv: Yup.string()
-    .required('Cvv is required')
+    .required('CVV is Required')
     .matches(/^[0-9]{3}$/, 'CVV must be 3 digits'),
 });
 export default function PaymentGateWay({navigation, route}) {
