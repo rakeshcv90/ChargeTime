@@ -59,6 +59,7 @@ import {
   setBasePackage,
   setOverUsage,
   setSubscriptionStatus,
+  setMaintainence,
 } from '../../redux/action';
 import axios from 'axios';
 import {navigationRef} from '../../../App';
@@ -166,96 +167,100 @@ export default function Login({navigation}) {
         },
       });
       if (res.data) {
-
         // AsyncStorage.setItem('loginDataOne', JSON.stringify(data.locationid ));
-
-        if (res.data.message == 'Login Successfull') {
-          dispatch(setUserID(res.data?.user_id));
-          setId(res.data?.user_id);
-
-          AsyncStorage.setItem(
-            'locationID',
-            JSON.stringify(res.data?.locationid),
-          );
-          AsyncStorage.setItem('userId', JSON.stringify(res.data?.user_id));
-          AsyncStorage.setItem('graph_Width', JSON.stringify(1032));
-          PLATFORM_IOS
-            ? Toast.show({
-                type: 'success',
-                text1: 'Login Successful',
-              })
-            : ToastAndroid.show('Login Successful', ToastAndroid.SHORT);
-
-          // if(data.status == "true"){
-          //   navigation.navigate('EnergyStats');
-          // }else if(data.status == "false"){
-          // setTimeout(() => {
-          // }, 15000);
-          // }
-          await AsyncStorage.setItem('isAuthorized', res.data.user_id + '');
-          if (res.data.status == 'All details available') {
-            dispatch(setEmailData(res.data?.email));
-            dispatch(setPackageStatus(true));
-            // dispatch(setUserID(res.data?.user_id));
-            dispatch(getLocationID(res.data?.locationid));
-
-            // setInterval(() => {
-            fetchGraphData(res.data?.user_id);
-            // }, 300000);
-
-            // fetchWeekGraphData(res.data?.user_id);
-            // fetchMonthGraphData(res.data?.user_id);
-            // fetchQuarterGraphData(res.data.user_id);
-            // fetchYearGraphData(res.data?.user_id);
-
-            // setTimeout(() => {
-            //   fetchMessage(res.data?.user_id);
-            // }, 15000);
-            dispatch(setDeviceId(''));
-          } else if (
-            res.data.status ==
-            'Your Account is not currently linked with a TRO Charger. Please contact customer service if you believe this is an error.'
-          ) {
-            // getDeviceIDData(res.data);
-            dispatch(setEmailData(res.data?.email));
-            dispatch(setPackageStatus(true));
+        if (res.data.splash_notification == 0) {
+          if (res.data.message == 'Login Successfull') {
             dispatch(setUserID(res.data?.user_id));
-            dispatch(getLocationID(res.data?.locationid));
-            dispatch(setIsAuthorized(true));
-            getPlanCurrent(res.data?.user_id);
-            dispatch(
-              setDeviceId(
-                'Your Account is not currently linked with a TRO Charger. Please contact customer service if you believe this is an error.',
-              ),
+            setId(res.data?.user_id);
+
+            AsyncStorage.setItem(
+              'locationID',
+              JSON.stringify(res.data?.locationid),
             );
-          } else {
-            //  dispatch(setPackageStatus(false));
-            dispatch(setDeviceId(res.data.message));
-            dispatch(setIsAuthorized(true));
-            dispatch(setEmailData(res.data?.email));
-            dispatch(setUserID(res.data?.user_id));
-            dispatch(getLocationID(res.data?.locationid));
-            packagePlans(res.data?.locationid);
-          }
-          // fetchPriceDetailsDashboardData(data?.user_id)
-          // else
-          // if(getGraphData.length)
-          // navigation.navigate('DrawerStack');
-          // setForLoading(false)
+            AsyncStorage.setItem('userId', JSON.stringify(res.data?.user_id));
+            AsyncStorage.setItem('graph_Width', JSON.stringify(1032));
+            PLATFORM_IOS
+              ? Toast.show({
+                  type: 'success',
+                  text1: 'Login Successful',
+                })
+              : ToastAndroid.show('Login Successful', ToastAndroid.SHORT);
 
-          //  setTimeout(() => {
-          //  },5000)
-        } else {
-          PLATFORM_IOS
-            ? Toast.show({
-                type: 'error',
-                text1: 'Username or Password is Incorrect',
-              })
-            : ToastAndroid.show(
-                'Username or Password is Incorrect',
-                ToastAndroid.SHORT,
+            // if(data.status == "true"){
+            //   navigation.navigate('EnergyStats');
+            // }else if(data.status == "false"){
+            // setTimeout(() => {
+            // }, 15000);
+            // }
+            await AsyncStorage.setItem('isAuthorized', res.data.user_id + '');
+            if (res.data.status == 'All details available') {
+              dispatch(setEmailData(res.data?.email));
+              dispatch(setPackageStatus(true));
+              // dispatch(setUserID(res.data?.user_id));
+              dispatch(getLocationID(res.data?.locationid));
+
+              // setInterval(() => {
+              fetchGraphData(res.data?.user_id);
+              // }, 300000);
+
+              // fetchWeekGraphData(res.data?.user_id);
+              // fetchMonthGraphData(res.data?.user_id);
+              // fetchQuarterGraphData(res.data.user_id);
+              // fetchYearGraphData(res.data?.user_id);
+
+              // setTimeout(() => {
+              //   fetchMessage(res.data?.user_id);
+              // }, 15000);
+              dispatch(setDeviceId(''));
+            } else if (
+              res.data.status ==
+              'Your Account is not currently linked with a TRO Charger. Please contact customer service if you believe this is an error.'
+            ) {
+              // getDeviceIDData(res.data);
+              dispatch(setEmailData(res.data?.email));
+              dispatch(setPackageStatus(true));
+              dispatch(setUserID(res.data?.user_id));
+              dispatch(getLocationID(res.data?.locationid));
+              dispatch(setIsAuthorized(true));
+              getPlanCurrent(res.data?.user_id);
+              dispatch(
+                setDeviceId(
+                  'Your Account is not currently linked with a TRO Charger. Please contact customer service if you believe this is an error.',
+                ),
               );
+            } else {
+              //  dispatch(setPackageStatus(false));
+              dispatch(setDeviceId(res.data.message));
+              dispatch(setIsAuthorized(true));
+              dispatch(setEmailData(res.data?.email));
+              dispatch(setUserID(res.data?.user_id));
+              dispatch(getLocationID(res.data?.locationid));
+              packagePlans(res.data?.locationid);
+            }
+            // fetchPriceDetailsDashboardData(data?.user_id)
+            // else
+            // if(getGraphData.length)
+            // navigation.navigate('DrawerStack');
+            // setForLoading(false)
+
+            //  setTimeout(() => {
+            //  },5000)
+          } else {
+            PLATFORM_IOS
+              ? Toast.show({
+                  type: 'error',
+                  text1: 'Username or Password is Incorrect',
+                })
+              : ToastAndroid.show(
+                  'Username or Password is Incorrect',
+                  ToastAndroid.SHORT,
+                );
+            setForLoading(false);
+          }
+        } else {
+          dispatch(setMaintainence(true));
           setForLoading(false);
+          console.log("dvfdsfdsfd22222",res.data)
         }
       }
     } catch (err) {
@@ -392,8 +397,8 @@ export default function Login({navigation}) {
         console.log('Error-7', err);
       });
   };
-  const sendToForgetpassword =() => {
-   Clipboard.setString('');
+  const sendToForgetpassword = () => {
+    Clipboard.setString('');
     navigation.navigate('ForgetPassword');
   };
   return (
@@ -447,10 +452,7 @@ export default function Login({navigation}) {
               resizeMode="contain"
               style={{width: 18, height: 18}}
             />
-            <TouchableOpacity
-              onPress={()=>
-                sendToForgetpassword()
-              }>
+            <TouchableOpacity onPress={() => sendToForgetpassword()}>
               <Text style={styles.forgot_password}>Forgot my password?</Text>
             </TouchableOpacity>
           </View>

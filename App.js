@@ -16,20 +16,23 @@ import axios from 'axios';
 import {API} from './src/api/API';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {
+  setBasePackage,
   setChargerStatus,
   setOverModelView,
   setOverUsage,
   setRemainingData,
   setSubscriptionStatus,
   userProfileData,
+  setMaintainence
 } from './src/redux/action';
 import {PermissionsAndroid} from 'react-native';
 export const navigationRef = createNavigationContainerRef();
 
 export default function App() {
-  const {maintainence} = useSelector(state => state);
+  const {maintainence, getLocationID} = useSelector(state => state);
   const [token1, setToken] = useState('');
   const dispatch = useDispatch();
+  const[messageData,setMessageData]=useState('');
 
   useEffect(() => {
     let unsubscribe = null;
@@ -130,7 +133,6 @@ export default function App() {
       const message = data?.data?.message;
       const notification_id = data?.data?.notification_id;
       if (notification_id === 'Em-004') {
-     
         notifee.displayNotification({
           title: data?.data?.title,
           body: data.data.message,
@@ -148,9 +150,7 @@ export default function App() {
           .catch(err => {
             console.log(err);
           });
-   
       } else if (notification_id === 'Em-006') {
-     
         notifee.displayNotification({
           title: data?.data?.title,
           body: data.data.message,
@@ -168,7 +168,6 @@ export default function App() {
           .catch(err => {
             console.log(err);
           });
-  
       } else if (notification_id === 'Tr-001') {
         notifee.displayNotification({
           title: data?.data?.title,
@@ -287,11 +286,11 @@ export default function App() {
           dispatch(setSubscriptionStatus(0));
           console.log('byyyyyy');
         }
-      } else if(notification_id === 'Event'){
-        console.log("ddddddddddd",data.data)
+      } else if (notification_id === 'Event') {
+      
         notifee.displayNotification({
-          title:data?.data?.title,
-          body:data.data.message,
+          title: data?.data?.title,
+          body: data.data.message,
 
           android: {
             channelId: channelId,
@@ -299,26 +298,78 @@ export default function App() {
             largeIcon: require('./assets/ic_launcher.png'),
           },
         });
-           
-    try {
-      const response = await fetch(`${API}/userexisting/${getUserID}`);
-      const result = await response.json();
 
-      if (result[0].message === 'sucess') {
-        //  setUserData(result);
+        try {
+          const response = await fetch(`${API}/userexisting/${getUserID}`);
+          const result = await response.json();
 
-        dispatch(userProfileData(result));
-      }
-    } catch (error) {
-      console.error('Error222', error);
-    }
+          if (result[0].message === 'sucess') {
+            //  setUserData(result);
 
-      }
-      else {
-       
+            dispatch(userProfileData(result));
+          }
+        } catch (error) {
+          console.error('Error222', error);
+        }
+      } else if (notification_id === 'Price') {
+        // console.log('ddddddddddd', data.data);
         notifee.displayNotification({
-          title:data?.data?.title,
-          body:data.data.message,
+          title: data?.data?.title,
+          body: data.data.message,
+
+          android: {
+            channelId: channelId,
+            smallIcon: 'custom_notification_icon',
+            largeIcon: require('./assets/ic_launcher.png'),
+          },
+        });
+
+        try {
+          const response = await axios.get(
+            `${API}/packagePlan/${getLocationID}`,
+          );
+
+          if (response?.data?.locations.length == 0) {
+            dispatch(setBasePackage([]));
+          } else {
+            dispatch(setBasePackage(response.data.locations));
+          }
+        } catch (error) {
+          console.error('Error fetching data:', error);
+        }
+      }
+      else if (notification_id === 'Maintaince') {
+        setMessageData('Under Maintaince')
+       dispatch(setMaintainence(true))
+        notifee.displayNotification({
+          title: data?.data?.title,
+          body: data.data.message,
+
+          android: {
+            channelId: channelId,
+            smallIcon: 'custom_notification_icon',
+            largeIcon: require('./assets/ic_launcher.png'),
+          },
+        });
+      }
+      else if (notification_id === 'Active') {
+        dispatch(setMaintainence(false))
+         notifee.displayNotification({
+           title: data?.data?.title,
+           body: data.data.message,
+ 
+           android: {
+             channelId: channelId,
+             smallIcon: 'custom_notification_icon',
+             largeIcon: require('./assets/ic_launcher.png'),
+           },
+         });
+       }
+      else {
+        console.log('ddddddddddd', data.data);
+        notifee.displayNotification({
+          title: data?.data?.title,
+          body: data.data.message,
 
           android: {
             channelId: channelId,
@@ -425,7 +476,7 @@ export default function App() {
       <NavigationContainer ref={navigationRef}>
         <Router />
       </NavigationContainer>
-      <Maintainence isVisible={maintainence} />
+      <Maintainence isVisible={maintainence}  message={messageData}/>
       <Toast position="bottom" />
     </>
   );

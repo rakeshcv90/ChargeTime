@@ -16,7 +16,7 @@ import {DIMENSIONS} from '../constants/DIMENSIONS';
 
 import AnimatedLottieView from 'lottie-react-native';
 
-const Maintainence = ({isVisible}: any) => {
+const Maintainence = ({isVisible,message}: any) => {
   return (
     <Modal animationType={'slide'} visible={isVisible}>
       <View style={styles.container}>
@@ -38,7 +38,7 @@ const Maintainence = ({isVisible}: any) => {
               fontSize: 14,
               marginBottom: 15,
             }}>
-            We are under maintainence. Try Later
+            We are under maintainence. Try Later{message}
           </Text>
           {/* <View
               style={{
