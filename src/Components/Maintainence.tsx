@@ -15,8 +15,10 @@ import COLORS from '../constants/COLORS';
 import {DIMENSIONS} from '../constants/DIMENSIONS';
 
 import AnimatedLottieView from 'lottie-react-native';
+import {useSelector} from 'react-redux';
 
-const Maintainence = ({isVisible,message}: any) => {
+const Maintainence = ({isVisible}: any) => {
+  const {getMyLocation} = useSelector((state: any) => state);
   return (
     <Modal animationType={'slide'} visible={isVisible}>
       <View style={styles.container}>
@@ -38,7 +40,7 @@ const Maintainence = ({isVisible,message}: any) => {
               fontSize: 14,
               marginBottom: 15,
             }}>
-            We are under maintainence. Try Later{message}
+            {getMyLocation}
           </Text>
           {/* <View
               style={{

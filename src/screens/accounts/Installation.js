@@ -37,7 +37,7 @@ import {
   userProfileData as updatePersionalDetail,
   setPurchaseData,
   setPackageStatus,
-  setMyLocation
+
 } from '../../redux/action';
 import {Toast} from 'react-native-toast-message/lib/src/Toast';
 import {setBasePackage as setUpdateBasePackage} from '../../redux/action';
@@ -249,8 +249,8 @@ const Installation = () => {
           setModalVisible(false);
           setIsEditable(false);
           dispatch(updatedLocationId(locationId));
-          dispatch(setMyLocation(locationId))
-          console.log('88888888',locationId)
+       
+      
           if (response) {
             const updatedData = [
               {
@@ -279,7 +279,7 @@ const Installation = () => {
             dispatch(updatePersionalDetail(updatedData));
 
             dispatch(updatedLocationId(locationId));
-            // dispatch(setMyLocation(locationId))
+  
             fetchData();
             setForLoading(false);
             setLoader(false)

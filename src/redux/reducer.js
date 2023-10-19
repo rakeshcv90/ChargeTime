@@ -38,7 +38,7 @@ const initialState = {
   resetApp: null,
   overModelView:false,
   overusageCount:0,
-  getMyLocation:0,
+  getMyLocation:'',
 
 };
 

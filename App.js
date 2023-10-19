@@ -24,16 +24,17 @@ import {
   setSubscriptionStatus,
   userProfileData,
   setMaintainence,
+  setMyLocation
 } from './src/redux/action';
 
 import {PermissionsAndroid} from 'react-native';
 export const navigationRef = createNavigationContainerRef();
 
 export default function App() {
-  const {maintainence, getMyLocation} = useSelector(state => state);
+  const {maintainence, } = useSelector(state => state);
   const [token1, setToken] = useState('');
   const dispatch = useDispatch();
-  const [messageData, setMessageData] = useState('');
+
 
   // console.log("fgfgfgfgfg555555",getLocationID)
   useEffect(() => {
@@ -340,7 +341,7 @@ export default function App() {
           console.error('Error fetching data:', error);
         }
       } else if (notification_id === 'Maintaince') {
-        setMessageData('Under Maintaince');
+       dispatch(setMyLocation(data.data.message))
         dispatch(setMaintainence(true));
         notifee.displayNotification({
           title: data?.data?.title,
@@ -477,7 +478,7 @@ export default function App() {
       <NavigationContainer ref={navigationRef}>
         <Router />
       </NavigationContainer>
-      <Maintainence isVisible={maintainence} message={messageData} />
+      <Maintainence isVisible={maintainence}  />
       <Toast position="bottom" />
     </>
   );
