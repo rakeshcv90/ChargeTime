@@ -889,7 +889,7 @@ export default function PaymentGateWay({navigation, route}) {
                           alignSelf: 'center',
                           backgroundColor: COLORS.GREEN,
 
-                          borderRadius: 12,
+                          borderRadius: 10,
                         }}>
                         <Text
                           style={{
@@ -930,7 +930,7 @@ export default function PaymentGateWay({navigation, route}) {
                         backgroundColor: COLORS.GREEN,
                         paddingHorizontal: 20,
                         paddingVertical: 15,
-                        borderRadius: 12,
+                        borderRadius: 10,
                         ...Platform.select({
                           ios: {
                             shadowColor: '#000000',

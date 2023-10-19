@@ -63,7 +63,6 @@ export default function VerifyEmail(props) {
   const otp6 = useRef();
   const {userRegisterData} = useSelector(state => state);
   const verifyOTP = async () => {
-
     const otp =
       firstDigit +
       secondDigit +
@@ -95,8 +94,7 @@ export default function VerifyEmail(props) {
             // position: 'bottom',
           })
         : ToastAndroid.show('Enter Email ID', ToastAndroid.SHORT);
-    } 
-    else {
+    } else {
       setForLoading(true);
       try {
         let payload = new FormData();
@@ -118,24 +116,19 @@ export default function VerifyEmail(props) {
                   type: 'success',
                   text1: 'Email Verified.',
                 })
-              : ToastAndroid.show(
-                  'Email Verified.',
-                  ToastAndroid.SHORT,
-                );
+              : ToastAndroid.show('Email Verified.', ToastAndroid.SHORT);
             navigation.navigate('CompleteProfile', {
               email: email,
               user_id: user_id,
             });
             setForLoading(false);
             setFirstDigit('');
-            setsecondDigit('')
-            setthirdDigit('')
-            setforthDigit('')
-            setfifthDigit('')
-            setSixDigit('')
-            Keyboard.dismiss()
-
-
+            setsecondDigit('');
+            setthirdDigit('');
+            setforthDigit('');
+            setfifthDigit('');
+            setSixDigit('');
+            Keyboard.dismiss();
           } else {
             PLATFORM_IOS
               ? Toast.show({
@@ -143,21 +136,16 @@ export default function VerifyEmail(props) {
                   text1: 'Code Invalid/Expired',
                   // position: 'bottom',
                 })
-              : ToastAndroid.show(
-                  'Code Invalid/Expired',
-                  ToastAndroid.SHORT,
-                );
+              : ToastAndroid.show('Code Invalid/Expired', ToastAndroid.SHORT);
 
             setForLoading(false);
             setFirstDigit('');
-            setsecondDigit('')
-            setthirdDigit('')
-            setforthDigit('')
-            setfifthDigit('')
-            setSixDigit('')
-            Keyboard.dismiss()
-
-
+            setsecondDigit('');
+            setthirdDigit('');
+            setforthDigit('');
+            setfifthDigit('');
+            setSixDigit('');
+            Keyboard.dismiss();
           }
         } else {
           PLATFORM_IOS
@@ -173,26 +161,22 @@ export default function VerifyEmail(props) {
         }
         setForLoading(false);
         setFirstDigit('');
-        setsecondDigit('')
-        setthirdDigit('')
-        setforthDigit('')
-        setfifthDigit('')
-        setSixDigit('')
-        Keyboard.dismiss()
-
-
+        setsecondDigit('');
+        setthirdDigit('');
+        setforthDigit('');
+        setfifthDigit('');
+        setSixDigit('');
+        Keyboard.dismiss();
       } catch (error) {
         console.error('sdsfsfs11111', error);
         setForLoading(false);
         setFirstDigit('');
-        setsecondDigit('')
-        setthirdDigit('')
-        setforthDigit('')
-        setfifthDigit('')
-        setSixDigit('')
-        Keyboard.dismiss()
-
-
+        setsecondDigit('');
+        setthirdDigit('');
+        setforthDigit('');
+        setfifthDigit('');
+        setSixDigit('');
+        Keyboard.dismiss();
       }
     }
   };
@@ -200,12 +184,12 @@ export default function VerifyEmail(props) {
     setRemainingTime(60);
     setTimerActive(true);
     setFirstDigit('');
-    setsecondDigit('')
-    setthirdDigit('')
-    setforthDigit('')
-    setfifthDigit('')
-    setSixDigit('')
-    Keyboard.dismiss()
+    setsecondDigit('');
+    setthirdDigit('');
+    setforthDigit('');
+    setfifthDigit('');
+    setSixDigit('');
+    Keyboard.dismiss();
     try {
       await fetch(`${API}/resendOtp`, {
         method: 'POST',
@@ -227,13 +211,13 @@ export default function VerifyEmail(props) {
                   'New Code Sent Successfully',
                   ToastAndroid.SHORT,
                 );
-                setFirstDigit('');
-                setsecondDigit('')
-                setthirdDigit('')
-                setforthDigit('')
-                setfifthDigit('')
-                setSixDigit('')
-                Keyboard.dismiss()
+            setFirstDigit('');
+            setsecondDigit('');
+            setthirdDigit('');
+            setforthDigit('');
+            setfifthDigit('');
+            setSixDigit('');
+            Keyboard.dismiss();
           } else {
             PLATFORM_IOS
               ? Toast.show({
@@ -241,42 +225,38 @@ export default function VerifyEmail(props) {
                   text1: 'Code not send',
                   // position: 'bottom',
                 })
-              : ToastAndroid.show(
-                  'Code not send',
-                  ToastAndroid.SHORT,
-                );
-                setFirstDigit('');
-                setsecondDigit('')
-                setthirdDigit('')
-                setforthDigit('')
-                setfifthDigit('')
-                setSixDigit('')
+              : ToastAndroid.show('Code not send', ToastAndroid.SHORT);
+            setFirstDigit('');
+            setsecondDigit('');
+            setthirdDigit('');
+            setforthDigit('');
+            setfifthDigit('');
+            setSixDigit('');
           }
         });
     } catch (error) {
       console.error(error);
       setFirstDigit('');
-      setsecondDigit('')
-      setthirdDigit('')
-      setforthDigit('')
-      setfifthDigit('')
-      setSixDigit('')
+      setsecondDigit('');
+      setthirdDigit('');
+      setforthDigit('');
+      setfifthDigit('');
+      setSixDigit('');
       // Handle network errors or other exceptions
     }
   };
 
   const resendLink = async () => {
- 
     setdisableButton(true);
     setRemainingTime(60);
     setTimerActive(true);
     setFirstDigit('');
-    setsecondDigit('')
-    setthirdDigit('')
-    setforthDigit('')
-    setfifthDigit('')
-    setSixDigit('')
-    Keyboard.dismiss()
+    setsecondDigit('');
+    setthirdDigit('');
+    setforthDigit('');
+    setfifthDigit('');
+    setSixDigit('');
+    Keyboard.dismiss();
     try {
       let payload = new FormData();
       payload.append('pwa_email', email);
@@ -290,21 +270,20 @@ export default function VerifyEmail(props) {
 
       if (res.data) {
         if (res.data.message == 'Email sent successfully') {
-          
-          if(statusCheck){
+          if (statusCheck) {
             PLATFORM_IOS
-            ? Toast.show({
-                type: 'success',
-                text1: 'Email resent',
-              })
-            : ToastAndroid.show('Email resent', ToastAndroid.SHORT);
-          }else{
+              ? Toast.show({
+                  type: 'success',
+                  text1: 'Email resent',
+                })
+              : ToastAndroid.show('Email resent', ToastAndroid.SHORT);
+          } else {
             PLATFORM_IOS
-            ? Toast.show({
-                type: 'success',
-                text1: 'Email sent',
-              })
-            : ToastAndroid.show('Email sent', ToastAndroid.SHORT);
+              ? Toast.show({
+                  type: 'success',
+                  text1: 'Email sent',
+                })
+              : ToastAndroid.show('Email sent', ToastAndroid.SHORT);
           }
           setEmailCheck(true);
           setStatusCheck(true);
@@ -370,6 +349,12 @@ export default function VerifyEmail(props) {
     } else if (remainingTime === 0) {
       setdisableButton(false);
       setTimerActive(false);
+      setFirstDigit('');
+      setsecondDigit('');
+      setthirdDigit('');
+      setforthDigit('');
+      setfifthDigit('');
+      setSixDigit('');
       //setStatusCheck(false);
     }
   }, [remainingTime, timerActive]);
@@ -404,10 +389,16 @@ export default function VerifyEmail(props) {
 
   return (
     <SafeAreaView style={{backgroundColor: COLORS.CREAM, flex: 1}}>
-      <ScrollView
+      <ScrollView // scrollEnabled={false}
+        keyboardDismissMode="interactive"
         showsVerticalScrollIndicator={false}
         keyboardShouldPersistTaps="handled">
-        <KeyboardAvoidingView behavior="position">
+        <KeyboardAvoidingView
+          behavior={PLATFORM_IOS ? 'position' : undefined}
+          contentContainerStyle={{flexGrow: 1}}
+          // behavior={'padding'}
+          // keyboardVerticalOffset={PLATFORM_IOS ? 200 : 0}
+        >
           {forLoading ? <ActivityLoader /> : ''}
           <View style={styles.mainDiv_container}>
             <View style={styles.mainDiv_verify_email}>
@@ -483,7 +474,6 @@ export default function VerifyEmail(props) {
                   fontWeight: 400,
                   lineHeight: 26,
                   fontSize: 14,
-                  
                 }}>
                 OR
               </Text>
@@ -529,7 +519,9 @@ export default function VerifyEmail(props) {
                     <Text>Resend Link in {remainingTime} Seconds</Text>
                   ) : (
                     <View>
-                      <Text>Previous Email Link Expired. Click Resend Link Button</Text>
+                      <Text>
+                        Previous Email Link Expired. Click Resend Link Button
+                      </Text>
                       {/* <Text>Click Resend Link Button</Text> */}
                     </View>
                   )}
@@ -575,7 +567,7 @@ export default function VerifyEmail(props) {
                   <TextInput
                     ref={otp1}
                     onChangeText={value => {
-                      if (value.length>=1) {
+                      if (value.length >= 1) {
                         setFirstDigit(value);
                         otp2.current.focus();
                       }
@@ -598,7 +590,7 @@ export default function VerifyEmail(props) {
                   <TextInput
                     ref={otp2}
                     onChangeText={value => {
-                      if (value.length>=1) {
+                      if (value.length >= 1) {
                         setsecondDigit(value);
                         otp3.current.focus();
                       }
@@ -621,7 +613,7 @@ export default function VerifyEmail(props) {
                     keyboardType="numeric"
                     ref={otp3}
                     onChangeText={value => {
-                      if (value.length>=1) {
+                      if (value.length >= 1) {
                         setthirdDigit(value);
                         otp4.current.focus();
                       }
@@ -643,7 +635,7 @@ export default function VerifyEmail(props) {
                     keyboardType="numeric"
                     ref={otp4}
                     onChangeText={value => {
-                      if (value.length>=1) {
+                      if (value.length >= 1) {
                         setforthDigit(value);
                         otp5.current.focus();
                       }
@@ -665,10 +657,9 @@ export default function VerifyEmail(props) {
                     keyboardType="numeric"
                     ref={otp5}
                     onChangeText={value => {
-                      if (value.length>=1) {
+                      if (value.length >= 1) {
                         setfifthDigit(value);
                         otp6.current.focus();
-                       
                       }
                     }}
                     maxLength={1}
@@ -688,14 +679,13 @@ export default function VerifyEmail(props) {
                     keyboardType="numeric"
                     ref={otp6}
                     onChangeText={value => {
-                      if(value.length>=1){
-                        setSixDigit(value)
+                      if (value.length >= 1) {
+                        setSixDigit(value);
                         otp6.current.focus();
-                      }else if(value.length<1){
-                        setSixDigit('')
+                      } else if (value.length < 1) {
+                        setSixDigit('');
                         // otp5.current.focus();
                       }
-                 
                     }}
                     maxLength={1}
                     style={styles.textInput_otp}
@@ -717,7 +707,9 @@ export default function VerifyEmail(props) {
                     <Text>Resend Code in {remainingTime} Seconds</Text>
                   ) : (
                     <View>
-                      <Text>Previous Code Expired. Click Resend Code Button </Text>
+                      <Text>
+                        Previous Code Expired. Click Resend Code Button{' '}
+                      </Text>
                       {/* <Text>Click Resend Code Button</Text> */}
                     </View>
                   )}
@@ -766,15 +758,17 @@ export default function VerifyEmail(props) {
             )}
             <View style={styles.mainDiv_VErify_account}>
               <Text style={styles.wrong_email_text}>Entered wrong email? </Text>
-              <TouchableOpacity onPress={() => {navigation.navigate('Register')
-              setFirstDigit('');
-              setsecondDigit('')
-              setthirdDigit('')
-              setforthDigit('')
-              setfifthDigit('')
-              setSixDigit('')
-              Keyboard.dismiss()
-            }}>
+              <TouchableOpacity
+                onPress={() => {
+                  navigation.navigate('Register');
+                  setFirstDigit('');
+                  setsecondDigit('');
+                  setthirdDigit('');
+                  setforthDigit('');
+                  setfifthDigit('');
+                  setSixDigit('');
+                  Keyboard.dismiss();
+                }}>
                 <Text style={styles.make_changes}>
                   Go back to make changes.
                 </Text>
@@ -892,7 +886,6 @@ const styles = StyleSheet.create({
     fontSize: 15,
     fontWeight: '700',
     color: 'black',
-    textDecorationLine:'underline'
-    
+    textDecorationLine: 'underline',
   },
 });

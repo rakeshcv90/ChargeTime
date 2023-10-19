@@ -25,6 +25,7 @@ import {
   ImageBackground,
   Platform,
   FlatList,
+  KeyboardAvoidingView,
 } from 'react-native';
 import {Toast} from 'react-native-toast-message/lib/src/Toast';
 import React, {useState, useRef, useEffect} from 'react';
@@ -52,7 +53,7 @@ import creditCardType, {types as CardType} from 'credit-card-type';
 import {mvs, ms} from 'react-native-size-matters';
 import {setCardDetails} from '../../redux/action';
 import {useDispatch} from 'react-redux';
-import Carousel from 'react-native-reanimated-carousel';
+// import Carousel from 'react-native-reanimated-carousel';
 import ActivityLoader from '../../Components/ActivityLoader';
 import CardDeleteConfirmation from '../../Components/CardDeleteConfirmation';
 
@@ -370,9 +371,14 @@ export default function PaymentGateWay({navigation, route}) {
       )}
       <ActivityLoader visible={loader} />
       <ScrollView
+        keyboardDismissMode="interactive"
         showsVerticalScrollIndicator={false}
-        style={{flexGrow: 1, flex: 1}}>
-        <View style={styles.mainDiv_container}>
+        keyboardShouldPersistTaps="handled">
+        <KeyboardAvoidingView
+          behavior={PLATFORM_IOS ? 'position' : undefined}
+          contentContainerStyle={{flexGrow: 1}}
+          style={styles.mainDiv_container}
+          >
           <Formik
             initialValues={initialValues}
             onSubmit={(values, {resetForm}) => {
@@ -397,7 +403,13 @@ export default function PaymentGateWay({navigation, route}) {
                   cardDetails?.validTill.split('/')[0]
                 ) ? (
                   <>
-                    <Carousel
+                    <View
+                      style={{
+                        height: mvs(200),
+                        width: '100%',
+                        backgroundColor: 'black',
+                      }}></View>
+                    {/* <Carousel
                       
                       style={{flexGrow: 0}}
                       width={400}
@@ -504,7 +516,7 @@ export default function PaymentGateWay({navigation, route}) {
                         setCurrentCard(savedCard[index]);
                         setFocusedIndex(index);
                       }}
-                    />
+                    /> */}
                     {/* <FlatList
                       data={savedCard}
                     horizontal
@@ -1093,7 +1105,7 @@ export default function PaymentGateWay({navigation, route}) {
               </>
             )}
           </Formik>
-        </View>
+        </KeyboardAvoidingView>
 
         <CardDeleteConfirmation
           isVisible={modalVisible}
@@ -1148,7 +1160,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     width: mobileW,
 
-    height: mobileH,
+    // height: mobileH,
     marginBottom: '10%',
     marginTop: '5%',
 

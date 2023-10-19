@@ -64,7 +64,7 @@ const PurchseButton = ({data}) => {
               data: data[0] == undefined ? data : data[0],
             })
           }>
-          <Text style={styles.purchage_text}>PURCHASE</Text>
+          <Text style={styles.purchage_text}>Purchase</Text>
         </TouchableOpacity>
       </View>
     </View>

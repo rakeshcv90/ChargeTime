@@ -249,7 +249,7 @@ export default function PlanSummary({route, navigation}) {
                     fontWeight: '700',
                     color: COLORS.BLACK,
                   }}>
-                  CHECKOUT
+                  Checkout
                 </Text>
               </TouchableOpacity>
             </View>
