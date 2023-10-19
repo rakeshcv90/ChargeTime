@@ -65,23 +65,24 @@ const Subscription = ({navigation, route}) => {
   useEffect(() => {
     getPlanCurrent();
     getSubscriptionStatus1();
+    // getSubscription()
   }, []);
 
-  const getSubscription = () => {
-    axios
-      .get(`${API}/planstatuspauseresume/${getUserID}/`)
-      .then(res => {
-        dispatch(setSubscriptionStatus(res.data.PlanStatus));
-        if (res.data.PlanStatus == '0' || res.data.PlanStatus == null) {
-          setText('Pause Subscription');
-        } else {
-          setText('Resume Subscription');
-        }
-      })
-      .catch(err => {
-        console.log('1111144444', err);
-      });
-  };
+  // const getSubscription = () => {
+  //   axios
+  //     .get(`${API}/planstatuspauseresume/${getUserID}`)
+  //     .then(res => {
+  //       dispatch(setSubscriptionStatus(res.data.PlanStatus));
+  //       if (res.data.PlanStatus == '0' || res.data.PlanStatus == null) {
+  //         setText('Pause Subscription');
+  //       } else {
+  //         setText('Resume Subscription');
+  //       }
+  //     })
+  //     .catch(err => {
+  //       console.log('1111144444', err);
+  //     });
+  // };
 
   const user_id = getUserID;
 
@@ -285,7 +286,7 @@ const Subscription = ({navigation, route}) => {
   const getSubscriptionStatus1 = async () => {
     try {
       const res = await axios({
-        url: `http://troes.io/Admin/public/api/planstatuspauseresume/${getUserID}/`,
+        url: `https://troes.io/Admin/public/api/planstatuspauseresume/${getUserID}`,
         // url: `${API}/planstatuspauseresume/${getUserID}/`,
         method: 'get'
       });

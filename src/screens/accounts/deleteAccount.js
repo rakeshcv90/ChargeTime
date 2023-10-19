@@ -77,7 +77,7 @@ const DeleteAccountScreen = () => {
                 ToastAndroid.SHORT,
               );
 
-          navigationRef.navigate('LoginStack');
+          navigationRef.navigate('Login');
         } else {
         
           PLATFORM_IOS

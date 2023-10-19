@@ -67,19 +67,27 @@ const validationSchema = Yup.object().shape({
       'Password must contain 1 Upper-Case letter, 1 Lower-Case letter, 1 Digit, 1 Special Character(@,$,-,^,&, !), and the length must be at least 8 characters',
     )
     .required('Password is Required'),
+  repeat_password: Yup.string()
+    .matches(
+      PasswordRegex,
+      'Password must contain 1 Upper-Case letter, 1 Lower-Case letter, 1 Digit, 1 Special Character(@,$,-,^,&, !), and the length must be at least 8 characters',
+    )
+    .required('Confirm-Passwords is Required')
+    .oneOf([Yup.ref('password')], 'Confirm-Passwords must match'),
 });
 export default function Register({navigation}) {
   const [forLoading, setForLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(true);
+  const [showPassword1, setShowPassword1] = useState(true);
   const dispatch = useDispatch();
   const {userRegisterData} = useSelector(state => state);
 
   const handleFormSubmit = async values => {
     setForLoading(true);
-  
+
     try {
       const response = await axios.post(`${API}/createuser`, {
-        name: values.name+values.lname,
+        name: values.name + values.lname,
         email: values.email,
       });
 
@@ -158,6 +166,7 @@ export default function Register({navigation}) {
               email: userRegisterData.email,
               mobile: userRegisterData.mobile,
               password: '',
+              repeat_password: '',
             }}
             onSubmit={values => handleFormSubmit(values)}
             validationSchema={validationSchema}>
@@ -193,7 +202,7 @@ export default function Register({navigation}) {
                     errors={errors.lname}
                     touched={touched.lname}
                     value={values.lname}
-                   // autoFocus
+                    // autoFocus
                     onChangeText={handleChange('lname')}
                     onBlur={handleBlur('lname')}
                     text="Last Name"
@@ -258,7 +267,24 @@ export default function Register({navigation}) {
                     placeholderTextColor={COLORS.HALFBLACK}
                     secureTextEntry={showPassword}
                   />
-       
+                  <Input
+                    IconLeft={null}
+                    errors={errors.repeat_password}
+                    touched={touched.repeat_password}
+                    value={values.repeat_password}
+                    onChangeText={handleChange('repeat_password')}
+                    onBlur={handleBlur('repeat_password')}
+                    text="Confirm-Password"
+                    passwordInput={true}
+                    pasButton={() => setShowPassword1(!showPassword1)}
+                    passwordInputIcon={showPassword1}
+                    mV={10}
+                    placeholder="Create a strong password"
+                    bW={1}
+                    textWidth={'50%'}
+                    placeholderTextColor={COLORS.HALFBLACK}
+                    secureTextEntry={showPassword1}
+                  />
                 </View>
 
                 <View

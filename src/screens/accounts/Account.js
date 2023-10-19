@@ -68,10 +68,11 @@ const Account = ({navigation}) => {
   };
 
   const getSubscriptionStatus = () => {
-    console.log()
+
     axios
-      .get(`${API}/planstatuspauseresume/${getUserID}/`)
+      .get(`${API}/planstatuspauseresume/${getUserID}`)
       .then(res => {
+        console.log('dddddddddddd',res.data)
         dispatch(setSubscriptionStatus(res.data.PlanStatus));
       })
       .catch(err => {
@@ -149,7 +150,7 @@ const Account = ({navigation}) => {
             index: 0,
             routes: [
               {
-                name: 'LoginStack',
+                name: 'Login',
               },
             ],
           }),
@@ -173,7 +174,7 @@ const Account = ({navigation}) => {
         index: 0,
         routes: [
           {
-            name: 'LoginStack',
+            name: 'Login',
           },
         ],
       }),
@@ -235,7 +236,7 @@ const Account = ({navigation}) => {
     }
   };
   const handleLinkPress = screen => {
-    console.log('fdsfdsf', screen);
+
     navigation.navigate(screen, {allSavedCard});
   };
 

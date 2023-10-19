@@ -71,7 +71,7 @@ const Maintainence = ({isVisible,message}: any) => {
                 }}>
                 <Text style={styles.log_In_btn}>Cancel</Text>
               </TouchableOpacity> */}
-          <TouchableOpacity
+          {/* <TouchableOpacity
             onPress={() => {
               BackHandler.exitApp();
             }}
@@ -100,7 +100,7 @@ const Maintainence = ({isVisible,message}: any) => {
               ]}>
               Ok
             </Text>
-          </TouchableOpacity>
+          </TouchableOpacity> */}
           {/* </View> */}
         </View>
       </View>

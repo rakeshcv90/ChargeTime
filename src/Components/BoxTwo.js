@@ -13,8 +13,23 @@ import COLORS from '../constants/COLORS';
 import {Unit} from '../../assets/images/Unit';
 import {Mieq} from '../../assets/images/Mieq';
 import {DIMENSIONS} from '../constants/DIMENSIONS';
+import {useSelector} from 'react-redux';
 
 const BoxTwo = ({data}) => {
+  // console.log("Rakesh Rao",data)
+  const {getUserID, getPurchaseData, getPlanStatus} = useSelector(
+    state => state,
+  );
+
+  const getmessage = () => {
+    if (getPurchaseData.length == 0) {
+      return <Text style={styles.installation_text}></Text>;
+    } else if (getPurchaseData.length == undefined) {
+      if (getPurchaseData.data.energy_plan == data.package_name) {
+        return <Text style={styles.installation_text}>( Current Plan )</Text>;
+      }
+    }
+  };
   return (
     <View
       style={
@@ -29,6 +44,8 @@ const BoxTwo = ({data}) => {
           source={require('../../assets/images/details.png')}
         />
         <Text style={styles.installation_text}>Plan Details</Text>
+
+        {getmessage()}
       </View>
       <View style={[styles.mainDiv_plan_details]}>
         <View style={styles.second_main_div_kwh}>
@@ -61,7 +78,7 @@ const BoxTwo = ({data}) => {
             resizeMode="contain"
             style={{width: 30, height: 30}}
           />
-         
+
           <Text style={styles.kwh_mieq_text}>
             {data?.dollar_mi ? data?.dollar_mi : '0.11'}
           </Text>
@@ -134,7 +151,7 @@ const styles = StyleSheet.create({
     paddingVertical: 20,
     backgroundColor: COLORS.GRAY,
     borderBottomLeftRadius: 10,
-    borderBottomRightRadius:10
+    borderBottomRightRadius: 10,
   },
   kwh_mieq_text: {
     fontWeight: 800,

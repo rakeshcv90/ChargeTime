@@ -43,7 +43,7 @@ const ForgetPassword = ({navigation}) => {
   const [showOTP, setShowOTP] = useState(false);
   const [email, setEmail] = useState('');
   const [otp, setOtp] = useState('');
-  const [remainingTime, setRemainingTime] = useState(60);
+  const [remainingTime, setRemainingTime] = useState(75);
   const [timerActive, setTimerActive] = useState(true);
   const [disablebutton, setdisableButton] = useState(false);
   const inputRefs = useRef([]);
@@ -166,7 +166,7 @@ const ForgetPassword = ({navigation}) => {
         let payload = new FormData();
         payload.append('email', email);
         payload.append('randomotp', otp);
-        console.log('ddddddddddddddd', payload);
+     
 
         const res = await axios(`${API}/forgetverifyOtp`, {
           method: 'POST',
@@ -190,6 +190,12 @@ const ForgetPassword = ({navigation}) => {
             setOtp('');
             Clipboard.setString('');
             setForLoading(false);
+            setFirstDigit('');
+            setsecondDigit('')
+            setthirdDigit('')
+            setforthDigit('')
+            setfifthDigit('')
+            setSixDigit('')
           } else {
             PLATFORM_IOS
               ? Toast.show({
@@ -205,6 +211,12 @@ const ForgetPassword = ({navigation}) => {
             setForLoading(false);
             Clipboard.setString('');
             setOtp('');
+            setFirstDigit('');
+            setsecondDigit('')
+            setthirdDigit('')
+            setforthDigit('')
+            setfifthDigit('')
+            setSixDigit('')
           }
         }
       } 
@@ -213,6 +225,12 @@ const ForgetPassword = ({navigation}) => {
       setForLoading(false);
       Clipboard.setString('');
       setOtp('');
+      setFirstDigit('');
+      setsecondDigit('')
+      setthirdDigit('')
+      setforthDigit('')
+      setfifthDigit('')
+      setSixDigit('')
     }}
   };
   const resendOTp = async value => {
@@ -221,6 +239,12 @@ const ForgetPassword = ({navigation}) => {
     setRemainingTime(60);
     setTimerActive(true);
     setForLoading(true);
+    setFirstDigit('');
+    setsecondDigit('')
+    setthirdDigit('')
+    setforthDigit('')
+    setfifthDigit('')
+    setSixDigit('')
     try {
       const res = await axios(`${API}/forgetPassword`, {
         method: 'POST',
@@ -245,7 +269,12 @@ const ForgetPassword = ({navigation}) => {
           setForLoading(false);
           Clipboard.setString('');
           setOtp('');
-
+          setFirstDigit('');
+          setsecondDigit('')
+          setthirdDigit('')
+          setforthDigit('')
+          setfifthDigit('')
+          setSixDigit('')
           setEmail(value);
         } else {
           PLATFORM_IOS
@@ -260,6 +289,12 @@ const ForgetPassword = ({navigation}) => {
           Clipboard.setString('');
           setOtp('');
           setEmail(value);
+          setFirstDigit('');
+          setsecondDigit('')
+          setthirdDigit('')
+          setforthDigit('')
+          setfifthDigit('')
+          setSixDigit('')
         }
       }
     } catch (err) {
@@ -268,6 +303,12 @@ const ForgetPassword = ({navigation}) => {
       Clipboard.setString('');
       setOtp('');
       setEmail(value);
+      setFirstDigit('');
+      setsecondDigit('')
+      setthirdDigit('')
+      setforthDigit('')
+      setfifthDigit('')
+      setSixDigit('')
     }
   };
 
@@ -449,21 +490,24 @@ const ForgetPassword = ({navigation}) => {
                       if (value.length>=1) {
                         setsecondDigit(value);
                         otp3.current.focus();
+                      }else if(value.length<1){
+                        setsecondDigit('');
+                         otp1.current.focus();
                       }
                     }}
                     keyboardType="numeric"
                     maxLength={1}
                     style={styles.textInput_otp}
                     value={secondDigit}
-                    onKeyPress={({nativeEvent}) => {
-                      if (
-                        nativeEvent.key == 'Backspace' &&
-                        setsecondDigit != ' '
-                      ) {
-                        setsecondDigit('');
-                        // otp1.current.focus();
-                      }
-                    }}
+                    // onKeyPress={({nativeEvent}) => {
+                    //   if (
+                    //     nativeEvent.key == 'Backspace' &&
+                    //     setsecondDigit != ' '
+                    //   ) {
+                    //     setsecondDigit('');
+                      
+                    //   }
+                    // }}
                   />
                   <TextInput
                     keyboardType="numeric"
@@ -472,20 +516,23 @@ const ForgetPassword = ({navigation}) => {
                       if (value.length>=1) {
                         setthirdDigit(value);
                         otp4.current.focus();
+                      }else if(value.length<1){
+                        setthirdDigit('');
+                         otp2.current.focus();
                       }
                     }}
                     maxLength={1}
                     style={styles.textInput_otp}
                     value={thirdDigit}
-                    onKeyPress={({nativeEvent}) => {
-                      if (
-                        nativeEvent.key == 'Backspace' &&
-                        setthirdDigit != ' '
-                      ) {
-                        setthirdDigit('');
-                        // otp2.current.focus();
-                      }
-                    }}
+                    // onKeyPress={({nativeEvent}) => {
+                    //   if (
+                    //     nativeEvent.key == 'Backspace' &&
+                    //     setthirdDigit != ' '
+                    //   ) {
+                    //     setthirdDigit('');
+                    
+                    //   }
+                    // }}
                   />
                   <TextInput
                     keyboardType="numeric"
@@ -494,20 +541,23 @@ const ForgetPassword = ({navigation}) => {
                       if (value.length>=1) {
                         setforthDigit(value);
                         otp5.current.focus();
+                      }else if(value.length<1){
+                        setforthDigit('');
+                         otp3.current.focus();
                       }
                     }}
                     maxLength={1}
                     style={styles.textInput_otp}
                     value={forthDigit}
-                    onKeyPress={({nativeEvent}) => {
-                      if (
-                        nativeEvent.key == 'Backspace' &&
-                        setforthDigit != ''
-                      ) {
-                        setforthDigit('');
-                        // otp3.current.focus();
-                      }
-                    }}
+                    // onKeyPress={({nativeEvent}) => {
+                    //   if (
+                    //     nativeEvent.key == 'Backspace' &&
+                    //     setforthDigit != ''
+                    //   ) {
+                    //     setforthDigit('');
+                    //    otp3.current.focus();
+                    //   }
+                    // }}
                   />
                   <TextInput
                     keyboardType="numeric"
@@ -517,23 +567,27 @@ const ForgetPassword = ({navigation}) => {
                         setfifthDigit(value);
                         otp6.current.focus();
                        
+                      }else if(value.length<1){
+                        setfifthDigit('');
+                         otp4.current.focus();
                       }
                     }}
                     maxLength={1}
                     style={styles.textInput_otp}
                     value={fifthDigit}
-                    onKeyPress={({nativeEvent}) => {
-                      if (
-                        nativeEvent.key == 'Backspace' &&
-                        setfifthDigit != ' '
-                      ) {
-                        setfifthDigit('');
-                        // otp4.current.focus();
-                      }
-                    }}
+                    // onKeyPress={({nativeEvent}) => {
+                    //   if (
+                    //     nativeEvent.key == 'Backspace' &&
+                    //     setfifthDigit != ' '
+                    //   ) {
+                    //     setfifthDigit('');
+                        
+                    //   }
+                    // }}
                   />
                   <TextInput
-                    keyboardType="numeric"
+                    keyboardType="number-pad"
+                    maxLength={1}
                     ref={otp6}
                     onChangeText={value => {
                       if(value.length>=1){
@@ -541,11 +595,11 @@ const ForgetPassword = ({navigation}) => {
                         otp6.current.focus();
                       }else if(value.length<1){
                         setSixDigit('')
-                        // otp5.current.focus();
+                         otp5.current.focus();
                       }
                  
                     }}
-                    maxLength={1}
+                  
                     style={styles.textInput_otp}
                     value={sixDigit}
                     // onKeyPress={({nativeEvent}) => {

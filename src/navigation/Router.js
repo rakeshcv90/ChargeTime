@@ -19,6 +19,7 @@ import {
   Linking,
   Text,
   Dimensions,
+  ToastAndroid,
 } from 'react-native';
 import CompleteProfile from '../screens/register/CompleteProfile';
 import Home from '../screens/purchasePlan/Home';
@@ -40,7 +41,7 @@ import Theme from '../screens/accounts/Theme';
 import Subscription from '../screens/accounts/Subscription';
 import deleteAccount from '../screens/accounts/deleteAccount';
 import EnergyStats from '../screens/EnergyStats';
-import {useSelector} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 import PaymentGateWay from '../screens/payment/PaymentGateWay';
 import Splash from '../splash/Splash';
 import Introduction from '../splash/Introduction';
@@ -54,10 +55,15 @@ import Charging from '../Components/Charging';
 import {OnlineCharge} from '../../assets/images/OnlineCharge';
 import {NoCharge} from '../../assets/images/NoCharge';
 import COLORS from '../constants/COLORS';
-import {DIMENSIONS} from '../constants/DIMENSIONS';
+import {DIMENSIONS, PLATFORM_IOS} from '../constants/DIMENSIONS';
 import Contact from '../screens/accounts/Contact';
 import ForDownGrade from '../Components/ForDownGrade';
 import PersonalDetails from '../screens/accounts/PersonalDetails';
+import {CommonActions} from '@react-navigation/native';
+import { persistor } from '../redux/store';
+import axios from 'axios';
+import { API } from '../api/API';
+import { setLogout } from '../redux/action';
 
 const Drawer = createDrawerNavigator();
 const Stack = createNativeStackNavigator();
@@ -89,14 +95,67 @@ export const DrawerScreenPart = ({navigation}) => {
     </View>
   );
 };
-export const ChargerStatus = () => {
-  // const getChargerStatus = useSelector(state => state.getChargerStatus);
+export const ChargerStatus = ({navigation}) => {
+  const user_ID = useSelector(state => state.getUserID);
+  const dispatch = useDispatch();
 
-  return (
-    <View>
-      <Text />
-    </View>
-  );
+  const handleLogOut = async () => {
+    try {
+      const res = await axios(`${API}/logout/${user_ID}`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+      if (res.data.message == 'Your account is successfully logout') {
+        PLATFORM_IOS
+          ? Toast.show({
+              text1: res.data.message,
+
+              position: 'bottom',
+              type: 'success',
+              duration: 500,
+            })
+          : ToastAndroid.show(res.data.message, ToastAndroid.SHORT);
+     
+        await AsyncStorage.clear();
+        await persistor.purge();
+        dispatch(setLogout());
+
+       
+        navigation.dispatch(
+          CommonActions.reset({
+            index: 0,
+            routes: [
+              {
+                name: 'Login',
+              },
+            ],
+          }),
+        );
+      }
+    } catch (err) {
+      console.log('Error', err);
+    
+      await AsyncStorage.clear();
+      await persistor.purge();
+      dispatch(setLogout());
+      // navigation.dispatch(
+      //   CommonActions.reset({
+      //     index: 0,
+      //     routes: [
+      //       {
+      //         name: 'Login',
+      //       },
+      //     ],
+      //   }),
+      // );
+   
+    }
+   
+  };
+  return <View><TouchableOpacity onPress={handleLogOut()}>
+    </TouchableOpacity></View>;
 };
 const DrawerNavigation = () => {
   const [focus, setFocus] = useState();
@@ -314,6 +373,7 @@ const DrawerNavigation = () => {
         name="Contact"
         component={Contact}
       />
+
       <Drawer.Screen
         options={{
           drawerActiveBackgroundColor: '#fff',
@@ -360,6 +420,29 @@ const DrawerNavigation = () => {
         }}
         name="Terms & Conditions"
         component={Terms}
+      />
+      <Drawer.Screen
+        options={{
+          drawerActiveBackgroundColor: '#fff',
+          drawerIcon: ({focused, color, size}) => {
+            return (
+              <Image
+                source={require('../../assets/images/terms.png')}
+                resizeMode="stretch"
+                style={{width: 17, height: 17, padding: 0, marginLeft: 4}}
+              />
+            );
+          },
+          drawerLabelStyle: {
+            backgroundColor: '#fff',
+            marginLeft: -17,
+            color: 'black',
+            fontWeight: '700',
+          },
+          drawerActiveTintColor: 'black',
+        }}
+        name="Log Out"
+        component={ChargerStatus}
       />
       {getDeviceID !==
         'Your Account is not currently linked with a TRO Charger. Please contact customer service if you believe this is an error.' &&
@@ -575,8 +658,7 @@ export default function Router() {
       <Stack.Screen name="Contact" component={Contact} />
       <Stack.Screen name="deleteAccount" component={deleteAccount} />
       {/* <Stack.Screen name="Login" component={Login} /> */}
-   
-  
+
       <Stack.Screen name="Privacy Policy" component={Privacy} />
       {/* <Stack.Screen name="DrawerStack" component={DrawerNavigation} /> */}
 

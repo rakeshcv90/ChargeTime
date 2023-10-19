@@ -84,7 +84,9 @@ export default function PlanSummary({route, navigation}) {
         setForLoading(false);
         console.log(err);
       });
+    
   };
+
   return (
     <SafeAreaView style={{backgroundColor: COLORS.CREAM, flex: 1}}>
       <ScrollView
@@ -110,7 +112,7 @@ export default function PlanSummary({route, navigation}) {
 
           <View style={ Platform.OS == 'android'?styles.plan_pricing_div1:styles.plan_pricing_div}>
             <View>
-              <TouchableOpacity style={styles.install_touchable}>
+              <View style={styles.install_touchable}>
                 <PlanPricing style={styles.img_width} />
                 <Text
                   style={{
@@ -121,7 +123,7 @@ export default function PlanSummary({route, navigation}) {
                   }}>
                   Plan Pricing
                 </Text>
-              </TouchableOpacity>
+              </View>
             </View>
             <View
               style={{
@@ -180,7 +182,7 @@ export default function PlanSummary({route, navigation}) {
                     paddingBottom: 5,
                     color: COLORS.BLACK,
                   }}>
-                    ${tax}%
+                    {tax}%
                 </Text>
                 <Text
                   style={{

@@ -326,7 +326,7 @@ export default function ForDownGrade({route, navigation}) {
                   </Text>
                   <Text
                     style={{fontSize: 12, fontWeight: '400', paddingBottom: 5}}>
-                    ${dataOne?.salesTax}
+                    {dataOne?.salesTax}%
                   </Text>
                   <Text
                     style={{

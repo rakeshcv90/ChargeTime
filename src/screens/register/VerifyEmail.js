@@ -16,6 +16,7 @@ import {
   ToastAndroid,
   ScrollView,
   KeyboardAvoidingView,
+  Keyboard,
 } from 'react-native';
 import {SafeAreaView} from 'react-native-safe-area-context';
 
@@ -74,18 +75,18 @@ export default function VerifyEmail(props) {
       PLATFORM_IOS
         ? Toast.show({
             type: 'error',
-            text1: 'Enter Code',
+            text1: 'Please Enter the Code',
             // position: 'bottom',
           })
-        : ToastAndroid.show('Enter Code Key', ToastAndroid.SHORT);
+        : ToastAndroid.show('Please Enter the Code', ToastAndroid.SHORT);
     } else if (otp.length < 6) {
       PLATFORM_IOS
         ? Toast.show({
             type: 'error',
-            text1: 'Enter Code Key',
+            text1: 'Please Enter the Code',
             // position: 'bottom',
           })
-        : ToastAndroid.show('Enter Code Key', ToastAndroid.SHORT);
+        : ToastAndroid.show('Please Enter the Code', ToastAndroid.SHORT);
     } else if (email == '') {
       PLATFORM_IOS
         ? Toast.show({
@@ -126,6 +127,15 @@ export default function VerifyEmail(props) {
               user_id: user_id,
             });
             setForLoading(false);
+            setFirstDigit('');
+            setsecondDigit('')
+            setthirdDigit('')
+            setforthDigit('')
+            setfifthDigit('')
+            setSixDigit('')
+            Keyboard.dismiss()
+
+
           } else {
             PLATFORM_IOS
               ? Toast.show({
@@ -139,6 +149,15 @@ export default function VerifyEmail(props) {
                 );
 
             setForLoading(false);
+            setFirstDigit('');
+            setsecondDigit('')
+            setthirdDigit('')
+            setforthDigit('')
+            setfifthDigit('')
+            setSixDigit('')
+            Keyboard.dismiss()
+
+
           }
         } else {
           PLATFORM_IOS
@@ -153,15 +172,40 @@ export default function VerifyEmail(props) {
               );
         }
         setForLoading(false);
+        setFirstDigit('');
+        setsecondDigit('')
+        setthirdDigit('')
+        setforthDigit('')
+        setfifthDigit('')
+        setSixDigit('')
+        Keyboard.dismiss()
+
+
       } catch (error) {
         console.error('sdsfsfs11111', error);
         setForLoading(false);
+        setFirstDigit('');
+        setsecondDigit('')
+        setthirdDigit('')
+        setforthDigit('')
+        setfifthDigit('')
+        setSixDigit('')
+        Keyboard.dismiss()
+
+
       }
     }
   };
   const resendOTp = async () => {
     setRemainingTime(60);
     setTimerActive(true);
+    setFirstDigit('');
+    setsecondDigit('')
+    setthirdDigit('')
+    setforthDigit('')
+    setfifthDigit('')
+    setSixDigit('')
+    Keyboard.dismiss()
     try {
       await fetch(`${API}/resendOtp`, {
         method: 'POST',
@@ -183,6 +227,13 @@ export default function VerifyEmail(props) {
                   'New Code Sent Successfully',
                   ToastAndroid.SHORT,
                 );
+                setFirstDigit('');
+                setsecondDigit('')
+                setthirdDigit('')
+                setforthDigit('')
+                setfifthDigit('')
+                setSixDigit('')
+                Keyboard.dismiss()
           } else {
             PLATFORM_IOS
               ? Toast.show({
@@ -194,10 +245,22 @@ export default function VerifyEmail(props) {
                   'Code not send',
                   ToastAndroid.SHORT,
                 );
+                setFirstDigit('');
+                setsecondDigit('')
+                setthirdDigit('')
+                setforthDigit('')
+                setfifthDigit('')
+                setSixDigit('')
           }
         });
     } catch (error) {
       console.error(error);
+      setFirstDigit('');
+      setsecondDigit('')
+      setthirdDigit('')
+      setforthDigit('')
+      setfifthDigit('')
+      setSixDigit('')
       // Handle network errors or other exceptions
     }
   };
@@ -207,6 +270,13 @@ export default function VerifyEmail(props) {
     setdisableButton(true);
     setRemainingTime(60);
     setTimerActive(true);
+    setFirstDigit('');
+    setsecondDigit('')
+    setthirdDigit('')
+    setforthDigit('')
+    setfifthDigit('')
+    setSixDigit('')
+    Keyboard.dismiss()
     try {
       let payload = new FormData();
       payload.append('pwa_email', email);
@@ -380,7 +450,7 @@ export default function VerifyEmail(props) {
               </Text>
               <TouchableOpacity
                 style={styles.resend_OTP_btn}
-                disabled={remainingTime > 0 ? true : false}
+                // disabled={remainingTime > 0 ? true : false}
                 onPress={resendOTp}>
                 <Text style={styles.resend_otp_text}>
                   {statusCheck ? 'Send Code' : 'Resend Code'}
@@ -435,7 +505,7 @@ export default function VerifyEmail(props) {
                   : 'Receive verification email instead.'}
               </Text>
               <TouchableOpacity
-                disabled={disablebutton}
+                // disabled={disablebutton}
                 style={styles.resend_OTP_btn}
                 onPress={resendLink}>
                 <Text style={styles.resend_otp_text}>
@@ -513,6 +583,7 @@ export default function VerifyEmail(props) {
                     }}
                     keyboardType="numeric"
                     maxLength={1}
+                    autoFocus
                     style={styles.textInput_otp}
                     value={firstDigit}
                     onKeyPress={({nativeEvent}) => {
@@ -695,7 +766,15 @@ export default function VerifyEmail(props) {
             )}
             <View style={styles.mainDiv_VErify_account}>
               <Text style={styles.wrong_email_text}>Entered wrong email? </Text>
-              <TouchableOpacity onPress={() => navigation.navigate('Register')}>
+              <TouchableOpacity onPress={() => {navigation.navigate('Register')
+              setFirstDigit('');
+              setsecondDigit('')
+              setthirdDigit('')
+              setforthDigit('')
+              setfifthDigit('')
+              setSixDigit('')
+              Keyboard.dismiss()
+            }}>
                 <Text style={styles.make_changes}>
                   Go back to make changes.
                 </Text>
@@ -810,8 +889,10 @@ const styles = StyleSheet.create({
     fontWeight: '400',
   },
   make_changes: {
-    fontSize: 14,
-    fontWeight: '500',
+    fontSize: 15,
+    fontWeight: '700',
     color: 'black',
+    textDecorationLine:'underline'
+    
   },
 });

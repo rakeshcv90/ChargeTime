@@ -67,7 +67,7 @@ export default function Month() {
                 No Graph Data available
               </Text>
             )}
-            <BoxTwo data={getBoxTwoDataForDashboard[0]} />
+            <BoxTwo data={getBoxTwoDataForDashboard.data} />
           </View>
           <View style={{marginBottom: 80}}>
             <PriceValidity data={getBoxTwoDataForDashboard.data} />

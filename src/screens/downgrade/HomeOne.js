@@ -272,7 +272,7 @@ export default function HomeOne(route) {
 
   return (
     <SafeAreaView style={{backgroundColor: COLORS.CREAM, flex: 1}}>
-      {getPurchaseData.data != 'Package not found'
+      {/* {getPurchaseData.data != 'Package not found'
         ? getPurchaseData.data.energy_plan.toLowerCase() ===
             myTest.toLowerCase() && (
             <View
@@ -299,7 +299,7 @@ export default function HomeOne(route) {
               />
             </View>
           )
-        : null}
+        : null} */}
 
       <DrawerOpen top={PLATFORM_IOS ? 70 : 30} />
       <View style={[styles.charging_imag_style]}>
