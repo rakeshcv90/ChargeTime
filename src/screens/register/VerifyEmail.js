@@ -590,9 +590,13 @@ export default function VerifyEmail(props) {
                   <TextInput
                     ref={otp2}
                     onChangeText={value => {
-                      if (value.length >= 1) {
+
+                      if (value.length>=1) {
                         setsecondDigit(value);
                         otp3.current.focus();
+                      }else if(value.length<1){
+                        setsecondDigit('')
+                         otp1.current.focus();
                       }
                     }}
                     keyboardType="numeric"
@@ -616,6 +620,9 @@ export default function VerifyEmail(props) {
                       if (value.length >= 1) {
                         setthirdDigit(value);
                         otp4.current.focus();
+                      }else if(value.length<1){
+                        setthirdDigit('')
+                         otp2.current.focus();
                       }
                     }}
                     maxLength={1}
@@ -638,6 +645,9 @@ export default function VerifyEmail(props) {
                       if (value.length >= 1) {
                         setforthDigit(value);
                         otp5.current.focus();
+                      }else if(value.length<1){
+                        setforthDigit('')
+                         otp3.current.focus();
                       }
                     }}
                     maxLength={1}
@@ -660,6 +670,11 @@ export default function VerifyEmail(props) {
                       if (value.length >= 1) {
                         setfifthDigit(value);
                         otp6.current.focus();
+
+                      }else if(value.length<1){
+                        setfifthDigit('')
+                         otp4.current.focus();
+
                       }
                     }}
                     maxLength={1}
@@ -682,9 +697,12 @@ export default function VerifyEmail(props) {
                       if (value.length >= 1) {
                         setSixDigit(value);
                         otp6.current.focus();
-                      } else if (value.length < 1) {
-                        setSixDigit('');
-                        // otp5.current.focus();
+
+
+                      }else if(value.length<1){
+                        setSixDigit('')
+                         otp5.current.focus();
+
                       }
                     }}
                     maxLength={1}

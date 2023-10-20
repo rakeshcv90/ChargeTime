@@ -27,7 +27,7 @@ import {
 } from 'react-native';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import notifee, {EventType} from '@notifee/react-native';
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect, useCallback} from 'react';
 import COLORS from '../../constants/COLORS';
 import Toast from 'react-native-toast-message';
 import {API} from '../../api/API';
@@ -67,6 +67,7 @@ import messaging from '@react-native-firebase/messaging';
 import {ms} from 'react-native-size-matters';
 import {Alert, PermissionsAndroid} from 'react-native';
 import Clipboard from '@react-native-clipboard/clipboard';
+import { useFocusEffect } from '@react-navigation/native';
 const mobileH = Math.round(Dimensions.get('window').height);
 const mobileW = Math.round(Dimensions.get('window').width);
 
@@ -81,45 +82,46 @@ export default function Login({navigation}) {
 
   const dispatch = useDispatch();
   const {getDeviceID, getGraphData, getUserID} = useSelector(state => state);
+  useFocusEffect(
+    useCallback(() => {
+      let unsubscribe = null;
+      let token = 0;
 
-  useEffect(() => {
-    let unsubscribe = null;
-    let token = 0;
-
-    const notificationService = async () => {
-      if (Platform.OS == 'android') {
-        PermissionsAndroid.request(
-          PermissionsAndroid.PERMISSIONS.POST_NOTIFICATIONS,
-        );
-        await messaging().registerDeviceForRemoteMessages();
-        token = await messaging().getToken();
-      } else {
-        const authStatus = await messaging().requestPermission();
-        const enabled =
-          authStatus === messaging.AuthorizationStatus.AUTHORIZED ||
-          authStatus === messaging.AuthorizationStatus.PROVISIONAL;
-
-        if (enabled) {
+      const notificationService = async () => {
+        if (Platform.OS == 'android') {
+          PermissionsAndroid.request(
+            PermissionsAndroid.PERMISSIONS.POST_NOTIFICATIONS,
+          );
           await messaging().registerDeviceForRemoteMessages();
           token = await messaging().getToken();
+        } else {
+          const authStatus = await messaging().requestPermission();
+          const enabled =
+            authStatus === messaging.AuthorizationStatus.AUTHORIZED ||
+            authStatus === messaging.AuthorizationStatus.PROVISIONAL;
+
+          if (enabled) {
+            await messaging().registerDeviceForRemoteMessages();
+            token = await messaging().getToken();
+          }
         }
-      }
 
-      if (token?.length > 0) {
-        console.log('FCM....', token);
-        setToken(token);
-      }
-    };
+        if (token?.length > 0) {
+          console.log('FCM....', token);
+          setToken(token);
+        }
+      };
 
-    // if (Platform.OS === 'android') {
-    //   notificationService();
-    // } else {
-    //
-    // }
-    notificationService();
-  });
+      // if (Platform.OS === 'android') {
+      //   notificationService();
+      // } else {
+      //
+      // }
+      notificationService();
+    }, []),
+  );
+
   useEffect(() => {
-    getloginMessage();
     const backHandler = BackHandler.addEventListener(
       'hardwareBackPress',
       handleBackButton,
@@ -127,16 +129,7 @@ export default function Login({navigation}) {
 
     return () => backHandler.remove();
   }, []);
-  useEffect(() => {
-    getloginMessage();
-  });
-  const getloginMessage = async () => {
-    const message = await AsyncStorage.getItem('LoginMessage');
-    console.log('saaasadadsad', message);
-    if (message != 'null') {
-      setmessage(message);
-    }
-  };
+
   const handleBackButton = () => {
     return true;
   };
@@ -289,6 +282,17 @@ export default function Login({navigation}) {
 
               //  setTimeout(() => {
               //  },5000)
+            } else if (res.data.message == 'Email Id does not exist!') {
+              PLATFORM_IOS
+                ? Toast.show({
+                    type: 'error',
+                    text1: 'Email Id does not exist!',
+                  })
+                : ToastAndroid.show(
+                    'Email Id does not exist!',
+                    ToastAndroid.SHORT,
+                  );
+              setForLoading(false);
             } else {
               PLATFORM_IOS
                 ? Toast.show({
