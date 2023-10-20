@@ -34,7 +34,7 @@ import {
 import axios from 'axios';
 import {setCardDetails} from '../../redux/action';
 import {ScrollView} from 'react-native-gesture-handler';
-import { CommonActions } from '@react-navigation/native';
+import {CommonActions} from '@react-navigation/native';
 
 const mobileW = Math.round(Dimensions.get('screen').width);
 const mobileH = Math.round(Dimensions.get('screen').height);
@@ -68,9 +68,11 @@ const Account = ({navigation}) => {
   };
 
   const getSubscriptionStatus = () => {
+
     axios
-      .get(`${API}/planstatuspauseresume/${getUserID}/`)
+      .get(`${API}/planstatuspauseresume/${getUserID}`)
       .then(res => {
+        console.log('dddddddddddd',res.data)
         dispatch(setSubscriptionStatus(res.data.PlanStatus));
       })
       .catch(err => {
@@ -148,10 +150,10 @@ const Account = ({navigation}) => {
             index: 0,
             routes: [
               {
-                name: 'LoginStack',
+                name: 'Login',
               },
             ],
-          })
+          }),
         );
       }
     } catch (err) {
@@ -161,7 +163,6 @@ const Account = ({navigation}) => {
       await AsyncStorage.clear();
       await persistor.purge();
       dispatch(setLogout());
-
 
       // navigation.reset({
       //   index: 0,
@@ -173,10 +174,10 @@ const Account = ({navigation}) => {
         index: 0,
         routes: [
           {
-            name: 'LoginStack',
+            name: 'Login',
           },
         ],
-      })
+      }),
     );
   };
   const userDetails = async () => {
@@ -235,6 +236,7 @@ const Account = ({navigation}) => {
     }
   };
   const handleLinkPress = screen => {
+
     navigation.navigate(screen, {allSavedCard});
   };
 
@@ -256,26 +258,13 @@ const Account = ({navigation}) => {
               <View style={styles.row}>
                 <Image
                   source={item.image}
-                  resizeMode="cover"
+                  resizeMode="contain"
                   style={[
                     styles.icon,
                     {
-                      marginLeft:
-                        index == 2
-                          ? 15
-                          : index == 3
-                          ? 10
-                          : index == 4
-                          ? 15
-                          : 20,
-                      width:
-                        index == 2
-                          ? 22
-                          : index == 3
-                          ? 28
-                          : index == 4
-                          ? 20
-                          : 20,
+                      marginLeft: index == 1 ? 15 : index == 0 ? 18 : 20,
+
+                      width: 25,
                     },
                   ]}
                 />
@@ -364,6 +353,7 @@ const styles = StyleSheet.create({
     width: DIMENSIONS.SCREEN_WIDTH * 0.95,
     flexDirection: 'row',
     alignItems: 'center',
+    justifyContent: 'center',
   },
   main_div: {
     width: DIMENSIONS.SCREEN_WIDTH * 0.95,
@@ -383,6 +373,7 @@ const styles = StyleSheet.create({
   },
   itemContainer: {
     marginBottom: 3,
+    justifyContent: 'center',
   },
   title: {
     width: 132,
@@ -478,6 +469,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#F84E4E',
     padding: 10,
     borderRadius: 10,
+    marginBottom:25,
     ...Platform.select({
       ios: {
         shadowColor: '#000000',

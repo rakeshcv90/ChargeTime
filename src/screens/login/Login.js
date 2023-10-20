@@ -27,7 +27,7 @@ import {
 } from 'react-native';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import notifee, {EventType} from '@notifee/react-native';
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect, useCallback} from 'react';
 import COLORS from '../../constants/COLORS';
 import Toast from 'react-native-toast-message';
 import {API} from '../../api/API';
@@ -59,6 +59,7 @@ import {
   setBasePackage,
   setOverUsage,
   setSubscriptionStatus,
+  setMaintainence,
 } from '../../redux/action';
 import axios from 'axios';
 import {navigationRef} from '../../../App';
@@ -66,6 +67,7 @@ import messaging from '@react-native-firebase/messaging';
 import {ms} from 'react-native-size-matters';
 import {Alert, PermissionsAndroid} from 'react-native';
 import Clipboard from '@react-native-clipboard/clipboard';
+import { useFocusEffect } from '@react-navigation/native';
 const mobileH = Math.round(Dimensions.get('window').height);
 const mobileW = Math.round(Dimensions.get('window').width);
 
@@ -76,44 +78,49 @@ export default function Login({navigation}) {
   const [forLoading, setForLoading] = useState(false);
   const [token1, setToken] = useState('');
   const [id, setId] = useState();
+  const [message1, setmessage] = useState('null');
 
   const dispatch = useDispatch();
   const {getDeviceID, getGraphData, getUserID} = useSelector(state => state);
+  useFocusEffect(
+    useCallback(() => {
+      let unsubscribe = null;
+      let token = 0;
 
-  useEffect(() => {
-    let unsubscribe = null;
-    let token = 0;
-    const notificationService = async () => {
-      if (Platform.OS == 'android') {
-        PermissionsAndroid.request(
-          PermissionsAndroid.PERMISSIONS.POST_NOTIFICATIONS,
-        );
-        await messaging().registerDeviceForRemoteMessages();
-        token = await messaging().getToken();
-      } else {
-        const authStatus = await messaging().requestPermission();
-        const enabled =
-          authStatus === messaging.AuthorizationStatus.AUTHORIZED ||
-          authStatus === messaging.AuthorizationStatus.PROVISIONAL;
-
-        if (enabled) {
+      const notificationService = async () => {
+        if (Platform.OS == 'android') {
+          PermissionsAndroid.request(
+            PermissionsAndroid.PERMISSIONS.POST_NOTIFICATIONS,
+          );
           await messaging().registerDeviceForRemoteMessages();
           token = await messaging().getToken();
+        } else {
+          const authStatus = await messaging().requestPermission();
+          const enabled =
+            authStatus === messaging.AuthorizationStatus.AUTHORIZED ||
+            authStatus === messaging.AuthorizationStatus.PROVISIONAL;
+
+          if (enabled) {
+            await messaging().registerDeviceForRemoteMessages();
+            token = await messaging().getToken();
+          }
         }
-      }
 
-      if (token?.length > 0) {
-        console.log('FCM....', token);
-        setToken(token);
-      }
-    };
+        if (token?.length > 0) {
+          console.log('FCM....', token);
+          setToken(token);
+        }
+      };
 
-    if (Platform.OS === 'android') {
+      // if (Platform.OS === 'android') {
+      //   notificationService();
+      // } else {
+      //
+      // }
       notificationService();
-    } else {
-      notificationService();
-    }
-  }, []);
+    }, []),
+  );
+
   useEffect(() => {
     const backHandler = BackHandler.addEventListener(
       'hardwareBackPress',
@@ -122,6 +129,7 @@ export default function Login({navigation}) {
 
     return () => backHandler.remove();
   }, []);
+
   const handleBackButton = () => {
     return true;
   };
@@ -151,124 +159,194 @@ export default function Login({navigation}) {
     }
   };
   const loginFunction = async () => {
-    setForLoading(true);
-    try {
-      const res = await axios(`${API}/logins`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        data: {
-          email: email,
-          password: password,
-          device_token: token1,
-          notification_status: 'true',
-        },
-      });
-      if (res.data) {
-        // AsyncStorage.setItem('loginDataOne', JSON.stringify(data.locationid ));
-
-        if (res.data.message == 'Login Successfull') {
-          dispatch(setUserID(res.data?.user_id));
-          setId(res.data?.user_id);
-
-          AsyncStorage.setItem(
-            'locationID',
-            JSON.stringify(res.data?.locationid),
-          );
-          AsyncStorage.setItem('userId', JSON.stringify(res.data?.user_id));
-          AsyncStorage.setItem('graph_Width', JSON.stringify(1032));
-          PLATFORM_IOS
-            ? Toast.show({
-                type: 'success',
-                text1: 'Login Successful',
-              })
-            : ToastAndroid.show('Login Successful', ToastAndroid.SHORT);
-
-          // if(data.status == "true"){
-          //   navigation.navigate('EnergyStats');
-          // }else if(data.status == "false"){
-          // setTimeout(() => {
-          // }, 15000);
-          // }
-          await AsyncStorage.setItem('isAuthorized', res.data.user_id + '');
-          if (res.data.status == 'All details available') {
-            dispatch(setEmailData(res.data?.email));
-            dispatch(setPackageStatus(true));
-            // dispatch(setUserID(res.data?.user_id));
-            dispatch(getLocationID(res.data?.locationid));
-
-            // setInterval(() => {
-            fetchGraphData(res.data?.user_id);
-            // }, 300000);
-
-            // fetchWeekGraphData(res.data?.user_id);
-            // fetchMonthGraphData(res.data?.user_id);
-            // fetchQuarterGraphData(res.data.user_id);
-            // fetchYearGraphData(res.data?.user_id);
-
-            // setTimeout(() => {
-            //   fetchMessage(res.data?.user_id);
-            // }, 15000);
-            dispatch(setDeviceId(''));
-          } else if (
-            res.data.status ==
-            'Your Account is not currently linked with a TRO Charger. Please contact customer service if you believe this is an error.'
-          ) {
-            // getDeviceIDData(res.data);
-            dispatch(setEmailData(res.data?.email));
-            dispatch(setPackageStatus(true));
-            dispatch(setUserID(res.data?.user_id));
-            dispatch(getLocationID(res.data?.locationid));
-            dispatch(setIsAuthorized(true));
-            getPlanCurrent(res.data?.user_id);
-            dispatch(
-              setDeviceId(
-                'Your Account is not currently linked with a TRO Charger. Please contact customer service if you believe this is an error.',
-              ),
-            );
-          } else {
-            //  dispatch(setPackageStatus(false));
-            dispatch(setDeviceId(res.data.message));
-            dispatch(setIsAuthorized(true));
-            dispatch(setEmailData(res.data?.email));
-            dispatch(setUserID(res.data?.user_id));
-            dispatch(getLocationID(res.data?.locationid));
-            packagePlans(res.data?.locationid);
-          }
-          // fetchPriceDetailsDashboardData(data?.user_id)
-          // else
-          // if(getGraphData.length)
-          // navigation.navigate('DrawerStack');
-          // setForLoading(false)
-
-          //  setTimeout(() => {
-          //  },5000)
-        } else {
-          PLATFORM_IOS
-            ? Toast.show({
-                type: 'error',
-                text1: 'Username or Password is incorrect',
-              })
-            : ToastAndroid.show(
-                'Username or Password is incorrect',
-                ToastAndroid.SHORT,
-              );
-          setForLoading(false);
-        }
-      }
-    } catch (err) {
+    let reg = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w\w+)+$/;
+    console.log('sdcsdfsdf', typeof email);
+    if (email.length == 0) {
       PLATFORM_IOS
         ? Toast.show({
             type: 'error',
-            text1: 'Network failed! Please check your internet connection.',
+            text1: 'Please Enter Your Email',
           })
-        : ToastAndroid.show(
-            'Network failed!Please check your internet connection.ß',
-            ToastAndroid.SHORT,
-          );
-      setForLoading(false);
-      console.log('Error-1', err);
+        : ToastAndroid.show('Please Enter Your Email', ToastAndroid.SHORT);
+    } else if (reg.test(email) === false) {
+      PLATFORM_IOS
+        ? Toast.show({
+            type: 'error',
+            text1: 'Invaild Email Format',
+          })
+        : ToastAndroid.show('Invaild Email Format', ToastAndroid.SHORT);
+    } else if (password == 0) {
+      PLATFORM_IOS
+        ? Toast.show({
+            type: 'error',
+            text1: 'Please Enter Your Password',
+          })
+        : ToastAndroid.show('Please Enter Your Password', ToastAndroid.SHORT);
+    } else {
+      setForLoading(true);
+      try {
+        const res = await axios(`${API}/logins`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          data: {
+            email: email,
+            password: password,
+            device_token: token1,
+            notification_status: 'true',
+          },
+        });
+        if (res.data) {
+          // AsyncStorage.setItem('loginDataOne', JSON.stringify(data.locationid ));
+          if (
+            res.data.splash_notification == 0 ||
+            res.data.splash_notification == null
+          ) {
+            if (res.data.message == 'Login Successfull') {
+              dispatch(setUserID(res.data?.user_id));
+              await AsyncStorage.removeItem('LoginMessage');
+              setId(res.data?.user_id);
+
+              AsyncStorage.setItem(
+                'locationID',
+                JSON.stringify(res.data?.locationid),
+              );
+              AsyncStorage.setItem('userId', JSON.stringify(res.data?.user_id));
+              AsyncStorage.setItem('graph_Width', JSON.stringify(1032));
+              setEmail('');
+              setPassword('');
+              PLATFORM_IOS
+                ? Toast.show({
+                    type: 'success',
+                    text1: 'Login Successful',
+                  })
+                : ToastAndroid.show('Login Successful', ToastAndroid.SHORT);
+
+              // if(data.status == "true"){
+              //   navigation.navigate('EnergyStats');
+              // }else if(data.status == "false"){
+              // setTimeout(() => {
+              // }, 15000);
+              // }
+              await AsyncStorage.setItem('isAuthorized', res.data.user_id + '');
+              if (res.data.status == 'All details available') {
+                dispatch(setEmailData(res.data?.email));
+                dispatch(setPackageStatus(true));
+                // dispatch(setUserID(res.data?.user_id));
+                dispatch(getLocationID(res.data?.locationid));
+
+                // setInterval(() => {
+                fetchGraphData(res.data?.user_id);
+                // }, 300000);
+
+                // fetchWeekGraphData(res.data?.user_id);
+                // fetchMonthGraphData(res.data?.user_id);
+                // fetchQuarterGraphData(res.data.user_id);
+                // fetchYearGraphData(res.data?.user_id);
+
+                // setTimeout(() => {
+                //   fetchMessage(res.data?.user_id);
+                // }, 15000);
+                dispatch(setDeviceId(''));
+              } else if (
+                res.data.status ==
+                'Your Account is not currently linked with a TRO Charger. Please contact customer service if you believe this is an error.'
+              ) {
+                // getDeviceIDData(res.data);
+                dispatch(setEmailData(res.data?.email));
+                dispatch(setPackageStatus(true));
+                dispatch(setUserID(res.data?.user_id));
+                dispatch(getLocationID(res.data?.locationid));
+                dispatch(setIsAuthorized(true));
+                getPlanCurrent(res.data?.user_id);
+                dispatch(
+                  setDeviceId(
+                    'Your Account is not currently linked with a TRO Charger. Please contact customer service if you believe this is an error.',
+                  ),
+                );
+              } else {
+                //  dispatch(setPackageStatus(false));
+                dispatch(setDeviceId(res.data.message));
+                dispatch(setIsAuthorized(true));
+                dispatch(setEmailData(res.data?.email));
+                dispatch(setUserID(res.data?.user_id));
+                dispatch(getLocationID(res.data?.locationid));
+                packagePlans(res.data?.locationid);
+              }
+              // fetchPriceDetailsDashboardData(data?.user_id)
+              // else
+              // if(getGraphData.length)
+              // navigation.navigate('DrawerStack');
+              // setForLoading(false)
+
+              //  setTimeout(() => {
+              //  },5000)
+            } else if (res.data.message == 'Email Id does not exist!') {
+              PLATFORM_IOS
+                ? Toast.show({
+                    type: 'error',
+                    text1: 'Email Id does not exist!',
+                  })
+                : ToastAndroid.show(
+                    'Email Id does not exist!',
+                    ToastAndroid.SHORT,
+                  );
+              setForLoading(false);
+            } else {
+              PLATFORM_IOS
+                ? Toast.show({
+                    type: 'error',
+                    text1: 'Username or Password is Incorrect',
+                  })
+                : ToastAndroid.show(
+                    'Username or Password is Incorrect',
+                    ToastAndroid.SHORT,
+                  );
+              setForLoading(false);
+            }
+          } else if (res.data.status == 'Invalid credentials') {
+            PLATFORM_IOS
+              ? Toast.show({
+                  type: 'error',
+                  text1: 'Username or Password is Incorrect',
+                })
+              : ToastAndroid.show(
+                  'Username or Password is Incorrect',
+                  ToastAndroid.SHORT,
+                );
+            setForLoading(false);
+          } else if (res.data.message == 'Login Failed') {
+            PLATFORM_IOS
+              ? Toast.show({
+                  type: 'error',
+                  text1: 'Username or Password is Incorrect',
+                })
+              : ToastAndroid.show(
+                  'Username or Password is Incorrect',
+                  ToastAndroid.SHORT,
+                );
+            setForLoading(false);
+          } else {
+            dispatch(setMaintainence(true));
+            setForLoading(false);
+          }
+        }
+      } catch (err) {
+        PLATFORM_IOS
+          ? Toast.show({
+              type: 'error',
+              text1: 'Network failed! Please check your internet connection.',
+            })
+          : ToastAndroid.show(
+              'Network failed!Please check your internet connection.ß',
+              ToastAndroid.SHORT,
+            );
+        setForLoading(false);
+        console.log('Error-1', err);
+        setEmail('');
+        setPassword('');
+      }
     }
   };
 
@@ -391,8 +469,8 @@ export default function Login({navigation}) {
         console.log('Error-7', err);
       });
   };
-  const sendToForgetpassword =() => {
-   Clipboard.setString('');
+  const sendToForgetpassword = () => {
+    Clipboard.setString('');
     navigation.navigate('ForgetPassword');
   };
   return (
@@ -446,10 +524,7 @@ export default function Login({navigation}) {
               resizeMode="contain"
               style={{width: 18, height: 18}}
             />
-            <TouchableOpacity
-              onPress={()=>
-                sendToForgetpassword()
-              }>
+            <TouchableOpacity onPress={() => sendToForgetpassword()}>
               <Text style={styles.forgot_password}>Forgot my password?</Text>
             </TouchableOpacity>
           </View>
@@ -499,6 +574,13 @@ export default function Login({navigation}) {
               <Text style={styles.sign_up}>Sign Up</Text>
             </TouchableOpacity>
           </View>
+          {/* {message1 == 'null1' && (
+            <View style={{justifyContent: 'center', alignItems: 'center'}}>
+              <Text style={styles.sign_up}>
+                Please Login to Continue useing the App
+              </Text>
+            </View>
+          )} */}
         </View>
       </KeyboardAvoidingView>
     </SafeAreaView>

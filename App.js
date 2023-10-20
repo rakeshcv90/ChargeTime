@@ -16,21 +16,29 @@ import axios from 'axios';
 import {API} from './src/api/API';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {
+  setBasePackage,
   setChargerStatus,
   setOverModelView,
   setOverUsage,
   setRemainingData,
   setSubscriptionStatus,
+  userProfileData,
+  setMaintainence,
+  setMyLocation
 } from './src/redux/action';
+
 import {PermissionsAndroid} from 'react-native';
 export const navigationRef = createNavigationContainerRef();
 
 export default function App() {
-  const {maintainence} = useSelector(state => state);
+  const {maintainence, } = useSelector(state => state);
   const [token1, setToken] = useState('');
   const dispatch = useDispatch();
 
+
+  // console.log("fgfgfgfgfg555555",getLocationID)
   useEffect(() => {
+    setLoginMessage();
     let unsubscribe = null;
     let token = 0;
     let count = 0;
@@ -282,6 +290,81 @@ export default function App() {
           dispatch(setSubscriptionStatus(0));
           console.log('byyyyyy');
         }
+      } else if (notification_id === 'Event') {
+      
+        notifee.displayNotification({
+          title:data.data.message,
+          //body: data.data.message,
+
+          android: {
+            channelId: channelId,
+            smallIcon: 'custom_notification_icon',
+            largeIcon: require('./assets/ic_launcher.png'),
+          },
+        });
+
+        try {
+          const response = await fetch(`${API}/userexisting/${getUserID}`);
+
+          const result = await response.json();
+
+          if (result[0].message === 'sucess') {
+            //  setUserData(result);
+
+            dispatch(userProfileData(result));
+          }
+        } catch (error) {
+          console.error('Error222', error);
+        }
+      } else if (notification_id === 'Price') {
+      
+        notifee.displayNotification({
+          title: data.data.message,
+          //body: data.data.message,
+          android: {
+            channelId: channelId,
+            smallIcon: 'custom_notification_icon',
+            largeIcon: require('./assets/ic_launcher.png'),
+          },
+        });
+
+        try {
+          const response = await axios.get(`${API}/packagePlan/${data.data.booking_id}`);
+
+          if (response?.data?.locations.length == 0) {
+            // dispatch(setBasePackage([]));
+          } else {
+            dispatch(setBasePackage(response.data.locations));
+            console.log('44444444444', response.data.locations);
+          }
+        } catch (error) {
+          console.error('Error fetching data:', error);
+        }
+      } else if (notification_id === 'Maintaince') {
+       dispatch(setMyLocation(data.data.message))
+        dispatch(setMaintainence(true));
+        notifee.displayNotification({
+          title: data?.data?.title,
+          body: data.data.message,
+
+          android: {
+            channelId: channelId,
+            smallIcon: 'custom_notification_icon',
+            largeIcon: require('./assets/ic_launcher.png'),
+          },
+        });
+      } else if (notification_id === 'Active') {
+        dispatch(setMaintainence(false));
+        notifee.displayNotification({
+          title: data?.data?.title,
+          body: data.data.message,
+
+          android: {
+            channelId: channelId,
+            smallIcon: 'custom_notification_icon',
+            largeIcon: require('./assets/ic_launcher.png'),
+          },
+        });
       } else {
         notifee.displayNotification({
           title: data?.data?.title,
@@ -367,6 +450,9 @@ export default function App() {
       return unsubscribe;
     }
   }, []);
+  const setLoginMessage = async () => {
+    AsyncStorage.setItem('LoginMessage', 'null');
+  };
   // useEffect(() => {
   //   remainigUsuageData();
   // }, []);
@@ -392,7 +478,7 @@ export default function App() {
       <NavigationContainer ref={navigationRef}>
         <Router />
       </NavigationContainer>
-      <Maintainence isVisible={maintainence} />
+      <Maintainence isVisible={maintainence}  />
       <Toast position="bottom" />
     </>
   );

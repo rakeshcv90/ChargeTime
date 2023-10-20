@@ -47,7 +47,7 @@ const ValidateSchema = yup.object().shape({
     .required('Please Enter New Password '),
   conpassword: yup
     .string()
-    .oneOf([yup.ref('newPassword'), ''], 'Confirm Password Not Match')
+    .oneOf([yup.ref('newPassword')], 'Confirm Password Not Match')
     .required('Please Enter Confirm Password'),
 });
 const Security = () => {
@@ -173,7 +173,8 @@ const Security = () => {
             conpassword: '',
           }}
           onSubmit={(values, action) => UpdatePassword(values, action)}
-          validationSchema={ValidateSchema}>
+          validationSchema={ValidateSchema}
+          >
           {({
             values,
             handleChange,

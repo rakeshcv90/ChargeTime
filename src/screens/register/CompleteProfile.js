@@ -12,6 +12,7 @@ import {
   TouchableOpacity,
   ToastAndroid,
   KeyboardAvoidingView,
+  Modal,
 } from 'react-native';
 import COLORS from '../../constants/COLORS';
 import {SignUp} from '../../../assets/images/SignUp';
@@ -30,6 +31,8 @@ import {Toast} from 'react-native-toast-message/lib/src/Toast';
 import {getCompleteData, setUserRegisterData} from '../../redux/action';
 
 import ActivityLoader from '../../Components/ActivityLoader';
+import AnimatedLottieView from 'lottie-react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const mobileW = Math.round(Dimensions.get('screen').width);
 const mobileH = Math.round(Dimensions.get('window').height);
@@ -50,6 +53,7 @@ export default function CompleteProfile(props) {
   const [isFocus, setIsFocus] = useState(false);
   const [forLoading, setForLoading] = useState(false);
   const {userRegisterData} = useSelector(state => state);
+  const [modalVisible, setModalVisible] = useState(false);
   useEffect(() => {
     fetchOptions();
   }, []);
@@ -92,7 +96,7 @@ export default function CompleteProfile(props) {
   };
   const CompleteProfileFunction = async () => {
     setForLoading(true);
-    if (locationId && addlineone && newZipcode && newState) {
+    if (locationId && addlineone && addlinetwo && newZipcode && newState) {
       try {
         const payload = new FormData();
         payload.append('locationId', locationId);
@@ -103,7 +107,10 @@ export default function CompleteProfile(props) {
         payload.append('pwa_email', userRegisterData.email);
         payload.append('pwa_mobile', userRegisterData.mobile);
         payload.append('pwa_password', userRegisterData.password);
-        payload.append('pwa_name', userRegisterData.name+" "+userRegisterData.lname);
+        payload.append(
+          'pwa_name',
+          userRegisterData.name + ' ' + userRegisterData.lname,
+        );
 
         const res = await axios({
           url: `${API}/completeProfile`,
@@ -140,7 +147,14 @@ export default function CompleteProfile(props) {
                   'Profile added successfully.',
                   ToastAndroid.SHORT,
                 );
-            navigation.navigate('Login');
+            AsyncStorage.setItem('LoginMessage', 'null1');
+
+            // setModalVisible(true)
+            setTimeout(async () => {
+              // setModalVisible(false)
+              navigation.navigate('Login');
+            }, 3000);
+
             setForLoading(false);
           } else {
             PLATFORM_IOS
@@ -154,7 +168,6 @@ export default function CompleteProfile(props) {
           }
         }
       } catch (err) {
-  
         setForLoading(false);
       }
     } else {
@@ -171,147 +184,183 @@ export default function CompleteProfile(props) {
     }
   };
 
+  const OverusageModal = () => {
+    return (
+      <Modal
+        animationType="fade"
+        transparent={true}
+        visible={modalVisible}
+        onRequestClose={() => {
+          // dispatch(setOverModelView(false));
+          setModalVisible(!modalVisible);
+        }}>
+        <View style={styles.centeredView}>
+          <View style={styles.modalView}>
+            <AnimatedLottieView
+              source={require('../../Components/Welcome.json')} // Replace with your animation file
+              autoPlay
+              loop
+              style={{
+                marginBottom: 10,
 
+                zIndex: -1,
+                width: `100%`,
+                // height: `80.4%`,
+              }}
+            />
+            {/* <Text
+              style={{
+                fontSize: 14,
+                fontWeight: '400',
+                color: COLORS.BLACK,
+              }}>
+              You have utilized your package, please purchase a new package.
+            </Text> */}
+          </View>
+        </View>
+      </Modal>
+    );
+  };
   return (
     <SafeAreaView style={{backgroundColor: COLORS.CREAM, flex: 1}}>
       <ScrollView
         showsVerticalScrollIndicator={false}
-        scrollEnabled={false}
+        automaticallyAdjustContentInsets={false}
+        // scrollEnabled={false}
         keyboardShouldPersistTaps="handled">
-        <KeyboardAvoidingView behavior="position">
-          {forLoading ? <ActivityLoader /> : ''}
-          <Image
-            source={require('../../../assets/images/res.png')}
-            resizeMode="contain"
-            style={{width: mobileW, height: mobileH / 5}}
-          />
-          <View style={styles.mainDiv_container}>
-            <View style={styles.mainDiv_complete_profile}>
-              <Text style={styles.complete_profile}>Complete your profile</Text>
+        {/* <KeyboardAvoidingView behavior="position"> */}
+        {forLoading ? <ActivityLoader /> : ''}
+        <Image
+          source={require('../../../assets/images/res.png')}
+          resizeMode="contain"
+          style={{width: mobileW, height: mobileH / 5}}
+        />
+        <View style={styles.mainDiv_container}>
+          <View style={styles.mainDiv_complete_profile}>
+            <Text style={styles.complete_profile}>Complete your profile</Text>
 
-              <View style={styles.postCodeContainer}>
-                {renderLabel()}
-                <Dropdown
-                  style={styles.dropdown}
-                  containerStyle={styles.dropdownContainer}
-                  placeholderStyle={styles.placeholderStyle}
-                  selectedTextStyle={styles.selectedTextStyle}
-                  inputSearchStyle={styles.inputSearchStyle}
-                  iconStyle={styles.iconStyle}
-                  data={locationMap}
-                  search
-                  maxHeight={300}
-                  labelField="location"
-                  valueField="location"
-                  placeholder="Installation"
-                  keyboardAvoiding
-                  searchPlaceholder="Search..."
-                  value={selectedValue}
-                  onFocus={() => setIsFocus(true)}
-                  onBlur={() => setIsFocus(false)}
-                  onChange={item => handleSelect(item.id, item)}
-                  itemTextStyle={{color:'black'}}
+            <View style={styles.postCodeContainer}>
+              {renderLabel()}
+              <Dropdown
+                style={styles.dropdown}
+                containerStyle={styles.dropdownContainer}
+                placeholderStyle={styles.placeholderStyle}
+                selectedTextStyle={styles.selectedTextStyle}
+                inputSearchStyle={styles.inputSearchStyle}
+                iconStyle={styles.iconStyle}
+                data={locationMap}
+                search
+                maxHeight={300}
+                labelField="location"
+                valueField="location"
+                placeholder="Installation"
+                keyboardAvoiding
+                searchPlaceholder="Search..."
+                value={selectedValue}
+                onFocus={() => setIsFocus(true)}
+                onBlur={() => setIsFocus(false)}
+                onChange={item => handleSelect(item.id, item)}
+                itemTextStyle={{color: 'black'}}
+              />
+            </View>
+
+            <Input
+              IconLeft={null}
+              errors={undefined}
+              touched={false}
+              value={addlineone}
+              onChangeText={values => setAddLineOne(values)}
+              //onBlur={handleBlur('name')}
+
+              text="Address Line 1"
+              IconRight={() => <Address />}
+              mV={15}
+              placeholder="Eg. Connecticut House"
+              bW={1}
+              textWidth={'45%'}
+              placeholderTextColor={COLORS.HALFBLACK}
+            />
+
+            <Input
+              IconLeft={null}
+              errors={undefined}
+              touched={false}
+              value={addlinetwo}
+              onChangeText={values => setAddLineTwo(values)}
+              text="Address Line 2"
+              IconRight={() => <Address />}
+              mV={15}
+              placeholder="Apart Street Number-3,Block"
+              bW={1}
+              textWidth={'45%'}
+              placeholderTextColor={COLORS.HALFBLACK}
+            />
+            <View style={styles.mainDiv_state_ZIP}>
+              <View style={styles.zip_state_view}>
+                <Input
+                  IconLeft={null}
+                  errors={undefined}
+                  touched={false}
+                  value={newZipcode}
+                  //     onChangeText={handleChange('name')}
+                  // onBlur={handleBlur('name')}
+
+                  text="ZIP Code"
+                  IconRight={null}
+                  mV={15}
+                  placeholder="1100000"
+                  bW={1}
+                  textWidth={'70%'}
+                  placeholderTextColor={COLORS.HALFBLACK}
+                  w="half"
+                  editable={false}
                 />
               </View>
+              <View style={styles.zip_state_view}>
+                <Input
+                  IconLeft={null}
+                  errors={undefined}
+                  touched={false}
+                  value={newState}
+                  //     onChangeText={handleChange('name')}
+                  // onBlur={handleBlur('name')}
 
-              <Input
-                IconLeft={null}
-                errors={undefined}
-                touched={false}
-                value={addlineone}
-                onChangeText={values => setAddLineOne(values)}
-                //onBlur={handleBlur('name')}
-
-                text="Address Line 1"
-                IconRight={() => <Address />}
-                mV={15}
-                placeholder="Eg. Connecticut House"
-                bW={1}
-                textWidth={'45%'}
-                placeholderTextColor={COLORS.HALFBLACK}
-              />
-
-              <Input
-                IconLeft={null}
-                errors={undefined}
-                touched={false}
-                value={addlinetwo}
-                onChangeText={values => setAddLineTwo(values)}
-                text="Address Line 2"
-                IconRight={() => <Address />}
-                mV={15}
-                placeholder="Apart Street Number-3,Block"
-                bW={1}
-                textWidth={'45%'}
-                placeholderTextColor={COLORS.HALFBLACK}
-              />
-              <View style={styles.mainDiv_state_ZIP}>
-                <View style={styles.zip_state_view}>
-                  <Input
-                    IconLeft={null}
-                    errors={undefined}
-                    touched={false}
-                    value={newZipcode}
-                    //     onChangeText={handleChange('name')}
-                    // onBlur={handleBlur('name')}
-
-                    text="ZIP Code"
-                    IconRight={null}
-                    mV={15}
-                    placeholder="1100000"
-                    bW={1}
-                    textWidth={'70%'}
-                    placeholderTextColor={COLORS.HALFBLACK}
-                    w="half"
-                    editable={false}
-                  />
-                </View>
-                <View style={styles.zip_state_view}>
-                  <Input
-                    IconLeft={null}
-                    errors={undefined}
-                    touched={false}
-                    value={newState}
-                    //     onChangeText={handleChange('name')}
-                    // onBlur={handleBlur('name')}
-
-                    text="State"
-                    IconRight={null}
-                    mV={15}
-                    placeholder="CA"
-                    bW={1}
-                    textWidth={'50%'}
-                    placeholderTextColor={COLORS.HALFBLACK}
-                    w="half"
-                    editable={false}
-                  />
-                </View>
+                  text="State"
+                  IconRight={null}
+                  mV={15}
+                  placeholder="CA"
+                  bW={1}
+                  textWidth={'50%'}
+                  placeholderTextColor={COLORS.HALFBLACK}
+                  w="half"
+                  editable={false}
+                />
               </View>
             </View>
-            <View>
-      
-            </View>
-            <View
-              style={{
-                flexDirection: 'row',
-                justifyContent: 'center',
-              }}>
-              <TouchableOpacity
-                onPress={CompleteProfileFunction}
-                style={styles.create_profile_Touchable}>
-                <Text
-                  style={{
-                    color: COLORS.BLACK,
-                    fontSize: 14,
-                    fontWeight: '700',
-                  }}>
-                  CREATE PROFILE
-                </Text>
-              </TouchableOpacity>
-            </View>
           </View>
-        </KeyboardAvoidingView>
+          <View></View>
+          <View
+            style={{
+              flexDirection: 'row',
+              justifyContent: 'center',
+            }}>
+            <TouchableOpacity
+              onPress={CompleteProfileFunction}
+              style={styles.create_profile_Touchable}>
+              <Text
+                style={{
+                  color: COLORS.BLACK,
+                  fontSize: 14,
+                  fontWeight: '700',
+                }}>
+                CREATE PROFILE
+              </Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+        {/* </KeyboardAvoidingView> */}
       </ScrollView>
+      <OverusageModal />
     </SafeAreaView>
   );
 }
@@ -326,8 +375,7 @@ const styles = StyleSheet.create({
   mainDiv_container: {
     paddingHorizontal: 20,
     paddingTop: 30,
-    marginBottom:30
-
+    marginBottom: 30,
   },
 
   mainDiv_complete_profile: {
@@ -386,12 +434,12 @@ const styles = StyleSheet.create({
   },
   create_profile_Touchable: {
     marginTop: 10,
-  
+
     backgroundColor: COLORS.GREEN,
     alignItems: 'center',
     padding: 13,
     borderRadius: 10,
-  
+
     width: '100%',
     ...Platform.select({
       ios: {
@@ -431,11 +479,12 @@ const styles = StyleSheet.create({
     color: COLORS.BLACK,
     marginLeft: 15,
     lineHeight: 16,
-    fontWeight: '700',
+    fontWeight: '500',
     // letterSpacing: 0.4
   },
   selectedTextStyle: {
-    fontSize: 16,
+    fontSize: 15,
+    marginTop: -10,
     color: COLORS.BLACK,
   },
   iconStyle: {
@@ -443,19 +492,43 @@ const styles = StyleSheet.create({
     height: 20,
   },
   inputSearchStyle: {
-   // height: 40,
-    fontSize: 16,
-   backgroundColor: COLORS.CREAM,
-   borderColor:'COLORS.GREEN',
+    // height: 40,
+    fontSize: 14,
+    backgroundColor: COLORS.CREAM,
+    borderColor: 'COLORS.GREEN',
   },
   dropdownContainer: {
     backgroundColor: COLORS.CREAM, // Set your desired background color here
-    borderColor: COLORS.GREEN, 
-   // Set your desired background color here
+    borderColor: COLORS.GREEN,
+
+    // Set your desired background color here
   },
   placeholderStyle: {
     fontSize: 14,
     color: COLORS.HALFBLACK,
     marginHorizontal: 10,
+  },
+  centeredView: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+
+    // backgroundColor: 'rgba(0, 0, 0, 0.5)',
+  },
+  modalView: {
+    margin: 20,
+    backgroundColor: '#F5F5F5',
+    borderRadius: 20,
+    padding: 35,
+    alignItems: 'center',
+    // shadowColor: '#000',
+    // shadowOffset: {
+    //   width: 0,
+    //   height: 2,
+    // },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 5,
+    width: DIMENSIONS.SCREEN_WIDTH * 0.8,
   },
 });

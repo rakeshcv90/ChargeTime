@@ -50,9 +50,10 @@ export default function Home(route) {
   const [changePage, setChangePage] = useState('');
   const Tab = createMaterialTopTabNavigator();
 
-  const {getLocationID, getBasePackage, getPackageStatus} = useSelector(
+  const {getLocationID, getBasePackage, getPackageStatus,getMyLocation} = useSelector(
     state => state,
   );
+
   const [apiData, setApiData] = useState(getBasePackage || []);
 
   useEffect(() => {
@@ -120,20 +121,7 @@ export default function Home(route) {
                 flex: 1,
                 backgroundColor: '#EEEEEE',
                 padding: 5,
-                // flex: 1,
-                // height: 50,
-                // backgroundColor: isFocused ? '#B1D34F' : '#EEEEEE',
-
-                // borderRadius: isFocused ? 0 : 0,
-                // shadowColor: 'rgba(0, 0, 0, 1)',
-                // shadowOffset: {
-                //   width: isFocused ? 6 : 0,
-                //   height: isFocused ? 4 : 0,
-                // },
-                // shadowOpacity: isFocused ? 3 : 0,
-                // shadowRadius: isFocused ? 2 : 0,
-                // elevation: Platform.OS === 'android' && isFocused ? 8 : 0,
-                // justifyContent: 'center',
+                
               }}>
               <View
                 style={{
@@ -148,7 +136,6 @@ export default function Home(route) {
                     },
                     android: {
                       elevation: isFocused ? 4 : 0,
-
                     },
                   }),
                   backgroundColor: isFocused ? '#B1D34F' : null,
@@ -158,7 +145,7 @@ export default function Home(route) {
                     fontWeight: isFocused ? '600' : '400',
                     fontSize: 12,
                     textAlign: 'center',
-                    color:'black'
+                    color: 'black',
                   }}>
                   {label}
                 </Text>
@@ -215,7 +202,7 @@ export default function Home(route) {
                 key={ind}
                 name={item?.package_name}
                 component={TabOne}
-                initialParams={{item}}
+                initialParams={{index:ind}}
               />
             );
           })}

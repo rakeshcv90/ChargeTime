@@ -1,8 +1,4 @@
-/* eslint-disable react-hooks/exhaustive-deps */
-/* eslint-disable react/no-unstable-nested-components */
-/* eslint-disable eqeqeq */
-/* eslint-disable react-native/no-inline-styles */
-/* eslint-disable no-unused-vars */
+
 import {
   View,
   Text,
@@ -57,8 +53,8 @@ const mobileH = Math.round(Dimensions.get('window').height);
 const validationSchema = Yup.object().shape({
   // cardHolderName: Yup.string().required('Card Holder Name is required'),
   cardHolderName: Yup.string()
-    .required('Card Holder Name is required')
-    .matches(/^[a-zA-Z]*$/, 'Name must be start with a character')
+    .required('Card Holder Name is Required')
+    .matches(/^[A-Za-z].*/, 'Name must start with a character')
     .min(3, 'Name must contain at least 3 characters'),
   cardNumber: Yup.string()
     .required('Invalid Card Number')
@@ -66,7 +62,7 @@ const validationSchema = Yup.object().shape({
 
   // .matches(/^[0-9]{16}$/, 'Card number must be 16 digits'),
   validTill: Yup.string()
-    .required('Expiry date is required')
+    .required('Expiry date is Required')
     .test(
       'expiration',
       'Year should be greater or equal to the current year',
@@ -113,7 +109,7 @@ const validationSchema = Yup.object().shape({
       },
     ),
   cvv: Yup.string()
-    .required('cvv is required')
+    .required('CVV is Required')
     .matches(/^[0-9]{3}$/, 'CVV must be 3 digits'),
 });
 export default function PaymentGateWay({navigation, route}) {
@@ -478,7 +474,7 @@ export default function PaymentGateWay({navigation, route}) {
                                     <View style={{gap: ms(5), width: ms(100)}}>
                                       <Text
                                         style={{
-                                          color: 'gray',
+                                          color: '#fff',
                                           fontWeight: '600',
                                           fontSize: 8,
                                         }}>
@@ -498,7 +494,7 @@ export default function PaymentGateWay({navigation, route}) {
                                         style={{
                                           fontWeight: '600',
                                           fontSize: 8,
-                                          color: 'gray',
+                                          color: '#fff',
                                         }}>
                                         Expires
                                       </Text>
@@ -520,7 +516,7 @@ export default function PaymentGateWay({navigation, route}) {
                                         style={{
                                           fontWeight: '600',
                                           fontSize: 8,
-                                          color: 'gray',
+                                          color: '#fff',
                                         }}>
                                         CVV
                                       </Text>
@@ -566,24 +562,31 @@ export default function PaymentGateWay({navigation, route}) {
                                 }}>
                                 <TouchableOpacity
                                   onPress={() => {
-                                    setFieldValue(
-                                      'cardHolderName',
-                                      item.cust_name,
-                                    );
-                                    setFieldValue(
-                                      'cardNumber',
-                                      item.card_number.toString() + ' ',
-                                    );
-                                    setFieldValue(
-                                      'validTill',
-                                      item.card_exp_month +
-                                        '/' +
-                                        item.card_exp_year,
-                                    );
-                                    setFieldValue(
-                                      'cvv',
-                                      item.card_cvc.toString(),
-                                    );
+                                    let formattedCardNumber = '';
+                                    for (let i = 0; i <  (item.card_number).length; i += 4) {
+                                      formattedCardNumber +=  item.card_number.substr(i, 4) + ' ';
+                                    }
+                                    console.log("Test",item.card_number.length)
+                                    // setFieldValue(
+                                    //   'cardHolderName',
+                                    //   item.cust_name,
+                                    // );
+                                    // // setFieldValue(
+                                    // //   'cardNumber',
+                                    // //   item.card_number.toString() + '',
+                                    // // );
+                                    // console.log("Test",item.card_number.toString())
+                                    // setFieldValue(
+                                    //   'validTill',
+                                    //   item.card_exp_month +
+                                    //     '/' +
+                                    //     item.card_exp_year,
+                                    // );
+                                    // setFieldValue(
+                                    //   'cvv',
+                                    //   item.card_cvc.toString(),
+                                    // );
+                                 
                                   }}>
                                   <Text
                                     style={{
@@ -739,13 +742,14 @@ export default function PaymentGateWay({navigation, route}) {
                     mV={15}
                     placeholder="John Doe"
                     bW={1}
+                  
                     textWidth={ms(110)}
                     placeholderTextColor={COLORS.HALFBLACK}
                   />
                   <Input
                     IconLeft={null}
                     errors={errors.cardNumber}
-                    touched={errors.cardNumber}
+                    touched={touched.cardNumber}
                     value={values.cardNumber}
                     //onChangeText={handleChange('cardNumber')}
                     onChangeText={text => {
@@ -839,6 +843,9 @@ export default function PaymentGateWay({navigation, route}) {
                       errors={couponerror}
                       onChangeText={text => {
                         setCoupen(text);
+                        if(text.length<=0){
+                          setCoupenError('')
+                        }
                       }}
                       value={coupon}
                       touched={coupenStates}

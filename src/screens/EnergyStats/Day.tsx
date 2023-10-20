@@ -59,7 +59,7 @@ const Day = (props: any) => {
         dispatch(setYearGraphData(res?.data.yearlyusagewithgraph));
       })
       .catch(err => {
-        console.log("fetchGraphData11",err);
+        console.log('fetchGraphData11', err);
       });
   };
   const handleRefresh = () => {
@@ -90,7 +90,7 @@ const Day = (props: any) => {
         dispatch(setRemainingData(remaingData));
       })
       .catch(err => {
-        console.log("remainigUsuageData1",err);
+        console.log('remainigUsuageData1', err);
       });
   };
 
@@ -99,12 +99,11 @@ const Day = (props: any) => {
       .get(`${API}/dailyusage/${userId}`)
       .then(res => {
         if (res?.data) {
-       
           dispatch(setKwhData(res?.data));
         }
       })
       .catch(err => {
-        console.log("dailyUsuagekwh11",err);
+        console.log('dailyUsuagekwh11', err);
       });
   };
 
@@ -115,7 +114,7 @@ const Day = (props: any) => {
         dispatch(setChargerStatus(res?.data));
       })
       .catch(err => {
-        console.log("fetchStatusdata111",err);
+        console.log('fetchStatusdata111', err);
       });
   };
 
@@ -164,7 +163,8 @@ const Day = (props: any) => {
                 No Graph Data available
               </Text>
             )}
-            <BoxTwo data={getBoxTwoDataForDashboard[0]} />
+         
+            <BoxTwo data={getBoxTwoDataForDashboard.data} />
           </View>
           <View style={{marginBottom: 120}}>
             <PriceValidity data={getBoxTwoDataForDashboard.data} />

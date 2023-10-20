@@ -24,6 +24,7 @@ import {
   Alert,
   ImageBackground,
   Platform,
+  FlatList,
 } from 'react-native';
 import {Toast} from 'react-native-toast-message/lib/src/Toast';
 import React, {useState, useRef, useEffect} from 'react';
@@ -47,7 +48,7 @@ import {Delete} from '../../../assets/svgs/Delete';
 import {PLATFORM_IOS} from '../../constants/DIMENSIONS';
 import {navigationRef} from '../../../App';
 import creditCardType, {types as CardType} from 'credit-card-type';
-import {FlatList} from 'react-native-gesture-handler';
+
 import {mvs, ms} from 'react-native-size-matters';
 import {setCardDetails} from '../../redux/action';
 import {useDispatch} from 'react-redux';
@@ -58,16 +59,15 @@ import CardDeleteConfirmation from '../../Components/CardDeleteConfirmation';
 const mobileW = Math.round(Dimensions.get('screen').width);
 const mobileH = Math.round(Dimensions.get('window').height);
 const validationSchema = Yup.object().shape({
-  // cardHolderName: Yup.string().required('Card Holder Name is required'),
   cardHolderName: Yup.string()
-    .required('Card Holder Name is required')
+    .required('Card Holder Name is Required')
     .matches(/^[A-Za-z].*/, 'Name must be start with a character')
     .min(3, 'Name must contain at least 3 characters'),
   cardNumber: Yup.string()
-    .required('Card Number is required')
+    .required('Card Number is Required')
     .min(19, 'Card number must be of 16 digits'),
   validTill: Yup.string()
-    .required('Expiry date is required')
+    .required('Expiry date is Required')
     .test(
       'expiration',
       'Year should be greater or equal to the current year',
@@ -107,7 +107,7 @@ const validationSchema = Yup.object().shape({
     ),
 
   cvv: Yup.string()
-    .required('Cvv is required')
+    .required('CVV is Required')
     .matches(/^[0-9]{3}$/, 'CVV must be 3 digits'),
 });
 export default function PaymentGateWay({navigation, route}) {
@@ -228,24 +228,20 @@ export default function PaymentGateWay({navigation, route}) {
   };
 
   const handleGetCard = async () => {
-
     try {
       const response = await fetch(`${API}/getcarddetails/${user_ID}`);
       const result = await response.json();
 
       if (result[0]?.length > 0) {
-  
         // setSavedCard(result[0].sort((b, a) => a.status - b.status));
         setSavedCard(result[0].sort((b, a) => a.status - b.status));
 
         const statusOneObjects = result[0].filter(item => item.status === 1);
       } else {
-     
         setSavedCard(result[0].sort((b, a) => a.status - b.status));
       }
     } catch (error) {
       console.log('ERROR', error);
-
     }
   };
   const card_id = cardId;
@@ -366,9 +362,9 @@ export default function PaymentGateWay({navigation, route}) {
       ) : (
         <View>
           <Image
-             source={require('../../../assets/images/dotted.png')}
-             style={{width: mobileW * 0.99}}
-             resizeMode='stretch'
+            source={require('../../../assets/images/dotted.png')}
+            style={{width: mobileW * 0.99}}
+            resizeMode="stretch"
           />
         </View>
       )}
@@ -402,12 +398,12 @@ export default function PaymentGateWay({navigation, route}) {
                 ) ? (
                   <>
                     <Carousel
-                      //ref={(c) => { this._carousel = c; }}
+                      
                       style={{flexGrow: 0}}
                       width={400}
                       height={mvs(200)}
                       data={savedCard}
-                      // defaultIndex={focusIndex >= 0 ? focusIndex : 0}
+                   
                       renderItem={({item, index}) => {
                         return (
                           <View style={{}}>
@@ -418,7 +414,7 @@ export default function PaymentGateWay({navigation, route}) {
                                 width: DIMENSIONS.SCREEN_WIDTH * 0.9,
 
                                 height: mvs(190),
-                                // height:200,
+                              
                               }}>
                               <View style={styles.cardNumber_position}>
                                 <Text
@@ -488,7 +484,7 @@ export default function PaymentGateWay({navigation, route}) {
                                         fontWeight: '600',
                                         fontSize: 13,
                                       }}>
-                                      {/* {String(item.card_cvc)} */}
+                              
                                       {item.card_cvc
                                         ? '*'.repeat(
                                             String(item.card_cvc).length,
@@ -502,15 +498,108 @@ export default function PaymentGateWay({navigation, route}) {
                           </View>
                         );
                       }}
-                      // sliderWidth={400}
-                      // itemWidth={400}
+                
                       loop={false}
                       onSnapToItem={index => {
                         setCurrentCard(savedCard[index]);
                         setFocusedIndex(index);
                       }}
                     />
+                    {/* <FlatList
+                      data={savedCard}
+                    horizontal
+                      renderItem={({item, index}) => {
+                        return (
+                          <View style={{}}>
+                            <ImageBackground
+                              source={getCardType(item.card_number)}
+                              resizeMode="contain"
+                              style={{
+                                width: DIMENSIONS.SCREEN_WIDTH * 0.9,
 
+                                height: mvs(190),
+                              }}>
+                              <View style={styles.cardNumber_position}>
+                                <Text
+                                  style={{
+                                    color: '#fff',
+                                    fontWeight: '600',
+                                    fontSize: ms(20),
+                                  }}>
+                                  {String(item.card_number).replace(
+                                    /^(\d{12})(\d{4})$/,
+                                    'xxxx xxxx xxxx $2',
+                                  )}
+                                </Text>
+                                <View style={styles.text_div}>
+                                  <View style={{gap: ms(5), width: ms(100)}}>
+                                    <Text
+                                      style={{
+                                        color: 'gray',
+                                        fontWeight: '600',
+                                        fontSize: 8,
+                                      }}>
+                                      Card Holder
+                                    </Text>
+                                    <Text
+                                      style={{
+                                        color: '#fff',
+                                        fontWeight: '600',
+                                        fontSize: 13,
+                                      }}>
+                                      {String(item.cust_name)}
+                                    </Text>
+                                  </View>
+                                  <View style={{gap: ms(5)}}>
+                                    <Text
+                                      style={{
+                                        fontWeight: '600',
+                                        fontSize: 8,
+                                        color: 'gray',
+                                      }}>
+                                      Expires
+                                    </Text>
+                                    <Text
+                                      style={{
+                                        color: '#fff',
+                                        fontWeight: '600',
+                                        fontSize: 13,
+                                      }}>
+                                      {String(
+                                        item.card_exp_month +
+                                          '/' +
+                                          item.card_exp_year,
+                                      )}
+                                    </Text>
+                                  </View>
+                                  <View style={{gap: 5}}>
+                                    <Text
+                                      style={{
+                                        fontWeight: '600',
+                                        fontSize: 8,
+                                        color: 'gray',
+                                      }}>
+                                      CVV
+                                    </Text>
+                                    <Text
+                                      style={{
+                                        color: '#fff',
+                                        fontWeight: '600',
+                                        fontSize: 13,
+                                      }}>
+                                      {item.card_cvc
+                                        ? '*'.repeat(
+                                            String(item.card_cvc).length,
+                                          )
+                                        : null}
+                                    </Text>
+                                  </View>
+                                </View>
+                              </View>
+                            </ImageBackground>
+                          </View>
+                        );
+                      }}></FlatList> */}
                     <View style={styles.dotsContainer}>
                       {savedCard &&
                         savedCard.length > 0 &&
@@ -538,7 +627,7 @@ export default function PaymentGateWay({navigation, route}) {
                       source={cardTypeImage}
                       style={{
                         width: DIMENSIONS.SCREEN_WIDTH * 0.9,
-                        // resizeMode: 'contain',
+
                         height: mvs(185),
                       }}
                     />
@@ -727,7 +816,6 @@ export default function PaymentGateWay({navigation, route}) {
                   </TouchableOpacity>
                   <TouchableOpacity
                     onPress={() => {
-                   
                       if (savedCard.length > 0) {
                         setModalVisible(true);
                       } else {
@@ -772,11 +860,11 @@ export default function PaymentGateWay({navigation, route}) {
                 {Platform.OS == 'android' ? (
                   <HorizontalLine style={styles.line} />
                 ) : (
-                  <View style={{ paddingHorizontal: -20,}}>
+                  <View style={{paddingHorizontal: -20}}>
                     <Image
                       source={require('../../../assets/images/dotted.png')}
-                      style={{width: mobileW * 1,  }}
-                      resizeMode='stretch'
+                      style={{width: mobileW * 1}}
+                      resizeMode="stretch"
                     />
                   </View>
                 )}
@@ -815,7 +903,7 @@ export default function PaymentGateWay({navigation, route}) {
                 <Input
                   IconLeft={null}
                   errors={errors.cardNumber}
-                  touched={errors.cardNumber}
+                  touched={touched.cardNumber}
                   value={values.cardNumber}
                   onChangeText={text => {
                     setSavedCard('');
@@ -915,7 +1003,7 @@ export default function PaymentGateWay({navigation, route}) {
                     />
                   </View>
                 </View>
-                <TouchableOpacity
+                {/* <TouchableOpacity
                 onPress={handleSubmit}
                   style={{
                     backgroundColor: COLORS.GREEN,
@@ -956,7 +1044,52 @@ export default function PaymentGateWay({navigation, route}) {
                       ADD CARD
                     </Text>
                  
-                </TouchableOpacity>
+                </TouchableOpacity> */}
+                <View
+                  style={{
+                    flexDirection: 'row',
+
+                    alignItems: 'flex-end',
+                    alignSelf: 'flex-end',
+
+                    marginVertical: 20,
+                  }}>
+                  <TouchableOpacity
+                    onPress={handleSubmit}
+                    style={{
+                      width: DIMENSIONS.SCREEN_WIDTH * 0.4,
+                      height: (DIMENSIONS.SCREEN_HEIGHT * 6) / 100,
+                      marginLeft: DIMENSIONS.SCREEN_WIDTH * 0.1,
+                      borderRadius: 10,
+                      justifyContent: 'center',
+                      alignItems: 'center',
+                      backgroundColor: COLORS.GREEN,
+                      ...Platform.select({
+                        ios: {
+                          shadowColor: '#000000',
+                          shadowOffset: {width: 0, height: 2},
+                          shadowOpacity: 0.3,
+                          shadowRadius: 4,
+                        },
+                        android: {
+                          elevation: 4,
+                        },
+                      }),
+                    }}>
+                    <Text
+                      style={{
+                        fontSize: 14,
+                        fontSize: 16,
+                        fontWeight: 'bold',
+                        textAlign: 'center',
+                        alignSelf: 'center',
+
+                        color: COLORS.BLACK,
+                      }}>
+                      ADD CARD
+                    </Text>
+                  </TouchableOpacity>
+                </View>
               </>
             )}
           </Formik>

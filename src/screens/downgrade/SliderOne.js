@@ -21,7 +21,7 @@ import COLORS from '../../constants/COLORS';
 import InstallationBase from '../../Components/InstallationBase';
 import BoxTwo from '../../Components/BoxTwo';
 // import PurchseButton from '../../Components/PurchseButton';
-import {PLATFORM_IOS} from '../../constants/DIMENSIONS';
+import {DIMENSIONS, PLATFORM_IOS} from '../../constants/DIMENSIONS';
 import BoxFive from '../../Components/BoxFive';
 import Remaining from '../../Components/Remaining';
 import PriceBox from '../../Components/PriceBox';
@@ -83,7 +83,10 @@ export default function SliderOne(props) {
   return (
     <ScrollView
       showsVerticalScrollIndicator={false}
-      style={{backgroundColor: COLORS.CREAM, flex: 1}}>
+      style={{backgroundColor: COLORS.CREAM, flex: 1,
+     
+    }}
+      >
       {forLoading ? <ActivityLoader /> : ''}
 
       <View style={styles.managing_width}>
@@ -161,8 +164,7 @@ const styles = StyleSheet.create({
   managing_width: {
     paddingHorizontal: 20,
     // backgroundColor: COLORS.CREAM, flex: 1,
-    paddingVertical: PLATFORM_IOS ? 0 : 0,
-    marginVertical: PLATFORM_IOS ? 0 : 0,
+    marginBottom:DIMENSIONS.SCREEN_HEIGHT*0.02
     // backgroundColor:"red"
     // marginVertical: 10,
     //   paddingTop:20

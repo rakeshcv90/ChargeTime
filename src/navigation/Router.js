@@ -19,6 +19,7 @@ import {
   Linking,
   Text,
   Dimensions,
+  ToastAndroid,
 } from 'react-native';
 import CompleteProfile from '../screens/register/CompleteProfile';
 import Home from '../screens/purchasePlan/Home';
@@ -33,14 +34,14 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import PlanSummary from '../screens/purchasePlan/PlanSummary';
 import Testing from '../screens/testing/Testing';
 import Payment from '../screens/accounts/Payment';
-import PersonalDetails from '../screens/accounts/PersonalDetails';
+
 import Security from '../screens/accounts/Security';
 import Installation from '../screens/accounts/Installation';
 import Theme from '../screens/accounts/Theme';
 import Subscription from '../screens/accounts/Subscription';
 import deleteAccount from '../screens/accounts/deleteAccount';
 import EnergyStats from '../screens/EnergyStats';
-import {useSelector} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 import PaymentGateWay from '../screens/payment/PaymentGateWay';
 import Splash from '../splash/Splash';
 import Introduction from '../splash/Introduction';
@@ -54,9 +55,15 @@ import Charging from '../Components/Charging';
 import {OnlineCharge} from '../../assets/images/OnlineCharge';
 import {NoCharge} from '../../assets/images/NoCharge';
 import COLORS from '../constants/COLORS';
-import {DIMENSIONS} from '../constants/DIMENSIONS';
+import {DIMENSIONS, PLATFORM_IOS} from '../constants/DIMENSIONS';
 import Contact from '../screens/accounts/Contact';
 import ForDownGrade from '../Components/ForDownGrade';
+import PersonalDetails from '../screens/accounts/PersonalDetails';
+import {CommonActions} from '@react-navigation/native';
+import { persistor } from '../redux/store';
+import axios from 'axios';
+import { API } from '../api/API';
+import { setLogout } from '../redux/action';
 
 const Drawer = createDrawerNavigator();
 const Stack = createNativeStackNavigator();
@@ -88,14 +95,67 @@ export const DrawerScreenPart = ({navigation}) => {
     </View>
   );
 };
-export const ChargerStatus = () => {
-  // const getChargerStatus = useSelector(state => state.getChargerStatus);
+export const ChargerStatus = ({navigation}) => {
+  const user_ID = useSelector(state => state.getUserID);
+  const dispatch = useDispatch();
 
-  return (
-    <View>
-      <Text />
-    </View>
-  );
+  const handleLogOut = async () => {
+    try {
+      const res = await axios(`${API}/logout/${user_ID}`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+      if (res.data.message == 'Your account is successfully logout') {
+        PLATFORM_IOS
+          ? Toast.show({
+              text1: res.data.message,
+
+              position: 'bottom',
+              type: 'success',
+              duration: 500,
+            })
+          : ToastAndroid.show(res.data.message, ToastAndroid.SHORT);
+     
+        await AsyncStorage.clear();
+        await persistor.purge();
+        dispatch(setLogout());
+
+       
+        navigation.dispatch(
+          CommonActions.reset({
+            index: 0,
+            routes: [
+              {
+                name: 'Login',
+              },
+            ],
+          }),
+        );
+      }
+    } catch (err) {
+      console.log('Error', err);
+    
+      await AsyncStorage.clear();
+      await persistor.purge();
+      dispatch(setLogout());
+      // navigation.dispatch(
+      //   CommonActions.reset({
+      //     index: 0,
+      //     routes: [
+      //       {
+      //         name: 'Login',
+      //       },
+      //     ],
+      //   }),
+      // );
+   
+    }
+   
+  };
+  return <View><TouchableOpacity onPress={handleLogOut()}>
+    </TouchableOpacity></View>;
 };
 const DrawerNavigation = () => {
   const [focus, setFocus] = useState();
@@ -127,8 +187,8 @@ const DrawerNavigation = () => {
                     resizeMode="cover"
                     source={
                       !focused
-                      ? require('../../assets/images/NewHome1.png')
-                      : require('../../assets/images/NewHome.png')
+                        ? require('../../assets/images/NewHome1.png')
+                        : require('../../assets/images/NewHome.png')
                     }
                     style={{width: 35, height: 25}}
                   />
@@ -136,17 +196,18 @@ const DrawerNavigation = () => {
               },
               drawerItemStyle: {
                 marginHorizontal: -7,
-                
               },
               drawerLabelStyle: {
-                backgroundColor: focus ? 'rgba(177, 211, 79, 0.8)' : 'rgba(255, 255, 255, 0)',
+                backgroundColor: focus
+                  ? 'rgba(177, 211, 79, 0.8)'
+                  : 'rgba(255, 255, 255, 0)',
                 paddingVertical: 10,
                 paddingLeft: 10,
                 width: '200%',
                 // marginTop: -20,
                 marginLeft: -30,
-                color:'black',
-                fontWeight:'700',
+                color: 'black',
+                fontWeight: '700',
                 borderRadius: 5,
 
                 overflow: 'hidden',
@@ -177,12 +238,14 @@ const DrawerNavigation = () => {
                 );
               },
               drawerLabelStyle: {
-                backgroundColor: focusOne ? 'rgba(177, 211, 79, 0.8)' : 'rgba(255, 255, 255, 0)',
+                backgroundColor: focusOne
+                  ? 'rgba(177, 211, 79, 0.8)'
+                  : 'rgba(255, 255, 255, 0)',
                 paddingVertical: 10,
                 paddingLeft: 10,
                 width: '200%',
-                color:'black',
-                fontWeight:'700',
+                color: 'black',
+                fontWeight: '700',
                 marginLeft: -30,
 
                 borderRadius: 5,
@@ -193,7 +256,7 @@ const DrawerNavigation = () => {
               title: 'Energy',
             }}
             name="EnergyOptions"
-            component={EnergyOptions}
+            component={HomeOne}
           />
         </>
       ) : (
@@ -216,15 +279,16 @@ const DrawerNavigation = () => {
             },
             drawerItemStyle: {
               marginHorizontal: -7,
-              
             },
             drawerLabelStyle: {
-              backgroundColor: focus ? 'rgba(177, 211, 79, 0.8)' : 'rgba(255, 255, 255, 0)',
+              backgroundColor: focus
+                ? 'rgba(177, 211, 79, 0.8)'
+                : 'rgba(255, 255, 255, 0)',
               paddingVertical: 10,
               paddingLeft: 10,
               width: '200%',
-              color:'black',
-              fontWeight:'700',
+              color: 'black',
+              fontWeight: '700',
               marginLeft: -30,
 
               borderRadius: 5,
@@ -245,7 +309,6 @@ const DrawerNavigation = () => {
           drawerItemStyle: {
             marginTop: -5,
             marginHorizontal: -9,
-            
           },
           drawerIcon: ({focused, color, size}) => {
             setFocusTwo(focused);
@@ -261,22 +324,24 @@ const DrawerNavigation = () => {
             );
           },
           drawerLabelStyle: {
-            backgroundColor: focusTwo ? 'rgba(177, 211, 79, 0.8)' : 'rgba(255, 255, 255, 0)',
+            backgroundColor: focusTwo
+              ? 'rgba(177, 211, 79, 0.8)'
+              : 'rgba(255, 255, 255, 0)',
             paddingVertical: 10,
             paddingLeft: 10,
             width: '200%',
-            color:'black',
-            fontWeight:'700',
+            color: 'black',
+            fontWeight: '700',
             marginLeft: -30,
             borderRadius: 5,
 
             overflow: 'hidden',
           },
-         drawerActiveTintColor: 'black',
+          drawerActiveTintColor: 'black',
           title: 'Account',
         }}
         name="AccountStack"
-        component={AccountStack}
+        component={Account}
       />
 
       <Drawer.Screen
@@ -295,13 +360,12 @@ const DrawerNavigation = () => {
           drawerItemStyle: {
             marginTop: (DIMENSIONS.SCREEN_HEIGHT * 15) / 100,
             marginLeft: (DIMENSIONS.SCREEN_WIDTH * 4) / 100,
-
           },
           drawerLabelStyle: {
             backgroundColor: '#fff',
             marginLeft: -17,
-            color:'black',
-            fontWeight:'700',
+            color: 'black',
+            fontWeight: '700',
           },
           drawerActiveTintColor: 'black',
           //title: 'Contact Us',
@@ -309,6 +373,7 @@ const DrawerNavigation = () => {
         name="Contact"
         component={Contact}
       />
+
       <Drawer.Screen
         options={{
           drawerActiveBackgroundColor: '#fff',
@@ -325,8 +390,8 @@ const DrawerNavigation = () => {
           drawerLabelStyle: {
             backgroundColor: '#fff',
             marginLeft: -17,
-            color:'black',
-            fontWeight:'700',
+            color: 'black',
+            fontWeight: '700',
           },
           drawerActiveTintColor: 'black',
         }}
@@ -348,13 +413,36 @@ const DrawerNavigation = () => {
           drawerLabelStyle: {
             backgroundColor: '#fff',
             marginLeft: -17,
-            color:'black',
-            fontWeight:'700',
+            color: 'black',
+            fontWeight: '700',
           },
           drawerActiveTintColor: 'black',
         }}
         name="Terms & Conditions"
         component={Terms}
+      />
+      <Drawer.Screen
+        options={{
+          drawerActiveBackgroundColor: '#fff',
+          drawerIcon: ({focused, color, size}) => {
+            return (
+              <Image
+                source={require('../../assets/images/terms.png')}
+                resizeMode="stretch"
+                style={{width: 17, height: 17, padding: 0, marginLeft: 4}}
+              />
+            );
+          },
+          drawerLabelStyle: {
+            backgroundColor: '#fff',
+            marginLeft: -17,
+            color: 'black',
+            fontWeight: '700',
+          },
+          drawerActiveTintColor: 'black',
+        }}
+        name="Log Out"
+        component={ChargerStatus}
       />
       {getDeviceID !==
         'Your Account is not currently linked with a TRO Charger. Please contact customer service if you believe this is an error.' &&
@@ -465,53 +553,53 @@ const HomeStack = () => {
     </Stack.Navigator>
   );
 };
-const MainStack = () => {
-  return (
-    <Stack.Navigator screenOptions={screenOptions}>
-      <Stack.Screen name="DrawerStack" component={DrawerNavigation} />
-      <Stack.Screen name="LoginStack" component={LoginStack} />
-      <Stack.Screen name="HomeStack" component={HomeStack} />
-      <Stack.Screen name="AccountStack" component={AccountStack} />
-      <Stack.Screen name="EnergyOptions" component={EnergyOptions} />
-    </Stack.Navigator>
-  );
-};
+// const MainStack = () => {
+//   return (
+//     <Stack.Navigator screenOptions={screenOptions}>
+//       <Stack.Screen name="DrawerStack" component={DrawerNavigation} />
+//       <Stack.Screen name="LoginStack" component={LoginStack} />
+//       <Stack.Screen name="HomeStack" component={HomeStack} />
+//       <Stack.Screen name="AccountStack" component={AccountStack} />
+//       <Stack.Screen name="EnergyOptions" component={EnergyOptions} />
+//     </Stack.Navigator>
+//   );
+// };
 
-const EnergyOptions = () => {
-  return (
-    <Stack.Navigator screenOptions={screenOptions}>
-      <Stack.Screen name="HomeOne" component={HomeOne} />
-      <Stack.Screen name="DownGradeData" component={ForDownGrade} />
-      <Stack.Screen name="PaymentGateWay" component={PaymentGateWay} />
-      {/* <Stack.Screen name="PlanSummary" component={PlanSummary} /> */}
-    </Stack.Navigator>
-  );
-};
-const AccountStack = () => {
-  return (
-    <Stack.Navigator screenOptions={screenOptions}>
-      <Stack.Screen name="Account" component={Account} />
-      <Stack.Screen name="PersonalDetails" component={PersonalDetails} />
-      <Stack.Screen name="Security" component={Security} />
-      <Stack.Screen name="Installation" component={Installation} />
-      <Stack.Screen name="Payment" component={Payment} />
-      <Stack.Screen name="Subscription" component={Subscription} />
-      <Stack.Screen name="Theme" component={Theme} />
-      <Stack.Screen name="Contact" component={Contact} />
-      <Stack.Screen name="deleteAccount" component={deleteAccount} />
-      <Stack.Screen name="Login" component={Login} />
-      <Stack.Screen name="LoginStack" component={LoginStack} />
+// const EnergyOptions = () => {
+//   return (
+//     <Stack.Navigator screenOptions={screenOptions}>
+//       <Stack.Screen name="HomeOne" component={HomeOne} />
+//       <Stack.Screen name="DownGradeData" component={ForDownGrade} />
+//       <Stack.Screen name="PaymentGateWay" component={PaymentGateWay} />
+//       {/* <Stack.Screen name="PlanSummary" component={PlanSummary} /> */}
+//     </Stack.Navigator>
+//   );
+// };
+// const AccountStack = () => {
+//   return (
+//     <Stack.Navigator screenOptions={screenOptions}>
+//       <Stack.Screen name="Account" component={Account} />
+//       <Stack.Screen name="PersonalDetails" component={PersonalDetails} />
+//       <Stack.Screen name="Security" component={Security} />
+//       <Stack.Screen name="Installation" component={Installation} />
+//       <Stack.Screen name="Payment" component={Payment} />
+//       <Stack.Screen name="Subscription" component={Subscription} />
+//       <Stack.Screen name="Theme" component={Theme} />
+//       <Stack.Screen name="Contact" component={Contact} />
+//       <Stack.Screen name="deleteAccount" component={deleteAccount} />
+//       <Stack.Screen name="Login" component={Login} />
+//       <Stack.Screen name="LoginStack" component={LoginStack} />
 
-      {/* <Stack.Screen name="DrawerStack" component={DrawerNavigation} /> */}
-      <Stack.Screen name="Home" component={HomeStack} />
-      <Stack.Screen name="PaymentGateWay" component={PaymentGateWay} />
+//       {/* <Stack.Screen name="DrawerStack" component={DrawerNavigation} /> */}
+//       <Stack.Screen name="Home" component={HomeStack} />
+//       <Stack.Screen name="PaymentGateWay" component={PaymentGateWay} />
 
-      <Stack.Screen name="PlanSummary" component={PlanSummary} />
+//       <Stack.Screen name="PlanSummary" component={PlanSummary} />
 
-      <Stack.Screen name="Privacy Policy" component={Privacy} />
-    </Stack.Navigator>
-  );
-};
+//       <Stack.Screen name="Privacy Policy" component={Privacy} />
+//     </Stack.Navigator>
+//   );
+// };
 
 export default function Router() {
   // const [isAuthorized, setIsAuthorized] = useState(false);
@@ -553,9 +641,30 @@ export default function Router() {
 
   return (
     <Stack.Navigator screenOptions={screenOptions}>
+      <Stack.Screen name="LoginStack" component={LoginStack} />
+      <Stack.Screen name="Home" component={Home} />
+      <Stack.Screen name="PlanSummary" component={PlanSummary} />
+      <Stack.Screen name="PaymentGateWay" component={PaymentGateWay} />
+      <Stack.Screen name="HomeOne" component={HomeOne} />
+
+      <Stack.Screen name="DownGradeData" component={ForDownGrade} />
+      <Stack.Screen name="Account" component={Account} />
+      <Stack.Screen name="PersonalDetails" component={PersonalDetails} />
+      <Stack.Screen name="Security" component={Security} />
+      <Stack.Screen name="Installation" component={Installation} />
+      <Stack.Screen name="Payment" component={Payment} />
+      <Stack.Screen name="Subscription" component={Subscription} />
+      <Stack.Screen name="Theme" component={Theme} />
+      <Stack.Screen name="Contact" component={Contact} />
+      <Stack.Screen name="deleteAccount" component={deleteAccount} />
+      {/* <Stack.Screen name="Login" component={Login} /> */}
+
+      <Stack.Screen name="Privacy Policy" component={Privacy} />
+      {/* <Stack.Screen name="DrawerStack" component={DrawerNavigation} /> */}
+
       {/* <Stack.Screen name="LoginStack" component={LoginStack} /> */}
 
-      {!isAuthorized ? (
+      {/* {!isAuthorized ? (
         <>
           <Stack.Screen name="LoginStack" component={LoginStack} />
         </>
@@ -563,7 +672,7 @@ export default function Router() {
         <>
           <Stack.Screen name="MainStack" component={MainStack} />
         </>
-      )}
+      )} */}
     </Stack.Navigator>
   );
 }

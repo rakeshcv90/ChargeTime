@@ -118,6 +118,11 @@ export const setOverusageCount = data => {
 export const setLogout = () => {
   return {type: types.LOG_OUT};
 };
+export const setMyLocation = data => {
+  return {type: types.LOCATION_ID,payload: data};
+};
+
+
 export const resetApp = () => {
   return {
     type: types.RESET_APP,
