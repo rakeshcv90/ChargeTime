@@ -477,7 +477,7 @@ const Installation = () => {
           IconRight={() => <Location />}
           bR={3}
           bW={0.4}
-          bColor={COLORS.LIGHT_GREY}
+          bColor={COLORS.BLACK}
           text="Address Line 2"
           mV={10}
           textWidth={ms(95)}

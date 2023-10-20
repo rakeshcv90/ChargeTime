@@ -353,7 +353,7 @@ const DrawerNavigation = () => {
               <Image
                 source={require('../../assets/images/contact_us.png')}
                 resizeMode="stretch"
-                style={{width: 25, height: 25, padding: 0, margin: -7}}
+                style={{width: 20, height: 20, margin: -7}}
               />
             );
           },
@@ -363,7 +363,7 @@ const DrawerNavigation = () => {
           },
           drawerLabelStyle: {
             backgroundColor: '#fff',
-            marginLeft: -17,
+            marginLeft: -10,
             color: 'black',
             fontWeight: '700',
           },
@@ -383,7 +383,7 @@ const DrawerNavigation = () => {
               <Image
                 source={require('../../assets/images/privacy.png')}
                 resizeMode="stretch"
-                style={{width: 17, height: 17, padding: 0, marginLeft: 4}}
+                style={{width: 17, height: 17, padding: 0, }}
               />
             );
           },
@@ -406,7 +406,7 @@ const DrawerNavigation = () => {
               <Image
                 source={require('../../assets/images/terms.png')}
                 resizeMode="stretch"
-                style={{width: 17, height: 17, padding: 0, marginLeft: 4}}
+                style={{width: 17, height: 17, padding: 0, }}
               />
             );
           },
@@ -427,9 +427,9 @@ const DrawerNavigation = () => {
           drawerIcon: ({focused, color, size}) => {
             return (
               <Image
-                source={require('../../assets/images/terms.png')}
+                source={require('../../assets/images/logout.png')}
                 resizeMode="stretch"
-                style={{width: 17, height: 17, padding: 0, marginLeft: 4}}
+                style={{width: 17, height: 17, padding: 0, }}
               />
             );
           },

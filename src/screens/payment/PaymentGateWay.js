@@ -1,4 +1,3 @@
-
 import {
   View,
   Text,
@@ -45,7 +44,7 @@ import {
   setPurchaseData,
 } from '../../redux/action';
 import {Toast} from 'react-native-toast-message/lib/src/Toast';
-import Carousel from 'react-native-reanimated-carousel';
+import Carousel from 'react-native-snap-carousel';
 import {CardNumber} from '../../../assets/svgs/CardNumber';
 
 const mobileW = Math.round(Dimensions.get('screen').width);
@@ -371,356 +370,378 @@ export default function PaymentGateWay({navigation, route}) {
       <View style={{marginHorizontal: 20, paddingTop: 20}}>
         <Text style={styles.complete_profile}>Payment Details</Text>
       </View>
-      <ScrollView showsVerticalScrollIndicator={false} style={{flex: 1}}>
-        {loader && <ActivityLoader />}
+      <ScrollView
+        keyboardDismissMode="interactive"
+        showsVerticalScrollIndicator={false}
+        keyboardShouldPersistTaps="handled">
+        <KeyboardAvoidingView
+          behavior={PLATFORM_IOS ? 'position' : undefined}
+          contentContainerStyle={{flexGrow: 1}}>
+          {loader && <ActivityLoader />}
 
-        <View style={styles.centeredView}>
-          <Modal
-            animationType="slide"
-            transparent={true}
-            visible={modalVisible}
-            onRequestClose={() => {
-              Alert.alert('Modal has been closed.');
-              setModalVisible(!modalVisible);
-            }}>
-            <View style={styles.centeredView}>
-              <View style={styles.modalView}>
-                <Text style={styles.modalText}>Plan Purchased</Text>
-                <AnimatedLottieView
-                  source={{
-                    uri: 'https://assets6.lottiefiles.com/private_files/lf30_mf7q9oho.json',
-                  }} // Replace with your animation file
-                  autoPlay
-                  loop
-                  style={{width: 50, height: 50}}
-                />
-                <Text
-                  style={{
-                    fontSize: 14,
-                    fontWeight: '400',
-                    color: COLORS.BLACK,
-                  }}>
-                  Thank you for subscribing!
-                </Text>
-                <View style={styles.button_one}>
-                  <Pressable
-                    style={[styles.button, styles.buttonClose]}
-                    onPress={getDeviceIDData}>
-                    <Text style={styles.textStyle}>OK</Text>
-                  </Pressable>
+          <View style={styles.centeredView}>
+            <Modal
+              animationType="slide"
+              transparent={true}
+              visible={modalVisible}
+              onRequestClose={() => {
+                Alert.alert('Modal has been closed.');
+                setModalVisible(!modalVisible);
+              }}>
+              <View style={styles.centeredView}>
+                <View style={styles.modalView}>
+                  <Text style={styles.modalText}>Plan Purchased</Text>
+                  <AnimatedLottieView
+                    source={{
+                      uri: 'https://assets6.lottiefiles.com/private_files/lf30_mf7q9oho.json',
+                    }} // Replace with your animation file
+                    autoPlay
+                    loop
+                    style={{width: 50, height: 50}}
+                  />
+                  <Text
+                    style={{
+                      fontSize: 14,
+                      fontWeight: '400',
+                      color: COLORS.BLACK,
+                    }}>
+                    Thank you for subscribing!
+                  </Text>
+                  <View style={styles.button_one}>
+                    <Pressable
+                      style={[styles.button, styles.buttonClose]}
+                      onPress={getDeviceIDData}>
+                      <Text style={styles.textStyle}>OK</Text>
+                    </Pressable>
+                  </View>
                 </View>
               </View>
-            </View>
-          </Modal>
-        </View>
+            </Modal>
+          </View>
 
-        <View style={styles.mainDiv_container}>
-          <View>
-            <Formik
-              initialValues={{
-                cardHolderName: '',
-                cardNumber: '',
-                validTill: '',
-                cvv: '',
-              }}
-              onSubmit={values => {
-                setCardData(values);
-                checkCoupeonDetails();
-              }}
-              validationSchema={validationSchema}>
-              {({
-                values,
-                handleChange,
-                handleSubmit,
-                handleBlur,
-                errors,
-                touched,
-                setFieldValue,
-              }) => (
-                <KeyboardAvoidingView behavior="padding">
-                  {allSavedCard.length > 0 ? (
-                    <>
-                      <Carousel
-                        //ref={(c) => { this._carousel = c; }}
-                        style={{flexGrow: 0}}
-                        width={420}
-                        height={DIMENSIONS.SCREEN_WIDTH * 0.8}
-                        data={allSavedCard}
-                        // defaultIndex={focusIndex >= 0 ? focusIndex : 0}
-                        renderItem={({item, index}) => {
-                          return (
-                            <View>
-                              <ImageBackground
+          <View style={styles.mainDiv_container}>
+            <View>
+              <Formik
+                initialValues={{
+                  cardHolderName: '',
+                  cardNumber: '',
+                  validTill: '',
+                  cvv: '',
+                }}
+                onSubmit={values => {
+                  setCardData(values);
+                  checkCoupeonDetails();
+                }}
+                validationSchema={validationSchema}>
+                {({
+                  values,
+                  handleChange,
+                  handleSubmit,
+                  handleBlur,
+                  errors,
+                  touched,
+                  setFieldValue,
+                }) => (
+                  <>
+                    {allSavedCard.length > 0 ? (
+                      <>
+                        <Carousel
+                          //ref={(c) => { this._carousel = c; }}
+                          // style={{height: DIMENSIONS.SCREEN}}
+                          itemWidth={400}
+                          sliderWidth={400}
+                          // height={mvs(200)}
+                          data={allSavedCard}
+                          // defaultIndex={focusIndex >= 0 ? focusIndex : 0}
+                          renderItem={({item, index}) => {
+                            return (
+                              <View>
+                                <ImageBackground
                                 source={getCardType(item.card_number)}
                                 resizeMode="contain"
                                 style={{
                                   width: DIMENSIONS.SCREEN_WIDTH * 0.9,
 
-                                  height: 210,
-                                }}>
-                                <View style={styles.cardNumber_position}>
-                                  <Text
-                                    style={{
-                                      color: '#fff',
-                                      fontWeight: '600',
-                                      fontSize: ms(20),
-                                    }}>
-                                    {String(item.card_number).replace(
-                                      /^(\d{12})(\d{4})$/,
-                                      'xxxx xxxx xxxx $2',
-                                    )}
-                                  </Text>
-                                  <View style={styles.text_div}>
-                                    <View style={{gap: ms(5), width: ms(100)}}>
-                                      <Text
-                                        style={{
-                                          color: '#fff',
-                                          fontWeight: '600',
-                                          fontSize: 8,
-                                        }}>
-                                        Card Holder
-                                      </Text>
-                                      <Text
-                                        style={{
-                                          color: '#fff',
-                                          fontWeight: '600',
-                                          fontSize: 13,
-                                        }}>
-                                        {String(item.cust_name)}
-                                      </Text>
-                                    </View>
-                                    <View style={{gap: ms(5)}}>
-                                      <Text
-                                        style={{
-                                          fontWeight: '600',
-                                          fontSize: 8,
-                                          color: '#fff',
-                                        }}>
-                                        Expires
-                                      </Text>
-                                      <Text
-                                        style={{
-                                          color: '#fff',
-                                          fontWeight: '600',
-                                          fontSize: 13,
-                                        }}>
-                                        {String(
-                                          item.card_exp_month +
-                                            '/' +
-                                            item.card_exp_year,
-                                        )}
-                                      </Text>
-                                    </View>
-                                    <View style={{gap: 5}}>
-                                      <Text
-                                        style={{
-                                          fontWeight: '600',
-                                          fontSize: 8,
-                                          color: '#fff',
-                                        }}>
-                                        CVV
-                                      </Text>
-                                      <Text
-                                        style={{
-                                          color: '#fff',
-                                          fontWeight: '600',
-                                          fontSize: 13,
-                                        }}>
-                                        {/* {String(item.card_cvc)} */}
-                                        {item.card_cvc
-                                          ? '*'.repeat(
-                                              String(item.card_cvc).length,
-                                            )
-                                          : null}
-                                      </Text>
+                                    height: 210,
+                                  }}>
+                                  <View style={styles.cardNumber_position}>
+                                    <Text
+                                      style={{
+                                        color: '#fff',
+                                        fontWeight: '600',
+                                        fontSize: ms(20),
+                                      }}>
+                                      {String(item.card_number).replace(
+                                        /^(\d{12})(\d{4})$/,
+                                        'xxxx xxxx xxxx $2',
+                                      )}
+                                    </Text>
+                                    <View style={styles.text_div}>
+                                      <View
+                                        style={{gap: ms(5), width: ms(100)}}>
+                                        <Text
+                                          style={{
+                                            color: '#fff',
+                                            fontWeight: '600',
+                                            fontSize: 8,
+                                          }}>
+                                          Card Holder
+                                        </Text>
+                                        <Text
+                                          style={{
+                                            color: '#fff',
+                                            fontWeight: '600',
+                                            fontSize: 13,
+                                          }}>
+                                          {String(item.cust_name)}
+                                        </Text>
+                                      </View>
+                                      <View style={{gap: ms(5)}}>
+                                        <Text
+                                          style={{
+                                            fontWeight: '600',
+                                            fontSize: 8,
+                                            color: '#fff',
+                                          }}>
+                                          Expires
+                                        </Text>
+                                        <Text
+                                          style={{
+                                            color: '#fff',
+                                            fontWeight: '600',
+                                            fontSize: 13,
+                                          }}>
+                                          {String(
+                                            item.card_exp_month +
+                                              '/' +
+                                              item.card_exp_year,
+                                          )}
+                                        </Text>
+                                      </View>
+                                      <View style={{gap: 5}}>
+                                        <Text
+                                          style={{
+                                            fontWeight: '600',
+                                            fontSize: 8,
+                                            color: '#fff',
+                                          }}>
+                                          CVV
+                                        </Text>
+                                        <Text
+                                          style={{
+                                            color: '#fff',
+                                            fontWeight: '600',
+                                            fontSize: 13,
+                                          }}>
+                                          {/* {String(item.card_cvc)} */}
+                                          {item.card_cvc
+                                            ? '*'.repeat(
+                                                String(item.card_cvc).length,
+                                              )
+                                            : null}
+                                        </Text>
+                                      </View>
                                     </View>
                                   </View>
-                                </View>
-                              </ImageBackground>
-                              <View
-                                style={{
-                                  backgroundColor: COLORS.GREEN,
-                                  marginLeft: -70,
-                                  //height: DIMENSIONS.SCREEN_HEIGHT * 0.05,
-                                  alignItems: 'center',
-                                  marginTop: DIMENSIONS.SCREEN_HEIGHT * 0.03,
-                                  justifyContent: 'center',
-                                  alignSelf: 'center',
-                                  padding: 15,
-                                  borderRadius: 12,
-                                  ...Platform.select({
-                                    ios: {
-                                      shadowColor: '#000000',
-                                      shadowOffset: {width: 0, height: 2},
-                                      shadowOpacity: 0.3,
-                                      shadowRadius: 4,
-                                    },
-                                    android: {
-                                      elevation: 4,
-                                    },
-                                  }),
-                                }}>
-                                <TouchableOpacity
-                                  onPress={() => {
-                                    let formattedCardNumber = '';
-                                    for (let i = 0; i <  (item.card_number).length; i += 4) {
-                                      formattedCardNumber +=  item.card_number.substr(i, 4) + ' ';
-                                    }
-                                    console.log("Test",item.card_number.length)
-                                    // setFieldValue(
-                                    //   'cardHolderName',
-                                    //   item.cust_name,
-                                    // );
-                                    // // setFieldValue(
-                                    // //   'cardNumber',
-                                    // //   item.card_number.toString() + '',
-                                    // // );
-                                    // console.log("Test",item.card_number.toString())
-                                    // setFieldValue(
-                                    //   'validTill',
-                                    //   item.card_exp_month +
-                                    //     '/' +
-                                    //     item.card_exp_year,
-                                    // );
-                                    // setFieldValue(
-                                    //   'cvv',
-                                    //   item.card_cvc.toString(),
-                                    // );
-                                 
-                                  }}>
-                                  <Text
-                                    style={{
-                                      fontSize: 14,
-                                      fontWeight: '700',
-                                      color: COLORS.BLACK,
-                                    }}>
-                                    {item.status == 1
-                                      ? `Make Payment By Default Card`
-                                      : 'Make Payment By Save Card'}
-                                  </Text>
-                                </TouchableOpacity>
-                              </View>
-                            </View>
-                          );
-                        }}
-                        // sliderWidth={400}
-                        // itemWidth={400}
-                        loop={false}
-                        onSnapToItem={index => {
-                          setCurrentCard(allSavedCard[index]);
-                          setFocusedIndex(index);
-                        }}
-                      />
-
-                      <View style={styles.dotsContainer}>
-                        {allSavedCard &&
-                          allSavedCard.length > 0 &&
-                          allSavedCard.map((item, index) => {
-                            if (index === 0 && !currentCard) {
-                              return (
-                                <View style={[styles.dot, styles.activeDot]} />
-                              );
-                            } else {
-                              return (
+                                </ImageBackground>
                                 <View
-                                  style={[
-                                    styles.dot,
-                                    index === focusIndex && styles.activeDot,
-                                  ]}
-                                />
-                              );
-                            }
-                          })}
-                      </View>
-                    </>
-                  ) : (
-                    <ImageBackground
-                      source={require('../../../assets/images/visaCard.png')}
-                      resizeMode="contain"
-                      style={{
-                        width: DIMENSIONS.SCREEN_WIDTH * 0.9,
-                        height: 210,
-                        marginBottom: 50,
-                      }}>
-                      <View style={styles.cardNumber_position}>
-                        <Text
-                          style={{
-                            color: '#fff',
-                            fontWeight: '600',
-                            fontSize: 20,
-                          }}>
-                          {values.cardNumber}
-                          {/* {values.cardNumber+'    '+allSavedCard.length} */}
-                        </Text>
-                        <View style={styles.text_div}>
-                          <View style={{gap: 5, width: 100}}>
-                            <Text
-                              style={{
-                                color: 'gray',
-                                fontWeight: '600',
-                                fontSize: 8,
-                              }}>
-                              Card Holder
-                            </Text>
+                                  style={{
+                                    backgroundColor: COLORS.GREEN,
+                                    marginLeft: -70,
+                                    //height: DIMENSIONS.SCREEN_HEIGHT * 0.05,
+                                    alignItems: 'center',
+                                    marginTop: DIMENSIONS.SCREEN_HEIGHT * 0.03,
+                                    justifyContent: 'center',
+                                    alignSelf: 'center',
+                                    padding: 15,
+                                    borderRadius: 12,
+                                    ...Platform.select({
+                                      ios: {
+                                        shadowColor: '#000000',
+                                        shadowOffset: {width: 0, height: 2},
+                                        shadowOpacity: 0.3,
+                                        shadowRadius: 4,
+                                      },
+                                      android: {
+                                        elevation: 4,
+                                      },
+                                    }),
+                                  }}>
+                                  <TouchableOpacity
+                                    onPress={() => {
+                                      let formattedCardNumber = '';
+                                      for (
+                                        let i = 0;
+                                        i < item.card_number.toString().length;
+                                        i += 4
+                                      ) {
+                                        formattedCardNumber +=
+                                          item.card_number.toString().substr(i, 4) + ' ';
+                                      }
+                                      console.log(
+                                        'Test',
+                                         formattedCardNumber,
+                                      );
+                                      setFieldValue(
+                                        'cardHolderName',
+                                        item.cust_name,
+                                      );
+                                      setFieldValue(
+                                        'cardNumber',
+                                        formattedCardNumber.toString() + '',
+                                      );
+                                      // setFieldValue(
+                                      //   'cardNumber',
+                                      //   item.card_number.toString() + '',
+                                      // );
+                                      // console.log("Test",item.card_number.toString())
+                                      setFieldValue(
+                                        'validTill',
+                                        item.card_exp_month +
+                                          '/' +
+                                          item.card_exp_year,
+                                      );
+                                      setFieldValue(
+                                        'cvv',
+                                        item.card_cvc.toString(),
+                                      );
+                                    }}>
+                                    <Text
+                                      style={{
+                                        fontSize: 14,
+                                        fontWeight: '700',
+                                        color: COLORS.BLACK,
+                                      }}>
+                                      {item.status == 1
+                                        ? `Make Payment By Default Card`
+                                        : 'Make Payment By Save Card'}
+                                    </Text>
+                                  </TouchableOpacity>
+                                </View>
+                              </View>
+                            );
+                          }}
+                          // sliderWidth={400}
+                          // itemWidth={400}
+                          loop={false}
+                          onSnapToItem={index => {
+                            setCurrentCard(allSavedCard[index]);
+                            setFocusedIndex(index);
+                          }}
+                        />
 
-                            <Text
-                              style={{
-                                color: '#fff',
-                                fontWeight: '600',
-                                fontSize: 13,
-                              }}>
-                              {values.cardHolderName}
-                            </Text>
-                          </View>
-                          <View style={{gap: 5}}>
-                            <Text
-                              style={{
-                                fontWeight: '600',
-                                fontSize: 8,
-                                color: 'gray',
-                              }}>
-                              Expires
-                            </Text>
+                        <View style={styles.dotsContainer}>
+                          {allSavedCard &&
+                            allSavedCard.length > 0 &&
+                            allSavedCard.map((item, index) => {
+                              if (index === 0 && !currentCard) {
+                                return (
+                                  <View
+                                    style={[styles.dot, styles.activeDot]}
+                                  />
+                                );
+                              } else {
+                                return (
+                                  <View
+                                    style={[
+                                      styles.dot,
+                                      index === focusIndex && styles.activeDot,
+                                    ]}
+                                  />
+                                );
+                              }
+                            })}
+                        </View>
+                      </>
+                    ) : (
+                      <ImageBackground
+                        source={require('../../../assets/images/visaCard.png')}
+                        resizeMode="contain"
+                        style={{
+                          width: DIMENSIONS.SCREEN_WIDTH * 0.9,
+                          height: 210,
+                          marginBottom: 50,
+                        }}>
+                        <View style={styles.cardNumber_position}>
+                          <Text
+                            style={{
+                              color: '#fff',
+                              fontWeight: '600',
+                              fontSize: 20,
+                            }}>
+                            {values.cardNumber}
+                            {/* {values.cardNumber+'    '+allSavedCard.length} */}
+                          </Text>
+                          <View style={styles.text_div}>
+                            <View style={{gap: 5, width: 100}}>
+                              <Text
+                                style={{
+                                  color: 'gray',
+                                  fontWeight: '600',
+                                  fontSize: 8,
+                                }}>
+                                Card Holder
+                              </Text>
 
-                            <Text
-                              style={{
-                                color: '#fff',
-                                fontWeight: '600',
-                                fontSize: 13,
-                              }}>
-                              {values.validTill}
-                            </Text>
-                          </View>
-                          <View style={{gap: 5}}>
-                            <Text
-                              style={{
-                                fontWeight: '600',
-                                fontSize: 8,
-                                color: 'gray',
-                              }}>
-                              CVV
-                            </Text>
-                            <Text
-                              style={{
-                                color: '#fff',
-                                fontWeight: '600',
-                                fontSize: 13,
-                              }}>
-                              {values.cvv
-                                ? '*'.repeat(String(values.cvv).length)
-                                : null}
-                            </Text>
+                              <Text
+                                style={{
+                                  color: '#fff',
+                                  fontWeight: '600',
+                                  fontSize: 13,
+                                }}>
+                                {values.cardHolderName}
+                              </Text>
+                            </View>
+                            <View style={{gap: 5}}>
+                              <Text
+                                style={{
+                                  fontWeight: '600',
+                                  fontSize: 8,
+                                  color: 'gray',
+                                }}>
+                                Expires
+                              </Text>
+
+                              <Text
+                                style={{
+                                  color: '#fff',
+                                  fontWeight: '600',
+                                  fontSize: 13,
+                                }}>
+                                {values.validTill}
+                              </Text>
+                            </View>
+                            <View style={{gap: 5}}>
+                              <Text
+                                style={{
+                                  fontWeight: '600',
+                                  fontSize: 8,
+                                  color: 'gray',
+                                }}>
+                                CVV
+                              </Text>
+                              <Text
+                                style={{
+                                  color: '#fff',
+                                  fontWeight: '600',
+                                  fontSize: 13,
+                                }}>
+                                {values.cvv
+                                  ? '*'.repeat(String(values.cvv).length)
+                                  : null}
+                              </Text>
+                            </View>
                           </View>
                         </View>
-                      </View>
-                    </ImageBackground>
-                  )}
+                      </ImageBackground>
+                    )}
 
-                  {Platform.OS == 'android' ? (
-                    <View style={{marginTop: DIMENSIONS.SCREEN_HEIGHT * 0.03}}>
-                      <HorizontalLine style={styles.line} />
-                    </View>
-                  ) : (
+                    {Platform.OS == 'android' ? (
+                      <View
+                        style={{marginTop: DIMENSIONS.SCREEN_HEIGHT * 0.03}}>
+                        <HorizontalLine style={styles.line} />
+                      </View>
+                    ) : (
                     <View style={{marginVertical: 10}}>
                       <Image
                         source={require('../../../assets/images/dotted.png')}
@@ -730,236 +751,238 @@ export default function PaymentGateWay({navigation, route}) {
                     </View>
                   )}
 
-                  <Input
-                    IconLeft={null}
-                    errors={errors.cardHolderName}
-                    touched={touched.cardHolderName}
-                    value={values.cardHolderName}
-                    onChangeText={handleChange('cardHolderName')}
-                    onBlur={handleBlur('cardHolderName')}
-                    text="Card Holder Name"
-                    IconRight={() => <Admin />}
-                    mV={15}
-                    placeholder="John Doe"
-                    bW={1}
-                  
-                    textWidth={ms(110)}
-                    placeholderTextColor={COLORS.HALFBLACK}
-                  />
-                  <Input
-                    IconLeft={null}
-                    errors={errors.cardNumber}
-                    touched={touched.cardNumber}
-                    value={values.cardNumber}
-                    //onChangeText={handleChange('cardNumber')}
-                    onChangeText={text => {
-                      var num = /[^0-9]/g;
-                      const cardNumbers = text.replace(/\s/g, ''); // Remove spaces from card number
-                      const cardNumber = cardNumbers.replace(num, '');
-                      let formattedCardNumber = '';
-                      for (let i = 0; i < cardNumber.length; i += 4) {
-                        formattedCardNumber += cardNumber.substr(i, 4) + ' ';
-                      }
-
-                      formattedCardNumber = formattedCardNumber.trim();
-
-                      handleChange('cardNumber')(formattedCardNumber);
-                    }}
-                    onBlur={handleBlur('cardNumber')}
-                    maxLength={19}
-                    text="Card Number"
-                    IconRight={() => <CardNumber />}
-                    mV={15}
-                    placeholder="xxxx  xxxx 1234 5678"
-                    bW={1}
-                    textWidth={ms(85)}
-                    placeholderTextColor={COLORS.HALFBLACK}
-                    keyboardType="number-pad"
-                  />
-                  <View style={styles.mainDiv_state_ZIP}>
-                    <View style={styles.zip_state_view}>
-                      <Input
-                        IconLeft={null}
-                        errors={errors.validTill}
-                        touched={touched.validTill}
-                        value={values.validTill}
-                        //
-                        onChangeText={text => {
-                          // Remove non-digit characters from the input
-                          const validTill = text.replace(/\D/g, '');
-
-                          // Insert a slash after the second character
-                          let formattedValidTill = validTill;
-                          if (validTill.length > 2) {
-                            formattedValidTill =
-                              validTill.slice(0, 2) + '/' + validTill.slice(2);
-                          }
-
-                          // Update the valid till value
-                          handleChange('validTill')(formattedValidTill);
-                        }}
-                        onBlur={handleBlur('validTill')}
-                        text="Valid Till"
-                        IconRight={null}
-                        mV={15}
-                        placeholder="07/23"
-                        bW={1}
-                        textWidth={ms(62)}
-                        placeholderTextColor={COLORS.HALFBLACK}
-                        w="half"
-                        keyboardType="numeric"
-                        maxLength={5}
-                      />
-                    </View>
-                    <View style={styles.zip_state_view}>
-                      <Input
-                        IconLeft={null}
-                        errors={errors.cvv}
-                        touched={touched.cvv}
-                        value={values.cvv}
-                        onChangeText={handleChange('cvv')}
-                        onBlur={handleBlur('cvv')}
-                        text="CVV"
-                        IconRight={null}
-                        mV={15}
-                        placeholder="***"
-                        bW={1}
-                        textWidth={ms(38)}
-                        placeholderTextColor={COLORS.HALFBLACK}
-                        w="half"
-                        secureTextEntry={true}
-                        maxLength={3}
-                        keyboardType="numeric"
-                      />
-                    </View>
-                  </View>
-                  <View
-                    style={{
-                      flexDirection: 'row',
-                      justifyContent: 'space-between',
-                      alignContent: 'center',
-                    }}>
                     <Input
-                      errors={couponerror}
-                      onChangeText={text => {
-                        setCoupen(text);
-                        if(text.length<=0){
-                          setCoupenError('')
-                        }
-                      }}
-                      value={coupon}
-                      touched={coupenStates}
-                      text="Coupon"
-                      mV={10}
-                      placeholder="AZVP901AD"
+                      IconLeft={null}
+                      errors={errors.cardHolderName}
+                      touched={touched.cardHolderName}
+                      value={values.cardHolderName}
+                      onChangeText={handleChange('cardHolderName')}
+                      onBlur={handleBlur('cardHolderName')}
+                      text="Card Holder Name"
+                      IconRight={() => <Admin />}
+                      mV={15}
+                      placeholder="John Doe"
                       bW={1}
-                      textWidth={ms(70)}
+                      textWidth={ms(110)}
                       placeholderTextColor={COLORS.HALFBLACK}
-                      w="half"
-                      // keyboardType="numeric"
-                      maxLength={20}
-                      colorText={color}
                     />
+                    <Input
+                      IconLeft={null}
+                      errors={errors.cardNumber}
+                      touched={touched.cardNumber}
+                      value={values.cardNumber}
+                      //onChangeText={handleChange('cardNumber')}
+                      onChangeText={text => {
+                        var num = /[^0-9]/g;
+                        const cardNumbers = text.replace(/\s/g, ''); // Remove spaces from card number
+                        const cardNumber = cardNumbers.replace(num, '');
+                        let formattedCardNumber = '';
+                        for (let i = 0; i < cardNumber.length; i += 4) {
+                          formattedCardNumber += cardNumber.substr(i, 4) + ' ';
+                        }
+
+                        formattedCardNumber = formattedCardNumber.trim();
+
+                        handleChange('cardNumber')(formattedCardNumber);
+                      }}
+                      onBlur={handleBlur('cardNumber')}
+                      maxLength={19}
+                      text="Card Number"
+                      IconRight={() => <CardNumber />}
+                      mV={15}
+                      placeholder="xxxx  xxxx 1234 5678"
+                      bW={1}
+                      textWidth={ms(85)}
+                      placeholderTextColor={COLORS.HALFBLACK}
+                      keyboardType="number-pad"
+                    />
+                    <View style={styles.mainDiv_state_ZIP}>
+                      <View style={styles.zip_state_view}>
+                        <Input
+                          IconLeft={null}
+                          errors={errors.validTill}
+                          touched={touched.validTill}
+                          value={values.validTill}
+                          //
+                          onChangeText={text => {
+                            // Remove non-digit characters from the input
+                            const validTill = text.replace(/\D/g, '');
+
+                            // Insert a slash after the second character
+                            let formattedValidTill = validTill;
+                            if (validTill.length > 2) {
+                              formattedValidTill =
+                                validTill.slice(0, 2) +
+                                '/' +
+                                validTill.slice(2);
+                            }
+
+                            // Update the valid till value
+                            handleChange('validTill')(formattedValidTill);
+                          }}
+                          onBlur={handleBlur('validTill')}
+                          text="Valid Till"
+                          IconRight={null}
+                          mV={15}
+                          placeholder="07/23"
+                          bW={1}
+                          textWidth={ms(62)}
+                          placeholderTextColor={COLORS.HALFBLACK}
+                          w="half"
+                          keyboardType="numeric"
+                          maxLength={5}
+                        />
+                      </View>
+                      <View style={styles.zip_state_view}>
+                        <Input
+                          IconLeft={null}
+                          errors={errors.cvv}
+                          touched={touched.cvv}
+                          value={values.cvv}
+                          onChangeText={handleChange('cvv')}
+                          onBlur={handleBlur('cvv')}
+                          text="CVV"
+                          IconRight={null}
+                          mV={15}
+                          placeholder="***"
+                          bW={1}
+                          textWidth={ms(38)}
+                          placeholderTextColor={COLORS.HALFBLACK}
+                          w="half"
+                          secureTextEntry={true}
+                          maxLength={3}
+                          keyboardType="numeric"
+                        />
+                      </View>
+                    </View>
                     <View
                       style={{
-                        backgroundColor: COLORS.GREEN,
-                        paddingHorizontal: 20,
-                        paddingVertical: 15,
-                        alignSelf: 'center',
-
-                        borderRadius: 12,
-                        ...Platform.select({
-                          ios: {
-                            shadowColor: '#000000',
-                            shadowOffset: {width: 0, height: 2},
-                            shadowOpacity: 0.3,
-                            shadowRadius: 4,
-                          },
-                          android: {
-                            elevation: 4,
-                          },
-                        }),
+                        flexDirection: 'row',
+                        justifyContent: 'space-between',
+                        alignContent: 'center',
                       }}>
-                      <TouchableOpacity
-                        onPress={() => {
-                          coupenDetail(coupon);
+                      <Input
+                        errors={couponerror}
+                        onChangeText={text => {
+                          setCoupen(text);
+                          if (text.length <= 0) {
+                            setCoupenError('');
+                          }
                         }}
+                        value={coupon}
+                        touched={coupenStates}
+                        text="Coupon"
+                        mV={10}
+                        placeholder="AZVP901AD"
+                        bW={1}
+                        textWidth={ms(70)}
+                        placeholderTextColor={COLORS.HALFBLACK}
+                        w="half"
+                        // keyboardType="numeric"
+                        maxLength={20}
+                        colorText={color}
+                      />
+                      <View
                         style={{
-                          alignItems: 'center',
-                          alignSelf: 'center',
                           backgroundColor: COLORS.GREEN,
+                          paddingHorizontal: 20,
+                          paddingVertical: 15,
+                          alignSelf: 'center',
 
                           borderRadius: 12,
+                          ...Platform.select({
+                            ios: {
+                              shadowColor: '#000000',
+                              shadowOffset: {width: 0, height: 2},
+                              shadowOpacity: 0.3,
+                              shadowRadius: 4,
+                            },
+                            android: {
+                              elevation: 4,
+                            },
+                          }),
                         }}>
-                        <Text
+                        <TouchableOpacity
+                          onPress={() => {
+                            coupenDetail(coupon);
+                          }}
                           style={{
-                            fontSize: 14,
-                            fontWeight: '700',
-                            textAlign: 'center',
-                            color: COLORS.BLACK,
-                          }}>
-                          Apply
-                        </Text>
-                      </TouchableOpacity>
-                    </View>
-                  </View>
-                  <View style={styles.bottom_tab}>
-                    <TouchableOpacity
-                      onPress={() => navigation.goBack()}
-                      style={{
-                        padding: 20,
-                        backgroundColor: COLORS.GRAY,
-                        borderRadius: 25,
-                        ...Platform.select({
-                          ios: {
-                            shadowColor: '#000000',
-                            shadowOffset: {width: 0, height: 2},
-                            shadowOpacity: 0.3,
-                            shadowRadius: 4,
-                          },
-                          android: {
-                            elevation: 4,
-                          },
-                        }),
-                      }}>
-                      <LeftIcon />
-                    </TouchableOpacity>
+                            alignItems: 'center',
+                            alignSelf: 'center',
+                            backgroundColor: COLORS.GREEN,
 
-                    <View
-                      style={{
-                        backgroundColor: COLORS.GREEN,
-                        paddingHorizontal: 20,
-                        paddingVertical: 15,
-                        borderRadius: 12,
-                        ...Platform.select({
-                          ios: {
-                            shadowColor: '#000000',
-                            shadowOffset: {width: 0, height: 2},
-                            shadowOpacity: 0.3,
-                            shadowRadius: 4,
-                          },
-                          android: {
-                            elevation: 4,
-                          },
-                        }),
-                      }}>
-                      <TouchableOpacity onPress={handleSubmit}>
-                        <Text
-                          style={{
-                            fontSize: 14,
-                            fontWeight: '700',
-                            color: COLORS.BLACK,
+                            borderRadius: 10,
                           }}>
-                          Make Payment
-                        </Text>
-                      </TouchableOpacity>
+                          <Text
+                            style={{
+                              fontSize: 14,
+                              fontWeight: '700',
+                              textAlign: 'center',
+                              color: COLORS.BLACK,
+                            }}>
+                            Apply
+                          </Text>
+                        </TouchableOpacity>
+                      </View>
                     </View>
-                  </View>
-                </KeyboardAvoidingView>
-              )}
-            </Formik>
+                    <View style={styles.bottom_tab}>
+                      <TouchableOpacity
+                        onPress={() => navigation.goBack()}
+                        style={{
+                          padding: 20,
+                          backgroundColor: COLORS.GRAY,
+                          borderRadius: 25,
+                          ...Platform.select({
+                            ios: {
+                              shadowColor: '#000000',
+                              shadowOffset: {width: 0, height: 2},
+                              shadowOpacity: 0.3,
+                              shadowRadius: 4,
+                            },
+                            android: {
+                              elevation: 4,
+                            },
+                          }),
+                        }}>
+                        <LeftIcon />
+                      </TouchableOpacity>
+
+                      <View
+                        style={{
+                          backgroundColor: COLORS.GREEN,
+                          paddingHorizontal: 20,
+                          paddingVertical: 15,
+                          borderRadius: 10,
+                          ...Platform.select({
+                            ios: {
+                              shadowColor: '#000000',
+                              shadowOffset: {width: 0, height: 2},
+                              shadowOpacity: 0.3,
+                              shadowRadius: 4,
+                            },
+                            android: {
+                              elevation: 4,
+                            },
+                          }),
+                        }}>
+                        <TouchableOpacity onPress={handleSubmit}>
+                          <Text
+                            style={{
+                              fontSize: 14,
+                              fontWeight: '700',
+                              color: COLORS.BLACK,
+                            }}>
+                            Make Payment
+                          </Text>
+                        </TouchableOpacity>
+                      </View>
+                    </View>
+                  </>
+                )}
+              </Formik>
+            </View>
           </View>
-        </View>
+        </KeyboardAvoidingView>
       </ScrollView>
       <Modal
         animationType="slide"

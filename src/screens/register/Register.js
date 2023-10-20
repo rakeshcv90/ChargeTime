@@ -72,8 +72,8 @@ const validationSchema = Yup.object().shape({
       PasswordRegex,
       'Password must contain 1 Upper-Case letter, 1 Lower-Case letter, 1 Digit, 1 Special Character(@,$,-,^,&, !), and the length must be at least 8 characters',
     )
-    .required('Confirm-Passwords is Required')
-    .oneOf([Yup.ref('password')], 'Confirm-Passwords must match'),
+    .required('Confirm Password is Required')
+    .oneOf([Yup.ref('password')], 'Passwords must match'),
 });
 export default function Register({navigation}) {
   const [forLoading, setForLoading] = useState(false);
@@ -150,9 +150,15 @@ export default function Register({navigation}) {
     <SafeAreaView style={{backgroundColor: COLORS.CREAM, flex: 1}}>
       <ScrollView
         // scrollEnabled={false}
+        keyboardDismissMode="interactive"
         showsVerticalScrollIndicator={false}
         keyboardShouldPersistTaps="handled">
-        <KeyboardAvoidingView behavior="position">
+        <KeyboardAvoidingView
+          behavior={PLATFORM_IOS ? 'position' : undefined}
+          contentContainerStyle={{flexGrow: 1}}
+          // behavior={'padding'}
+          // keyboardVerticalOffset={PLATFORM_IOS ? 200 : 0}
+        >
           {forLoading ? <ActivityLoader /> : ''}
           <Image
             source={require('../../../assets/images/res.png')}
@@ -186,7 +192,7 @@ export default function Register({navigation}) {
                     errors={errors.name}
                     touched={touched.name}
                     value={values.name}
-                    autoFocus
+                    // autoFocus
                     onChangeText={handleChange('name')}
                     onBlur={handleBlur('name')}
                     text="First Name"
@@ -328,13 +334,13 @@ export default function Register({navigation}) {
               </View>
             )}
           </Formik>
+          <View style={styles.mainDiv_Already_account}>
+            <Text style={styles.dont_have_text}>Already have an account? </Text>
+            <TouchableOpacity onPress={() => navigation.navigate('Login')}>
+              <Text style={styles.sign_up}>Log In</Text>
+            </TouchableOpacity>
+          </View>
         </KeyboardAvoidingView>
-        <View style={styles.mainDiv_Already_account}>
-          <Text style={styles.dont_have_text}>Already have an account? </Text>
-          <TouchableOpacity onPress={() => navigation.navigate('Login')}>
-            <Text style={styles.sign_up}>Log In</Text>
-          </TouchableOpacity>
-        </View>
       </ScrollView>
     </SafeAreaView>
   );
