@@ -54,6 +54,7 @@ import {mvs, ms} from 'react-native-size-matters';
 import {setCardDetails} from '../../redux/action';
 import {useDispatch} from 'react-redux';
 // import Carousel from 'react-native-reanimated-carousel';
+import Carousel from 'react-native-snap-carousel';
 import ActivityLoader from '../../Components/ActivityLoader';
 import CardDeleteConfirmation from '../../Components/CardDeleteConfirmation';
 
@@ -153,6 +154,18 @@ export default function PaymentGateWay({navigation, route}) {
     } else if (cardType === 'american-express') {
       return require('../../../assets/images/Amex.png');
     } else if (cardType === 'discover') {
+      return require('../../../assets/images/Discover.png');
+    } else {
+      return require('../../../assets/images/visaCard.png');
+    }
+  };
+
+  const getCardType2 = cardNumber => {
+    if (cardNumber == 0) {
+      return require('../../../assets/images/Master.png');
+    } else if (cardNumber == 1) {
+      return require('../../../assets/images/Amex.png');
+    } else if (cardNumber == 2) {
       return require('../../../assets/images/Discover.png');
     } else {
       return require('../../../assets/images/visaCard.png');
@@ -377,8 +390,7 @@ export default function PaymentGateWay({navigation, route}) {
         <KeyboardAvoidingView
           behavior={PLATFORM_IOS ? 'position' : undefined}
           contentContainerStyle={{flexGrow: 1}}
-          style={styles.mainDiv_container}
-          >
+          style={styles.mainDiv_container}>
           <Formik
             initialValues={initialValues}
             onSubmit={(values, {resetForm}) => {
@@ -392,6 +404,7 @@ export default function PaymentGateWay({navigation, route}) {
               handleBlur,
               errors,
               touched,
+              setFieldValue,
             }) => (
               <>
                 {savedCard &&
@@ -403,30 +416,28 @@ export default function PaymentGateWay({navigation, route}) {
                   cardDetails?.validTill.split('/')[0]
                 ) ? (
                   <>
-                    <View
+                    {/* <View
                       style={{
                         height: mvs(200),
                         width: '100%',
                         backgroundColor: 'black',
-                      }}></View>
-                    {/* <Carousel
-                      
+                      }}></View> */}
+                    <Carousel
                       style={{flexGrow: 0}}
-                      width={400}
-                      height={mvs(200)}
+                      itemWidth={400}
+                      sliderWidth={400}
+                      // height={mvs(200)}
                       data={savedCard}
-                   
                       renderItem={({item, index}) => {
                         return (
                           <View style={{}}>
                             <ImageBackground
-                              source={getCardType(item.card_number)}
+                              source={getCardType2(index)}
                               resizeMode="contain"
                               style={{
                                 width: DIMENSIONS.SCREEN_WIDTH * 0.9,
 
                                 height: mvs(190),
-                              
                               }}>
                               <View style={styles.cardNumber_position}>
                                 <Text
@@ -496,7 +507,6 @@ export default function PaymentGateWay({navigation, route}) {
                                         fontWeight: '600',
                                         fontSize: 13,
                                       }}>
-                              
                                       {item.card_cvc
                                         ? '*'.repeat(
                                             String(item.card_cvc).length,
@@ -510,13 +520,12 @@ export default function PaymentGateWay({navigation, route}) {
                           </View>
                         );
                       }}
-                
                       loop={false}
                       onSnapToItem={index => {
                         setCurrentCard(savedCard[index]);
                         setFocusedIndex(index);
                       }}
-                    /> */}
+                    />
                     {/* <FlatList
                       data={savedCard}
                     horizontal
@@ -735,8 +744,8 @@ export default function PaymentGateWay({navigation, route}) {
                     justifyContent: 'center',
                     // width: '100%',
                     marginHorizontal: 30,
-                    marginTop: 30,
-                    marginBottom: 35,
+                    marginTop: 20,
+                    marginBottom: 25,
                   }}>
                   <TouchableOpacity
                     onPress={() => {
@@ -929,7 +938,7 @@ export default function PaymentGateWay({navigation, route}) {
 
                     formattedCardNumber = formattedCardNumber.trim();
 
-                    handleChange('cardNumber')(formattedCardNumber);
+                    setFieldValue('cardNumber', formattedCardNumber);
                     //setCardDetails1({ ...cardDetails, ['card_number']: formattedCardNumber })
                     setCardDetails1({
                       ...cardDetails,
@@ -1071,7 +1080,7 @@ export default function PaymentGateWay({navigation, route}) {
                     style={{
                       width: DIMENSIONS.SCREEN_WIDTH * 0.4,
                       height: (DIMENSIONS.SCREEN_HEIGHT * 6) / 100,
-                      marginLeft: DIMENSIONS.SCREEN_WIDTH * 0.1,
+                      // marginLeft: DIMENSIONS.SCREEN_WIDTH * 0.1,
                       borderRadius: 10,
                       justifyContent: 'center',
                       alignItems: 'center',
@@ -1090,15 +1099,13 @@ export default function PaymentGateWay({navigation, route}) {
                     }}>
                     <Text
                       style={{
-                        fontSize: 14,
                         fontSize: 16,
                         fontWeight: 'bold',
                         textAlign: 'center',
-                        alignSelf: 'center',
 
                         color: COLORS.BLACK,
                       }}>
-                      ADD CARD
+                      Add Card
                     </Text>
                   </TouchableOpacity>
                 </View>
@@ -1136,7 +1143,7 @@ const styles = StyleSheet.create({
     marginHorizontal: mobileW * 0.37,
     justifyContent: 'center',
     alignItems: 'center',
-    marginTop: 30,
+    marginTop: 15,
   },
   activeDot: {
     backgroundColor: COLORS.GREEN, // Customize the active dot color as desired
@@ -1182,7 +1189,7 @@ const styles = StyleSheet.create({
   },
   cardNumber_position: {
     position: 'absolute',
-    top: mvs(90),
+    top: mvs(80),
     left: ms(25),
   },
   text_div: {
