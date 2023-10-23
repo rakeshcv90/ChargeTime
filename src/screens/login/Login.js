@@ -24,7 +24,7 @@ import {
   ToastAndroid,
   KeyboardAvoidingView,
   BackHandler,
-  Keyboard
+  Keyboard,
 } from 'react-native';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import notifee, {EventType} from '@notifee/react-native';
@@ -173,7 +173,7 @@ export default function Login({navigation}) {
   };
   const loginFunction = async () => {
     let reg = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w\w+)+$/;
-    Keyboard.dismiss()
+    Keyboard.dismiss();
     if (email.length == 0) {
       PLATFORM_IOS
         ? Toast.show({
@@ -492,6 +492,7 @@ export default function Login({navigation}) {
             placeholderTextColor={COLORS.HALFBLACK}
             keyboardType='email-address'
             autoCapitalize="none"
+            keyboardType="numbers-and-punctuation"
           />
 
           <Input
@@ -510,6 +511,7 @@ export default function Login({navigation}) {
             placeholder="Enter your password "
             bW={1}
             textWidth={ms(66)}
+            keyboardType="numbers-and-punctuation"
           />
           <View style={styles.main_div_lock_img}>
             <Image

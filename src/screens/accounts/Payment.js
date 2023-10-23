@@ -417,17 +417,12 @@ export default function PaymentGateWay({navigation, route}) {
                   cardDetails?.validTill.split('/')[0]
                 ) ? (
                   <>
-                    {/* <View
-                      style={{
-                        height: mvs(200),
-                        width: '100%',
-                        backgroundColor: 'black',
-                      }}></View> */}
+                    
                     <Carousel
                       style={{flexGrow: 0}}
                       itemWidth={400}
                       sliderWidth={400}
-                      // height={mvs(200)}
+                
                       data={savedCard}
                       renderItem={({item, index}) => {
                         return (
@@ -1004,20 +999,19 @@ export default function PaymentGateWay({navigation, route}) {
           isVisible={modalVisible}
           onClose={toggleModal}
           onPress={() => {
-            console.log("My item",cardId)
-            handleDeleteCard(cardId)
-            // if (currentCard.status === 1 || currentCard.status === 0) {
-            //   handleDeleteCard(currentCard.id);
-            // } else if (savedCard.length > 0) {
-            //   handleDeleteCard(savedCard[0]?.id);
-            // } else {
-            //   PLATFORM_IOS
-            //     ? Toast.show({
-            //         type: 'success',
-            //         text1: 'No Card Added!',
-            //       })
-            //     : ToastAndroid.show('No Card Added!', ToastAndroid.SHORT);
-            // }
+            // handleDeleteCard()
+            if (currentCard.status === 1 || currentCard.status === 0) {
+              handleDeleteCard(currentCard.id);
+            } else if (savedCard.length > 0) {
+              handleDeleteCard(cardId);
+            } else {
+              PLATFORM_IOS
+                ? Toast.show({
+                    type: 'success',
+                    text1: 'No Card Added!',
+                  })
+                : ToastAndroid.show('No Card Added!', ToastAndroid.SHORT);
+            }
           }}
         />
       </ScrollView>
