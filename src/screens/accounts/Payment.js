@@ -122,6 +122,7 @@ export default function PaymentGateWay({navigation, route}) {
   const [creditCard, setCreditCard] = useState('');
   const [loader, setLoader] = useState(false);
 
+
   const [cardDetails, setCardDetails1] = useState({
     cardHolderName: '',
     card_number: '',
@@ -160,17 +161,17 @@ export default function PaymentGateWay({navigation, route}) {
     }
   };
 
-  const getCardType2 = cardNumber => {
-    if (cardNumber == 0) {
-      return require('../../../assets/images/Master.png');
-    } else if (cardNumber == 1) {
-      return require('../../../assets/images/Amex.png');
-    } else if (cardNumber == 2) {
-      return require('../../../assets/images/Discover.png');
-    } else {
-      return require('../../../assets/images/visaCard.png');
-    }
-  };
+  // const getCardType2 = cardNumber => {
+  //   if (cardNumber == 0) {
+  //     return require('../../../assets/images/Master.png');
+  //   } else if (cardNumber == 1) {
+  //     return require('../../../assets/images/Amex.png');
+  //   } else if (cardNumber == 2) {
+  //     return require('../../../assets/images/Discover.png');
+  //   } else {
+  //     return require('../../../assets/images/visaCard.png');
+  //   }
+  // };
 
   useEffect(() => {
     getCardType(cardDetails?.card_number ?? '');
@@ -276,7 +277,7 @@ export default function PaymentGateWay({navigation, route}) {
 
   const handleDeleteCard = async value => {
     setLoader(true);
-    console.log('cdsfdfdfd', value);
+
     try {
       const response = await fetch(`${API}/deletecard/${value}`, {
         method: 'DELETE',
@@ -432,7 +433,7 @@ export default function PaymentGateWay({navigation, route}) {
                         return (
                           <View style={{}}>
                             <ImageBackground
-                              source={getCardType2(index)}
+                              source={getCardType(item.cardNumber)}
                               resizeMode="contain"
                               style={{
                                 width: DIMENSIONS.SCREEN_WIDTH * 0.9,
@@ -517,6 +518,137 @@ export default function PaymentGateWay({navigation, route}) {
                                 </View>
                               </View>
                             </ImageBackground>
+                            <View
+                              style={{
+                                flexDirection: 'row',
+                                justifyContent: 'flex-start',
+
+                                marginTop: 20,
+                                marginBottom: 25,
+                              }}>
+                              <TouchableOpacity
+                                onPress={() => {
+                                  if (savedCard && savedCard[0] != undefined) {
+                                    if (
+                                      savedCard &&
+                                      savedCard[0].status === 1 &&
+                                      (!currentCard || currentCard.status === 1)
+                                    ) {
+                                    } else if (
+                                      savedCard &&
+                                      savedCard.length === 1 &&
+                                      savedCard[0].status === 0
+                                    ) {
+                                      handleMakeDefaultCard(savedCard[0].id);
+                                    } else if (
+                                      savedCard &&
+                                      savedCard.length > 1 &&
+                                      currentCard.status === 0
+                                    ) {
+                                      handleMakeDefaultCard(currentCard.id);
+                                    }
+                                  } else {
+                                    PLATFORM_IOS
+                                      ? Toast.show({
+                                          type: 'success',
+                                          text1: 'NO CARD ADDED !',
+                                        })
+                                      : ToastAndroid.show(
+                                          'NO CARD ADDED !',
+                                          ToastAndroid.SHORT,
+                                        );
+                                  }
+                                }}
+                                style={
+                                  savedCard && savedCard[0] != undefined
+                                    ? savedCard &&
+                                      savedCard[0].status === 1 &&
+                                      (!currentCard || currentCard.status === 1)
+                                      ? styles.default
+                                      : {
+                                          ...styles.makeDefault,
+                                          backgroundColor:
+                                            (savedCard.length > 0 &&
+                                              savedCard[0].status === 0) ||
+                                            currentCard.length > 0 ||
+                                            currentCard.status === 0
+                                              ? COLORS.GREEN
+                                              : '#CCCCCC',
+                                        }
+                                    : {
+                                        ...styles.makeDefault,
+                                        backgroundColor:
+                                          (savedCard.length > 0 &&
+                                            savedCard[0].status === 0) ||
+                                          currentCard.length > 0 ||
+                                          currentCard.status === 0
+                                            ? COLORS.GREEN
+                                            : '#CCCCCC',
+                                      }
+                                }
+                                disabled={
+                                  savedCard[0] != undefined
+                                    ? savedCard &&
+                                      savedCard[0].status === 1 &&
+                                      (!currentCard || currentCard.status === 1)
+                                      ? true
+                                      : false
+                                    : false
+                                }>
+                                <Text
+                                  style={
+                                    savedCard[0] != undefined
+                                      ? savedCard &&
+                                        savedCard[0].status === 1 &&
+                                        (!currentCard ||
+                                          currentCard.status === 1)
+                                        ? styles.makeDefaultText
+                                        : styles.defaultText
+                                      : styles.defaultText
+                                  }>
+                                  {savedCard[0] != undefined
+                                    ? savedCard &&
+                                      savedCard[0].status === 1 &&
+                                      (!currentCard || currentCard.status === 1)
+                                      ? 'Current Payment Method'
+                                      : 'Make Default'
+                                    : 'Make Default'}
+                                </Text>
+                              </TouchableOpacity>
+                              <TouchableOpacity
+                                onPress={() => {
+                            
+                                  setCardId(item.id)
+                                    setModalVisible(true);
+                                  
+                                  // if (currentCard.status === 1 || currentCard.status === 0) {
+                                  //   handleDeleteCard(currentCard.id);
+                                  // } else if (savedCard.length > 0) {
+
+                                  //   handleDeleteCard(savedCard[0]?.id);
+                                  // } else {
+                                  //   PLATFORM_IOS
+                                  //     ? Toast.show({
+                                  //         type: 'success',
+                                  //         text1: 'NO CARD ADDED !',
+                                  //       })
+                                  //     : ToastAndroid.show('NO CARD ADDED !', ToastAndroid.SHORT);
+                                  // }
+                                  // setModalVisible(true);
+                                }}
+                                style={{
+                                  // marginLeft: 35,
+                                  // marginRight: 100,
+                                  backgroundColor: '#F84E4E',
+                                  alignItems: 'center',
+                                  padding: 13,
+                                  marginLeft: 10,
+                                  borderRadius: 150,
+                                  width: '15%',
+                                }}>
+                                <Delete />
+                              </TouchableOpacity>
+                            </View>
                           </View>
                         );
                       }}
@@ -526,101 +658,7 @@ export default function PaymentGateWay({navigation, route}) {
                         setFocusedIndex(index);
                       }}
                     />
-                    {/* <FlatList
-                      data={savedCard}
-                    horizontal
-                      renderItem={({item, index}) => {
-                        return (
-                          <View style={{}}>
-                            <ImageBackground
-                              source={getCardType(item.card_number)}
-                              resizeMode="contain"
-                              style={{
-                                width: DIMENSIONS.SCREEN_WIDTH * 0.9,
 
-                                height: mvs(190),
-                              }}>
-                              <View style={styles.cardNumber_position}>
-                                <Text
-                                  style={{
-                                    color: '#fff',
-                                    fontWeight: '600',
-                                    fontSize: ms(20),
-                                  }}>
-                                  {String(item.card_number).replace(
-                                    /^(\d{12})(\d{4})$/,
-                                    'xxxx xxxx xxxx $2',
-                                  )}
-                                </Text>
-                                <View style={styles.text_div}>
-                                  <View style={{gap: ms(5), width: ms(100)}}>
-                                    <Text
-                                      style={{
-                                        color: 'gray',
-                                        fontWeight: '600',
-                                        fontSize: 8,
-                                      }}>
-                                      Card Holder
-                                    </Text>
-                                    <Text
-                                      style={{
-                                        color: '#fff',
-                                        fontWeight: '600',
-                                        fontSize: 13,
-                                      }}>
-                                      {String(item.cust_name)}
-                                    </Text>
-                                  </View>
-                                  <View style={{gap: ms(5)}}>
-                                    <Text
-                                      style={{
-                                        fontWeight: '600',
-                                        fontSize: 8,
-                                        color: 'gray',
-                                      }}>
-                                      Expires
-                                    </Text>
-                                    <Text
-                                      style={{
-                                        color: '#fff',
-                                        fontWeight: '600',
-                                        fontSize: 13,
-                                      }}>
-                                      {String(
-                                        item.card_exp_month +
-                                          '/' +
-                                          item.card_exp_year,
-                                      )}
-                                    </Text>
-                                  </View>
-                                  <View style={{gap: 5}}>
-                                    <Text
-                                      style={{
-                                        fontWeight: '600',
-                                        fontSize: 8,
-                                        color: 'gray',
-                                      }}>
-                                      CVV
-                                    </Text>
-                                    <Text
-                                      style={{
-                                        color: '#fff',
-                                        fontWeight: '600',
-                                        fontSize: 13,
-                                      }}>
-                                      {item.card_cvc
-                                        ? '*'.repeat(
-                                            String(item.card_cvc).length,
-                                          )
-                                        : null}
-                                    </Text>
-                                  </View>
-                                </View>
-                              </View>
-                            </ImageBackground>
-                          </View>
-                        );
-                      }}></FlatList> */}
                     <View style={styles.dotsContainer}>
                       {savedCard &&
                         savedCard.length > 0 &&
@@ -659,7 +697,6 @@ export default function PaymentGateWay({navigation, route}) {
                           fontWeight: '600',
                           fontSize: 20,
                         }}>
-                        {/* {String(cardDetails.card_number).replace(/^(\d{12})(\d{4})$/, 'xxxx xxxx xxxx $2')} */}
                         {formatCreditCardNumber(cardDetails.card_number)}
                       </Text>
                       <View style={styles.text_div}>
@@ -696,7 +733,6 @@ export default function PaymentGateWay({navigation, route}) {
                               fontWeight: '600',
                               fontSize: 13,
                             }}>
-                            {/* {cardDetails.card_exp_month?String(cardDetails.card_exp_month+'/'+cardDetails.card_exp_year):null} */}
                             {String(cardDetails.validTill)}
                           </Text>
                         </View>
@@ -726,162 +762,12 @@ export default function PaymentGateWay({navigation, route}) {
                   </View>
                 )}
 
-                {/* <View
-                  style={{
-                    flexDirection: 'row',
-                    justifyContent: 'center',
-                    // width: '100%',
-                    marginHorizontal: 30,
-                    marginTop: 30,
-                    marginBottom: 35,
-                  }}>
-
-                    </View> */}
-
-                <View
-                  style={{
-                    flexDirection: 'row',
-                    justifyContent: 'center',
-                    // width: '100%',
-                    marginHorizontal: 30,
-                    marginTop: 20,
-                    marginBottom: 25,
-                  }}>
-                  <TouchableOpacity
-                    onPress={() => {
-                      if (savedCard && savedCard[0] != undefined) {
-                        if (
-                          savedCard &&
-                          savedCard[0].status === 1 &&
-                          (!currentCard || currentCard.status === 1)
-                        ) {
-                        } else if (
-                          savedCard &&
-                          savedCard.length === 1 &&
-                          savedCard[0].status === 0
-                        ) {
-                          handleMakeDefaultCard(savedCard[0].id);
-                        } else if (
-                          savedCard &&
-                          savedCard.length > 1 &&
-                          currentCard.status === 0
-                        ) {
-                          handleMakeDefaultCard(currentCard.id);
-                        }
-                      } else {
-                        PLATFORM_IOS
-                          ? Toast.show({
-                              type: 'success',
-                              text1: 'NO CARD ADDED !',
-                            })
-                          : ToastAndroid.show(
-                              'NO CARD ADDED !',
-                              ToastAndroid.SHORT,
-                            );
-                      }
-                    }}
-                    style={
-                      savedCard && savedCard[0] != undefined
-                        ? savedCard &&
-                          savedCard[0].status === 1 &&
-                          (!currentCard || currentCard.status === 1)
-                          ? styles.default
-                          : {
-                              ...styles.makeDefault,
-                              backgroundColor:
-                                (savedCard.length > 0 &&
-                                  savedCard[0].status === 0) ||
-                                currentCard.length > 0 ||
-                                currentCard.status === 0
-                                  ? COLORS.GREEN
-                                  : '#CCCCCC',
-                            }
-                        : {
-                            ...styles.makeDefault,
-                            backgroundColor:
-                              (savedCard.length > 0 &&
-                                savedCard[0].status === 0) ||
-                              currentCard.length > 0 ||
-                              currentCard.status === 0
-                                ? COLORS.GREEN
-                                : '#CCCCCC',
-                          }
-                    }
-                    disabled={
-                      savedCard[0] != undefined
-                        ? savedCard &&
-                          savedCard[0].status === 1 &&
-                          (!currentCard || currentCard.status === 1)
-                          ? true
-                          : false
-                        : false
-                    }>
-                    <Text
-                      style={
-                        savedCard[0] != undefined
-                          ? savedCard &&
-                            savedCard[0].status === 1 &&
-                            (!currentCard || currentCard.status === 1)
-                            ? styles.makeDefaultText
-                            : styles.defaultText
-                          : styles.defaultText
-                      }>
-                      {savedCard[0] != undefined
-                        ? savedCard &&
-                          savedCard[0].status === 1 &&
-                          (!currentCard || currentCard.status === 1)
-                          ? 'Current Payment Method'
-                          : 'Make Default'
-                        : 'Make Default'}
-                    </Text>
-                  </TouchableOpacity>
-                  <TouchableOpacity
-                    onPress={() => {
-                      if (savedCard.length > 0) {
-                        setModalVisible(true);
-                      } else {
-                        PLATFORM_IOS
-                          ? Toast.show({
-                              type: 'success',
-                              text1: 'NO ADDED CARD !',
-                            })
-                          : ToastAndroid.show(
-                              'NO ADDED CARD !',
-                              ToastAndroid.SHORT,
-                            );
-                      }
-                      // if (currentCard.status === 1 || currentCard.status === 0) {
-                      //   handleDeleteCard(currentCard.id);
-                      // } else if (savedCard.length > 0) {
-
-                      //   handleDeleteCard(savedCard[0]?.id);
-                      // } else {
-                      //   PLATFORM_IOS
-                      //     ? Toast.show({
-                      //         type: 'success',
-                      //         text1: 'NO CARD ADDED !',
-                      //       })
-                      //     : ToastAndroid.show('NO CARD ADDED !', ToastAndroid.SHORT);
-                      // }
-                      // setModalVisible(true);
-                    }}
-                    style={{
-                      marginLeft: 35,
-                      marginRight: 100,
-                      backgroundColor: '#F84E4E',
-                      alignItems: 'center',
-                      padding: 13,
-                      borderRadius: 150,
-                      width: '15%',
-                    }}>
-                    <Delete />
-                  </TouchableOpacity>
-                </View>
-
                 {Platform.OS == 'android' ? (
-                  <HorizontalLine style={styles.line} />
+                  <View style={{marginTop: 20}}>
+                    <HorizontalLine style={styles.line} />
+                  </View>
                 ) : (
-                  <View style={{paddingHorizontal: -20}}>
+                  <View style={{marginTop: 20}}>
                     <Image
                       source={require('../../../assets/images/dotted.png')}
                       style={{width: mobileW * 1}}
@@ -1118,18 +1004,20 @@ export default function PaymentGateWay({navigation, route}) {
           isVisible={modalVisible}
           onClose={toggleModal}
           onPress={() => {
-            if (currentCard.status === 1 || currentCard.status === 0) {
-              handleDeleteCard(currentCard.id);
-            } else if (savedCard.length > 0) {
-              handleDeleteCard(savedCard[0]?.id);
-            } else {
-              PLATFORM_IOS
-                ? Toast.show({
-                    type: 'success',
-                    text1: 'NO CARD ADDED !',
-                  })
-                : ToastAndroid.show('NO CARD ADDED !', ToastAndroid.SHORT);
-            }
+            console.log("My item",cardId)
+            handleDeleteCard(cardId)
+            // if (currentCard.status === 1 || currentCard.status === 0) {
+            //   handleDeleteCard(currentCard.id);
+            // } else if (savedCard.length > 0) {
+            //   handleDeleteCard(savedCard[0]?.id);
+            // } else {
+            //   PLATFORM_IOS
+            //     ? Toast.show({
+            //         type: 'success',
+            //         text1: 'No Card Added!',
+            //       })
+            //     : ToastAndroid.show('No Card Added!', ToastAndroid.SHORT);
+            // }
           }}
         />
       </ScrollView>
@@ -1143,7 +1031,8 @@ const styles = StyleSheet.create({
     marginHorizontal: mobileW * 0.37,
     justifyContent: 'center',
     alignItems: 'center',
-    marginTop: 15,
+    marginTop: 0,
+    marginBottom: 10,
   },
   activeDot: {
     backgroundColor: COLORS.GREEN, // Customize the active dot color as desired
@@ -1258,8 +1147,9 @@ const styles = StyleSheet.create({
     color: '#000000',
   },
   makeDefault: {
-    marginLeft: 95,
-    marginRight: 50,
+    // marginLeft: 95,
+    //alignSelf:'center',
+    // marginRight: 50,
     backgroundColor: '#CCCCCC',
     alignItems: 'center',
     padding: 10,
@@ -1268,8 +1158,9 @@ const styles = StyleSheet.create({
   },
   default: {
     backgroundColor: '#F84E4E',
-    marginLeft: 95,
-    marginRight: 50,
+    //marginLeft: 95,
+    //alignSelf:'center',
+    //marginRight: 50,
 
     alignItems: 'center',
     padding: 10,

@@ -24,6 +24,7 @@ import {
   ToastAndroid,
   KeyboardAvoidingView,
   BackHandler,
+  Keyboard
 } from 'react-native';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import notifee, {EventType} from '@notifee/react-native';
@@ -67,7 +68,7 @@ import messaging from '@react-native-firebase/messaging';
 import {ms} from 'react-native-size-matters';
 import {Alert, PermissionsAndroid} from 'react-native';
 import Clipboard from '@react-native-clipboard/clipboard';
-import { useFocusEffect } from '@react-navigation/native';
+import {useFocusEffect} from '@react-navigation/native';
 const mobileH = Math.round(Dimensions.get('window').height);
 const mobileW = Math.round(Dimensions.get('window').width);
 
@@ -142,15 +143,27 @@ export default function Login({navigation}) {
 
       if (response?.data?.locations.length == 0) {
         setForLoading(true);
-        // setShowPackage(true);
+
         dispatch(setBasePackage([]));
-        // dispatch(setIsAuthorized(true));
         setForLoading(false);
+        PLATFORM_IOS
+          ? Toast.show({
+              type: 'success',
+              text1: 'Login Successful',
+            })
+          : ToastAndroid.show('Login Successful', ToastAndroid.SHORT);
+
         navigationRef.navigate('DrawerStack');
       } else {
         dispatch(setBasePackage(response.data.locations));
-        // dispatch(setIsAuthorized(true));
+
         setForLoading(false);
+        PLATFORM_IOS
+          ? Toast.show({
+              type: 'success',
+              text1: 'Login Successful',
+            })
+          : ToastAndroid.show('Login Successful', ToastAndroid.SHORT);
         navigationRef.navigate('DrawerStack');
       }
     } catch (error) {
@@ -160,7 +173,7 @@ export default function Login({navigation}) {
   };
   const loginFunction = async () => {
     let reg = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w\w+)+$/;
-    console.log('sdcsdfsdf', typeof email);
+    Keyboard.dismiss()
     if (email.length == 0) {
       PLATFORM_IOS
         ? Toast.show({
@@ -216,44 +229,20 @@ export default function Login({navigation}) {
               AsyncStorage.setItem('graph_Width', JSON.stringify(1032));
               setEmail('');
               setPassword('');
-              PLATFORM_IOS
-                ? Toast.show({
-                    type: 'success',
-                    text1: 'Login Successful',
-                  })
-                : ToastAndroid.show('Login Successful', ToastAndroid.SHORT);
-
-              // if(data.status == "true"){
-              //   navigation.navigate('EnergyStats');
-              // }else if(data.status == "false"){
-              // setTimeout(() => {
-              // }, 15000);
-              // }
               await AsyncStorage.setItem('isAuthorized', res.data.user_id + '');
               if (res.data.status == 'All details available') {
                 dispatch(setEmailData(res.data?.email));
                 dispatch(setPackageStatus(true));
-                // dispatch(setUserID(res.data?.user_id));
+
                 dispatch(getLocationID(res.data?.locationid));
 
-                // setInterval(() => {
                 fetchGraphData(res.data?.user_id);
-                // }, 300000);
 
-                // fetchWeekGraphData(res.data?.user_id);
-                // fetchMonthGraphData(res.data?.user_id);
-                // fetchQuarterGraphData(res.data.user_id);
-                // fetchYearGraphData(res.data?.user_id);
-
-                // setTimeout(() => {
-                //   fetchMessage(res.data?.user_id);
-                // }, 15000);
                 dispatch(setDeviceId(''));
               } else if (
                 res.data.status ==
                 'Your Account is not currently linked with a TRO Charger. Please contact customer service if you believe this is an error.'
               ) {
-                // getDeviceIDData(res.data);
                 dispatch(setEmailData(res.data?.email));
                 dispatch(setPackageStatus(true));
                 dispatch(setUserID(res.data?.user_id));
@@ -266,7 +255,6 @@ export default function Login({navigation}) {
                   ),
                 );
               } else {
-                //  dispatch(setPackageStatus(false));
                 dispatch(setDeviceId(res.data.message));
                 dispatch(setIsAuthorized(true));
                 dispatch(setEmailData(res.data?.email));
@@ -274,14 +262,6 @@ export default function Login({navigation}) {
                 dispatch(getLocationID(res.data?.locationid));
                 packagePlans(res.data?.locationid);
               }
-              // fetchPriceDetailsDashboardData(data?.user_id)
-              // else
-              // if(getGraphData.length)
-              // navigation.navigate('DrawerStack');
-              // setForLoading(false)
-
-              //  setTimeout(() => {
-              //  },5000)
             } else if (res.data.message == 'Email Id does not exist!') {
               PLATFORM_IOS
                 ? Toast.show({
@@ -447,6 +427,12 @@ export default function Login({navigation}) {
       .get(`${API}/currentplan/${userId}`)
       .then(res => {
         setForLoading(false);
+        PLATFORM_IOS
+          ? Toast.show({
+              type: 'success',
+              text1: 'Login Successful',
+            })
+          : ToastAndroid.show('Login Successful', ToastAndroid.SHORT);
         getSubscriptionStatus(userId);
         dispatch(setPurchaseData(res?.data));
         navigation.navigate('DrawerStack');
@@ -454,6 +440,12 @@ export default function Login({navigation}) {
       })
       .catch(err => {
         setForLoading(false);
+        PLATFORM_IOS
+          ? Toast.show({
+              type: 'success',
+              text1: 'Login Successful',
+            })
+          : ToastAndroid.show('Login Successful', ToastAndroid.SHORT);
         navigation.navigate('DrawerStack');
         dispatch(setIsAuthorized(true));
         console.log('Error-6', err);

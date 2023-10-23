@@ -126,15 +126,15 @@ const Account = ({navigation}) => {
         },
       });
       if (res.data.message == 'Your account is successfully logout') {
-        PLATFORM_IOS
-          ? Toast.show({
-              text1: res.data.message,
+        // PLATFORM_IOS
+        //   ? Toast.show({
+        //       text1: res.data.message,
 
-              position: 'bottom',
-              type: 'success',
-              duration: 500,
-            })
-          : ToastAndroid.show(res.data.message, ToastAndroid.SHORT);
+        //       position: 'bottom',
+        //       type: 'success',
+        //       duration: 500,
+        //     })
+        //   : ToastAndroid.show(res.data.message, ToastAndroid.SHORT);
         // await AsyncStorage.removeItem('locationID');
         // await AsyncStorage.removeItem('isAuthorized');
         await AsyncStorage.clear();
@@ -169,16 +169,16 @@ const Account = ({navigation}) => {
       //   routes: [{name: 'LoginStack'}],
       // });
     }
-    navigation.dispatch(
-      CommonActions.reset({
-        index: 0,
-        routes: [
-          {
-            name: 'Login',
-          },
-        ],
-      }),
-    );
+    // navigation.dispatch(
+    //   CommonActions.reset({
+    //     index: 0,
+    //     routes: [
+    //       {
+    //         name: 'Login',
+    //       },
+    //     ],
+    //   }),
+    // );
   };
   const userDetails = async () => {
     // const response = await fetch(`${API}/userexisting/${user_ID}`);

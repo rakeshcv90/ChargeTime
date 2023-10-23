@@ -43,6 +43,7 @@ const PersonalDetails = ({route}) => {
   const [number, setNumber] = useState(userProfileData[0]?.mobile ?? '');
   const [error, setError] = useState(false);
   const [nameError, setNameError] = useState(false);
+  const [emailhide, setemailhide] = useState(true);
   const user_ID = getUserID;
 
   const [showButton, setShowButton] = useState(false);
@@ -58,6 +59,7 @@ const PersonalDetails = ({route}) => {
   const isDark = theme === 'dark';
 
   const onPress = () => {
+    setemailhide(true)
     if (name.trim().length <= 0) {
       PLATFORM_IOS
         ? Toast.show({
@@ -65,7 +67,7 @@ const PersonalDetails = ({route}) => {
             text1: 'Please Enter Name',
           })
         : ToastAndroid.show('Please Enter Name', ToastAndroid.SHORT);
-    } else if (name.trim().length <3) {
+    } else if (name.trim().length < 3) {
       PLATFORM_IOS
         ? Toast.show({
             type: 'error',
@@ -228,10 +230,8 @@ const PersonalDetails = ({route}) => {
             const cleanedText = text.replace(/\D/g, '');
             if (cleanedText.match(/^[0-9]{10}$/)) {
               setError(false);
-              
             } else {
               setError(true);
-         
             }
             // Limit the length of the input to 10 characters
             const limitedText = cleanedText.slice(0, 10);
@@ -246,27 +246,30 @@ const PersonalDetails = ({route}) => {
             Number cannot be lesser than 10 digits
           </Text>
         )}
-
-        <Input
-          IconLeft={null}
-          editable={false}
-          bgColor={COLORS.CREAM}
-          IconRight={() => <Message />}
-          bR={3}
-          bW={0.4}
-          bColor={COLORS.BLACK}
-          text="Email"
-          keyboardType="email-address"
-          mV={5}
-          textWidth={ms(50)}
-          value={userProfileData[0]?.email}
-          placeholderTextColor={COLORS.HALFBLACK}
-          style={{
-            color: COLORS.BLACK,
-            fontFamily: 'Roboto',
-            fontWeight: '200',
-          }}
-        />
+        {emailhide && (
+          <Input
+            IconLeft={null}
+            editable={false}
+            bgColor={COLORS.CREAM}
+            IconRight={() => <Message />}
+            bR={3}
+            bW={0.4}
+            bColor={COLORS.HALFBLACK}
+            text="Email"
+            keyboardType="email-address"
+            mV={5}
+            
+            textWidth={ms(50)}
+            value={userProfileData[0]?.email}
+            color={COLORS.HALFBLACK}
+            placeholderTextColor={COLORS.HALFBLACK}
+            style={{
+              color: COLORS.HALFBLACK,
+              fontFamily: 'Roboto',
+              fontWeight: '200',
+            }}
+          />
+        )}
         {showButton && (
           <View
             style={{
@@ -281,9 +284,9 @@ const PersonalDetails = ({route}) => {
                 setName(userProfileData[0]?.name);
                 setNumber(userProfileData[0]?.mobile);
                 setShowButton(false);
-                setNameError(false)
-                setError(false)
-
+                setNameError(false);
+                setError(false);
+                setemailhide(true)
                 setTimeout(() => {
                   setIsEditable(false);
                 }, 100);
@@ -320,7 +323,7 @@ const PersonalDetails = ({route}) => {
             </TouchableOpacity>
             <TouchableOpacity
               onPress={() => onPress()}
-              disabled={(nameError||error)}
+              disabled={nameError || error}
               style={{
                 width: DIMENSIONS.SCREEN_WIDTH * 0.3,
                 height: (DIMENSIONS.SCREEN_HEIGHT * 5) / 100,
@@ -363,10 +366,10 @@ const PersonalDetails = ({route}) => {
               marginRight: -30,
             }}>
             <TouchableOpacity
-      
               onPress={() => {
                 setIsEditable(true);
                 setShowButton(true);
+                setemailhide(false)
               }}
               style={{
                 width: DIMENSIONS.SCREEN_WIDTH * 0.3,

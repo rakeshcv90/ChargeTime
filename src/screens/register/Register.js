@@ -123,6 +123,7 @@ export default function Register({navigation}) {
           navigation.navigate('VerifyEmail', {
             email: values?.email,
             user_id: response.data?.user_id,
+            // time:response.data?.time,
           });
 
           setForLoading(false);

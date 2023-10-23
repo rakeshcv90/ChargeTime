@@ -96,7 +96,7 @@ export default function CompleteProfile(props) {
   };
   const CompleteProfileFunction = async () => {
     setForLoading(true);
-    if (locationId && addlineone && addlinetwo && newZipcode && newState) {
+    if (locationId && addlineone  && newZipcode && newState) {
       try {
         const payload = new FormData();
         payload.append('locationId', locationId);

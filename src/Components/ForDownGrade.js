@@ -43,11 +43,10 @@ export default function ForDownGrade({route, navigation}) {
     }
   }, []);
   const getVoucherDetails = data => {
-
     axios
       .get(`${API}/couponret/${data}`)
       .then(res => {
-        console.log("FFFFFFFFFFff",res.data)
+        console.log('FFFFFFFFFFff', res.data);
         setvoucherStatus(res.data.valid);
       })
       .catch(err => {
@@ -55,7 +54,6 @@ export default function ForDownGrade({route, navigation}) {
       });
   };
   const forDowngradeFunction = item => {
-   
     axios
       .post(`${API}/upgrade_downgrade/${getUserID}`)
       .then(res => {
@@ -113,22 +111,22 @@ export default function ForDownGrade({route, navigation}) {
                 fontSize: 16,
                 color: purchageData == 'DOWNGRADE' ? 'red' : '#22936F',
                 marginVertical: 5,
-                lineHeight: 29
+                lineHeight: 29,
               }}>
               {purchageData == 'DOWNGRADE'
                 ? 'Downgrade Package'
                 : 'UPGRADE Package'}
             </Text>
-              <Text
+            <Text
               style={{
-                  lineHeight: 26,
-                  fontWeight: '400',
-                  fontSize: 14,
-                  color: COLORS.BLACK,
-                  textAlign: 'justify',
-                }}>
-                {message}
-              </Text>
+                lineHeight: 26,
+                fontWeight: '400',
+                fontSize: 14,
+                color: COLORS.BLACK,
+                textAlign: 'justify',
+              }}>
+              {message}
+            </Text>
           </View>
           <View
             style={
@@ -167,7 +165,12 @@ export default function ForDownGrade({route, navigation}) {
                     paddingTop: 5,
                     alignSelf: 'center',
                   }}>
-                  <Unit />
+                  {/* <Unit /> */}
+                  <Image
+                    source={require('../../assets/images/kwh.png')}
+                    resizeMode="contain"
+                    style={{width: 30, height: 30}}
+                  />
                   <Text
                     style={{
                       fontSize: 10,
@@ -277,10 +280,10 @@ export default function ForDownGrade({route, navigation}) {
                 : styles.plan_pricing_div
             }>
             <View>
-              <TouchableOpacity style={styles.install_touchable}>
+              <View style={styles.install_touchable}>
                 <PlanPricing style={styles.img_width} />
                 <Text style={styles.installation_text}>New Plan Pricing</Text>
-              </TouchableOpacity>
+              </View>
               <View
                 style={{
                   display: 'flex',

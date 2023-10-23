@@ -8,6 +8,7 @@ import {
   TouchableOpacity,
   Image,
   Platform,
+
 } from 'react-native';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {Charging} from '../../../assets/images/Charging';
@@ -25,21 +26,25 @@ export default function TabOne(props) {
   );
 
   return (
-    // <SafeAreaView style={{backgroundColor: COLORS.CREAM, flex: 1}}>
-    //   <ScrollView showsVerticalScrollIndicator={false} >
+    <ScrollView
+    showsVerticalScrollIndicator={false}
+    style={{backgroundColor: COLORS.CREAM, flex: 1,
+   
+  }}>
    
     <View style={styles.managing_width}>
-     {/* {  console.log("My testing Data",getBasePackage)}
-     {  console.log("My testing Data11111",props?.route?.params?.index)} */}
+ 
+    
       <InstallationBase data={props?.item || getBasePackage[props?.route?.params.index]} />
       <BoxTwo data={props?.item ||getBasePackage[props?.route?.params.index]} />
       <PurchseButton data={props?.item || getBasePackage[props?.route?.params.index]} />
       {/* <InstallationBase data={props?.item || props?.route?.params?.item} />
       <BoxTwo data={props?.item ||props?.route?.params?.item} />
       <PurchseButton data={props?.item || props?.route?.params?.item} />  */}
+        
     </View>
-    //   </ScrollView>
-    // </SafeAreaView>
+    </ScrollView>
+ 
   );
 }
 const styles = StyleSheet.create({
