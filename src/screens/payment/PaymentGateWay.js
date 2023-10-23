@@ -737,7 +737,13 @@ export default function PaymentGateWay({navigation, route}) {
                     )}
 
                     {Platform.OS == 'android' ? (
-                      <View style={{marginTop: DIMENSIONS.SCREEN_HEIGHT * 0.2}}>
+                      <View
+                        style={{
+                          marginTop:
+                            allSavedCard.length > 0
+                              ? DIMENSIONS.SCREEN_HEIGHT * 0.2
+                              : DIMENSIONS.SCREEN_HEIGHT * 0.05,
+                        }}>
                         <HorizontalLine style={styles.line} />
                       </View>
                     ) : (
@@ -1152,8 +1158,8 @@ const styles = StyleSheet.create({
     marginTop:
       Platform.OS == 'ios'
         ? DIMENSIONS.SCREEN_HEIGHT > 930 ?
-         -(DIMENSIONS.SCREEN_WIDTH * 16) / 100
-        : -(DIMENSIONS.SCREEN_WIDTH * 19) / 100
+          -(DIMENSIONS.SCREEN_WIDTH * 16) / 100
+          : -(DIMENSIONS.SCREEN_WIDTH * 19) / 100
         : -(DIMENSIONS.SCREEN_WIDTH * 17) / 100,
     marginBottom:
       Platform.OS == 'ios'
