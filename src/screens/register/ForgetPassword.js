@@ -411,7 +411,7 @@ const ForgetPassword = ({navigation}) => {
                         fontSize: 14,
                         color: COLORS.BLACK,
                       }}>
-                      RESET PASSWORD
+                      Rest Password
                     </Text>
                   </TouchableOpacity>
                 </View>

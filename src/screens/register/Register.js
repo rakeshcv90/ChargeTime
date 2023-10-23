@@ -281,7 +281,7 @@ export default function Register({navigation}) {
                     value={values.repeat_password}
                     onChangeText={handleChange('repeat_password')}
                     onBlur={handleBlur('repeat_password')}
-                    text="Confirm-Password"
+                    text="Confirm Password"
                     passwordInput={true}
                     pasButton={() => setShowPassword1(!showPassword1)}
                     passwordInputIcon={showPassword1}

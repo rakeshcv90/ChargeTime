@@ -20,6 +20,7 @@ import {
   Text,
   Dimensions,
   ToastAndroid,
+  Animated,
 } from 'react-native';
 import CompleteProfile from '../screens/register/CompleteProfile';
 import Home from '../screens/purchasePlan/Home';
@@ -60,10 +61,10 @@ import Contact from '../screens/accounts/Contact';
 import ForDownGrade from '../Components/ForDownGrade';
 import PersonalDetails from '../screens/accounts/PersonalDetails';
 import {CommonActions} from '@react-navigation/native';
-import { persistor } from '../redux/store';
+import {persistor} from '../redux/store';
 import axios from 'axios';
-import { API } from '../api/API';
-import { setLogout } from '../redux/action';
+import {API} from '../api/API';
+import {setLogout} from '../redux/action';
 
 const Drawer = createDrawerNavigator();
 const Stack = createNativeStackNavigator();
@@ -98,7 +99,7 @@ export const DrawerScreenPart = ({navigation}) => {
 export const ChargerStatus = ({navigation}) => {
   const user_ID = useSelector(state => state.getUserID);
   const dispatch = useDispatch();
-
+  
   const handleLogOut = async () => {
     try {
       const res = await axios(`${API}/logout/${user_ID}`, {
@@ -108,21 +109,21 @@ export const ChargerStatus = ({navigation}) => {
         },
       });
       if (res.data.message == 'Your account is successfully logout') {
-        PLATFORM_IOS
-          ? Toast.show({
-              text1: res.data.message,
+        // PLATFORM_IOS
+        //   ? Toast.show({
+        //       text1: res.data.message,
 
-              position: 'bottom',
-              type: 'success',
-              duration: 500,
-            })
-          : ToastAndroid.show(res.data.message, ToastAndroid.SHORT);
-     
+        //       position: 'bottom',
+        //       type: 'success',
+        //       duration: 500,
+        //     })
+        //   : ToastAndroid.show(res.data.message, ToastAndroid.SHORT);
+
         await AsyncStorage.clear();
         await persistor.purge();
         dispatch(setLogout());
 
-       
+        
         navigation.dispatch(
           CommonActions.reset({
             index: 0,
@@ -136,7 +137,7 @@ export const ChargerStatus = ({navigation}) => {
       }
     } catch (err) {
       console.log('Error', err);
-    
+
       await AsyncStorage.clear();
       await persistor.purge();
       dispatch(setLogout());
@@ -150,12 +151,29 @@ export const ChargerStatus = ({navigation}) => {
       //     ],
       //   }),
       // );
-   
     }
-   
   };
-  return <View><TouchableOpacity onPress={handleLogOut()}>
-    </TouchableOpacity></View>;
+  return (
+    <>
+      <TouchableOpacity onPress={handleLogOut()}></TouchableOpacity>
+      <View style={styles.container}>
+        <Image
+          style={[
+            styles.splash_image,
+            {
+              // transform: [{scale: scaleValue}],
+              width: DIMENSIONS.SCREEN_WIDTH * 0.8,
+            },
+          ]}
+          source={require('../../assets/unnamed.png')}
+        />
+        <Image
+          source={require('../../assets/images/splash_screen_bottom.png')}
+          style={styles.splash_botm_image}
+        />
+      </View>
+    </>
+  );
 };
 const DrawerNavigation = () => {
   const [focus, setFocus] = useState();
@@ -383,7 +401,7 @@ const DrawerNavigation = () => {
               <Image
                 source={require('../../assets/images/privacy.png')}
                 resizeMode="stretch"
-                style={{width: 17, height: 17, padding: 0, }}
+                style={{width: 17, height: 17, padding: 0}}
               />
             );
           },
@@ -406,7 +424,7 @@ const DrawerNavigation = () => {
               <Image
                 source={require('../../assets/images/terms.png')}
                 resizeMode="stretch"
-                style={{width: 17, height: 17, padding: 0, }}
+                style={{width: 17, height: 17, padding: 0}}
               />
             );
           },
@@ -429,7 +447,7 @@ const DrawerNavigation = () => {
               <Image
                 source={require('../../assets/images/logout.png')}
                 resizeMode="stretch"
-                style={{width: 17, height: 17, padding: 0, }}
+                style={{width: 17, height: 17, padding: 0}}
               />
             );
           },
@@ -676,3 +694,26 @@ export default function Router() {
     </Stack.Navigator>
   );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    justifyContent: 'center',
+    backgroundColor: COLORS.CREAM,
+    flex: 1,
+  },
+  splash_image: {
+    position: 'absolute',
+    width: 200,
+    height: 150,
+    // left: 83,
+    alignSelf: 'center',
+    resizeMode: 'contain',
+    top: 141,
+  },
+  splash_botm_image: {
+    position: 'absolute',
+    width: DIMENSIONS.SCREEN_WIDTH * 1,
+    height: 212.85,
+    top: 459,
+  },
+});

@@ -490,6 +490,7 @@ export default function Login({navigation}) {
             bW={1}
             textWidth={ms(45)}
             placeholderTextColor={COLORS.HALFBLACK}
+            keyboardType='email-address'
             autoCapitalize="none"
           />
 
