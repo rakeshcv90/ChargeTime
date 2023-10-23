@@ -37,11 +37,13 @@ const mobileH = Math.round(Dimensions.get('screen').height);
 
 const DeleteAccountScreen = () => {
   const userProfileData = useSelector(state => state.userProfileData);
+
   const [reason, setReason] = useState('');
   const [password, setPassword] = useState('');
   const getUserID = useSelector(state => state.getUserID);
   const [hidePassword, setHidePassword] = useState(true);
   const [showNew, setShowNew] = useState(false);
+  const mail = userProfileData[0]?.email;
 
   const dispatch = useDispatch();
   const user_ID = getUserID;
@@ -83,9 +85,9 @@ const DeleteAccountScreen = () => {
           PLATFORM_IOS
             ? Toast.show({
                 type: 'error',
-                text1: 'Incorect Password',
+                text1: 'Incorrect Password',
               })
-            : ToastAndroid.show('Incorect Password', ToastAndroid.SHORT);
+            : ToastAndroid.show('Incorrect Password', ToastAndroid.SHORT);
         }
       })
       .catch(error => {
@@ -117,7 +119,7 @@ const DeleteAccountScreen = () => {
             left: 32,
             alignItems: 'center',
           }}>
-          <Text style={{color: 'black', fontWeight: '500'}}>Reason</Text>
+          <Text style={{color: 'black', fontWeight: '500',fontSize: 12,}}>Reason</Text>
         </View>
         <TextInput
           style={{

@@ -61,7 +61,7 @@ const Security = () => {
   const [showReE, setShowReE] = useState(false);
   // const [confirmPassword, setConfirmPassword] = useState('');
   const [hidePassword, setHidePassword] = useState(true);
-  const [Password, setPassword] = useState(true);
+  const [Password1, setPassword] = useState(true);
   const [keyPressed, setKeyPressed] = useState(true);
   const [errors, setErrors] = useState({});
   const [loader, setLoader] = useState(false);
@@ -75,7 +75,7 @@ const Security = () => {
     setIsEditable(true);
   };
   const UpdatePassword = async (value, action) => {
-    setLoader(true);
+     setLoader(true);
     try {
       await fetch(`${API}/changePassword`, {
         method: 'POST',
@@ -86,43 +86,73 @@ const Security = () => {
           pwa_email: mail,
           old_password: value.oldPassword,
           password: value.newPassword,
-          conifrm_password: value.conpassword,
+          // conifrm_password: value.conpassword,
         }),
       })
         .then(res => res.json())
         .then(data => {
-          if (data.success !== false) {
-            PLATFORM_IOS
-              ? Toast.show({
-                  type: 'success',
-                  text1: 'Password updated Successfully',
-                })
-              : ToastAndroid.show(
-                  'Password updated Successfully',
-                  ToastAndroid.SHORT,
-                );
-            setIsEditable(false);
-            // navigationRef.navigate('Account');
-
-            setErrors({});
-            action.resetForm();
+ 
+          if (data.message == 'Old password does not match') {
             setLoader(false);
-            setShowButton(false)
-          } else {
             PLATFORM_IOS
               ? Toast.show({
                   type: 'error',
-                  text1: 'Current password does not match',
-                  // position: 'bottom',
+                  text1: 'Current Password Does Not Match',
                 })
               : ToastAndroid.show(
-                  'Current password does not match',
+                  'Current Password Does Not Match',
                   ToastAndroid.SHORT,
                 );
+                action.resetForm()
+          } else {
+            PLATFORM_IOS
+              ? Toast.show({
+                  type: 'success',
+                  text1: 'Password Updated Successfully',
+                })
+              : ToastAndroid.show(
+                  'Password Updated Successfully',
+                  ToastAndroid.SHORT,
+                );
+            setIsEditable(false);
+            setErrors({});
             action.resetForm();
             setLoader(false);
-            setShowButton(false)
+            setShowButton(false);
           }
+
+          // if (data.success !== false) {
+          //   PLATFORM_IOS
+          //     ? Toast.show({
+          //         type: 'success',
+          //         text1: 'Password updated Successfully',
+          //       })
+          //     : ToastAndroid.show(
+          //         'Password updated Successfully',
+          //         ToastAndroid.SHORT,
+          //       );
+          //   setIsEditable(false);
+          //   // navigationRef.navigate('Account');
+
+          //   setErrors({});
+          //   action.resetForm();
+          //   setLoader(false);
+          //   setShowButton(false)
+          // } else {
+          //   PLATFORM_IOS
+          //     ? Toast.show({
+          //         type: 'error',
+          //         text1: 'Current password does not match',
+          //         // position: 'bottom',
+          //       })
+          //     : ToastAndroid.show(
+          //         'Current password does not match',
+          //         ToastAndroid.SHORT,
+          //       );
+          //   action.resetForm();
+          //   setLoader(false);
+          //   setShowButton(false)
+          // }
         });
     } catch (err) {
       if (err.inner) {
@@ -158,9 +188,9 @@ const Security = () => {
       ) : (
         <View style={{}}>
           <Image
-          source={require('../../../assets/images/dotted.png')}
-          style={{width: mobileW * 0.99}}
-          resizeMode='stretch'
+            source={require('../../../assets/images/dotted.png')}
+            style={{width: mobileW * 0.99}}
+            resizeMode="stretch"
           />
         </View>
       )}
@@ -173,8 +203,7 @@ const Security = () => {
             conpassword: '',
           }}
           onSubmit={(values, action) => UpdatePassword(values, action)}
-          validationSchema={ValidateSchema}
-          >
+          validationSchema={ValidateSchema}>
           {({
             values,
             handleChange,
@@ -254,13 +283,13 @@ const Security = () => {
                   placeholderTextColor={COLORS.HALFBLACK}
                   passwordInput={true}
                   pasButton={() => {
-                    setPassword(!Password);
+                    setPassword(!Password1);
                     setShowNew1(!showNew1);
                   }}
-                  secureTextEntry={Password}
+                  secureTextEntry={Password1}
                   passwordInputIcon={!showNew1}
                   placeholder=""
-                  errors={showButton?errors.conpassword:undefined}
+                  errors={showButton ? errors.conpassword : undefined}
                   touched={touched.conpassword}
                   value={values.conpassword}
                   onChangeText={handleChange('conpassword')}
@@ -301,11 +330,11 @@ const Security = () => {
                     onPress={() => {
                       setFieldValue('conpassword', '');
                       setFieldValue('newPassword', '');
-                      setFieldValue('oldPassword','');
+                      setFieldValue('oldPassword', '');
                       setFieldTouched('conpassword', false);
-                      setFieldTouched('newPassword',false);
-                      setFieldTouched('oldPassword',false);
-                      setFieldError('conpassword', '')
+                      setFieldTouched('newPassword', false);
+                      setFieldTouched('oldPassword', false);
+                      setFieldError('conpassword', '');
                       // resetForm();
 
                       setShowButton(false);

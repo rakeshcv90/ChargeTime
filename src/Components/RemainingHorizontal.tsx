@@ -239,10 +239,10 @@ const RemainingHorizontal = ({...props}) => {
             </Text>
             <Text
               style={{
-                fontWeight: '400',
+                fontWeight: '700',
                 fontSize: 10,
                 lineHeight: 12,
-                color: overusage ? COLORS.WHITE : 'rgba(61, 61, 61, 0.6)',
+                color: overusage ? COLORS.WHITE : 'rgba(61, 61, 61, 0.9)',
               }}>
            {overusage ? 'Units Used' : 'Units Left To Be Used'}
             </Text>

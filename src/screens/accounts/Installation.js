@@ -209,16 +209,19 @@ const Installation = () => {
         })
       : ToastAndroid.show('Please Enter Address Line 1', ToastAndroid.SHORT);
 
-    }else if(addlinetwo.trim().length<=0){
-      PLATFORM_IOS
-      ? Toast.show({
-          type: 'error',
-          text1: 'Please Enter Address Line 2',
-        })
-      : ToastAndroid.show('Please Enter Address Line 2', ToastAndroid.SHORT);
+    }
+    // else if(addlinetwo.trim().length<=0){
+    //   PLATFORM_IOS
+    //   ? Toast.show({
+    //       type: 'error',
+    //       text1: 'Please Enter Address Line 2',
+    //     })
+    //   : ToastAndroid.show('Please Enter Address Line 2', ToastAndroid.SHORT);
 
-    }else{
-       if ((locationId && addlineone && newZipcode && newState) || addlinetwo) {
+    // }
+    else{
+       if ((locationId==undefined && addlineone && newZipcode=='' && newState=='' )||locationId&& addlineone && newZipcode && newState) {
+     
       setForLoading(true);
       setLoader(true)
       try {
@@ -316,6 +319,12 @@ const Installation = () => {
         setLoader(false)
         setShowButton(false)
       }
+    }
+    else{
+      console.log("Test1",locationId)
+        console.log("Test2",addlineone)
+        console.log("Test3",newZipcode)
+        console.log("Test4",newState)
     }
     }
 
