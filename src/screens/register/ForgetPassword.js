@@ -329,6 +329,10 @@ const ForgetPassword = ({navigation}) => {
 
   return (
     <SafeAreaView style={{backgroundColor: COLORS.CREAM, flex: 1}}>
+      <ScrollView // scrollEnabled={false}
+        keyboardDismissMode="interactive"
+        showsVerticalScrollIndicator={false}
+        keyboardShouldPersistTaps="handled">
       <TouchableOpacity activeOpacity={1} onPress={() => Keyboard.dismiss()}>
         <KeyboardAvoidingView behavior="position" style={{marginTop: 10}}>
           {forLoading ? <ActivityLoader /> : ''}
@@ -677,6 +681,7 @@ const ForgetPassword = ({navigation}) => {
           </View>
         </KeyboardAvoidingView>
       </TouchableOpacity>
+      </ScrollView>
     </SafeAreaView>
   );
 };

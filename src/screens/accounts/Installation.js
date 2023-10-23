@@ -521,6 +521,7 @@ const Installation = () => {
               // value={newZipcode}
               placeholderTextColor={COLORS.BLACK}
               w="half"
+              bgColor={COLORS.LIGHTGRAY}
             />
           </View>
           <View style={styles.zip_state_view}>
@@ -543,6 +544,7 @@ const Installation = () => {
               textWidth={ms(45)}
               placeholderTextColor={COLORS.BLACK}
               w="half"
+              bgColor={COLORS.LIGHTGRAY}
             />
           </View>
         </View>

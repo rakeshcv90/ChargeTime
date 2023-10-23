@@ -156,6 +156,7 @@ const ResetPassword = props => {
                       textWidth={ms(89)}
                       placeholderTextColor={COLORS.HALFBLACK}
                       autoCapitalize="none"
+                      keyboardType="numbers-and-punctuation"
                     />
                     <Input
                       IconLeft={null}
@@ -175,6 +176,7 @@ const ResetPassword = props => {
                       textWidth={ms(109)}
                       placeholderTextColor={COLORS.HALFBLACK}
                       autoCapitalize="none"
+                      keyboardType="numbers-and-punctuation"
                     />
                     {/* {values.password !== values.password_confirmation &&
                     touched.password &&

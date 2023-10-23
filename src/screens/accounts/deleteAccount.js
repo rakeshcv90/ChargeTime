@@ -61,6 +61,7 @@ const DeleteAccountScreen = () => {
       body: JSON.stringify({
         delete_reason: reason,
         pwa_password: password,
+        pwq_mail:mail,
       }),
     })
       .then(res => res.json())

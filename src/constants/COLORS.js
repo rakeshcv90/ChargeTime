@@ -10,6 +10,7 @@ export default COLORS = {
   HALFBLACK:"#808080",
   LIGHT_GREY: 'rgba(61, 61, 61, 1)',
   RED:'#F84E4E',
+  LIGHTGRAY:'#F0F0F0'
   
 
 }
