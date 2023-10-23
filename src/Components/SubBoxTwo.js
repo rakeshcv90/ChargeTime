@@ -26,14 +26,14 @@ const SubBoxTwo = () => {
           ? styles.mainDiv_installation1
           : styles.mainDiv_installation
       }>
-      <TouchableOpacity style={styles.install_touchable}>
+      <View style={styles.install_touchable}>
         <Image
           style={styles.img_width}
           resizeMode="contain"
           source={require('../../assets/images/details.png')}
         />
         <Text style={styles.installation_text}>Plan Details</Text>
-      </TouchableOpacity>
+      </View>
       {getPurchaseData.length != 0 && (
         <View style={[styles.mainDiv_plan_details, styles.shadowProp]}>
           <View style={styles.second_main_div_kwh}>

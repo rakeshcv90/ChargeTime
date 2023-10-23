@@ -573,7 +573,7 @@ export default function VerifyEmail(props) {
                       }
                       // else setFirstDigit('');1
                     }}
-                    keyboardType="numeric"
+                    keyboardType="numbers-and-punctuation"
                     maxLength={1}
                     autoFocus
                     style={styles.textInput_otp}
@@ -590,16 +590,15 @@ export default function VerifyEmail(props) {
                   <TextInput
                     ref={otp2}
                     onChangeText={value => {
-
-                      if (value.length>=1) {
+                      if (value.length >= 1) {
                         setsecondDigit(value);
                         otp3.current.focus();
-                      }else if(value.length<1){
-                        setsecondDigit('')
-                         otp1.current.focus();
+                      } else if (value.length < 1) {
+                        setsecondDigit('');
+                        otp1.current.focus();
                       }
                     }}
-                    keyboardType="numeric"
+                    keyboardType="numbers-and-punctuation"
                     maxLength={1}
                     style={styles.textInput_otp}
                     value={secondDigit}
@@ -614,15 +613,15 @@ export default function VerifyEmail(props) {
                     }}
                   />
                   <TextInput
-                    keyboardType="numeric"
+                    keyboardType="numbers-and-punctuation"
                     ref={otp3}
                     onChangeText={value => {
                       if (value.length >= 1) {
                         setthirdDigit(value);
                         otp4.current.focus();
-                      }else if(value.length<1){
-                        setthirdDigit('')
-                         otp2.current.focus();
+                      } else if (value.length < 1) {
+                        setthirdDigit('');
+                        otp2.current.focus();
                       }
                     }}
                     maxLength={1}
@@ -639,15 +638,15 @@ export default function VerifyEmail(props) {
                     }}
                   />
                   <TextInput
-                    keyboardType="numeric"
+                    keyboardType="numbers-and-punctuation"
                     ref={otp4}
                     onChangeText={value => {
                       if (value.length >= 1) {
                         setforthDigit(value);
                         otp5.current.focus();
-                      }else if(value.length<1){
-                        setforthDigit('')
-                         otp3.current.focus();
+                      } else if (value.length < 1) {
+                        setforthDigit('');
+                        otp3.current.focus();
                       }
                     }}
                     maxLength={1}
@@ -664,17 +663,15 @@ export default function VerifyEmail(props) {
                     }}
                   />
                   <TextInput
-                    keyboardType="numeric"
+                    keyboardType="numbers-and-punctuation"
                     ref={otp5}
                     onChangeText={value => {
                       if (value.length >= 1) {
                         setfifthDigit(value);
                         otp6.current.focus();
-
-                      }else if(value.length<1){
-                        setfifthDigit('')
-                         otp4.current.focus();
-
+                      } else if (value.length < 1) {
+                        setfifthDigit('');
+                        otp4.current.focus();
                       }
                     }}
                     maxLength={1}
@@ -691,18 +688,15 @@ export default function VerifyEmail(props) {
                     }}
                   />
                   <TextInput
-                    keyboardType="numeric"
+                    keyboardType="numbers-and-punctuation"
                     ref={otp6}
                     onChangeText={value => {
                       if (value.length >= 1) {
                         setSixDigit(value);
                         otp6.current.focus();
-
-
-                      }else if(value.length<1){
-                        setSixDigit('')
-                         otp5.current.focus();
-
+                      } else if (value.length < 1) {
+                        setSixDigit('');
+                        otp5.current.focus();
                       }
                     }}
                     maxLength={1}

@@ -465,7 +465,7 @@ const ForgetPassword = ({navigation}) => {
                         }
                         // else setFirstDigit('');1
                       }}
-                      keyboardType="numeric"
+                      keyboardType="numbers-and-punctuation"
                       maxLength={1}
                       style={styles.textInput_otp}
                       value={firstDigit}
@@ -489,7 +489,7 @@ const ForgetPassword = ({navigation}) => {
                           otp1.current.focus();
                         }
                       }}
-                      keyboardType="numeric"
+                      keyboardType="numbers-and-punctuation"
                       maxLength={1}
                       style={styles.textInput_otp}
                       value={secondDigit}
@@ -504,7 +504,7 @@ const ForgetPassword = ({navigation}) => {
                       // }}
                     />
                     <TextInput
-                      keyboardType="numeric"
+                      keyboardType="numbers-and-punctuation"
                       ref={otp3}
                       onChangeText={value => {
                         if (value.length >= 1) {
@@ -529,7 +529,7 @@ const ForgetPassword = ({navigation}) => {
                       // }}
                     />
                     <TextInput
-                      keyboardType="numeric"
+                      keyboardType="numbers-and-punctuation"
                       ref={otp4}
                       onChangeText={value => {
                         if (value.length >= 1) {
@@ -554,7 +554,7 @@ const ForgetPassword = ({navigation}) => {
                       // }}
                     />
                     <TextInput
-                      keyboardType="numeric"
+                      keyboardType="numbers-and-punctuation"
                       ref={otp5}
                       onChangeText={value => {
                         if (value.length >= 1) {
@@ -579,7 +579,7 @@ const ForgetPassword = ({navigation}) => {
                       // }}
                     />
                     <TextInput
-                      keyboardType="number-pad"
+                      keyboardType="numbers-and-punctuation"
                       maxLength={1}
                       ref={otp6}
                       onChangeText={value => {

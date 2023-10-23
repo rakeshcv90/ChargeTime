@@ -66,10 +66,10 @@ const TotalUsage = (props: any) => {
           </Text>
           <Text
             style={{
-              fontWeight: '400',
+              fontWeight: '700',
               fontSize: 10,
               lineHeight: 12,
-              color: 'rgba(61, 61, 61, 0.6)',
+              color: 'rgba(61, 61, 61, 0.9)',
             }}>
             Total {props.location} Usage
           </Text>

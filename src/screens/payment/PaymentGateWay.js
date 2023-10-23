@@ -450,17 +450,17 @@ export default function PaymentGateWay({navigation, route}) {
                           // style={{height: DIMENSIONS.SCREEN}}
                           itemWidth={400}
                           sliderWidth={400}
-                          // height={mvs(200)}
+                          enableSnap
                           data={allSavedCard}
                           // defaultIndex={focusIndex >= 0 ? focusIndex : 0}
                           renderItem={({item, index}) => {
                             return (
                               <View>
                                 <ImageBackground
-                                source={getCardType(item.card_number)}
-                                resizeMode="contain"
-                                style={{
-                                  width: DIMENSIONS.SCREEN_WIDTH * 0.9,
+                                  source={getCardType(item.card_number)}
+                                  resizeMode="contain"
+                                  style={{
+                                    width: DIMENSIONS.SCREEN_WIDTH * 0.9,
 
                                     height: 210,
                                   }}>
@@ -548,6 +548,7 @@ export default function PaymentGateWay({navigation, route}) {
                                   style={{
                                     backgroundColor: COLORS.GREEN,
                                     marginLeft: -70,
+                                    marginBottom:7,
                                     //height: DIMENSIONS.SCREEN_HEIGHT * 0.05,
                                     alignItems: 'center',
                                     marginTop: DIMENSIONS.SCREEN_HEIGHT * 0.03,
@@ -576,12 +577,11 @@ export default function PaymentGateWay({navigation, route}) {
                                         i += 4
                                       ) {
                                         formattedCardNumber +=
-                                          item.card_number.toString().substr(i, 4) + ' ';
+                                          item.card_number
+                                            .toString()
+                                            .substr(i, 4) + ' ';
                                       }
-                                      console.log(
-                                        'Test',
-                                         formattedCardNumber,
-                                      );
+                                      console.log('Test', formattedCardNumber);
                                       setFieldValue(
                                         'cardHolderName',
                                         item.cust_name,
@@ -660,7 +660,7 @@ export default function PaymentGateWay({navigation, route}) {
                         style={{
                           width: DIMENSIONS.SCREEN_WIDTH * 0.9,
                           height: 210,
-                          marginBottom: 50,
+                          marginBottom: 10,
                         }}>
                         <View style={styles.cardNumber_position}>
                           <Text
@@ -737,19 +737,18 @@ export default function PaymentGateWay({navigation, route}) {
                     )}
 
                     {Platform.OS == 'android' ? (
-                      <View
-                        style={{marginTop: DIMENSIONS.SCREEN_HEIGHT * 0.03}}>
+                      <View style={{marginTop: DIMENSIONS.SCREEN_HEIGHT * 0.2}}>
                         <HorizontalLine style={styles.line} />
                       </View>
                     ) : (
-                    <View style={{marginVertical: 10}}>
-                      <Image
-                        source={require('../../../assets/images/dotted.png')}
-                        style={{width: mobileW * 0.98}}
-                        resizeMode="stretch"
-                      />
-                    </View>
-                  )}
+                      <View style={{marginVertical: 10}}>
+                        <Image
+                          source={require('../../../assets/images/dotted.png')}
+                          style={{width: mobileW * 0.9}}
+                          resizeMode="stretch"
+                        />
+                      </View>
+                    )}
 
                     <Input
                       IconLeft={null}
@@ -1152,8 +1151,14 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginTop:
       Platform.OS == 'ios'
-        ? -(DIMENSIONS.SCREEN_WIDTH * 10) / 100
-        : -(DIMENSIONS.SCREEN_WIDTH * 5) / 100,
+        ? DIMENSIONS.SCREEN_HEIGHT > 930 ?
+         -(DIMENSIONS.SCREEN_WIDTH * 16) / 100
+        : -(DIMENSIONS.SCREEN_WIDTH * 19) / 100
+        : -(DIMENSIONS.SCREEN_WIDTH * 17) / 100,
+    marginBottom:
+      Platform.OS == 'ios'
+        ? (DIMENSIONS.SCREEN_WIDTH * 17) / 100
+        : -(DIMENSIONS.SCREEN_WIDTH * 15) / 100,
   },
   activeDot: {
     backgroundColor: COLORS.GREEN, // Customize the active dot color as desired

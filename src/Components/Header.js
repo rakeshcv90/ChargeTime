@@ -40,7 +40,8 @@ const Header = ({
     setShowButton(editShow);
   }, [editShow]);
   return (
-    <View style={styles.innerContainer}>
+    <TouchableOpacity style={styles.innerContainer}
+    onPress={() => navigationRef.current?.goBack()}>
       <TouchableOpacity
         style={styles.backButton}
         onPress={() => navigationRef.current?.goBack()}>
@@ -61,7 +62,7 @@ const Header = ({
         {rightButton ? <Save /> : <Edit />}
    
       </TouchableOpacity> } */}
-    </View>
+    </TouchableOpacity>
   );
 };
 

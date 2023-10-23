@@ -60,10 +60,20 @@ const SubBoxOne = () => {
             />
           </View>
           <View style={styles.mainDiv_state_zip}>
-            <Connecticut style={styles.img_width} />
+            {/* <Connecticut style={styles.img_width} />
             <Text style={[styles.force_base,{marginLeft:-30}]}>
               {getPurchaseData.data.pwa_state}
-            </Text>
+            </Text> */}
+            <View style={styles.state_div}>
+              <Image
+                source={require('../../assets/images/connecticut.png')}
+                resizeMode="cover"
+                style={{width: 20, height: 20, marginLeft: 20}}
+              />
+              <Text style={styles.force_base}>
+              {getPurchaseData.data.pwa_state}
+              </Text>
+            </View>
 
             <View style={styles.state_div}>
               <Image
