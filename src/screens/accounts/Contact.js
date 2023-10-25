@@ -25,46 +25,106 @@ import {API} from '../../api/API';
 import {navigationRef} from '../../../App';
 import {ms} from 'react-native-size-matters';
 
+
 import {PLATFORM_IOS} from '../../constants/DIMENSIONS';
 import axios from 'axios';
 import {Toast} from 'react-native-toast-message/lib/src/Toast';
+import ActivityLoader from '../../Components/ActivityLoader';
 const mobileW = Math.round(Dimensions.get('screen').width);
 
 const Contact = () => {
   const [message, setMessage] = useState('');
+  const userProfileData = useSelector(state => state.userProfileData);
+  const getUserID = useSelector(state => state.getUserID);
+  const mail = userProfileData[0]?.email;
+  const [forLoading, setForLoading] = useState(false);
+
+  const user_ID = getUserID;
 
   const handleMessage = async values => {
-    try {
-      const response = await axios.post(`${API}/sendEmail`, {
-        message: message,
-      });
-
-      if (response.data.message === 'Email sent successfully') {
-        setMessage('');
-   
-        PLATFORM_IOS
-          ? Toast.show({
-              type: 'success',
-              text1: 'Email sent successfully.',
-            })
-          : ToastAndroid.show('Email sent successfully.', ToastAndroid.SHORT);
-      } else {
-        // cb();
-        PLATFORM_IOS
-          ? Toast.show({
-              type: 'success',
-              text1: 'Email not sent ',
-            })
-          : ToastAndroid.show('Email not sent.', ToastAndroid.SHORT);
-      }
-    } catch (error) {
-      console.error(error);
+    
+    if (message.trim().length <= 0) {
+      PLATFORM_IOS
+        ? Toast.show({
+            type: 'error',
+            text1: 'Please Enter  Message',
+          })
+        : ToastAndroid.show('Please Enter  Message', ToastAndroid.SHORT);
+    } else {
+      setForLoading(true);
+      await fetch(`${API}/send`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          id:user_ID,
+          contactus: message,
+          useremail:mail,
+        }),
+      })
+        .then(res => res.json())
+        .then(async data => {
+          console.log("fffffffffffff",data)
+          setForLoading(false);
+               if (data.message === 'Message sent successfully') {
+          setMessage('');
+          setForLoading(false);
+          PLATFORM_IOS
+            ? Toast.show({
+                type: 'success',
+                text1: 'Message sent successfully.',
+              })
+            : ToastAndroid.show('Message sent successfully.', ToastAndroid.SHORT);
+        } else {
+          // cb();
+          PLATFORM_IOS
+            ? Toast.show({
+                type: 'success',
+                text1: 'Email not sent ',
+              })
+            : ToastAndroid.show('Email not sent.', ToastAndroid.SHORT);
+        }
+         
+        })
+        .catch(error => {
+          setForLoading(false);
+          console.error('Error:', error);
+        });
     }
+    // try {
+    //   const response = await axios.post(`${API}/sendEmail`, {
+    //     message: message,
+    //   });
+
+    //   if (response.data.message === 'Email sent successfully') {
+    //     setMessage('');
+   
+    //     PLATFORM_IOS
+    //       ? Toast.show({
+    //           type: 'success',
+    //           text1: 'Email sent successfully.',
+    //         })
+    //       : ToastAndroid.show('Email sent successfully.', ToastAndroid.SHORT);
+    //   } else {
+    //     // cb();
+    //     PLATFORM_IOS
+    //       ? Toast.show({
+    //           type: 'success',
+    //           text1: 'Email not sent ',
+    //         })
+    //       : ToastAndroid.show('Email not sent.', ToastAndroid.SHORT);
+    //   }
+    // } catch (error) {
+    //   console.error(error);
+    // }
+   
   };
 
   return (
     <SafeAreaView style={{backgroundColor: COLORS.CREAM, flex: 1}}>
       <Header headerName="Contact Us" />
+      {forLoading ? <ActivityLoader /> : ''}
       {Platform.OS === 'android' ? (
         <HorizontalLine style={styles.line} />
       ) : (
