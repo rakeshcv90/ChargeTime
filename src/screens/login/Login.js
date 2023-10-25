@@ -553,7 +553,7 @@ export default function Login({navigation}) {
                   },
                 }),
               }}>
-              <Text style={styles.log_In_btn}>LOG IN</Text>
+              <Text style={styles.log_In_btn}>Log In</Text>
             </TouchableOpacity>
           </View>
           <View style={styles.mainDiv_donot_account}>

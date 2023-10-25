@@ -353,7 +353,7 @@ export default function CompleteProfile(props) {
                   fontSize: 14,
                   fontWeight: '700',
                 }}>
-                CREATE PROFILE
+                Create Profile
               </Text>
             </TouchableOpacity>
           </View>

@@ -266,7 +266,7 @@ const DeleteAccountScreen = ({navigation}) => {
               fontSize: 14,
               fontWeight: '700',
             }}>
-            DELETE ACCOUNT
+            Delete Account
           </Text>
         </TouchableOpacity>
       </View>

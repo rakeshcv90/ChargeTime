@@ -226,12 +226,13 @@ export default function PaymentGateWay({navigation, route}) {
 
         if (res.data.status == 'True') {
           // dispatch(setDeviceId(res.data.message));
-
+          
           if (route.params.purchageData == 'DOWNGRADE') {
             // PlanStatus();
-
+            
             navigationRef.navigate('HomeOne');
           } else {
+            dispatch(setDeviceId(res.data.message));
             getPlanCurrent();
           }
         } else {
@@ -263,7 +264,7 @@ export default function PaymentGateWay({navigation, route}) {
           dispatch(setPurchaseData(res?.data));
         }
         dispatch(setPackageStatus(true));
-        navigationRef.navigate('HomeOne');
+        // navigationRef.navigate('Home');
       })
       .catch(err => {
         console.log(err);
@@ -391,7 +392,7 @@ export default function PaymentGateWay({navigation, route}) {
               transparent={true}
               visible={modalVisible}
               onRequestClose={() => {
-                Alert.alert('Modal has been closed.');
+                // Alert.alert('Modal has been closed.');
                 setModalVisible(!modalVisible);
               }}>
               <View style={styles.centeredView}>

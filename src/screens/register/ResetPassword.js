@@ -223,7 +223,7 @@ const ResetPassword = props => {
                         fontSize: 14,
                         color: COLORS.BLACK,
                       }}>
-                      CHANGE PASSWORD
+                      Change Password
                     </Text>
                   </TouchableOpacity>
                 </View>

@@ -328,7 +328,7 @@ export default function Register({navigation}) {
                         fontSize: 14,
                         fontWeight: '700',
                       }}>
-                      SIGN UP
+                      Sign Up
                     </Text>
                   </TouchableOpacity>
                 </View>

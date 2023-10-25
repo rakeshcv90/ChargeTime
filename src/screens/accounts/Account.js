@@ -339,7 +339,7 @@ const Account = ({navigation}) => {
               activeOpacity={0.05}
               style={styles.logoutButton}
               onPress={() => handleLogOut()}>
-              <Text style={styles.logoutbuttonText}>LOG OUT</Text>
+              <Text style={styles.logoutbuttonText}>Log Out</Text>
             </TouchableOpacity>
           </View>
         </ScrollView>
