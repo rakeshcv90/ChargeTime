@@ -41,7 +41,7 @@ const mobileH = Math.round(Dimensions.get('screen').height);
 
 const Account = ({navigation}) => {
   const [allSavedCard, setSavedCard] = useState([]);
-  const getUserID = useSelector(state => state.getUserID);
+  const {getUserID, getPackageStatus} = useSelector(state => state);
 
   // const [getData, setGetData] = useState([]);
   // const [apiResponse, setApiResponse] = useState(null);
@@ -250,7 +250,9 @@ const Account = ({navigation}) => {
           <DrawerOpen top={PLATFORM_IOS ? 30 : 30} />
         </View>
         <ScrollView showsVerticalScrollIndicator={false} style={{flex: 1}}>
-          {Screen.map((item, index) => (
+          {Screen.map((item, index) => {
+            if(!getPackageStatus && index == 3) return
+            return(
             <TouchableOpacity
               key={index}
               style={styles.itemContainer}
@@ -293,7 +295,7 @@ const Account = ({navigation}) => {
                 />
               </View>
             </TouchableOpacity>
-          ))}
+          )})}
           <View style={styles.row}>
             <Image
               source={require('../../../assets/images/Theme.png')}

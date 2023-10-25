@@ -35,7 +35,7 @@ import ActivityLoader from '../../Components/ActivityLoader';
 import HorizontalLine from '../../Components/HorizontalLine';
 import {mvs, ms} from 'react-native-size-matters';
 import creditCardType, {types as CardType} from 'credit-card-type';
-import {createToken, CardField} from '@stripe/stripe-react-native';
+import {createToken, CardForm} from '@stripe/stripe-react-native';
 
 import {
   setCardDetails,
@@ -226,10 +226,10 @@ export default function PaymentGateWay({navigation, route}) {
 
         if (res.data.status == 'True') {
           // dispatch(setDeviceId(res.data.message));
-          
+
           if (route.params.purchageData == 'DOWNGRADE') {
             // PlanStatus();
-            
+
             navigationRef.navigate('HomeOne');
           } else {
             dispatch(setDeviceId(res.data.message));
@@ -873,8 +873,28 @@ export default function PaymentGateWay({navigation, route}) {
                         />
                       </View>
                     </View> */}
-
-                    <CardField
+                    <CardForm
+                      postalCodeEnabled={false}
+                      placeholders={{
+                        number: '4242 4242 4242 4242',
+                      }}
+                      cardStyle={{
+                        backgroundColor: COLORS.CREAM,
+                        textColor: COLORS.BLACK,
+                      }}
+                      style={{
+                        width: '100%',
+                        height: 200,
+                        marginTop: 30,
+                      }}
+                      onFormComplete={cardDetails => {
+                        setcardtype(cardDetails.complete);
+                      }}
+                      onFocus={focusedField => {
+                        console.log('focusField', focusedField);
+                      }}
+                    />
+                    {/* <CardField
                       postalCodeEnabled={true}
                       placeholders={{
                         number: '4242 4242 4242 4242',
@@ -889,13 +909,13 @@ export default function PaymentGateWay({navigation, route}) {
                         marginVertical: 30,
                       }}
                       onCardChange={cardDetails => {
-                   
+                   console.log(cardDetails)
                         setcardtype(cardDetails);
                       }}
                       onFocus={focusedField => {
                         console.log('focusField', focusedField);
                       }}
-                    />
+                    /> */}
                     <View
                       style={{
                         flexDirection: 'row',
