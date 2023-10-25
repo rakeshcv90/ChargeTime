@@ -27,15 +27,19 @@ import {API} from '../../api/API';
 import {navigationRef} from '../../../App';
 import {ms} from 'react-native-size-matters';
 import {PLATFORM_IOS} from '../../constants/DIMENSIONS';
-import {resetApp} from '../../redux/action';
+import {resetApp, setLogout} from '../../redux/action';
 import {useDispatch} from 'react-redux';
 import {Toast} from 'react-native-toast-message/lib/src/Toast';
+import ActivityLoader from '../../Components/ActivityLoader';
+import {CommonActions} from '@react-navigation/native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import {persistor} from '../../redux/store';
 const mobileW = Math.round(Dimensions.get('screen').width);
 const mobileH = Math.round(Dimensions.get('screen').height);
 
 // import Button from '../../Components/Button';
 
-const DeleteAccountScreen = () => {
+const DeleteAccountScreen = ({navigation}) => {
   const userProfileData = useSelector(state => state.userProfileData);
 
   const [reason, setReason] = useState('');
@@ -43,62 +47,92 @@ const DeleteAccountScreen = () => {
   const getUserID = useSelector(state => state.getUserID);
   const [hidePassword, setHidePassword] = useState(true);
   const [showNew, setShowNew] = useState(false);
+  const [forLoading, setForLoading] = useState(false);
   const mail = userProfileData[0]?.email;
 
   const dispatch = useDispatch();
   const user_ID = getUserID;
 
-
   //  const user_ID = userRegisterData[4]?.user_id;
 
   const handleDelete = async () => {
-
-    await fetch(`${API}/deleteAccount/${user_ID}`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        delete_reason: reason,
-        pwa_password: password,
-        pwq_mail:mail,
-      }),
-    })
-      .then(res => res.json())
-      .then(async data => {
-        console.log(data, 'fff');
-        if (data.message === 'Account deleted successfully') {
-          dispatch(resetApp());
-
-          PLATFORM_IOS
-            ? Toast.show({
-                type: 'success',
-                text1: 'Account deleted successfully',
-              })
-            : ToastAndroid.show(
-                'Account deleted successfully',
-                ToastAndroid.SHORT,
-              );
-
-          navigationRef.navigate('Login');
-        } else {
-        
-          PLATFORM_IOS
-            ? Toast.show({
-                type: 'error',
-                text1: 'Incorrect Password',
-              })
-            : ToastAndroid.show('Incorrect Password', ToastAndroid.SHORT);
-        }
+    if (reason.trim().length <= 0) {
+      PLATFORM_IOS
+        ? Toast.show({
+            type: 'error',
+            text1: 'Please Enter  Message',
+          })
+        : ToastAndroid.show('Please Enter  Message', ToastAndroid.SHORT);
+    } else if (password.trim().length <= 0) {
+      PLATFORM_IOS
+        ? Toast.show({
+            type: 'error',
+            text1: 'Please Enter Password',
+          })
+        : ToastAndroid.show('Please Enter Your Password', ToastAndroid.SHORT);
+    } else {
+      setForLoading(true);
+      await fetch(`${API}/deleteAccount/${user_ID}`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          id: user_ID,
+          reason: reason,
+          pwa_password: password,
+          useremail: mail,
+        }),
       })
-      .catch(error => {
-        console.error('Error:', error);
-      });
+        .then(res => res.json())
+        .then(async data => {
+          if (data.message === 'Account deleted successfully') {
+            // dispatch(resetApp());
+            setForLoading(false);
+            PLATFORM_IOS
+              ? Toast.show({
+                  type: 'success',
+                  text1: 'Account deleted successfully',
+                })
+              : ToastAndroid.show(
+                  'Account deleted successfully',
+                  ToastAndroid.SHORT,
+                );
+
+            // navigation.navigate('Login');
+            await AsyncStorage.clear();
+            await persistor.purge();
+            navigation.dispatch(
+              CommonActions.reset({
+                index: 0,
+                routes: [
+                  {
+                    name: 'LoginStack',
+                  },
+                ],
+              }),
+            );
+          } else {
+            setForLoading(false);
+            PLATFORM_IOS
+              ? Toast.show({
+                  type: 'error',
+                  text1: 'Incorrect Password',
+                })
+              : ToastAndroid.show('Incorrect Password', ToastAndroid.SHORT);
+          }
+        })
+        .catch(error => {
+          setForLoading(false);
+          console.error('Error:', error);
+        });
+    }
   };
 
   return (
     <SafeAreaView style={{backgroundColor: COLORS.CREAM, flex: 1}}>
       <Header headerName="Account Delete Request" />
+      {forLoading ? <ActivityLoader /> : ''}
       {Platform.OS == 'android' ? (
         <HorizontalLine style={styles.line} />
       ) : (
@@ -120,7 +154,9 @@ const DeleteAccountScreen = () => {
             left: 32,
             alignItems: 'center',
           }}>
-          <Text style={{color: 'black', fontWeight: '500',fontSize: 12,}}>Reason</Text>
+          <Text style={{color: 'black', fontWeight: '500', fontSize: 12}}>
+            Reason
+          </Text>
         </View>
         <TextInput
           style={{
@@ -136,8 +172,8 @@ const DeleteAccountScreen = () => {
             //fontFamily: 'Roboto',
             fontWeight: '400',
             // paddingLeft: 10,
-            paddingTop: DIMENSIONS.SCREEN_HEIGHT*0.02,
-            padding:DIMENSIONS.SCREEN_HEIGHT*0.02,
+            paddingTop: DIMENSIONS.SCREEN_HEIGHT * 0.02,
+            padding: DIMENSIONS.SCREEN_HEIGHT * 0.02,
             textAlignVertical: 'top',
           }}
           multiline
@@ -200,45 +236,39 @@ const DeleteAccountScreen = () => {
           }}
         />
 
-        <View
+        <TouchableOpacity
+          onPress={handleDelete}
           style={{
-            flexDirection: 'row',
-            justifyContent: 'center',
-            // width: '100%',
-            marginHorizontal: 20,
+            marginTop: 15,
+            // marginLeft: 190,
+            backgroundColor: '#F84E4E',
+            alignItems: 'center',
+            justifyContent: 'flex-end',
+            alignSelf: 'flex-end',
+            padding: 13,
+            borderRadius: 10,
+            width: '60%',
+            ...Platform.select({
+              ios: {
+                shadowColor: '#000000',
+                shadowOffset: {width: 0, height: 2},
+                shadowOpacity: 0.3,
+                shadowRadius: 4,
+              },
+              android: {
+                elevation: 4,
+              },
+            }),
           }}>
-          <TouchableOpacity
-            onPress={handleDelete}
+          <Text
             style={{
-              marginTop: 15,
-              marginLeft: 190,
-              backgroundColor: '#F84E4E',
-              alignItems: 'center',
-              padding: 13,
-              borderRadius: 10,
-              width: '50%',
-              ...Platform.select({
-                ios: {
-                  shadowColor: '#000000',
-                  shadowOffset: {width: 0, height: 2},
-                  shadowOpacity: 0.3,
-                  shadowRadius: 4,
-                },
-                android: {
-                  elevation: 4,
-                },
-              }),
+              color: COLORS.WHITE,
+              fontSize: 14,
+              fontWeight: '700',
             }}>
-            <Text
-              style={{
-                color: COLORS.WHITE,
-                fontSize: 14,
-                fontWeight: '700',
-              }}>
-              DELETE ACCOUNT
-            </Text>
-          </TouchableOpacity>
-        </View>
+            DELETE ACCOUNT
+          </Text>
+        </TouchableOpacity>
       </View>
     </SafeAreaView>
   );

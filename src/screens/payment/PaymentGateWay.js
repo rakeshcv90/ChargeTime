@@ -35,6 +35,7 @@ import ActivityLoader from '../../Components/ActivityLoader';
 import HorizontalLine from '../../Components/HorizontalLine';
 import {mvs, ms} from 'react-native-size-matters';
 import creditCardType, {types as CardType} from 'credit-card-type';
+import {createToken, CardField} from '@stripe/stripe-react-native';
 
 import {
   setCardDetails,
@@ -121,6 +122,7 @@ export default function PaymentGateWay({navigation, route}) {
   const [color, setColor] = useState(false);
   const voucherStatus = route.params.voucherStatus;
   const [cardData, setCardData] = useState();
+  const [cardtype, setcardtype] = useState();
 
   const {getDataForPayment, getUserID, getEmailDAta} = useSelector(
     state => state,
@@ -155,19 +157,23 @@ export default function PaymentGateWay({navigation, route}) {
   };
 
   const handlePaymentSubmit = async () => {
+    const id = await createToken({...cardtype, type: 'Card'});
+    console.log('My Card Data', id.token.id);
+
     setLoader(true);
     let payload = new FormData();
-    let exp_month = cardData?.validTill?.split('/')[0];
-    let exp_year = cardData?.validTill?.split('/')[1];
+    // let exp_month = cardData?.validTill?.split('/')[0];
+    // let exp_year = cardData?.validTill?.split('/')[1];
     payload.append('kwh_unit', route.params.data.kwh);
-    payload.append('card_number', cardData.cardNumber.replace(/\s/g, ''));
-    payload.append('card_cvc', cardData.cvv);
-    payload.append('card_exp_month', exp_month);
-    payload.append('card_exp_year', exp_year);
+    // payload.append('card_number', cardData.cardNumber.replace(/\s/g, ''));
+    // payload.append('card_cvc', cardData.cvv);
+    // payload.append('card_exp_month', exp_month);
+    // payload.append('card_exp_year', exp_year);
     payload.append('item_details', getDataForPayment.package_name);
     payload.append('price', getDataForPayment.total_price);
     payload.append('price_stripe_id', getDataForPayment.price_stripe_id);
     payload.append('user_id', getUserID);
+    payload.append('stripeToken', id.token.id);
     payload.append('voucherCode', coupon == null ? '' : coupon);
     try {
       const response = await axios.post(`${API}/checkout`, payload, {
@@ -548,7 +554,7 @@ export default function PaymentGateWay({navigation, route}) {
                                   style={{
                                     backgroundColor: COLORS.GREEN,
                                     marginLeft: -70,
-                                    marginBottom:7,
+                                    marginBottom: 7,
                                     //height: DIMENSIONS.SCREEN_HEIGHT * 0.05,
                                     alignItems: 'center',
                                     marginTop: DIMENSIONS.SCREEN_HEIGHT * 0.03,
@@ -756,7 +762,7 @@ export default function PaymentGateWay({navigation, route}) {
                       </View>
                     )}
 
-                    <Input
+                    {/* <Input
                       IconLeft={null}
                       errors={errors.cardHolderName}
                       touched={touched.cardHolderName}
@@ -787,6 +793,12 @@ export default function PaymentGateWay({navigation, route}) {
                         }
 
                         formattedCardNumber = formattedCardNumber.trim();
+                        for (let cardType in cardPatterns) {
+                          if (cardPatterns[cardType].test(text)) {
+                            console.lo
+                            return cardType;
+                          }
+                        }
 
                         handleChange('cardNumber')(formattedCardNumber);
                       }}
@@ -800,8 +812,8 @@ export default function PaymentGateWay({navigation, route}) {
                       textWidth={ms(85)}
                       placeholderTextColor={COLORS.HALFBLACK}
                       keyboardType="number-pad"
-                    />
-                    <View style={styles.mainDiv_state_ZIP}>
+                    /> */}
+                    {/* <View style={styles.mainDiv_state_ZIP}>
                       <View style={styles.zip_state_view}>
                         <Input
                           IconLeft={null}
@@ -859,7 +871,30 @@ export default function PaymentGateWay({navigation, route}) {
                           keyboardType="numeric"
                         />
                       </View>
-                    </View>
+                    </View> */}
+
+                    <CardField
+                      postalCodeEnabled={true}
+                      placeholders={{
+                        number: '4242 4242 4242 4242',
+                      }}
+                      cardStyle={{
+                        backgroundColor: '#FFFFFF',
+                        textColor: '#000000',
+                      }}
+                      style={{
+                        width: '100%',
+                        height: 50,
+                        marginVertical: 30,
+                      }}
+                      onCardChange={cardDetails => {
+                   
+                        setcardtype(cardDetails);
+                      }}
+                      onFocus={focusedField => {
+                        console.log('focusField', focusedField);
+                      }}
+                    />
                     <View
                       style={{
                         flexDirection: 'row',
@@ -970,7 +1005,10 @@ export default function PaymentGateWay({navigation, route}) {
                             },
                           }),
                         }}>
-                        <TouchableOpacity onPress={handleSubmit}>
+                        <TouchableOpacity
+                          onPress={() => {
+                            setModalVisible1(true);
+                          }}>
                           <Text
                             style={{
                               fontSize: 14,
@@ -1157,8 +1195,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginTop:
       Platform.OS == 'ios'
-        ? DIMENSIONS.SCREEN_HEIGHT > 930 ?
-          -(DIMENSIONS.SCREEN_WIDTH * 16) / 100
+        ? DIMENSIONS.SCREEN_HEIGHT > 930
+          ? -(DIMENSIONS.SCREEN_WIDTH * 16) / 100
           : -(DIMENSIONS.SCREEN_WIDTH * 19) / 100
         : -(DIMENSIONS.SCREEN_WIDTH * 17) / 100,
     marginBottom:

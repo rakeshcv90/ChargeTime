@@ -538,6 +538,27 @@ PODS:
     - React-Core
   - RNSVG (13.9.0):
     - React-Core
+  - Stripe (22.8.4):
+    - Stripe/Stripe3DS2 (= 22.8.4)
+    - StripeApplePay (= 22.8.4)
+    - StripeCore (= 22.8.4)
+    - StripeUICore (= 22.8.4)
+  - stripe-react-native (0.19.0):
+    - React-Core
+    - Stripe (~> 22.8.1)
+    - StripeFinancialConnections (~> 22.8.1)
+  - Stripe/Stripe3DS2 (22.8.4):
+    - StripeApplePay (= 22.8.4)
+    - StripeCore (= 22.8.4)
+    - StripeUICore (= 22.8.4)
+  - StripeApplePay (22.8.4):
+    - StripeCore (= 22.8.4)
+  - StripeCore (22.8.4)
+  - StripeFinancialConnections (22.8.4):
+    - StripeCore (= 22.8.4)
+    - StripeUICore (= 22.8.4)
+  - StripeUICore (22.8.4):
+    - StripeCore (= 22.8.4)
   - Yoga (1.14.0)
 
 DEPENDENCIES:
@@ -596,6 +617,7 @@ DEPENDENCIES:
   - RNScreens (from `../node_modules/react-native-screens`)
   - RNSensors (from `../node_modules/react-native-sensors`)
   - RNSVG (from `../node_modules/react-native-svg`)
+  - "stripe-react-native (from `../node_modules/@stripe/stripe-react-native`)"
   - Yoga (from `../node_modules/react-native/ReactCommon/yoga`)
 
 SPEC REPOS:
@@ -615,6 +637,11 @@ SPEC REPOS:
     - lottie-ios
     - nanopb
     - PromisesObjC
+    - Stripe
+    - StripeApplePay
+    - StripeCore
+    - StripeFinancialConnections
+    - StripeUICore
 
 EXTERNAL SOURCES:
   boost:
@@ -717,6 +744,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native-sensors"
   RNSVG:
     :path: "../node_modules/react-native-svg"
+  stripe-react-native:
+    :path: "../node_modules/@stripe/stripe-react-native"
   Yoga:
     :path: "../node_modules/react-native/ReactCommon/yoga"
 
@@ -786,6 +815,12 @@ SPEC CHECKSUMS:
   RNScreens: 68fd1060f57dd1023880bf4c05d74784b5392789
   RNSensors: 117ba71c7eeeea0407ea0c0bb79e3495d602049b
   RNSVG: 53c661b76829783cdaf9b7a57258f3d3b4c28315
+  Stripe: 59f6659e8ea413def19c97c57e23f5ec6ea48cf8
+  stripe-react-native: 0e50141806454839806143db5ce514a0cddd4d12
+  StripeApplePay: 6e9aebd3d248464836e9fbdaef6e5fb1817d56a6
+  StripeCore: 193f27552fb98108ebfe0df11651fe5f38948305
+  StripeFinancialConnections: 955c345ada7d0dff1a9bd15c4ebc97eacce4ac75
+  StripeUICore: 6a5bbea0164d63bd91000f001903e7901859e1a4
   Yoga: 065f0b74dba4832d6e328238de46eb72c5de9556
 
 PODFILE CHECKSUM: 454a48bd9824cf4ed5eb1a0a9856e358102f55af

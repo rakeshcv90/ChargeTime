@@ -24,17 +24,19 @@ import {
   setSubscriptionStatus,
   userProfileData,
   setMaintainence,
-  setMyLocation
+  setMyLocation,
 } from './src/redux/action';
 
 import {PermissionsAndroid} from 'react-native';
+import { StripeProvider } from '@stripe/stripe-react-native';
 export const navigationRef = createNavigationContainerRef();
 
 export default function App() {
-  const {maintainence, } = useSelector(state => state);
+  const {maintainence} = useSelector(state => state);
   const [token1, setToken] = useState('');
   const dispatch = useDispatch();
-
+  const publishableKey =
+    'pk_live_51LCrEBJPfbfzje02kM4bLe9H6mEIVNkpZwxrcNSNOA8TO0WyfSAcZhjPsCgG7pYuwdE1QjFzmd3bew2A2ch3lqCE00NG2kiGDs';
 
   // console.log("fgfgfgfgfg555555",getLocationID)
   useEffect(() => {
@@ -291,9 +293,8 @@ export default function App() {
           console.log('byyyyyy');
         }
       } else if (notification_id === 'Event') {
-      
         notifee.displayNotification({
-          title:data.data.message,
+          title: data.data.message,
           //body: data.data.message,
 
           android: {
@@ -317,7 +318,6 @@ export default function App() {
           console.error('Error222', error);
         }
       } else if (notification_id === 'Price') {
-      
         notifee.displayNotification({
           title: data.data.message,
           //body: data.data.message,
@@ -329,7 +329,9 @@ export default function App() {
         });
 
         try {
-          const response = await axios.get(`${API}/packagePlan/${data.data.booking_id}`);
+          const response = await axios.get(
+            `${API}/packagePlan/${data.data.booking_id}`,
+          );
 
           if (response?.data?.locations.length == 0) {
             // dispatch(setBasePackage([]));
@@ -341,7 +343,7 @@ export default function App() {
           console.error('Error fetching data:', error);
         }
       } else if (notification_id === 'Maintaince') {
-       dispatch(setMyLocation(data.data.message))
+        dispatch(setMyLocation(data.data.message));
         dispatch(setMaintainence(true));
         notifee.displayNotification({
           title: data?.data?.title,
@@ -478,7 +480,12 @@ export default function App() {
       <NavigationContainer ref={navigationRef}>
         <Router />
       </NavigationContainer>
-      <Maintainence isVisible={maintainence}  />
+      <Maintainence isVisible={maintainence} />
+      <StripeProvider
+        publishableKey={publishableKey}
+        merchantIdentifier="merchant.identifier" // required for Apple Pay
+        urlScheme="your-url-scheme" // required for 3D Secure and bank redirects
+      ></StripeProvider>
       <Toast position="bottom" />
     </>
   );
