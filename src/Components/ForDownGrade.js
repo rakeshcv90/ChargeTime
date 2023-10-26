@@ -373,7 +373,7 @@ export default function ForDownGrade({route, navigation}) {
               }}>
               <Text
                 style={{fontWeight: '700', color: COLORS.BLACK, fontSize: 14}}>
-                CANCEL
+                Cancel
               </Text>
             </TouchableOpacity>
             <TouchableOpacity
@@ -398,7 +398,12 @@ export default function ForDownGrade({route, navigation}) {
                 }),
               }}>
               <Text
-                style={{fontWeight: '700', color: COLORS.WHITE, fontSize: 14}}>
+                style={{
+                  fontWeight: '700',
+                  color: COLORS.WHITE,
+                  fontSize: 14,
+                  textTransform: 'capitalize',
+                }}>
                 {purchageData}
               </Text>
             </TouchableOpacity>

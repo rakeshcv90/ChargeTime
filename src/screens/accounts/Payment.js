@@ -202,7 +202,7 @@ export default function PaymentGateWay({navigation, route}) {
       });
 
       if (response.data.message) {
-        // cb();
+        // cb();      
         handleGetCard();
         //setFocusedIndex(focusIndex+1)
         setLoader(false);
@@ -292,8 +292,8 @@ export default function PaymentGateWay({navigation, route}) {
           method: 'post',
           data: payload,
           headers: {
-            "Content-Type": 'application/json'
-          }
+            'Content-Type': 'multipart/form-data',
+          },
         },
         {},
       );
@@ -344,15 +344,15 @@ export default function PaymentGateWay({navigation, route}) {
     payload.append('card_id', values);
     payload.append('user_id', user_ID);
     try {
-      const response = await fetch(`${API}/defaultcard`, {
+      const response = await axios(`${API}/defaultcard`, {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json',
+          'Content-Type': 'multipart/form-data',
         },
-        body: payload,
+        data: payload,
       });
-      const result = await response.json();
-      if (result.msg === 'successfull') {
+      // const result = await response.json();
+      if (response.data.msg === 'successfull') {
         //handleGetCard();
         handleGetCard();
         setLoader(false);
@@ -368,13 +368,14 @@ export default function PaymentGateWay({navigation, route}) {
       } else {
         setLoader(false);
         PLATFORM_IOS
-          ? Toast.show({
-              type: 'success',
-              text1: 'Card Details Not Exist.',
-            })
-          : ToastAndroid.show('Card Details Not Exist.', ToastAndroid.SHORT);
+        ? Toast.show({
+          type: 'success',
+          text1: 'Card Details Not Exist.',
+        })
+        : ToastAndroid.show('Card Details Not Exist.', ToastAndroid.SHORT);
       }
     } catch (error) {
+      setLoader(false);
       console.error('Error Making default card', error);
     }
   };
@@ -507,7 +508,7 @@ export default function PaymentGateWay({navigation, route}) {
                                         fontSize: 8,
                                         color: 'gray',
                                       }}>
-                                      CVV
+                                      CVC
                                     </Text>
                                     <Text
                                       style={{
@@ -605,38 +606,40 @@ export default function PaymentGateWay({navigation, route}) {
                                     : 'Current Payment Method'}
                                 </Text>
                               </TouchableOpacity>
-                              <TouchableOpacity
-                                onPress={() => {
-                                  setCardId(item.card_id);
-                                  setModalVisible(true);
+                              {item.default_card != 'yes' && (
+                                <TouchableOpacity
+                                  onPress={() => {
+                                    setCardId(item.card_id);
+                                    setModalVisible(true);
 
-                                  // if (currentCard.status === 1 || currentCard.status === 0) {
-                                  //   handleDeleteCard(currentCard.id);
-                                  // } else if (savedCard.length > 0) {
+                                    // if (currentCard.status === 1 || currentCard.status === 0) {
+                                    //   handleDeleteCard(currentCard.id);
+                                    // } else if (savedCard.length > 0) {
 
-                                  //   handleDeleteCard(savedCard[0]?.id);
-                                  // } else {
-                                  //   PLATFORM_IOS
-                                  //     ? Toast.show({
-                                  //         type: 'success',
-                                  //         text1: 'NO CARD ADDED !',
-                                  //       })
-                                  //     : ToastAndroid.show('NO CARD ADDED !', ToastAndroid.SHORT);
-                                  // }
-                                  // setModalVisible(true);
-                                }}
-                                style={{
-                                  // marginLeft: 35,
-                                  // marginRight: 100,
-                                  backgroundColor: '#F84E4E',
-                                  alignItems: 'center',
-                                  padding: 13,
-                                  marginLeft: 10,
-                                  borderRadius: 150,
-                                  width: '15%',
-                                }}>
-                                <Delete />
-                              </TouchableOpacity>
+                                    //   handleDeleteCard(savedCard[0]?.id);
+                                    // } else {
+                                    //   PLATFORM_IOS
+                                    //     ? Toast.show({
+                                    //         type: 'success',
+                                    //         text1: 'NO CARD ADDED !',
+                                    //       })
+                                    //     : ToastAndroid.show('NO CARD ADDED !', ToastAndroid.SHORT);
+                                    // }
+                                    // setModalVisible(true);
+                                  }}
+                                  style={{
+                                    // marginLeft: 35,
+                                    // marginRight: 100,
+                                    backgroundColor: '#F84E4E',
+                                    alignItems: 'center',
+                                    padding: 13,
+                                    marginLeft: 10,
+                                    borderRadius: 150,
+                                    width: '15%',
+                                  }}>
+                                  <Delete />
+                                </TouchableOpacity>
+                              )}
                             </View>
                           </View>
                         );
@@ -735,7 +738,7 @@ export default function PaymentGateWay({navigation, route}) {
                               fontSize: 8,
                               color: 'gray',
                             }}>
-                            CVV
+                            CVC
                           </Text>
                           <Text
                             style={{
@@ -781,12 +784,13 @@ export default function PaymentGateWay({navigation, route}) {
                 </View>
                 <CardForm
                   postalCodeEnabled={false}
-                  placeholders={{
-                    number: '4242 4242 4242 4242',
-                  }}
+                  // placeholders={{
+                  //   number: '4242 4242 4242 4242',
+                  // }}
                   cardStyle={{
                     backgroundColor: COLORS.CREAM,
                     textColor: COLORS.BLACK,
+                    placeholderColor: COLORS.BLACK
                   }}
                   style={{
                     width: '100%',

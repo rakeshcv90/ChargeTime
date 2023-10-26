@@ -25,7 +25,7 @@ const BoxTwo = ({data}) => {
     if (getPurchaseData.length == 0) {
       return <Text style={styles.installation_text}></Text>;
     } else if (getPurchaseData.length == undefined) {
-      if (getPurchaseData.data.energy_plan == data.package_name) {
+      if (getPurchaseData.data.energy_plan == data?.package_name) {
         return <Text style={styles.installation_text}>( Current Plan )</Text>;
       }
     }

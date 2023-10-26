@@ -230,6 +230,7 @@ const Security = () => {
                   secureTextEntry={keyPressed}
                   passwordInputIcon={!showPassword}
                   placeholder="*************"
+                  bColor={COLORS.BLACK}
                   errors={errors.oldPassword}
                   touched={touched.oldPassword}
                   value={values.oldPassword}
@@ -259,6 +260,7 @@ const Security = () => {
                   secureTextEntry={hidePassword}
                   passwordInputIcon={!showNew}
                   placeholder=""
+                  bColor={COLORS.BLACK}
                   errors={errors.newPassword}
                   touched={touched.newPassword}
                   value={values.newPassword}
@@ -286,6 +288,7 @@ const Security = () => {
                     setPassword(!Password1);
                     setShowNew1(!showNew1);
                   }}
+                  bColor={COLORS.BLACK}
                   secureTextEntry={Password1}
                   passwordInputIcon={!showNew1}
                   placeholder=""

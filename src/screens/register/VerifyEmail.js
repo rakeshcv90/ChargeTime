@@ -763,7 +763,7 @@ export default function VerifyEmail(props) {
                       fontSize: 14,
                       fontWeight: '700',
                     }}>
-                    VERIFY EMAIL
+                    Verify Email
                   </Text>
                 </TouchableOpacity>
               </View>
