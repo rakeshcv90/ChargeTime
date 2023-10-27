@@ -157,13 +157,13 @@ export default function CompleteProfile(props) {
 
             setForLoading(false);
           } else {
-            PLATFORM_IOS
-              ? Toast.show({
-                  type: 'error',
-                  text1: 'Profile already in use',
-                  // position: 'bottom',
-                })
-              : ToastAndroid.show('Profile already in use', ToastAndroid.SHORT);
+            // PLATFORM_IOS
+            //   ? Toast.show({
+            //       type: 'error',
+            //       text1: 'Profile already in use',
+            //       // position: 'bottom',
+            //     })
+            //   : ToastAndroid.show('Profile already in use', ToastAndroid.SHORT);
             setForLoading(false);
           }
         }
@@ -174,10 +174,10 @@ export default function CompleteProfile(props) {
       PLATFORM_IOS
         ? Toast.show({
             type: 'success',
-            text1: 'Please fill required fields.',
+            text1: 'Please fill the required fields.',
           })
         : ToastAndroid.show(
-            'Please fill required fields..',
+            'Please fill the required fields.',
             ToastAndroid.SHORT,
           );
       setForLoading(false);

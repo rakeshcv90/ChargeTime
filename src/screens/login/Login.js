@@ -379,7 +379,7 @@ export default function Login({navigation}) {
     axios
       .get(`${API}/remainingusage/${userId}`)
       .then(res => {
-        if (res.data?.kwh_unit_remaining > 0) {
+        if (parseInt(res.data?.kwh_unit_remaining) > 0) {
           remaingData = res.data?.kwh_unit_remaining;
           dispatch(setOverUsage(false));
         } else {
@@ -426,6 +426,7 @@ export default function Login({navigation}) {
     axios
       .get(`${API}/currentplan/${userId}`)
       .then(res => {
+        console.log("CURENT PLAN", res.data)
         setForLoading(false);
         PLATFORM_IOS
           ? Toast.show({
@@ -492,7 +493,6 @@ export default function Login({navigation}) {
             placeholderTextColor={COLORS.HALFBLACK}
             keyboardType='email-address'
             autoCapitalize="none"
-            keyboardType="numbers-and-punctuation"
           />
 
           <Input
@@ -511,7 +511,6 @@ export default function Login({navigation}) {
             placeholder="Enter your password "
             bW={1}
             textWidth={ms(66)}
-            keyboardType="numbers-and-punctuation"
           />
           <View style={styles.main_div_lock_img}>
             <Image

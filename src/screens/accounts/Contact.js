@@ -47,9 +47,9 @@ const Contact = () => {
       PLATFORM_IOS
         ? Toast.show({
             type: 'error',
-            text1: 'Please Enter  Message',
+            text1: 'Please Enter the Message',
           })
-        : ToastAndroid.show('Please Enter  Message', ToastAndroid.SHORT);
+        : ToastAndroid.show('Please Enter the Message', ToastAndroid.SHORT);
     } else {
       setForLoading(true);
       await fetch(`${API}/send`, {
@@ -148,7 +148,7 @@ const Contact = () => {
             left: 32,
             alignItems: 'center',
           }}>
-          <Text style={{color: 'black'}}>Your Message</Text>
+          <Text style={{color: 'black', fontWeight: 'bold'}}>Your Message</Text>
         </View>
         <TextInput
           style={{
@@ -165,7 +165,7 @@ const Contact = () => {
             fontSize: 14,
             //fontFamily: 'Roboto',
 
-            fontWeight: '500',
+            // fontWeight: '500',
             paddingLeft: 10,
             paddingTop: 10,
             textAlignVertical: 'top',
@@ -213,7 +213,7 @@ const Contact = () => {
                 fontSize: 14,
                 fontWeight: '700',
               }}>
-              SEND MESSAGE
+              Send Message
             </Text>
           </TouchableOpacity>
         </View>
@@ -225,7 +225,8 @@ const Contact = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 14,
+    paddingHorizontal: 14,
+    paddingVertical: 8,
     // justifyContent: 'center',
   },
   line: {

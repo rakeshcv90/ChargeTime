@@ -42,12 +42,12 @@ const validationSchema = Yup.object().shape({
   // name: Yup.string().required('Full Name is required'),
   name: Yup.string()
     .required('First Name is Required')
-    .matches(/^[A-Za-z].*/, 'First Name must be start with a character')
-    .min(3, 'First Name must contain at least 3 characters'),
+    .matches(/^[A-Za-z].*/, 'First Name must start with a character')
+    .min(3, 'First Name must contain atleast 3 characters'),
   lname: Yup.string()
     .required(' Last Name is Required')
-    .matches(/^[A-Za-z].*/, 'Last Name must be start with a character')
-    .min(3, 'Last Name must contain at least 3 characters'),
+    .matches(/^[A-Za-z].*/, 'Last Name must start with a character')
+    .min(3, 'Last Name must contain atleast 3 characters'),
   // email: Yup.string().email('Invalid Email').required('Email is required'),
   email: Yup.string()
     .matches(/^[\w.\-]+@[\w.\-]+\.\w{2,4}$/, 'Invalid Email Format')
@@ -60,7 +60,7 @@ const validationSchema = Yup.object().shape({
       }
       return true; // Allows an empty field, but shows a different required error message
     })
-    .required('Phone No. is Required'),
+    .required('Phone No. is required'),
   password: Yup.string()
     .matches(
       PasswordRegex,
@@ -95,10 +95,10 @@ export default function Register({navigation}) {
         PLATFORM_IOS
           ? Toast.show({
               type: 'success',
-              text1: 'Please Complete your Profile',
+              text1: 'Please complete your profile',
             })
           : ToastAndroid.show(
-              'Please Complete your Profile',
+              'Please complete your profile',
               ToastAndroid.SHORT,
             );
 
@@ -133,10 +133,10 @@ export default function Register({navigation}) {
           PLATFORM_IOS
             ? Toast.show({
                 type: 'error',
-                text1: 'This Email already exists!',
+                text1: 'This Email id already exists!',
               })
             : ToastAndroid.show(
-                'This Email already exists!',
+                'This Email id already exists!',
                 ToastAndroid.SHORT,
               );
           setForLoading(false);

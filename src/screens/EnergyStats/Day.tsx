@@ -79,7 +79,7 @@ const Day = (props: any) => {
     axios
       .get(`${API}/remainingusage/${getUserID}`)
       .then(res => {
-        if (res.data?.kwh_unit_remaining >= 0) {
+        if (parseInt(res.data?.kwh_unit_remaining) >= 0) {
           remaingData = res.data?.kwh_unit_remaining;
           dispatch(setOverUsage(false));
         } else {

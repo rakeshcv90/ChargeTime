@@ -183,10 +183,10 @@ const Installation = () => {
         PLATFORM_IOS
           ? Toast.show({
               type: 'success',
-              text1: ' Your current plan has been cancelled.',
+              text1: ' Your current plan has been canceled.',
             })
           : ToastAndroid.show(
-              'Your current plan has been cancelled.',
+              'Your current plan has been canceled.',
               ToastAndroid.SHORT,
             );
             setLoader(false)

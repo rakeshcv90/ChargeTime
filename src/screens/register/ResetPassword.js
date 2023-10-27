@@ -43,13 +43,13 @@ const validationSchema = Yup.object().shape({
   password: Yup.string()
     .matches(
       PasswordRegex,
-      'The password must contain 1 uppercase letter and 1 lowercase letter, 1 digit and 1 special character, and must be at least 8 in length.',
+      'Password must contain 1 Upper-Case letter, 1 Lower-Case letter, 1 Digit, 1 Special Character(@,$,-,^,&, !), and the length must be at least 8 characters',
     )
     .required('Please Enter New Password '),
   password_confirmation: Yup.string()
     // .oneOf([Yup.ref('newPassword'), ''], 'Confirm Password does Not Match')
 
-  .oneOf([Yup.ref('password')], 'Confirm Password Does Not Match')
+    .oneOf([Yup.ref('password')], 'Confirm Password does not Match')
     .required('Please Enter Re-enter Password'),
 });
 
@@ -93,12 +93,12 @@ const ResetPassword = props => {
             PLATFORM_IOS
               ? Toast.show({
                   type: 'error',
-                  text1: 'Password not Reset Successfully.',
+                  text1: 'Password did not reset Successfully.',
                   // position: 'bottom',
                 })
               : ToastAndroid.show(
-                  'Password not Reset Successfully.',
-                  ToastAndroid.SHORT,
+                  'Password did not reset Successfully.',
+                  did.SHORT,
                 );
             setForLoading(false);
           }
@@ -176,7 +176,6 @@ const ResetPassword = props => {
                       textWidth={ms(109)}
                       placeholderTextColor={COLORS.HALFBLACK}
                       autoCapitalize="none"
-                      keyboardType="numbers-and-punctuation"
                     />
                     {/* {values.password !== values.password_confirmation &&
                     touched.password &&

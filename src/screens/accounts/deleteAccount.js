@@ -60,9 +60,9 @@ const DeleteAccountScreen = ({navigation}) => {
       PLATFORM_IOS
         ? Toast.show({
             type: 'error',
-            text1: 'Please Enter  Message',
+            text1: 'Please Enter the Message',
           })
-        : ToastAndroid.show('Please Enter  Message', ToastAndroid.SHORT);
+        : ToastAndroid.show('Please Enter the Message', ToastAndroid.SHORT);
     } else if (password.trim().length <= 0) {
       PLATFORM_IOS
         ? Toast.show({

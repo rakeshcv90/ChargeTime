@@ -44,7 +44,7 @@ const Remaining = ({...props}) => {
 
   const [modalVisible, setModalVisible] = useState(false);
   const [x, setX] = useState<number>(0);
-  setUpdateIntervalForType(SensorTypes.gyroscope, 200); // defaults to 100ms
+  // setUpdateIntervalForType(SensorTypes.gyroscope, 200); // defaults to 100ms
   useFocusEffect(
     useCallback(() => {
       remainigUsuageData();
@@ -58,7 +58,7 @@ const Remaining = ({...props}) => {
       .get(`${API}/remainingusage/${getUserID}`)
       .then(res => {
         setTotalAllowed(res.data?.total_kwhunit);
-        if (res.data?.kwh_unit_remaining > 0) {
+        if (parseInt(res.data?.kwh_unit_remaining) > 0) {
           remaingData = res.data?.kwh_unit_remaining;
           dispatch(setOverUsage(false));
           dispatch(setOverusageCount(0));
@@ -202,23 +202,20 @@ const Remaining = ({...props}) => {
         </View>
         {overusage ? (
           <>
-            <LinearGradient
-              colors={[
-                PLATFORM_IOS ? 'rgba(248, 84, 84, 1)' : 'rgba(248, 98, 98, 1)',
-                PLATFORM_IOS ? 'rgba(248, 84, 84, 1)' : 'rgba(248, 98, 98, 1)',
-              ]}
-              start={{x: 0, y: 0}}
-              end={{x: 0, y: 1}}
-              style={{
-                width: '100%',
-                // borderRadius: 10,
-                // height:  getRemainingData < totalAllowed ?`${getRemainingData / totalAllowed}%` : '1%',
-                height: `${100 - 20}%`,
-                // height: `${30 - 20}%`,
-                //zIndex: -1,
-                // flexDirection: 'column-reverse',
-              }}
-            />
+          <View
+            // colors={['#AFD35E', '#AFD35E']}
+            // start={{x: 0, y: 0}}
+            // end={{x: 0, y: 1}}
+            style={{
+              width: '100%',
+              backgroundColor: '#AFD35E',
+              // borderRadius: 10,
+              height: `${(getRemainingData / totalAllowed) * 100 - 20}%`,
+              // height: `${30 - 20}%`,
+              zIndex: -1,
+              // flexDirection: 'column-reverse',
+            }}
+          />
             <AnimatedLottieView
               source={require('../../assets/red_wave.json')} // Replace with your animation file
               autoPlay
@@ -239,20 +236,20 @@ const Remaining = ({...props}) => {
           </>
         ) : (
           <>
-            <LinearGradient
-              colors={['#AFD35E', '#AFD35E']}
-              start={{x: 0, y: 0}}
-              end={{x: 0, y: 1}}
-              style={{
-                width: '100%',
-                // borderRadius: 10,
-                // height:  getRemainingData < totalAllowed ?`${getRemainingData / totalAllowed}%` : '1%',
-                height: `${(getRemainingData / totalAllowed) * 100 - 20}%`,
-                // height: `${30 - 20}%`,
-                // zIndex: -1,
-                // flexDirection: 'column-reverse',
-              }}
-            />
+          <View
+            // colors={['#AFD35E', '#AFD35E']}
+            // start={{x: 0, y: 0}}
+            // end={{x: 0, y: 1}}
+            style={{
+              width: '100%',
+              backgroundColor: '#AFD35E',
+              // borderRadius: 10,
+              height: `${(getRemainingData / totalAllowed) * 100 - 20}%`,
+              // height: `${30 - 20}%`,
+              zIndex: -1,
+              // flexDirection: 'column-reverse',
+            }}
+          />
             <AnimatedLottieView
               source={require('../../assets/wave.json')} // Replace with your animation file
               autoPlay

@@ -57,7 +57,7 @@ import {useDispatch} from 'react-redux';
 import Carousel from 'react-native-snap-carousel';
 import ActivityLoader from '../../Components/ActivityLoader';
 import CardDeleteConfirmation from '../../Components/CardDeleteConfirmation';
-import {CardForm, createToken} from '@stripe/stripe-react-native';
+import {CardField, CardForm, createToken} from '@stripe/stripe-react-native';
 
 const mobileW = Math.round(Dimensions.get('screen').width);
 const mobileH = Math.round(Dimensions.get('window').height);
@@ -123,6 +123,7 @@ export default function PaymentGateWay({navigation, route}) {
   const [creditCard, setCreditCard] = useState('');
   const [loader, setLoader] = useState(false);
   const [cardtype, setcardtype] = useState([]);
+  const [complete, setComplete] = useState();
 
   const [cardDetails, setCardDetails1] = useState({
     cardHolderName: '',
@@ -202,7 +203,7 @@ export default function PaymentGateWay({navigation, route}) {
       });
 
       if (response.data.message) {
-        // cb();      
+        // cb();
         handleGetCard();
         //setFocusedIndex(focusIndex+1)
         setLoader(false);
@@ -233,10 +234,10 @@ export default function PaymentGateWay({navigation, route}) {
         PLATFORM_IOS
           ? Toast.show({
               type: 'success',
-              text1: 'Card Number Is Already Exist.',
+              text1: 'Card Number Already Exists.',
             })
           : ToastAndroid.show(
-              'Card Number Is Already Exist.',
+              'Card Number Already Exists.',
               ToastAndroid.SHORT,
             );
       }
@@ -368,11 +369,11 @@ export default function PaymentGateWay({navigation, route}) {
       } else {
         setLoader(false);
         PLATFORM_IOS
-        ? Toast.show({
-          type: 'success',
-          text1: 'Card Details Not Exist.',
-        })
-        : ToastAndroid.show('Card Details Not Exist.', ToastAndroid.SHORT);
+          ? Toast.show({
+              type: 'success',
+              text1: 'Card Details Not Exist.',
+            })
+          : ToastAndroid.show('Card Details Not Exist.', ToastAndroid.SHORT);
       }
     } catch (error) {
       setLoader(false);
@@ -782,7 +783,7 @@ export default function PaymentGateWay({navigation, route}) {
                     Add New Card
                   </Text>
                 </View>
-                <CardForm
+                {/* <CardForm
                   postalCodeEnabled={false}
                   // placeholders={{
                   //   number: '4242 4242 4242 4242',
@@ -799,6 +800,33 @@ export default function PaymentGateWay({navigation, route}) {
                   }}
                   onFormComplete={cardDetails => {
                     setcardtype(cardDetails.complete);
+                  }}
+                  onFocus={focusedField => {
+                    console.log('focusField', focusedField);
+                  }}
+                /> */}
+
+                <CardField
+                  postalCodeEnabled={false}
+                  placeholders={{
+                    number: '4242 4242 4242 4242',
+                    cvc: 'CVC',
+                  }}
+                  cardStyle={{
+                    backgroundColor: COLORS.CREAM,
+                    textColor: COLORS.BLACK,
+                    borderColor: COLORS.BLACK,
+                    borderWidth: 1.5,
+                    borderRadius: 10,
+                  }}
+                  style={{
+                    width: '100%',
+                    height: 50,
+                    marginVertical: 30,
+                  }}
+                  onCardChange={cardDetails => {
+                    setComplete(cardDetails.complete);
+                    setcardtype(cardDetails);
                   }}
                   onFocus={focusedField => {
                     console.log('focusField', focusedField);
@@ -979,7 +1007,19 @@ export default function PaymentGateWay({navigation, route}) {
                     marginVertical: 20,
                   }}>
                   <TouchableOpacity
-                    onPress={() => handleAddCard(values, null)}
+                    onPress={() => {
+                      !complete
+                        ? PLATFORM_IOS
+                          ? Toast.show({
+                              type: 'error',
+                              text1: 'Please fill the card details',
+                            })
+                          : ToastAndroid.show(
+                              'Please fill the card details',
+                              ToastAndroid.SHORT,
+                            )
+                        : handleAddCard(values, null);
+                    }}
                     style={{
                       width: DIMENSIONS.SCREEN_WIDTH * 0.4,
                       height: (DIMENSIONS.SCREEN_HEIGHT * 6) / 100,

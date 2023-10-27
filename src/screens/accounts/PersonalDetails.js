@@ -136,9 +136,9 @@ const PersonalDetails = ({route}) => {
           PLATFORM_IOS
             ? Toast.show({
                 type: 'error',
-                text1: 'Your Profile Not Updated',
+                text1: 'Your Profile is Not Updated',
               })
-            : ToastAndroid.show('Your Profile Not Updated', ToastAndroid.SHORT);
+            : ToastAndroid.show('Your Profile is Not Updated', ToastAndroid.SHORT);
         }
       })
       .catch(error => {

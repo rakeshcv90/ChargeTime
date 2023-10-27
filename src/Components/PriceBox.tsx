@@ -25,6 +25,7 @@ const PriceBox = ({data}) => {
           : styles.mainDiv_installation
       }>
       <TouchableOpacity
+      activeOpacity={1}
         style={[
           styles.install_touchable,
           {borderTopLeftRadius: 10, borderTopRightRadius: 10},

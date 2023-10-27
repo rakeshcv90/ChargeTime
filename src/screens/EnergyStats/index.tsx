@@ -95,7 +95,6 @@ function MyTabBar({state, descriptors, navigation}) {
         const isFocused = state.index === index;
 
         const onPress = async () => {
-     
           let data = 0;
 
           if (route.name == 'Day') {
@@ -111,7 +110,7 @@ function MyTabBar({state, descriptors, navigation}) {
           } else if (route.name == 'Year') {
             data = DIMENSIONS.SCREEN_WIDTH * 1;
           } else if (route.name == 'Quarter') {
-            data = DIMENSIONS.SCREEN_WIDTH *9;
+            data = DIMENSIONS.SCREEN_WIDTH * 9;
           } else {
             data = DIMENSIONS.SCREEN_WIDTH * 2.4;
           }
@@ -199,11 +198,11 @@ export default function EnergyStats() {
       .get(`${API}/devicecheck/${getUserID}}`)
       .then(res => {
         if (res.data.status == 'True') {
-          console.log("bbbbbbbb",res.data.message)
+          console.log('bbbbbbbb', res.data.message);
           setDeviceIdTemp(res.data.message);
           fetchGraphData(getUserID);
           fetchBoxTwoDashboardData(getUserID);
-         fetchStatusdata(getUserID);
+          fetchStatusdata(getUserID);
           // }, 3000);
         } else {
           setIsLoading(false);
@@ -211,10 +210,13 @@ export default function EnergyStats() {
             ? Toast.show({
                 type: 'success',
                 text1:
-                  'Device ID not found.Contact your service representative for more information !',
+                  'Device ID not found. Contact your service representative for more information.',
+                props: {
+                  numberLines: 2,
+                },
               })
             : ToastAndroid.show(
-                'DeviceID not found.Contact your service representative for more information!',
+                'Device ID not found. Contact your service representative for more information.',
                 ToastAndroid.SHORT,
               );
           // getPlanCurrent(res.data?.user_id);
@@ -222,7 +224,7 @@ export default function EnergyStats() {
       })
       .catch(err => {
         setIsLoading(false);
-        console.log("rererererere",err);
+        console.log('rererererere', err);
       });
   };
 
@@ -240,7 +242,7 @@ export default function EnergyStats() {
       })
       .catch(err => {
         setIsLoading(false);
-        console.log("TRTRT",err);
+        console.log('TRTRT', err);
       });
   };
   const dailyUsuagekwh = (userId: string) => {
@@ -254,7 +256,7 @@ export default function EnergyStats() {
         remainigUsuageData(getUserID);
       })
       .catch(err => {
-        console.log("TRTRT11111111",err);
+        console.log('TRTRT11111111', err);
       });
   };
   const remainigUsuageData = (userId: string) => {
@@ -263,7 +265,7 @@ export default function EnergyStats() {
     axios
       .get(`${API}/remainingusage/${userId}`)
       .then(res => {
-        if (res.data?.kwh_unit_remaining > 0) {
+        if (parseInt(res.data?.kwh_unit_remaining) > 0) {
           remaingData = res.data?.kwh_unit_remaining;
           dispatch(setOverUsage(false));
         } else {
@@ -277,7 +279,7 @@ export default function EnergyStats() {
       })
       .catch(err => {
         setIsLoading(false);
-        console.log("TRTRT333333333",err);
+        console.log('TRTRT333333333', err);
       });
   };
 
@@ -288,7 +290,7 @@ export default function EnergyStats() {
         dispatch(setBoxTwoDataForDashboard(res?.data));
       })
       .catch(err => {
-        console.log("TRTRT444444444",err);
+        console.log('TRTRT444444444', err);
       });
   };
   const fetchStatusdata = (userId: string) => {
@@ -299,7 +301,7 @@ export default function EnergyStats() {
         dispatch(setDeviceId(deviceIdTemp));
       })
       .catch(err => {
-        console.log("TRTRT5555555555",err);
+        console.log('TRTRT5555555555', err);
       });
   };
 
