@@ -77,7 +77,7 @@ export default function VerifyEmail(props) {
             text1: 'Please Enter the Code',
             // position: 'bottom',
           })
-        : ToastAndroid.show('Please Enter the Code', ToastAndroid.SHORT);
+        : ToastAndroid.show('Please enter the Code', ToastAndroid.SHORT);
     } else if (otp.length < 6) {
       PLATFORM_IOS
         ? Toast.show({
@@ -85,7 +85,7 @@ export default function VerifyEmail(props) {
             text1: 'Please Enter the Code',
             // position: 'bottom',
           })
-        : ToastAndroid.show('Please Enter the Code', ToastAndroid.SHORT);
+        : ToastAndroid.show('Please enter the Code', ToastAndroid.SHORT);
     } else if (email == '') {
       PLATFORM_IOS
         ? Toast.show({
@@ -151,11 +151,11 @@ export default function VerifyEmail(props) {
           PLATFORM_IOS
             ? Toast.show({
                 type: 'error',
-                text1: 'Please fill required details',
+                text1: 'Please fill the required details',
                 // position: 'bottom',
               })
             : ToastAndroid.show(
-                'Please fill required details',
+                'Please fill the required details',
                 ToastAndroid.SHORT,
               );
         }
@@ -222,10 +222,10 @@ export default function VerifyEmail(props) {
             PLATFORM_IOS
               ? Toast.show({
                   type: 'error',
-                  text1: 'Code not send',
+                  text1: 'Code not sent',
                   // position: 'bottom',
                 })
-              : ToastAndroid.show('Code not send', ToastAndroid.SHORT);
+              : ToastAndroid.show('Code not sent', ToastAndroid.SHORT);
             setFirstDigit('');
             setsecondDigit('');
             setthirdDigit('');
@@ -573,7 +573,7 @@ export default function VerifyEmail(props) {
                       }
                       // else setFirstDigit('');1
                     }}
-                    keyboardType="numbers-and-punctuation"
+                    keyboardType="numeric"
                     maxLength={1}
                     autoFocus
                     style={styles.textInput_otp}
@@ -598,7 +598,7 @@ export default function VerifyEmail(props) {
                         otp1.current.focus();
                       }
                     }}
-                    keyboardType="numbers-and-punctuation"
+                    keyboardType="numeric"
                     maxLength={1}
                     style={styles.textInput_otp}
                     value={secondDigit}
@@ -613,7 +613,7 @@ export default function VerifyEmail(props) {
                     }}
                   />
                   <TextInput
-                    keyboardType="numbers-and-punctuation"
+                    keyboardType="numeric"
                     ref={otp3}
                     onChangeText={value => {
                       if (value.length >= 1) {
@@ -638,7 +638,7 @@ export default function VerifyEmail(props) {
                     }}
                   />
                   <TextInput
-                    keyboardType="numbers-and-punctuation"
+                    keyboardType="numeric"
                     ref={otp4}
                     onChangeText={value => {
                       if (value.length >= 1) {
@@ -663,7 +663,7 @@ export default function VerifyEmail(props) {
                     }}
                   />
                   <TextInput
-                    keyboardType="numbers-and-punctuation"
+                    keyboardType="numeric"
                     ref={otp5}
                     onChangeText={value => {
                       if (value.length >= 1) {
@@ -688,7 +688,7 @@ export default function VerifyEmail(props) {
                     }}
                   />
                   <TextInput
-                    keyboardType="numbers-and-punctuation"
+                    keyboardType="numeric"
                     ref={otp6}
                     onChangeText={value => {
                       if (value.length >= 1) {
@@ -763,7 +763,7 @@ export default function VerifyEmail(props) {
                       fontSize: 14,
                       fontWeight: '700',
                     }}>
-                    VERIFY EMAIL
+                    Verify Email
                   </Text>
                 </TouchableOpacity>
               </View>

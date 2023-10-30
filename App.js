@@ -238,7 +238,7 @@ export default function App() {
         axios
           .get(`${API}/remainingusage/${getUserID}`)
           .then(res => {
-            if (res.data?.kwh_unit_remaining > 0) {
+            if (parseInt(res.data?.kwh_unit_remaining) > 0) {
               remaingData = res.data?.kwh_unit_remaining;
               dispatch(setOverUsage(false));
             } else {
@@ -318,6 +318,7 @@ export default function App() {
           console.error('Error222', error);
         }
       } else if (notification_id === 'Price') {
+        console.log(data)
         notifee.displayNotification({
           title: data.data.message,
           //body: data.data.message,
@@ -464,7 +465,7 @@ export default function App() {
   //   axios
   //     .get(`${API}/remainingusage/${getUserID}`)
   //     .then(res => {
-  //       if (res.data?.kwh_unit_remaining > 0) {
+  //       if (parseInt(res.data?.kwh_unit_remaining) > 0) {
   //         dispatch(setOverModelView(false));
   //       } else {
   //         remaingData = res.data?.kwh_unit_overusage;

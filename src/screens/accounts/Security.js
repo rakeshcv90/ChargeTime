@@ -37,18 +37,18 @@ const ValidateSchema = yup.object().shape({
   oldPassword: yup
     .string()
 
-    .required('Please Enter Old Password'),
+    .required('Please Enter the Old Password'),
   newPassword: yup
     .string()
     .matches(
       passwordRegex,
-      'The password must contain 1 uppercase letter and 1 lowercase letter, 1 digit and 1 special character, and must be at least 8 in length.',
+      'Password must contain 1 Upper-Case letter, 1 Lower-Case letter, 1 Digit, 1 Special Character(@,$,-,^,&, !), and the length must be at least 8 characters',
     )
-    .required('Please Enter New Password '),
+    .required('Please Enter the New Password '),
   conpassword: yup
     .string()
-    .oneOf([yup.ref('newPassword')], 'Confirm Password Not Match')
-    .required('Please Enter Confirm Password'),
+    .oneOf([yup.ref('newPassword')], 'Confirm Password does not Match')
+    .required('Please Enter the Confirm Password'),
 });
 const Security = () => {
   const userProfileData = useSelector(state => state.userProfileData);
@@ -230,6 +230,7 @@ const Security = () => {
                   secureTextEntry={keyPressed}
                   passwordInputIcon={!showPassword}
                   placeholder="*************"
+                  // bColor={COLORS.BLACK}
                   errors={errors.oldPassword}
                   touched={touched.oldPassword}
                   value={values.oldPassword}
@@ -259,6 +260,7 @@ const Security = () => {
                   secureTextEntry={hidePassword}
                   passwordInputIcon={!showNew}
                   placeholder=""
+                  // bColor={COLORS.BLACK}
                   errors={errors.newPassword}
                   touched={touched.newPassword}
                   value={values.newPassword}
@@ -286,6 +288,7 @@ const Security = () => {
                     setPassword(!Password1);
                     setShowNew1(!showNew1);
                   }}
+                  // bColor={COLORS.BLACK}
                   secureTextEntry={Password1}
                   passwordInputIcon={!showNew1}
                   placeholder=""

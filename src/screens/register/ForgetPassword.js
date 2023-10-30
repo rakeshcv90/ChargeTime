@@ -136,15 +136,15 @@ const ForgetPassword = ({navigation}) => {
             text1: 'Enter Code',
             // position: 'bottom',
           })
-        : ToastAndroid.show('Enter Code Key', ToastAndroid.SHORT);
+        : ToastAndroid.show('Enter Code', ToastAndroid.SHORT);
     } else if (otp.length < 6) {
       PLATFORM_IOS
         ? Toast.show({
             type: 'error',
-            text1: 'Enter Code Key',
+            text1: 'Enter Code',
             // position: 'bottom',
           })
-        : ToastAndroid.show('Enter Code Key', ToastAndroid.SHORT);
+        : ToastAndroid.show('Enter Code', ToastAndroid.SHORT);
     } else if (email == '') {
       PLATFORM_IOS
         ? Toast.show({
@@ -415,7 +415,7 @@ const ForgetPassword = ({navigation}) => {
                         fontSize: 14,
                         color: COLORS.BLACK,
                       }}>
-                      Rest Password
+                      Reset Password
                     </Text>
                   </TouchableOpacity>
                 </View>
@@ -469,7 +469,7 @@ const ForgetPassword = ({navigation}) => {
                         }
                         // else setFirstDigit('');1
                       }}
-                      keyboardType="numbers-and-punctuation"
+                      keyboardType="numeric"
                       maxLength={1}
                       style={styles.textInput_otp}
                       value={firstDigit}
@@ -493,7 +493,7 @@ const ForgetPassword = ({navigation}) => {
                           otp1.current.focus();
                         }
                       }}
-                      keyboardType="numbers-and-punctuation"
+                      keyboardType="numeric"
                       maxLength={1}
                       style={styles.textInput_otp}
                       value={secondDigit}
@@ -508,7 +508,7 @@ const ForgetPassword = ({navigation}) => {
                       // }}
                     />
                     <TextInput
-                      keyboardType="numbers-and-punctuation"
+                      keyboardType="numeric"
                       ref={otp3}
                       onChangeText={value => {
                         if (value.length >= 1) {
@@ -533,7 +533,7 @@ const ForgetPassword = ({navigation}) => {
                       // }}
                     />
                     <TextInput
-                      keyboardType="numbers-and-punctuation"
+                      keyboardType="numeric"
                       ref={otp4}
                       onChangeText={value => {
                         if (value.length >= 1) {
@@ -558,7 +558,7 @@ const ForgetPassword = ({navigation}) => {
                       // }}
                     />
                     <TextInput
-                      keyboardType="numbers-and-punctuation"
+                      keyboardType="numeric"
                       ref={otp5}
                       onChangeText={value => {
                         if (value.length >= 1) {
@@ -583,7 +583,7 @@ const ForgetPassword = ({navigation}) => {
                       // }}
                     />
                     <TextInput
-                      keyboardType="numbers-and-punctuation"
+                      keyboardType="numeric"
                       maxLength={1}
                       ref={otp6}
                       onChangeText={value => {

@@ -3,10 +3,15 @@ package="com.chargetime">
     <uses-permission android:name="android.permission.INTERNET" />
 
     <application
+        android:allowBackup="false"
         android:name=".MainApplication"
         android:label="@string/app_name"
         android:icon="@mipmap/ic_launcher"
-        android:theme="@style/AppTheme">
+        android:theme="@style/AppTheme"
+        android:fullBackupContent="@xml/data_extraction_rules"
+        xmlns:tools="http://schemas.android.com/tools"
+        tools:replace="android:allowBackup"
+        android:dataExtractionRules="@xml/data_extraction_rules">
         <activity
             android:name=".MainActivity"
             android:label="@string/app_name"

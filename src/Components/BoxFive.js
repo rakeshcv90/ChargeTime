@@ -244,6 +244,7 @@ const styles = StyleSheet.create({
   purchage_text: {
     fontWeight: '700',
     fontSize: 14,
+    textTransform: 'capitalize'
   },
   modalText: {
     marginBottom: 15,

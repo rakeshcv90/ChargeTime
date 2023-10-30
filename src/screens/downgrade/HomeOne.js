@@ -356,9 +356,9 @@ export default function HomeOne(route) {
                     ? 'DOWNGRADE'
                     : `Renewal Date: \n${getPurchaseData.data.End_validity}` // This will be displayed when item.kwh == getPurchaseData.data.kwh
                   : '';
-              let num =
-                (item.package_name.toLowerCase() === getPurchaseData.length) !=
-                  0 && getPurchaseData.data.energy_plan.toLowerCase();
+              // let num =
+              //   (item.package_name.toLowerCase() === getPurchaseData.length) !=
+              //     0 && getPurchaseData.data.energy_plan.toLowerCase();
 
               return (
                 <Tab.Screen
