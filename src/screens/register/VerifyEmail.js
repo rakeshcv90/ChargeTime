@@ -41,7 +41,7 @@ export default function VerifyEmail(props) {
   const [stopTimer, setStopTimer] = useState(false);
   const [statusCheck, setStatusCheck] = useState(false);
   const [forLoading, setForLoading] = useState(false);
-  const [remainingTime, setRemainingTime] = useState(60);
+  const [remainingTime, setRemainingTime] = useState(route?.params.time);
   const [timerActive, setTimerActive] = useState(true);
   const [disablebutton, setdisableButton] = useState(false);
   const [otp, setOtp] = useState('');
@@ -52,7 +52,7 @@ export default function VerifyEmail(props) {
   const [forthDigit, setforthDigit] = useState('');
   const [fifthDigit, setfifthDigit] = useState('');
   const [sixDigit, setSixDigit] = useState('');
-
+  // console.log("My DATa is",route.params.time)
   const theme = useColorScheme();
   const isDark = theme === 'dark';
   const otp1 = useRef();
@@ -181,7 +181,7 @@ export default function VerifyEmail(props) {
     }
   };
   const resendOTp = async () => {
-    setRemainingTime(60);
+    setRemainingTime(route?.params.time);
     setTimerActive(true);
     setFirstDigit('');
     setsecondDigit('');
@@ -248,7 +248,7 @@ export default function VerifyEmail(props) {
 
   const resendLink = async () => {
     setdisableButton(true);
-    setRemainingTime(60);
+    setRemainingTime(route?.params.time);
     setTimerActive(true);
     setFirstDigit('');
     setsecondDigit('');

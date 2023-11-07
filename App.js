@@ -240,13 +240,15 @@ export default function App() {
           .then(res => {
             if (parseInt(res.data?.kwh_unit_remaining) > 0) {
               remaingData = res.data?.kwh_unit_remaining;
+              dispatch(setRemainingData(res.data?.kwh_unit_remaining));
               dispatch(setOverUsage(false));
             } else {
               remaingData = res.data?.kwh_unit_overusage;
+              dispatch(setRemainingData( res.data?.kwh_unit_overusage));
               dispatch(setOverUsage(true));
             }
             console.log('first', res.data);
-            dispatch(setRemainingData(remaingData));
+            
           })
           .catch(err => {
             console.log(err);

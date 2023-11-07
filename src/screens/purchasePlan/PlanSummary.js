@@ -31,7 +31,7 @@ import {navigationRef} from '../../../App';
 import ActivityLoader from '../../Components/ActivityLoader';
 import {useDispatch} from 'react-redux';
 import {setDataForPayment} from '../../redux/action';
-// import DownGradeData from '../downgrade/DownGradeData';
+
 
 const mobileW = Math.round(Dimensions.get('screen').width);
 
@@ -44,7 +44,7 @@ export default function PlanSummary({route, navigation}) {
   const [data, setData] = useState('');
   const [forLoading, setForLoading] = useState(false);
   const [data1,setData1]=useState('');
-  // DownGradeData;
+
   const {id, package_name, total_price, salestax, coupon_promotion_code,coupon_id} =
     route.params?.data;
 
@@ -145,7 +145,16 @@ export default function PlanSummary({route, navigation}) {
                     paddingVertical: 5,
                     color: COLORS.BLACK,
                   }}>
-                  Price (excl.taxes):
+                   Subtotal (Excl.Tax):
+                </Text>
+                <Text
+                  style={{
+                    fontSize: 12,
+                    fontWeight: '400',
+                    paddingVertical: 5,
+                    color: COLORS.BLACK,
+                  }}>
+                   Subtotal (Incl.Tax):
                 </Text>
                 <Text
                   style={{
@@ -154,7 +163,7 @@ export default function PlanSummary({route, navigation}) {
                     paddingBottom: 5,
                     color: COLORS.BLACK,
                   }}>
-                  Taxes:
+                   Tax:
                 </Text>
                 <Text
                   style={{
@@ -162,7 +171,7 @@ export default function PlanSummary({route, navigation}) {
                     fontWeight: '600',
                     color: COLORS.BLACK,
                   }}>
-                  Total:
+                  Order Total:
                 </Text>
               </View>
               <View>
@@ -174,6 +183,15 @@ export default function PlanSummary({route, navigation}) {
                     color: COLORS.BLACK,
                   }}>
                   ${total_price}
+                </Text>
+                <Text
+                  style={{
+                    fontSize: 12,
+                    fontWeight: '400',
+                    paddingVertical: 5,
+                    color: COLORS.BLACK,
+                  }}>
+                  ${totalSalexTax}
                 </Text>
                 <Text
                   style={{
@@ -270,17 +288,13 @@ const styles = StyleSheet.create({
     shadowRadius: 5.62,
     elevation: 8,
     
-    // backgroundColor: 'white',
+
     
   },
   plan_pricing_div1: {
     marginTop: Platform.OS === 'ios' ? 15 : 10,
     marginHorizontal: 20,
-    // shadowColor: '#000000',
-    // shadowOffset: {width: 0, height: 6},
-    // shadowOpacity: 0.2,
-    // shadowRadius: 5.62,
-    // elevation: 8,
+
     
     overflow: 'hidden',
     borderRadius: 10,

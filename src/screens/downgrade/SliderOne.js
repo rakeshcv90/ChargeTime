@@ -43,14 +43,15 @@ export default function SliderOne(props) {
   const [planStatus, setPlanStatuss] = useState(false);
   // const [schedulePackageName, setSchedulePackageName] = useState('');
   const dispatch = useDispatch();
-  const {getUserID, getPurchaseData, getPlanStatus} = useSelector(
+  const {getUserID, getPurchaseData, getPlanStatus,getBasePackage} = useSelector(
     state => state,
   );
-
+ 
   useEffect(() => {
     getPlanCurrent();
  
   }, []);
+
   const handleRefresh = () => {
     setRefresh(true);
     setTimeout(() => {
@@ -90,7 +91,10 @@ export default function SliderOne(props) {
       {forLoading ? <ActivityLoader /> : ''}
 
       <View style={styles.managing_width}>
-        <BoxTwo data={props.route.params.item} />
+
+        {/* <BoxTwo data={props.route.params.item} /> */}
+        <BoxTwo data={ getBasePackage[props?.route?.params.index]} />
+        {/* data={props?.item || getBasePackage[props?.route?.params.index]} */}
         {getPurchaseData.data != 'Package not found' &&
           getPurchaseData.data.energy_plan.toLowerCase() ===
             props.route.params.item.package_name.toLowerCase() && (
@@ -105,12 +109,12 @@ export default function SliderOne(props) {
           )}
         <View
           style={{
-            marginBottom:
+            marginTop:
               getPurchaseData.data != 'Package not found' &&
               getPurchaseData.data.energy_plan.toLowerCase() ===
                 props.route.params.item.package_name.toLowerCase()
-                ? 5
-                : 0,
+                ? 0
+                : Platform.OS=='android'?-15:0,
           }}>
           <InstallationBase data={props.route.params.item} />
         </View>
@@ -119,7 +123,7 @@ export default function SliderOne(props) {
           getPurchaseData.data.energy_plan.toLowerCase() !==
             props.route.params.item.package_name.toLowerCase() && (
             <BoxFive
-              data={props.route.params.item}
+              data={getBasePackage[props?.route?.params.index]}
               purchageData={props.route.params.purchageData}
               disabled={
                 false

@@ -95,8 +95,8 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
   },
   mainDiv_installation: {
-    marginTop: DIMENSIONS.SCREEN_HEIGHT * 0.03,
-    marginBottom: DIMENSIONS.SCREEN_HEIGHT * 0.015,
+    marginTop: DIMENSIONS.SCREEN_HEIGHT * 0.02,
+    marginBottom: DIMENSIONS.SCREEN_HEIGHT * 0.02,
     shadowColor: '#000000',
     shadowOffset: {width: 0, height: 6},
     shadowOpacity: 0.35,

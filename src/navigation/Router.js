@@ -109,15 +109,7 @@ export const ChargerStatus = ({navigation}) => {
         },
       });
       if (res.data.message == 'Your account is successfully logout') {
-        // PLATFORM_IOS
-        //   ? Toast.show({
-        //       text1: res.data.message,
-
-        //       position: 'bottom',
-        //       type: 'success',
-        //       duration: 500,
-        //     })
-        //   : ToastAndroid.show(res.data.message, ToastAndroid.SHORT);
+ 
 
         await AsyncStorage.clear();
         await persistor.purge();
@@ -141,16 +133,7 @@ export const ChargerStatus = ({navigation}) => {
       await AsyncStorage.clear();
       await persistor.purge();
       dispatch(setLogout());
-      // navigation.dispatch(
-      //   CommonActions.reset({
-      //     index: 0,
-      //     routes: [
-      //       {
-      //         name: 'Login',
-      //       },
-      //     ],
-      //   }),
-      // );
+  
     }
   };
   return (

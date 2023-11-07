@@ -162,7 +162,7 @@ export default function HomeOne(route) {
   useEffect(() => {
     const updatedNumArray = populateNumArray();
     setNumArray(updatedNumArray);
-    console.log(getPurchaseData.data);
+
   }, [getBasePackage, getPurchaseData]);
 
   const fetchData = async () => {
@@ -365,7 +365,7 @@ export default function HomeOne(route) {
                   key={ind}
                   name={item?.package_name}
                   component={SliderOne}
-                  initialParams={{item: item, purchageData: purchageData}}
+                  initialParams={{item: item, purchageData: purchageData,index:ind}}
                 />
               );
             })}

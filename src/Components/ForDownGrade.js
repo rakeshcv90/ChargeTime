@@ -135,7 +135,15 @@ export default function ForDownGrade({route, navigation}) {
                 : styles.mainDiv_installation1
             }>
             <View style={styles.install_touchable_one}>
-              <Text style={styles.cuurent_plan}>Current Plan</Text>
+              <View style={styles.install_touchable_one1}>
+                <Image
+                  style={styles.img_width1}
+                  resizeMode="contain"
+                  source={require('../../assets/images/details.png')}
+                />
+                <Text style={styles.cuurent_plan}>Current Plan</Text>
+              </View>
+
               <Text style={styles.cuurent_plan}>New Plan</Text>
             </View>
             <View
@@ -303,11 +311,19 @@ export default function ForDownGrade({route, navigation}) {
                       fontWeight: '400',
                       paddingVertical: 5,
                     }}>
-                    Price (excl.taxes):
+                    Subtotal (Excl.Tax):
+                  </Text>
+                  <Text
+                    style={{
+                      fontSize: 12,
+                      fontWeight: '400',
+                      paddingVertical: 5,
+                    }}>
+                    Subtotal (Incl.Tax):
                   </Text>
                   <Text
                     style={{fontSize: 12, fontWeight: '400', paddingBottom: 5}}>
-                    Taxes:
+                    Tax:
                   </Text>
                   <Text
                     style={{
@@ -315,7 +331,7 @@ export default function ForDownGrade({route, navigation}) {
                       fontWeight: '600',
                       color: COLORS.BLACK,
                     }}>
-                    Total:
+                    Order Total:
                   </Text>
                 </View>
                 <View>
@@ -326,6 +342,14 @@ export default function ForDownGrade({route, navigation}) {
                       paddingVertical: 5,
                     }}>
                     ${dataOne?.total_price}
+                  </Text>
+                  <Text
+                    style={{
+                      fontSize: 12,
+                      fontWeight: '400',
+                      paddingVertical: 5,
+                    }}>
+                    ${dataOne?.totalSalexTax}
                   </Text>
                   <Text
                     style={{fontSize: 12, fontWeight: '400', paddingBottom: 5}}>
@@ -454,6 +478,7 @@ const styles = StyleSheet.create({
     fontSize: 14,
     fontWeight: '600',
     color: COLORS.BLACK,
+    marginLeft:5
   },
   text_formating_part: {
     fontWeight: '800',
@@ -489,10 +514,11 @@ const styles = StyleSheet.create({
     overflow: 'hidden',
   },
   installation_text: {
-    fontWeight: '700',
-    fontSize: 12,
     marginLeft: -10,
     color: COLORS.BLACK,
+    fontSize: 14,
+    fontWeight: '600',
+  
   },
   plan_pricing_div1: {
     borderRadius: 10,
@@ -505,5 +531,16 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.2,
     shadowRadius: 5.62,
     elevation: 8,
+  },
+  img_width1: {
+    //marginLeft: 15,
+    width: 16,
+    height: 15,
+  },
+  install_touchable_one1: {
+    flexDirection: 'row',
+    alignItems: 'center',
+
+  
   },
 });

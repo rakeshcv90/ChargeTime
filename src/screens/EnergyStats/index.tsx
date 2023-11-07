@@ -52,6 +52,7 @@ import {
   setWeekGraphData,
   setYearGraphData,
   setSubscriptionStatus,
+  setOverModelView,
 } from '../../redux/action';
 import ButtonSlider2 from '../../Components/ButtonSlider2';
 import Toast from 'react-native-toast-message';
@@ -249,6 +250,7 @@ export default function EnergyStats() {
     axios
       .get(`${API}/dailyusage/${userId}`)
       .then(res => {
+        console.log('TRTRT11111111', res.data);
         if (res?.data) {
           dispatch(setKwhData(res?.data));
         }
@@ -267,13 +269,19 @@ export default function EnergyStats() {
       .then(res => {
         if (parseInt(res.data?.kwh_unit_remaining) > 0) {
           remaingData = res.data?.kwh_unit_remaining;
+          dispatch(setRemainingData(res.data?.kwh_unit_remaining));
+          console.log('Reamining Data1', res.data?.kwh_unit_remaining);
           dispatch(setOverUsage(false));
+          dispatch(setOverModelView(false));
         } else {
           remaingData = res.data?.kwh_unit_overusage;
+          dispatch(setRemainingData(res.data?.kwh_unit_overusage));
+          console.log('OverUse Data1', res.data?.kwh_unit_overusage);
           dispatch(setOverUsage(true));
+          dispatch(setOverModelView(true));
         }
         console.log('first', res.data);
-        dispatch(setRemainingData(remaingData));
+        // dispatch(setRemainingData(remaingData));
         setIsLoading(false);
         //fetchWeekGraphData(getUserID);
       })

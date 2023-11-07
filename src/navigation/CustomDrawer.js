@@ -20,7 +20,7 @@ const CustomDrawerContent = props => {
   return (
     <DrawerContentScrollView {...props}>
       <View style={styles.logoContainer}>
-        <Image source={home_icon} style={styles.logo} />
+        <Image source={require('../../assets/images/logo_one.png')}style={styles.logo} />
       </View>
       <DrawerItemList {...props} />
       <TouchableOpacity style={styles.closeButton} onPress={handleDrawerClose}>
@@ -40,9 +40,10 @@ const styles = StyleSheet.create({
    
   },
   logo: {
-    width: 150,
-    height: 150,
+    width: 130,
+    height: 130,
     resizeMode: 'contain',
+    marginVertical:20
   },
   closeButton: {
     position: 'absolute',

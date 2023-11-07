@@ -59,10 +59,10 @@ const Input: FC<Props> = ({...Props}) => {
             marginHorizontal: Props.mH,
             backgroundColor: Props.bgColor,
             borderColor: Props.bColor ? Props.bColor : COLORS.HALFBLACK,
-            //borderRadius: Props.bR ? Props.bR : 50,
+           borderRadius: Props.bR ? Props.bR : 5,
             borderWidth: Props.bW ? Props.bW : 0,
             paddingBottom: PLATFORM_IOS ? 5 : 10,
-            borderRadius: 5,
+           // borderRadius: 5,
           },
         ]}>
         {Props.IconLeft && <Props.IconLeft />}

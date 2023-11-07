@@ -33,6 +33,7 @@ import {useDispatch} from 'react-redux';
 import axios from 'axios';
 import {mvs, ms} from 'react-native-size-matters';
 import {userProfileData as updatePersionalDetail} from '../../redux/action';
+import ActivityLoader from '../../Components/ActivityLoader';
 const mobileW = Math.round(Dimensions.get('screen').width);
 
 const PersonalDetails = ({route}) => {
@@ -46,6 +47,7 @@ const PersonalDetails = ({route}) => {
   const [emailhide, setemailhide] = useState(true);
   const user_ID = getUserID;
 
+  const [loader, setLoader] = useState(false);
   const [showButton, setShowButton] = useState(false);
 
   const dispatch = useDispatch();
@@ -60,6 +62,7 @@ const PersonalDetails = ({route}) => {
 
   const onPress = () => {
     setemailhide(true)
+  
     if (name.trim().length <= 0) {
       PLATFORM_IOS
         ? Toast.show({
@@ -98,6 +101,7 @@ const PersonalDetails = ({route}) => {
 
   const updatePersonalDetails = async () => {
     // setIsEditable(true);
+    setLoader(true)
     await fetch(`${API}/personalInfo/${user_ID}`, {
       method: 'PUT',
       headers: {
@@ -110,7 +114,9 @@ const PersonalDetails = ({route}) => {
     })
       .then(res => res.json())
       .then(data => {
+        setLoader(false)
         if (data.msg == 'Your profile has been succesfully updated') {
+          setLoader(false)
           const updatedData = [
             {
               ...userProfileData[0],
@@ -133,6 +139,7 @@ const PersonalDetails = ({route}) => {
           setIsEditable(false);
           setShowButton(false);
         } else {
+          setLoader(false)
           PLATFORM_IOS
             ? Toast.show({
                 type: 'error',
@@ -142,6 +149,7 @@ const PersonalDetails = ({route}) => {
         }
       })
       .catch(error => {
+        setLoader(false)
         console.error(error);
       });
   };
@@ -166,7 +174,7 @@ const PersonalDetails = ({route}) => {
           />
         </View>
       )}
-
+   <ActivityLoader visible={loader} />
       <View style={[styles.mainDiv_container]}>
         <Input
           IconLeft={null}

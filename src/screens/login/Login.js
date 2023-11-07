@@ -60,6 +60,7 @@ import {
   setBasePackage,
   setOverUsage,
   setSubscriptionStatus,
+  setOverModelView,
   setMaintainence,
 } from '../../redux/action';
 import axios from 'axios';
@@ -379,15 +380,18 @@ export default function Login({navigation}) {
     axios
       .get(`${API}/remainingusage/${userId}`)
       .then(res => {
-        if (parseInt(res.data?.kwh_unit_remaining) > 0) {
+        if (parseInt(res.data?.kwh_unit_remaining) >0) {
           remaingData = res.data?.kwh_unit_remaining;
+          dispatch(setRemainingData(res.data?.kwh_unit_remaining));
           dispatch(setOverUsage(false));
+          dispatch(setOverModelView(false));
         } else {
           remaingData = res.data?.kwh_unit_overusage;
-
+          dispatch(setRemainingData(res.data?.kwh_unit_overusage));
           dispatch(setOverUsage(true));
+          dispatch(setOverModelView(true));
         }
-        dispatch(setRemainingData(remaingData));
+        // dispatch(setRemainingData(remaingData));
         setForLoading(false);
       })
       .catch(err => {
