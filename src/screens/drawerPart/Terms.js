@@ -2,6 +2,7 @@ import { View, Text, SafeAreaView, TouchableOpacity, StyleSheet, Platform, Image
 import React from 'react'
 import Header from '../../Components/Header';
 import HorizontalLine from '../../Components/HorizontalLine';
+import {WebView} from 'react-native-webview';
 const mobileW = Math.round(Dimensions.get('screen').width);
 const mobileH = Math.round(Dimensions.get('screen').height);
 
@@ -17,6 +18,7 @@ export default function Terms() {
         <Image source={require('../../../assets/images/dotted.png')}  style={{width: mobileW * 0.99}}
           resizeMode='stretch'/>
       </View>}
+      <WebView source={{uri: 'https://troes.io/terms&condition.php'}} style={{flex: 1}} />
     </SafeAreaView>
   )
 }

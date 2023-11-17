@@ -41,9 +41,11 @@ const PersonalDetails = ({route}) => {
   const getUserID = useSelector(state => state.getUserID);
   const [isEditable, setIsEditable] = useState(false);
   const [name, setName] = useState(userProfileData[0]?.name ?? '');
+  const [lname, setlName] = useState(userProfileData[0]?.lname ?? '');
   const [number, setNumber] = useState(userProfileData[0]?.mobile ?? '');
   const [error, setError] = useState(false);
   const [nameError, setNameError] = useState(false);
+  // const [lnameError, setlNameError] = useState(false);
   const [emailhide, setemailhide] = useState(true);
   const user_ID = getUserID;
 
@@ -55,14 +57,15 @@ const PersonalDetails = ({route}) => {
   useEffect(() => {
     setName(userProfileData[0]?.name);
     setNumber(userProfileData[0]?.mobile);
+    setlName(userProfileData[0]?.lname ?? '')
   }, [userProfileData]);
 
   const theme = useColorScheme();
   const isDark = theme === 'dark';
 
   const onPress = () => {
-    setemailhide(true)
-  
+    setemailhide(true);
+
     if (name.trim().length <= 0) {
       PLATFORM_IOS
         ? Toast.show({
@@ -101,7 +104,7 @@ const PersonalDetails = ({route}) => {
 
   const updatePersonalDetails = async () => {
     // setIsEditable(true);
-    setLoader(true)
+    setLoader(true);
     await fetch(`${API}/personalInfo/${user_ID}`, {
       method: 'PUT',
       headers: {
@@ -110,19 +113,21 @@ const PersonalDetails = ({route}) => {
       body: JSON.stringify({
         pwa_name: name,
         pwa_mobile: number,
+        pwa_lname:lname
       }),
     })
       .then(res => res.json())
       .then(data => {
-        setLoader(false)
+        setLoader(false);
         if (data.msg == 'Your profile has been succesfully updated') {
-          setLoader(false)
+          setLoader(false);
           const updatedData = [
             {
               ...userProfileData[0],
 
               name: name,
               mobile: number,
+              lname:lname
             },
           ];
 
@@ -139,17 +144,20 @@ const PersonalDetails = ({route}) => {
           setIsEditable(false);
           setShowButton(false);
         } else {
-          setLoader(false)
+          setLoader(false);
           PLATFORM_IOS
             ? Toast.show({
                 type: 'error',
                 text1: 'Your Profile is Not Updated',
               })
-            : ToastAndroid.show('Your Profile is Not Updated', ToastAndroid.SHORT);
+            : ToastAndroid.show(
+                'Your Profile is Not Updated',
+                ToastAndroid.SHORT,
+              );
         }
       })
       .catch(error => {
-        setLoader(false)
+        setLoader(false);
         console.error(error);
       });
   };
@@ -174,7 +182,7 @@ const PersonalDetails = ({route}) => {
           />
         </View>
       )}
-   <ActivityLoader visible={loader} />
+      <ActivityLoader visible={loader} />
       <View style={[styles.mainDiv_container]}>
         <Input
           IconLeft={null}
@@ -184,9 +192,10 @@ const PersonalDetails = ({route}) => {
           bR={3}
           bW={0.4}
           bColor={COLORS.BLACK}
-          text="Name"
+          placeholder="Ex. John"
+          text="First Name"
           mV={5}
-          textWidth={ms(50)}
+          textWidth={'30%'}
           placeholderTextColor={COLORS.BLACK}
           style={{
             color: COLORS.BLACK,
@@ -195,7 +204,7 @@ const PersonalDetails = ({route}) => {
           }}
           onChangeText={name => {
             setName(name);
-            if (!name.match(/^(?=.[a-zA-Z])([a-zA-Z0-9_ ]+)$/)) {
+            if (!name.match(/^[a-zA-Z][a-zA-Z\s]*$/)) {
               setNameError(true);
             } else {
               setNameError(false);
@@ -213,7 +222,34 @@ const PersonalDetails = ({route}) => {
         ) : (
           ''
         )}
-
+        <Input
+          IconLeft={null}
+          editable={isEditable}
+          bgColor={COLORS.CREAM}
+          IconRight={() => <Name />}
+          bR={3}
+          bW={0.4}
+          bColor={COLORS.BLACK}
+          text="Last Name"
+          mV={5}
+          textWidth={'30%'}
+          placeholderTextColor={COLORS.BLACK}
+          placeholder="Ex. Doe"
+          style={{
+            color: COLORS.BLACK,
+            fontFamily: 'Roboto',
+            fontWeight: '200',
+          }}
+          onChangeText={name => {
+            setlName(name);
+            // if (!name.match(/^[a-zA-Z][a-zA-Z\s]*$/)) {
+            //   setNameError(true);
+            // } else {
+            //   setNameError(false);
+            // }
+          }}
+          value={lname}
+        />
         <Input
           IconLeft={null}
           bgColor={COLORS.CREAM}
@@ -266,7 +302,6 @@ const PersonalDetails = ({route}) => {
             text="Email"
             keyboardType="email-address"
             mV={5}
-            
             textWidth={ms(50)}
             value={userProfileData[0]?.email}
             color={COLORS.HALFBLACK}
@@ -294,7 +329,7 @@ const PersonalDetails = ({route}) => {
                 setShowButton(false);
                 setNameError(false);
                 setError(false);
-                setemailhide(true)
+                setemailhide(true);
                 setTimeout(() => {
                   setIsEditable(false);
                 }, 100);
@@ -377,7 +412,7 @@ const PersonalDetails = ({route}) => {
               onPress={() => {
                 setIsEditable(true);
                 setShowButton(true);
-                setemailhide(false)
+                setemailhide(false);
               }}
               style={{
                 width: DIMENSIONS.SCREEN_WIDTH * 0.3,

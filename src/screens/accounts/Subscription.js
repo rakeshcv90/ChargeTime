@@ -137,7 +137,6 @@ const Subscription = ({navigation, route}) => {
     axios
       .get(`${API}/currentplan/${getUserID}`)
       .then(res => {
-        console.log("My current Plan is",res.data)
         setForLoading(false);
         setModalVisible(false);
 

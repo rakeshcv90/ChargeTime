@@ -284,6 +284,7 @@ const RemainingHorizontal = ({...props}) => {
             </>
           ) : (
             <>
+    
               <View
                 // colors={['#AFD35E', '#AFD35E']}
                 // start={{x: 0, y: 0}}
@@ -314,7 +315,7 @@ const RemainingHorizontal = ({...props}) => {
           )}
         </View>
       </View>
-      <OverusageModal />
+      {/* <OverusageModal /> */}
     </>
   );
 };

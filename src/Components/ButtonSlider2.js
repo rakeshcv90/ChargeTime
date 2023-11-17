@@ -94,6 +94,7 @@ const ButtonSlider2 = () => {
     <TouchableOpacity
       // disabled={subscriptionStatus=='0'?false:true}
       onPress={() => {
+     
         if (subscriptionStatus == '1' && getRemainingData == '0.00') {
           PLATFORM_IOS
             ? Toast.show({
@@ -118,7 +119,32 @@ const ButtonSlider2 = () => {
       style={styles.container}>
       {isLoading && <ActivityLoader />}
 
-      <View style={styles.button} activeOpacity={1}>
+      <TouchableOpacity style={styles.button} 
+      // activeOpacity={1}
+      onPress={() => {
+       
+        if (subscriptionStatus == '1' && getRemainingData == '0.00') {
+          PLATFORM_IOS
+            ? Toast.show({
+                type: 'success',
+                text1: 'Your Subscription is Paused',
+              })
+            : ToastAndroid.show(
+                'Your Subscription is Paused',
+                ToastAndroid.SHORT,
+              );
+        } else {
+          if (
+            getChargerStatus.message == 'Online' ||
+            getChargerStatus.message == 'Charging'
+          ) {
+            handleComplete(1);
+          } else {
+            handleComplete(0);
+          }
+        }
+      }}
+      >
         <Text style={[styles.swipeText]}>
           {getChargerStatus.message == 'Online' ||
           getChargerStatus.message == 'Charging'
@@ -175,7 +201,7 @@ const ButtonSlider2 = () => {
             position: 'absolute',
           }}
         />
-      </View>
+      </TouchableOpacity>
     </TouchableOpacity>
   );
 };

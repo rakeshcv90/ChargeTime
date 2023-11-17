@@ -49,6 +49,7 @@ import {
   setDeviceId,
   setPackageStatus,
   setPlanStatus,
+  setPuchaseAllPlans,
   setPurchaseData,
 } from '../../redux/action';
 import {Toast} from 'react-native-toast-message/lib/src/Toast';
@@ -229,23 +230,24 @@ export default function PaymentGateWay({navigation, route}) {
       } catch (err) {
         setLoader(false);
         console.log('test111111', err);
-        // if (err.response) {
-        //   PLATFORM_IOS
-        //     ? Toast.show({
-        //         type: 'success',
-        //         text1: 'Server Busy Please Try Later.',
-        //       })
-        //     : ToastAndroid.show(
-        //         'Server Busy Please Try Later.',
-        //         ToastAndroid.SHORT,
-        //       );
-        //   setModalVisible1(false);
-        //   setLoader(false);
-        // } else {
-        //   console.log('test111111', err.response.data);
-        //   setModalVisible1(false);
-        //   setLoader(false);
-        // }
+
+        if (err.response) {
+          PLATFORM_IOS
+            ? Toast.show({
+                type: 'error',
+                text1: 'Strip id not found for this Package.',
+              })
+            : ToastAndroid.show(
+                'Strip id not found for this Package',
+                ToastAndroid.SHORT,
+              );
+          setModalVisible1(false);
+          setLoader(false);
+        } else {
+          console.log('test111111', err.response.data);
+          setModalVisible1(false);
+          setLoader(false);
+        }
       }
     }
   };
@@ -307,10 +309,10 @@ export default function PaymentGateWay({navigation, route}) {
         PLATFORM_IOS
           ? Toast.show({
               type: 'success',
-              text1: 'Server Busy Please Try Later.',
+              text1: 'Strip id not found for this Package',
             })
           : ToastAndroid.show(
-              'Server Busy Please Try Later.',
+              'Strip id not found for this Package',
               ToastAndroid.SHORT,
             );
         setModalVisible1(false);
@@ -336,12 +338,15 @@ export default function PaymentGateWay({navigation, route}) {
           if (route.params.purchageData == 'DOWNGRADE') {
             dispatch(setDeviceId(res.data.message));
             getPlanCurrent();
+            getAllPurchasePlan()
             navigationRef.navigate('Home');
           }
           dispatch(setDeviceId(res.data.message));
           getPlanCurrent();
+          getAllPurchasePlan()
         } else {
           getPlanCurrent();
+          getAllPurchasePlan()
           dispatch(setDeviceId(res.data.message));
           navigationRef.navigate('DrawerStack');
 
@@ -375,6 +380,16 @@ export default function PaymentGateWay({navigation, route}) {
         console.log(err);
       });
   };
+  const getAllPurchasePlan=(userId)=>{
+    axios
+    .get(`${API}/allpurchaseplans/${getUserID}`)
+    .then(res => {
+      dispatch(setPuchaseAllPlans(res?.data));
+    })
+    .catch(err => {
+      console.log('Error-10', err);
+    });
+  }
 
   function formatCreditCardNumber(cardNumber) {
     const digitsOnly = cardNumber.replace(/\D/g, '');
@@ -517,14 +532,14 @@ export default function PaymentGateWay({navigation, route}) {
     }
   };
   const updatePacakgeData = async () => {
-    //  console.log('44444444444',route.params.data.package_name);
+
     try {
       const response = await axios.get(
         `${API}/packagePlan/${route.params.data.id}`,
       );
 
       if (response?.data?.locations.length == 0) {
-        // dispatch(setBasePackage([]));
+         dispatch(setBasePackage([]));
       } else {
         dispatch(setBasePackage(response.data.locations));
         const datafilter = response.data.locations.filter(item => {

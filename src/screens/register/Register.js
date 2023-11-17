@@ -87,7 +87,7 @@ export default function Register({navigation}) {
 
     try {
       const response = await axios.post(`${API}/createuser`, {
-        name: values.name + values.lname,
+        name: values.name ,
         email: values.email,
       });
 
@@ -104,7 +104,7 @@ export default function Register({navigation}) {
 
         setForLoading(false);
 
-        dispatch(setUserRegisterData(values));
+       dispatch(setUserRegisterData(values));
         navigation.navigate('CompleteProfile', {
           email: values?.email,
           user_id: response.data?.user_id,

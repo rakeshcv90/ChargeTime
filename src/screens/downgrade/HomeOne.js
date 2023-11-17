@@ -174,6 +174,7 @@ export default function HomeOne(route) {
       if (response?.data?.locations.length == 0) {
         setIsLoading(true);
         setShowPackage(true);
+        dispatch(setBasePackage([]));
       } else {
         setApiData(response?.data?.locations);
         dispatch(setBasePackage(response.data.locations));

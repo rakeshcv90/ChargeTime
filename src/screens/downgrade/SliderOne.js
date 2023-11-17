@@ -51,7 +51,6 @@ export default function SliderOne(props) {
     getPlanCurrent();
  
   }, []);
-
   const handleRefresh = () => {
     setRefresh(true);
     setTimeout(() => {

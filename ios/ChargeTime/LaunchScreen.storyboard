@@ -22,7 +22,7 @@
                             </imageView>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="Bcu-3y-fUS"/>
-                        <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                        <color key="backgroundColor" systemColor="secondarySystemGroupedBackgroundColor"/>
                         <constraints>
                             <constraint firstItem="fqy-Mp-KiL" firstAttribute="leading" secondItem="Bcu-3y-fUS" secondAttribute="leading" id="4DM-Xb-9oy"/>
                             <constraint firstItem="fqy-Mp-KiL" firstAttribute="top" secondItem="Bcu-3y-fUS" secondAttribute="top" constant="253" id="FaU-gU-RHD"/>
@@ -40,7 +40,7 @@
     </scenes>
     <resources>
         <image name="Image" width="72.666664123535156" height="54.666667938232422"/>
-        <systemColor name="systemBackgroundColor">
+        <systemColor name="secondarySystemGroupedBackgroundColor">
             <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
         </systemColor>
     </resources>

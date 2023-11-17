@@ -121,6 +121,10 @@ export const setLogout = () => {
 export const setMyLocation = data => {
   return {type: types.LOCATION_ID,payload: data};
 };
+export const setPuchaseAllPlans = data => {
+  return {type: types.SET_PUCHASE_ALL_PLANS,payload: data};
+};
+
 
 
 export const resetApp = () => {

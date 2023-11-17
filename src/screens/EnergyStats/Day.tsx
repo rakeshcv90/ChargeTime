@@ -19,6 +19,8 @@ import BoxTwo from '../../Components/BoxTwo';
 import ButtonSlider from '../../Components/ButtonSlider';
 import PriceValidity from '../../Components/PriceValidity';
 import {useDispatch, useSelector} from 'react-redux';
+import Overusageimage from '../../../assets/svgs/Overusageimage';
+
 import axios from 'axios';
 import {
   setBoxTwoDataForDashboard,
@@ -48,7 +50,7 @@ const Day = (props: any) => {
     getRemainingData,
     getkwhData,
     overusage,
-    overModelView
+    overModelView,
   } = useSelector((state: any) => state);
 
   const [toggleState, setToggleState] = useState(false);
@@ -64,14 +66,29 @@ const Day = (props: any) => {
     setShowSlider(true);
   }, []);
   const fetchGraphData = () => {
+    const message = 'No usage data available';
     axios
       .get(`${API}/dailyusagedeviceid/${getUserID}`)
       .then(res => {
-        dispatch(setGraphData(res.data.Dayusagewithgraph));
-        dispatch(setWeekGraphData(res.data.weeklyusagewithgraph));
-        dispatch(setMonthGraphData(res?.data.monthlyusagewithgraph));
-        dispatch(setQuarterGraphData(res?.data.threemonthusagewithgraph));
-        dispatch(setYearGraphData(res?.data.yearlyusagewithgraph));
+        if (res.data.length > 0) {
+          dispatch(setGraphData(res.data.Dayusagewithgraph));
+          dispatch(setWeekGraphData(res.data.weeklyusagewithgraph));
+          dispatch(setMonthGraphData(res?.data.monthlyusagewithgraph));
+          dispatch(setQuarterGraphData(res?.data.threemonthusagewithgraph));
+          dispatch(setYearGraphData(res?.data.yearlyusagewithgraph));
+        } else if (res.data.length == undefined) {
+          dispatch(setGraphData(res.data.Dayusagewithgraph));
+          dispatch(setWeekGraphData(res.data.weeklyusagewithgraph));
+          dispatch(setMonthGraphData(res?.data.monthlyusagewithgraph));
+          dispatch(setQuarterGraphData(res?.data.threemonthusagewithgraph));
+          dispatch(setYearGraphData(res?.data.yearlyusagewithgraph));
+        } else {
+          dispatch(setGraphData({message}));
+          dispatch(setWeekGraphData({message}));
+          dispatch(setMonthGraphData({message}));
+          dispatch(setQuarterGraphData({message}));
+          dispatch(setYearGraphData({message}));
+        }
       })
       .catch(err => {
         console.log('fetchGraphData11', err);
@@ -94,6 +111,7 @@ const Day = (props: any) => {
     axios
       .get(`${API}/remainingusage/${getUserID}`)
       .then(res => {
+        console.log('Over Use Data is', res.data);
         if (parseInt(res.data?.kwh_unit_remaining) > 0) {
           remaingData = res.data?.kwh_unit_remaining;
           dispatch(setRemainingData(res.data?.kwh_unit_remaining));
@@ -144,7 +162,7 @@ const Day = (props: any) => {
     // dispatch(setOverusageCount(overusage + 1));
     navigationRef.navigate('HomeOne');
   };
-  console.log('Over Use Data is', overusage);
+
   return (
     <>
       <View style={{flex: 1, backgroundColor: COLORS.CREAM}}>
@@ -203,19 +221,20 @@ const Day = (props: any) => {
           visible={overModelView}
           onRequestClose={() => {
             dispatch(setOverModelView(false));
-          //  setModalVisible(!modalVisible);
+            //  setModalVisible(!modalVisible);
           }}>
           <View style={styles.centeredView}>
             <View style={styles.modalView}>
               <Text style={styles.modalText}>Overusage</Text>
-              <AnimatedLottieView
+              {/* <AnimatedLottieView
                 source={{
                   uri: 'https://assets6.lottiefiles.com/private_files/lf30_mf7q9oho.json',
                 }} // Replace with your animation file
                 autoPlay
                 loop
                 style={{width: 50, height: 50}}
-              />
+              /> */}
+              <Overusageimage width={130} height={130} viewBox="0 0 80 80" />
               <Text
                 style={{
                   fontSize: 14,
@@ -232,8 +251,8 @@ const Day = (props: any) => {
                   }}
                   onPress={() => {
                     //dispatch(setOverusageCount(overusage + 1));
-                 //   setModalVisible(false);
-                 dispatch(setOverModelView(false));
+                    //   setModalVisible(false);
+                    dispatch(setOverModelView(false));
                   }}>
                   <Text style={styles.textStyle}>Cancel</Text>
                 </TouchableOpacity>

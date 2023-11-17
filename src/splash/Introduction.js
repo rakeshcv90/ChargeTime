@@ -10,6 +10,7 @@ import {
   Text,
   TouchableOpacity,
   BackHandler,
+  ScrollView,
 } from 'react-native';
 import {DIMENSIONS} from '../constants/DIMENSIONS';
 import COLORS from '../constants/COLORS';
@@ -36,6 +37,7 @@ const Introduction = ({navigation}) => {
           source={require('../../assets/images/Intro.png')}
           style={styles.splash_botm_image}
         />
+        <ScrollView >
         <View
           style={{
             marginHorizontal: 30,
@@ -57,23 +59,28 @@ const Introduction = ({navigation}) => {
           </Text>
           <Text
             style={{
-              fontSize: 14,
-              fontWeight: '400',
-              lineHeight: 22,
+              fontSize: 15,
+              fontWeight: '500',
+              lineHeight: 25,
               textAlign: 'justify',
               color: COLORS.BLACK,
             }}>
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut et massa
-            mi. Aliquam in hendrerit urna. Pellentesque sit amet sapien
-            fringilla, mattis ligula consectetur, ultrices mauris. Maecenas
-            vitae mattis tellus.
+           ChargeTime is your passport to a seamless charging experience for your vehicle. 
+           With our app, you can effortlessly connect with your charging device remotely, 
+           giving you the power to charge your vehicle from the comfort of your fingertips. 
+           No matter where you are, initiate and monitor the charging process seamlessly. 
+           Keep tabs on your charging usage data effortlessly. 
+           Stay informed about your vehicle's power consumption and make informed decisions.
+           Upgrade or downgrade your package based on your usage needs. 
+           Our app provides you the flexibility to choose the charging plan that suits you best.
           </Text>
         </View>
         <View
           style={{
             flexDirection: 'row',
             justifyContent: 'center',
-            marginTop: mobileH < 700 ? 0 : 70,
+           marginTop: mobileH < 700 ? 0 : 30,
+           marginBottom:30,
             marginHorizontal: 20,
           }}>
           <TouchableOpacity
@@ -100,6 +107,7 @@ const Introduction = ({navigation}) => {
             <Text style={styles.btntext}>GET STARTED</Text>
           </TouchableOpacity>
         </View>
+        </ScrollView>
       </View>
     </SafeAreaView>
   );

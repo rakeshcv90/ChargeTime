@@ -114,8 +114,6 @@ export const ChargerStatus = ({navigation}) => {
         await AsyncStorage.clear();
         await persistor.purge();
         dispatch(setLogout());
-
-        
         navigation.dispatch(
           CommonActions.reset({
             index: 0,
@@ -363,7 +361,7 @@ const DrawerNavigation = () => {
             marginLeft: (DIMENSIONS.SCREEN_WIDTH * 4) / 100,
           },
           drawerLabelStyle: {
-            backgroundColor: '#fff',
+            //backgroundColor: '#fff',
             marginLeft: -10,
             color: 'black',
             fontWeight: '700',
@@ -389,7 +387,7 @@ const DrawerNavigation = () => {
             );
           },
           drawerLabelStyle: {
-            backgroundColor: '#fff',
+            // backgroundColor: '#fff',
             marginLeft: -17,
             color: 'black',
             fontWeight: '700',
@@ -412,7 +410,7 @@ const DrawerNavigation = () => {
             );
           },
           drawerLabelStyle: {
-            backgroundColor: '#fff',
+            // backgroundColor: '#fff',
             marginLeft: -17,
             color: 'black',
             fontWeight: '700',
@@ -435,7 +433,7 @@ const DrawerNavigation = () => {
             );
           },
           drawerLabelStyle: {
-            backgroundColor: '#fff',
+            // backgroundColor: '#fff',
             marginLeft: -17,
             color: 'black',
             fontWeight: '700',
@@ -658,6 +656,8 @@ export default function Router() {
       <Stack.Screen name="Theme" component={Theme} />
       <Stack.Screen name="Contact" component={Contact} />
       <Stack.Screen name="deleteAccount" component={deleteAccount} />
+      <Stack.Screen name="Splash" component={Splash} />
+      <Stack.Screen name="Introduction" component={Introduction} />
       {/* <Stack.Screen name="Login" component={Login} /> */}
 
       <Stack.Screen name="Privacy Policy" component={Privacy} />

@@ -37,7 +37,7 @@ import {
   userProfileData as updatePersionalDetail,
   setPurchaseData,
   setPackageStatus,
-
+  setPuchaseAllPlans,
 } from '../../redux/action';
 import {Toast} from 'react-native-toast-message/lib/src/Toast';
 import {setBasePackage as setUpdateBasePackage} from '../../redux/action';
@@ -74,11 +74,13 @@ const Installation = () => {
     setAddLineTwo(userProfileData[0]?.pwa_add2);
     setAddLineOne(userProfileData[0]?.pwa_add1);
     getPlanCurrent;
+
     fetchOptions();
   }, [userProfileData]);
 
   useEffect(() => {
     getPlanCurrent();
+    getAllPurchasePlan();
   }, []);
   const user_id = getUserID;
 
@@ -129,6 +131,7 @@ const Installation = () => {
       const response = await axios.get(`${API}/packagePlan/${locationId}`);
 
       if (response?.data?.locations.length == 0) {
+        dispatch(setUpdateBasePackage([]));
         // setIsLoading(true);
         // setShowPackage(true);
       } else {
@@ -163,10 +166,19 @@ const Installation = () => {
         console.log(err);
       });
   };
-
+  const getAllPurchasePlan = userId => {
+    axios
+      .get(`${API}/allpurchaseplans/${getUserID}`)
+      .then(res => {
+        dispatch(setPuchaseAllPlans(res?.data));
+      })
+      .catch(err => {
+        console.log('Error-10', err);
+      });
+  };
   const PlanCancel = async () => {
     setIsFocus(true);
-    setLoader(true)
+    setLoader(true);
     try {
       const response = await fetch(`${API}/plancancel/${user_id}`, {
         method: 'POST',
@@ -189,26 +201,25 @@ const Installation = () => {
               'Your current plan has been canceled.',
               ToastAndroid.SHORT,
             );
-            setLoader(false)
-            setShowButton(false)
+        setLoader(false);
+        setShowButton(false);
       } else {
         InstalltionUpdate();
       }
     } catch (error) {
       console.error(error);
-      setLoader(false)
-      setShowButton(false)
+      setLoader(false);
+      setShowButton(false);
     }
   };
   const InstalltionUpdate = async () => {
-    if(addlineone.trim().length<=0 ){
+    if (addlineone.trim().length <= 0) {
       PLATFORM_IOS
-      ? Toast.show({
-          type: 'error',
-          text1: 'Please Enter Address Line 1',
-        })
-      : ToastAndroid.show('Please Enter Address Line 1', ToastAndroid.SHORT);
-
+        ? Toast.show({
+            type: 'error',
+            text1: 'Please Enter Address Line 1',
+          })
+        : ToastAndroid.show('Please Enter Address Line 1', ToastAndroid.SHORT);
     }
     // else if(addlinetwo.trim().length<=0){
     //   PLATFORM_IOS
@@ -219,122 +230,121 @@ const Installation = () => {
     //   : ToastAndroid.show('Please Enter Address Line 2', ToastAndroid.SHORT);
 
     // }
-    else{
-       if ((locationId==undefined && addlineone && newZipcode=='' && newState=='' )||locationId&& addlineone && newZipcode && newState) {
-     
-      setForLoading(true);
-      setLoader(true)
-      try {
-        const res = await fetch(`${API}/installation/${user_id}`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            pwa_add1: addlineone,
-            pwa_add2: addlinetwo,
-            pwa_state:
-              newState.length == 0 ? userProfileData[0]?.pwa_state : newState,
-            pwa_zip:
-              newZipcode.length == 0 ? userProfileData[0]?.pwa_zip : newZipcode,
-            location:
-              selectedValue.length == 0
-                ? userProfileData[0]?.location
-                : selectedValue,
-            pwa_choice:
-              locationId == undefined
-                ? userProfileData[0]?.pwa_choice
-                : locationId,
-          }),
-        });
-        const response = await res.json();
-        if (response.msg == 'Your Profile Update') {
-          setModalVisible(false);
-          setIsEditable(false);
-          dispatch(updatedLocationId(locationId));
-       
-      
-          if (response) {
-            const updatedData = [
-              {
-                ...userProfileData[0],
-                pwa_add1: addlineone,
-                pwa_add2: addlinetwo,
-                pwa_state:
-                  newState.length == 0
-                    ? userProfileData[0]?.pwa_state
-                    : newState,
-                pwa_zip:
-                  newZipcode.length == 0
-                    ? userProfileData[0]?.pwa_zip
-                    : newZipcode,
-                location:
-                  selectedValue.length == 0
-                    ? userProfileData[0]?.location
-                    : selectedValue,
-                pwa_choice:
-                  locationId == undefined
-                    ? userProfileData[0]?.pwa_choice
-                    : locationId,
-              },
-            ];
-
-            dispatch(updatePersionalDetail(updatedData));
-
+    else {
+      if (
+        (locationId == undefined &&
+          addlineone &&
+          newZipcode == '' &&
+          newState == '') ||
+        (locationId && addlineone && newZipcode && newState)
+      ) {
+        setForLoading(true);
+        setLoader(true);
+        try {
+          const res = await fetch(`${API}/installation/${user_id}`, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              pwa_add1: addlineone,
+              pwa_add2: addlinetwo,
+              pwa_state:
+                newState.length == 0 ? userProfileData[0]?.pwa_state : newState,
+              pwa_zip:
+                newZipcode.length == 0
+                  ? userProfileData[0]?.pwa_zip
+                  : newZipcode,
+              location:
+                selectedValue.length == 0
+                  ? userProfileData[0]?.location
+                  : selectedValue,
+              pwa_choice:
+                locationId == undefined
+                  ? userProfileData[0]?.pwa_choice
+                  : locationId,
+            }),
+          });
+          const response = await res.json();
+          if (response.msg == 'Your Profile Update') {
+            setModalVisible(false);
+            setIsEditable(false);
             dispatch(updatedLocationId(locationId));
-  
-            fetchData();
-            setForLoading(false);
-            setLoader(false)
-            PLATFORM_IOS
-              ? Toast.show({
-                  type: 'success',
-                  text1: 'Profile has been updated successfully.',
-                })
-              : ToastAndroid.show(
-                  'Profile has been updated successfully.',
-                  ToastAndroid.SHORT,
-                );
 
-            setForLoading(false);
-            setLoader(false)
-            setShowButton(false)
-          } else {
-            PLATFORM_IOS
-              ? Toast.show({
-                  type: 'error',
-                  text1: 'Profile Not Updated',
-                  // position: 'bottom',
-                })
-              : ToastAndroid.show('Profile Not Updated', ToastAndroid.SHORT);
-            setForLoading(false);
-            setLoader(false)
-            setShowButton(false)
+            if (response) {
+              const updatedData = [
+                {
+                  ...userProfileData[0],
+                  pwa_add1: addlineone,
+                  pwa_add2: addlinetwo,
+                  pwa_state:
+                    newState.length == 0
+                      ? userProfileData[0]?.pwa_state
+                      : newState,
+                  pwa_zip:
+                    newZipcode.length == 0
+                      ? userProfileData[0]?.pwa_zip
+                      : newZipcode,
+                  location:
+                    selectedValue.length == 0
+                      ? userProfileData[0]?.location
+                      : selectedValue,
+                  pwa_choice:
+                    locationId == undefined
+                      ? userProfileData[0]?.pwa_choice
+                      : locationId,
+                },
+              ];
+
+              dispatch(updatePersionalDetail(updatedData));
+
+              dispatch(updatedLocationId(locationId));
+
+              fetchData();
+              setForLoading(false);
+              setLoader(false);
+              PLATFORM_IOS
+                ? Toast.show({
+                    type: 'success',
+                    text1: 'Profile has been updated successfully.',
+                  })
+                : ToastAndroid.show(
+                    'Profile has been updated successfully.',
+                    ToastAndroid.SHORT,
+                  );
+
+              setForLoading(false);
+              setLoader(false);
+              setShowButton(false);
+            } else {
+              PLATFORM_IOS
+                ? Toast.show({
+                    type: 'error',
+                    text1: 'Profile Not Updated',
+                    // position: 'bottom',
+                  })
+                : ToastAndroid.show('Profile Not Updated', ToastAndroid.SHORT);
+              setForLoading(false);
+              setLoader(false);
+              setShowButton(false);
+            }
           }
-
+        } catch (err) {
+          console.log(err);
+          setForLoading(false);
+          setLoader(false);
+          setShowButton(false);
         }
-      } catch (err) {
-        console.log(err);
-        setForLoading(false);
-        setLoader(false)
-        setShowButton(false)
+      } else {
+        console.log('Test1', locationId);
+        console.log('Test2', addlineone);
+        console.log('Test3', newZipcode);
+        console.log('Test4', newState);
       }
     }
-    else{
-      console.log("Test1",locationId)
-        console.log("Test2",addlineone)
-        console.log("Test3",newZipcode)
-        console.log("Test4",newState)
-    }
-    }
-
-   
-
-   
   };
 
   const handleOk = () => {
-   
     PlanCancel();
 
     setIsEditable(false);
@@ -351,14 +361,19 @@ const Installation = () => {
   const onPress = () => {
     if (getPurchaseData.data == 'Package not found') {
       InstalltionUpdate();
+      console.log("Test12")
     } else if (selectedValue.length == 0) {
-      InstalltionUpdate();
+     InstalltionUpdate();
+     console.log("Test13")
     } else if (selectedValue == userProfileData[0]?.location) {
-      InstalltionUpdate();
+     InstalltionUpdate();
+     console.log("Test14")
     } else if (selectedValue != userProfileData[0]?.location) {
-      setModalVisible(true);
+    setModalVisible(true);
+      console.log("Test15")
     } else {
-      setModalVisible(true);
+    setModalVisible(true);
+      console.log("Test16")
     }
 
     // if (getPurchaseData.data !== 'Package not found') {
@@ -424,13 +439,13 @@ const Installation = () => {
       ) : (
         <View>
           <Image
-           source={require('../../../assets/images/dotted.png')}
-           style={{width: mobileW * 0.99}}
-           resizeMode='stretch'
+            source={require('../../../assets/images/dotted.png')}
+            style={{width: mobileW * 0.99}}
+            resizeMode="stretch"
           />
         </View>
       )}
-       <ActivityLoader visible={loader} />
+      <ActivityLoader visible={loader} />
       <View style={styles.mainDiv_container}>
         <View style={styles.postCodeContainer}>
           {renderLabel()}
@@ -454,7 +469,7 @@ const Installation = () => {
             // onFocus={() => setIsFocus(false)}
             // onBlur={() => setIsFocus(false)}
             onChange={item => handleSelect(item.id, item)}
-            itemTextStyle={{color:'black'}}
+            itemTextStyle={{color: 'black'}}
           />
         </View>
         <Input
@@ -561,8 +576,8 @@ const Installation = () => {
             onPress={() => {
               setAddLineTwo(userProfileData[0]?.pwa_add2);
               setAddLineOne(userProfileData[0]?.pwa_add1);
-              setSelectedValue(  userProfileData[0]?.location)
-          
+              setSelectedValue(userProfileData[0]?.location);
+
               setShowButton(false);
 
               setTimeout(() => {

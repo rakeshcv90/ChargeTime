@@ -27,6 +27,7 @@ import {useDispatch} from 'react-redux';
 import Toast from 'react-native-toast-message';
 import {
   setLogout,
+  setPuchaseAllPlans,
   setPurchaseData,
   setSubscriptionStatus,
   userProfileData,
@@ -54,6 +55,7 @@ const Account = ({navigation}) => {
     userDetails();
     getPlanCurrent();
     getSubscriptionStatus();
+    getAllPurchasePlan()
     // userSubscription();
     //  userSubsEnergy();
     const backHandler = BackHandler.addEventListener(
@@ -66,13 +68,12 @@ const Account = ({navigation}) => {
   const handleBackButton = () => {
     return true;
   };
-
+console.log("User Id",getUserID)
   const getSubscriptionStatus = () => {
 
     axios
       .get(`${API}/planstatuspauseresume/${getUserID}`)
       .then(res => {
-        console.log('dddddddddddd',res.data)
         dispatch(setSubscriptionStatus(res.data.PlanStatus));
       })
       .catch(err => {
@@ -126,25 +127,10 @@ const Account = ({navigation}) => {
         },
       });
       if (res.data.message == 'Your account is successfully logout') {
-        // PLATFORM_IOS
-        //   ? Toast.show({
-        //       text1: res.data.message,
-
-        //       position: 'bottom',
-        //       type: 'success',
-        //       duration: 500,
-        //     })
-        //   : ToastAndroid.show(res.data.message, ToastAndroid.SHORT);
-        // await AsyncStorage.removeItem('locationID');
-        // await AsyncStorage.removeItem('isAuthorized');
+   
         await AsyncStorage.clear();
         await persistor.purge();
         dispatch(setLogout());
-
-        // navigation.reset({
-        //   index: 0,
-        //   routes: [{name: 'LoginStack'}],
-        // });
         navigation.dispatch(
           CommonActions.reset({
             index: 0,
@@ -158,27 +144,11 @@ const Account = ({navigation}) => {
       }
     } catch (err) {
       console.log('Error', err);
-      // await AsyncStorage.removeItem('locationID');
-      // await AsyncStorage.removeItem('isAuthorized');
       await AsyncStorage.clear();
       await persistor.purge();
       dispatch(setLogout());
-
-      // navigation.reset({
-      //   index: 0,
-      //   routes: [{name: 'LoginStack'}],
-      // });
     }
-    // navigation.dispatch(
-    //   CommonActions.reset({
-    //     index: 0,
-    //     routes: [
-    //       {
-    //         name: 'Login',
-    //       },
-    //     ],
-    //   }),
-    // );
+
   };
   const userDetails = async () => {
     // const response = await fetch(`${API}/userexisting/${user_ID}`);
@@ -219,6 +189,17 @@ const Account = ({navigation}) => {
         console.log('xcvvcxvcxv33333', err);
       });
   };
+  const getAllPurchasePlan=(userId)=>{
+    axios
+    .get(`${API}/allpurchaseplans/${getUserID}`)
+    .then(res => {
+    
+      dispatch(setPuchaseAllPlans(res?.data));
+    })
+    .catch(err => {
+      console.log('Error-10', err);
+    });
+  }
   const handleAllGetCard = async () => {
     try {
       const response = await fetch(`${API}/getcarddetails/${user_ID}`);

@@ -16,17 +16,33 @@ import {DIMENSIONS} from '../constants/DIMENSIONS';
 import {useSelector} from 'react-redux';
 
 const BoxTwo = ({data}) => {
-  // console.log("Rakesh Rao",data)
-  const {getUserID, getPurchaseData, getPlanStatus} = useSelector(
+
+  const {getUserID, getPurchaseData, getPlanStatus,getPurchaseAllPlans} = useSelector(
     state => state,
   );
-
   const getmessage = () => {
     if (getPurchaseData.length == 0) {
       return <Text style={styles.installation_text}></Text>;
     } else if (getPurchaseData.length == undefined) {
       if (getPurchaseData.data.energy_plan == data?.package_name) {
-        return <Text style={styles.installation_text}>( Current Plan )</Text>;
+        var datatex='( Current Plan )'
+        return <Text style={styles.installation_text}>{datatex}</Text>;
+      }else{
+      var datatest=''
+        getPurchaseAllPlans.forEach(item => {
+        
+          if(item.energy_plan==data?.package_name&&item.subscription_status=="active"){
+            datatest='( Active )'
+
+          }else if(item.energy_plan==data?.package_name&&item.subscription_status=="scheduled"){
+            datatest= '( Scheduled )'
+          }else if(item.energy_plan==data?.package_name&&item.subscription_status=="notActive"){
+            datatest= '( NotActive )'
+          }else(
+            datatest=''
+          )
+        });
+        return <Text style={styles.installation_text}>{datatest}</Text>;
       }
     }
   };
