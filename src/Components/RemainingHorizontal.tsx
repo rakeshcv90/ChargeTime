@@ -37,6 +37,7 @@ const RemainingHorizontal = ({...props}) => {
     (state: any) => state,
   );
 
+
   const [modalVisible, setModalVisible] = useState(false);
   const [x, setX] = useState<number>(0);
   // setUpdateIntervalForType(SensorTypes.gyroscope, 200); // defaults to 100ms
@@ -139,7 +140,7 @@ const RemainingHorizontal = ({...props}) => {
           backgroundColor: '#F5F5F5',
           width: DIMENSIONS.SCREEN_WIDTH * 0.9,
           height: DIMENSIONS.SCREEN_WIDTH * 0.35,
-          marginVertical: DIMENSIONS.SCREEN_HEIGHT * 0.02,
+          marginVertical: DIMENSIONS.SCREEN_HEIGHT * 0.00,
           flexDirection: 'row',
           shadowColor: '#000000',
           shadowOffset: {width: 0, height: 2},
@@ -283,6 +284,7 @@ const RemainingHorizontal = ({...props}) => {
             </>
           ) : (
             <>
+    
               <View
                 // colors={['#AFD35E', '#AFD35E']}
                 // start={{x: 0, y: 0}}
@@ -313,7 +315,7 @@ const RemainingHorizontal = ({...props}) => {
           )}
         </View>
       </View>
-      <OverusageModal />
+      {/* <OverusageModal /> */}
     </>
   );
 };

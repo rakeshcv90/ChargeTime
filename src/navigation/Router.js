@@ -109,21 +109,11 @@ export const ChargerStatus = ({navigation}) => {
         },
       });
       if (res.data.message == 'Your account is successfully logout') {
-        // PLATFORM_IOS
-        //   ? Toast.show({
-        //       text1: res.data.message,
-
-        //       position: 'bottom',
-        //       type: 'success',
-        //       duration: 500,
-        //     })
-        //   : ToastAndroid.show(res.data.message, ToastAndroid.SHORT);
+ 
 
         await AsyncStorage.clear();
         await persistor.purge();
         dispatch(setLogout());
-
-        
         navigation.dispatch(
           CommonActions.reset({
             index: 0,
@@ -141,16 +131,7 @@ export const ChargerStatus = ({navigation}) => {
       await AsyncStorage.clear();
       await persistor.purge();
       dispatch(setLogout());
-      // navigation.dispatch(
-      //   CommonActions.reset({
-      //     index: 0,
-      //     routes: [
-      //       {
-      //         name: 'Login',
-      //       },
-      //     ],
-      //   }),
-      // );
+  
     }
   };
   return (
@@ -380,7 +361,7 @@ const DrawerNavigation = () => {
             marginLeft: (DIMENSIONS.SCREEN_WIDTH * 4) / 100,
           },
           drawerLabelStyle: {
-            backgroundColor: '#fff',
+            //backgroundColor: '#fff',
             marginLeft: -10,
             color: 'black',
             fontWeight: '700',
@@ -406,7 +387,7 @@ const DrawerNavigation = () => {
             );
           },
           drawerLabelStyle: {
-            backgroundColor: '#fff',
+            // backgroundColor: '#fff',
             marginLeft: -17,
             color: 'black',
             fontWeight: '700',
@@ -429,7 +410,7 @@ const DrawerNavigation = () => {
             );
           },
           drawerLabelStyle: {
-            backgroundColor: '#fff',
+            // backgroundColor: '#fff',
             marginLeft: -17,
             color: 'black',
             fontWeight: '700',
@@ -452,7 +433,7 @@ const DrawerNavigation = () => {
             );
           },
           drawerLabelStyle: {
-            backgroundColor: '#fff',
+            // backgroundColor: '#fff',
             marginLeft: -17,
             color: 'black',
             fontWeight: '700',
@@ -550,7 +531,8 @@ const LoginStack = () => {
       <Stack.Screen
         name="Login"
         component={Login}
-        options={{gestureEnabled: false}}
+        options={{gestureEnabled: false
+        }}
       />
       <Stack.Screen name="Register" component={Register} />
       <Stack.Screen name="VerifyEmail" component={VerifyEmail} />
@@ -675,6 +657,8 @@ export default function Router() {
       <Stack.Screen name="Theme" component={Theme} />
       <Stack.Screen name="Contact" component={Contact} />
       <Stack.Screen name="deleteAccount" component={deleteAccount} />
+      <Stack.Screen name="Splash" component={Splash} />
+      <Stack.Screen name="Introduction" component={Introduction} />
       {/* <Stack.Screen name="Login" component={Login} /> */}
 
       <Stack.Screen name="Privacy Policy" component={Privacy} />

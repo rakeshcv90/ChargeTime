@@ -9,6 +9,7 @@ import {
   Alert,
   Modal,
   Pressable,
+  Platform,
 } from 'react-native';
 import React, {useState} from 'react';
 import {Dolllar} from '../../assets/images/Dollar';
@@ -209,7 +210,7 @@ const styles = StyleSheet.create({
     borderColor: COLORS.GREEN,
     borderRadius: 5,
     backgroundColor: COLORS.WHITE,
-    marginTop: 20,
+    marginTop: Platform.OS=='android'?DIMENSIONS.SCREEN_HEIGHT*0.01:DIMENSIONS.SCREEN_HEIGHT*0.02,
     paddingHorizontal: 10,
     paddingVertical: 10,
     borderRadius: 16,

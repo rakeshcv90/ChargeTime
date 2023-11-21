@@ -52,6 +52,7 @@ import {
   setWeekGraphData,
   setYearGraphData,
   setSubscriptionStatus,
+  setOverModelView,
 } from '../../redux/action';
 import ButtonSlider2 from '../../Components/ButtonSlider2';
 import Toast from 'react-native-toast-message';
@@ -198,11 +199,11 @@ export default function EnergyStats() {
       .get(`${API}/devicecheck/${getUserID}}`)
       .then(res => {
         if (res.data.status == 'True') {
-          console.log('bbbbbbbb', res.data.message);
           setDeviceIdTemp(res.data.message);
           fetchGraphData(getUserID);
           fetchBoxTwoDashboardData(getUserID);
           fetchStatusdata(getUserID);
+          setIsLoading(false);
           // }, 3000);
         } else {
           setIsLoading(false);
@@ -230,15 +231,38 @@ export default function EnergyStats() {
 
   //day data start
   const fetchGraphData = (userID: string) => {
+    const message = 'No usage data available';
     axios
       .get(`${API}/dailyusagedeviceid/${userID}`)
       .then(res => {
-        dispatch(setGraphData(res.data.Dayusagewithgraph));
-        dispatch(setWeekGraphData(res.data.weeklyusagewithgraph));
-        dispatch(setMonthGraphData(res?.data.monthlyusagewithgraph));
-        dispatch(setQuarterGraphData(res?.data.threemonthusagewithgraph));
-        dispatch(setYearGraphData(res?.data.yearlyusagewithgraph));
-        dailyUsuagekwh(getUserID);
+        if (res.data.length > 0) {
+          dispatch(setGraphData(res.data.Dayusagewithgraph));
+          dispatch(setWeekGraphData(res.data.weeklyusagewithgraph));
+          dispatch(setMonthGraphData(res?.data.monthlyusagewithgraph));
+          dispatch(setQuarterGraphData(res?.data.threemonthusagewithgraph));
+          dispatch(setYearGraphData(res?.data.yearlyusagewithgraph));
+          dailyUsuagekwh(getUserID);
+          setIsLoading(false);
+        } 
+        
+        else if(res.data.length==undefined){
+          dispatch(setGraphData(res.data.Dayusagewithgraph));
+          dispatch(setWeekGraphData(res.data.weeklyusagewithgraph));
+          dispatch(setMonthGraphData(res?.data.monthlyusagewithgraph));
+          dispatch(setQuarterGraphData(res?.data.threemonthusagewithgraph));
+          dispatch(setYearGraphData(res?.data.yearlyusagewithgraph));
+          dailyUsuagekwh(getUserID);
+          setIsLoading(false);
+        }
+        
+        else {
+          dispatch(setGraphData({message}));
+          dispatch(setWeekGraphData({message}));
+          dispatch(setMonthGraphData({message}));
+          dispatch(setQuarterGraphData({message}));
+          dispatch(setYearGraphData({message}));
+          setIsLoading(false);
+        }
       })
       .catch(err => {
         setIsLoading(false);
@@ -249,14 +273,17 @@ export default function EnergyStats() {
     axios
       .get(`${API}/dailyusage/${userId}`)
       .then(res => {
+      
         if (res?.data) {
           dispatch(setKwhData(res?.data));
         }
 
         remainigUsuageData(getUserID);
-      })
+        setIsLoading(false);
+      }
+      )
       .catch(err => {
-        console.log('TRTRT11111111', err);
+ 
       });
   };
   const remainigUsuageData = (userId: string) => {
@@ -267,13 +294,21 @@ export default function EnergyStats() {
       .then(res => {
         if (parseInt(res.data?.kwh_unit_remaining) > 0) {
           remaingData = res.data?.kwh_unit_remaining;
+          dispatch(setRemainingData(res.data?.kwh_unit_remaining));
+        
           dispatch(setOverUsage(false));
+          dispatch(setOverModelView(false));
+          setIsLoading(false);
         } else {
           remaingData = res.data?.kwh_unit_overusage;
+          dispatch(setRemainingData(res.data?.kwh_unit_overusage));
+         
           dispatch(setOverUsage(true));
+          dispatch(setOverModelView(true));
+          setIsLoading(false);
         }
         console.log('first', res.data);
-        dispatch(setRemainingData(remaingData));
+        // dispatch(setRemainingData(remaingData));
         setIsLoading(false);
         //fetchWeekGraphData(getUserID);
       })
@@ -288,9 +323,11 @@ export default function EnergyStats() {
       .get(`${API}/currentplan/${userId}`)
       .then(res => {
         dispatch(setBoxTwoDataForDashboard(res?.data));
+        setIsLoading(false);
       })
       .catch(err => {
         console.log('TRTRT444444444', err);
+        setIsLoading(false);
       });
   };
   const fetchStatusdata = (userId: string) => {
@@ -299,9 +336,11 @@ export default function EnergyStats() {
       .then(res => {
         dispatch(setChargerStatus(res?.data));
         dispatch(setDeviceId(deviceIdTemp));
+        setIsLoading(false);
       })
       .catch(err => {
         console.log('TRTRT5555555555', err);
+        setIsLoading(false);
       });
   };
 
@@ -310,7 +349,7 @@ export default function EnergyStats() {
       <SafeAreaView style={{backgroundColor: COLORS.CREAM, flex: 1}}>
         <StatusBar backgroundColor={COLORS.CREAM2} barStyle={'dark-content'} />
 
-        <DrawerOpen top={PLATFORM_IOS ? 70 : 30} />
+        <DrawerOpen top={PLATFORM_IOS ? DIMENSIONS.SCREEN_WIDTH * 0.19 : 30} />
         {getDeviceID ==
         'Your Account is not currently linked with a TRO Charger. Please contact customer service if you believe this is an error.' ? (
           <View
@@ -557,7 +596,13 @@ export default function EnergyStats() {
           </View>
         ) : (
           <>
-            <View style={{marginVertical: Platform.OS == 'ios' ? -40 : -10}}>
+            <View
+              style={{
+                marginVertical:
+                  Platform.OS == 'ios'
+                    ? -(DIMENSIONS.SCREEN_HEIGHT * 0.05)
+                    : -10,
+              }}>
               <ButtonSlider2 />
             </View>
           </>

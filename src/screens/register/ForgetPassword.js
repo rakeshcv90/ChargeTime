@@ -44,7 +44,7 @@ const ForgetPassword = ({navigation}) => {
   const [showOTP, setShowOTP] = useState(false);
   const [email, setEmail] = useState('');
   const [otp, setOtp] = useState('');
-  const [remainingTime, setRemainingTime] = useState(75);
+  const [remainingTime, setRemainingTime] = useState();
   const [timerActive, setTimerActive] = useState(true);
   const [disablebutton, setdisableButton] = useState(false);
   const inputRefs = useRef([]);
@@ -54,6 +54,8 @@ const ForgetPassword = ({navigation}) => {
   const [forthDigit, setforthDigit] = useState('');
   const [fifthDigit, setfifthDigit] = useState('');
   const [sixDigit, setSixDigit] = useState('');
+  const [currentTIme, setCurrentTIme] = useState(new Date());
+  const [currentTIme1, setCurrentTIme1] = useState();
 
   const otp1 = useRef(null);
   const otp2 = useRef(null);
@@ -67,6 +69,7 @@ const ForgetPassword = ({navigation}) => {
       const timer = setInterval(() => {
         setRemainingTime(prevTime => prevTime - 1);
         setdisableButton(true);
+        setCurrentTIme1(new Date());
       }, 1000);
 
       return () => clearInterval(timer);
@@ -103,6 +106,7 @@ const ForgetPassword = ({navigation}) => {
           setForLoading(false);
           setShowOTP(true);
           setEmail(values.email);
+          setRemainingTime(res.data.timer);
         } else {
           PLATFORM_IOS
             ? Toast.show({
@@ -122,112 +126,133 @@ const ForgetPassword = ({navigation}) => {
   };
 
   const verifyOTP = async () => {
-    const otp =
-      firstDigit +
-      secondDigit +
-      thirdDigit +
-      forthDigit +
-      fifthDigit +
-      sixDigit;
-    if (otp.length == 0) {
-      PLATFORM_IOS
-        ? Toast.show({
-            type: 'error',
-            text1: 'Enter Code',
-            // position: 'bottom',
-          })
-        : ToastAndroid.show('Enter Code', ToastAndroid.SHORT);
-    } else if (otp.length < 6) {
-      PLATFORM_IOS
-        ? Toast.show({
-            type: 'error',
-            text1: 'Enter Code',
-            // position: 'bottom',
-          })
-        : ToastAndroid.show('Enter Code', ToastAndroid.SHORT);
-    } else if (email == '') {
-      PLATFORM_IOS
-        ? Toast.show({
-            type: 'error',
-            text1: 'Enter Email ID ',
-            // position: 'bottom',
-          })
-        : ToastAndroid.show('Enter Email ID', ToastAndroid.SHORT);
-    } else {
-      setForLoading(true);
+    const date1 = new Date(currentTIme);
+    const timeDifferenceInMilliseconds = currentTIme1 - date1;
+    const secondsDifference = Math.floor(timeDifferenceInMilliseconds / 1000);
+    const minutesDifference = Math.floor(secondsDifference / 60);
+    const hoursDifference = Math.floor(minutesDifference / 60);
 
-      try {
-        if (email !== '' && otp !== '') {
-          let payload = new FormData();
-          payload.append('email', email);
-          payload.append('randomotp', otp);
+    if (secondsDifference <= 180) {
+      const otp =
+        firstDigit +
+        secondDigit +
+        thirdDigit +
+        forthDigit +
+        fifthDigit +
+        sixDigit;
+      const date1 = new Date(currentTIme);
+      const timeDifferenceInMilliseconds = currentTIme1 - date1;
+      const secondsDifference = Math.floor(timeDifferenceInMilliseconds / 1000);
+      const minutesDifference = Math.floor(secondsDifference / 60);
+      const hoursDifference = Math.floor(minutesDifference / 60);
+      if (otp.length == 0) {
+        PLATFORM_IOS
+          ? Toast.show({
+              type: 'error',
+              text1: 'Enter Code',
+              // position: 'bottom',
+            })
+          : ToastAndroid.show('Enter Code', ToastAndroid.SHORT);
+      } else if (otp.length < 6) {
+        PLATFORM_IOS
+          ? Toast.show({
+              type: 'error',
+              text1: 'Enter Code',
+              // position: 'bottom',
+            })
+          : ToastAndroid.show('Enter Code', ToastAndroid.SHORT);
+      } else if (email == '') {
+        PLATFORM_IOS
+          ? Toast.show({
+              type: 'error',
+              text1: 'Enter Email ID ',
+              // position: 'bottom',
+            })
+          : ToastAndroid.show('Enter Email ID', ToastAndroid.SHORT);
+      } else {
+        setForLoading(true);
 
-          const res = await axios(`${API}/forgetverifyOtp`, {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'multipart/form-data',
-            },
-            data: payload,
-          });
-          if (res.data) {
-            if (res.data.message == 'OTP verification successful') {
-              PLATFORM_IOS
-                ? Toast.show({
-                    type: 'success',
-                    text1: 'Authentication Successful',
-                  })
-                : ToastAndroid.show(
-                    'Authentication Successful',
-                    ToastAndroid.SHORT,
-                  );
-              navigation.navigate('ResetPassword', {email: email});
-              setOtp('');
-              Clipboard.setString('');
-              setForLoading(false);
-              setFirstDigit('');
-              setsecondDigit('');
-              setthirdDigit('');
-              setforthDigit('');
-              setfifthDigit('');
-              setSixDigit('');
-            } else {
-              PLATFORM_IOS
-                ? Toast.show({
-                    type: 'error',
-                    text1: 'Invalid/Expired Code',
-                    // position: 'bottom',
-                  })
-                : ToastAndroid.show('Invalid/Expired Code', ToastAndroid.SHORT);
+        try {
+          if (email !== '' && otp !== '') {
+            let payload = new FormData();
+            payload.append('email', email);
+            payload.append('randomotp', otp);
 
-              setForLoading(false);
-              Clipboard.setString('');
-              setOtp('');
-              setFirstDigit('');
-              setsecondDigit('');
-              setthirdDigit('');
-              setforthDigit('');
-              setfifthDigit('');
-              setSixDigit('');
+            const res = await axios(`${API}/forgetverifyOtp`, {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'multipart/form-data',
+              },
+              data: payload,
+            });
+            if (res.data) {
+              if (res.data.message == 'OTP verification successful') {
+                PLATFORM_IOS
+                  ? Toast.show({
+                      type: 'success',
+                      text1: 'Authentication Successful',
+                    })
+                  : ToastAndroid.show(
+                      'Authentication Successful',
+                      ToastAndroid.SHORT,
+                    );
+                navigation.navigate('ResetPassword', {email: email});
+                setOtp('');
+                Clipboard.setString('');
+                setForLoading(false);
+                setFirstDigit('');
+                setsecondDigit('');
+                setthirdDigit('');
+                setforthDigit('');
+                setfifthDigit('');
+                setSixDigit('');
+              } else {
+                PLATFORM_IOS
+                  ? Toast.show({
+                      type: 'error',
+                      text1: 'Invalid Code',
+                      // position: 'bottom',
+                    })
+                  : ToastAndroid.show('Invalid Code', ToastAndroid.SHORT);
+
+                setForLoading(false);
+                Clipboard.setString('');
+                setOtp('');
+                setFirstDigit('');
+                setsecondDigit('');
+                setthirdDigit('');
+                setforthDigit('');
+                setfifthDigit('');
+                setSixDigit('');
+              }
             }
           }
+        } catch (error) {
+          setForLoading(false);
+          Clipboard.setString('');
+          setOtp('');
+          setFirstDigit('');
+          setsecondDigit('');
+          setthirdDigit('');
+          setforthDigit('');
+          setfifthDigit('');
+          setSixDigit('');
         }
-      } catch (error) {
-        setForLoading(false);
-        Clipboard.setString('');
-        setOtp('');
-        setFirstDigit('');
-        setsecondDigit('');
-        setthirdDigit('');
-        setforthDigit('');
-        setfifthDigit('');
-        setSixDigit('');
       }
+    } else {
+      PLATFORM_IOS
+        ? Toast.show({
+            type: 'error',
+            text1: 'Code Expired',
+            // position: 'bottom',
+          })
+        : ToastAndroid.show('Code Expired', ToastAndroid.SHORT);
     }
   };
   const resendOTp = async value => {
     const data = {email: value};
     setdisableButton(true);
-    setRemainingTime(60);
+    setRemainingTime(180);
     setTimerActive(true);
     setForLoading(true);
     setFirstDigit('');
@@ -236,6 +261,7 @@ const ForgetPassword = ({navigation}) => {
     setforthDigit('');
     setfifthDigit('');
     setSixDigit('');
+    setCurrentTIme(new Date());
     try {
       const res = await axios(`${API}/forgetPassword`, {
         method: 'POST',
@@ -333,107 +359,107 @@ const ForgetPassword = ({navigation}) => {
         keyboardDismissMode="interactive"
         showsVerticalScrollIndicator={false}
         keyboardShouldPersistTaps="handled">
-      <TouchableOpacity activeOpacity={1} onPress={() => Keyboard.dismiss()}>
-        <KeyboardAvoidingView behavior="position" style={{marginTop: 10}}>
-          {forLoading ? <ActivityLoader /> : ''}
-          <Image
-            source={require('../../../assets/images/log.png')}
-            resizeMode="contain"
-            style={{width: mobileW, height: mobileW * 0.7}}
-          />
-          <View style={styles.super_div}>
-            <Formik
-              initialValues={{
-                email: '',
-              }}
-              onSubmit={values => handleRemberPassWord(values)}
-              validationSchema={validationSchema}>
-              {({
-                values,
-                handleChange,
-                handleSubmit,
-                handleBlur,
-                errors,
-                touched,
-              }) => (
-                <View>
-                  <View style={styles.mainDiv_forget_ur_pass}>
-                    <Text style={styles.forget_password}>
-                      Forgot Your Password?
-                    </Text>
-                    <View style={{marginTop: 20}}>
-                      <Input
-                        IconLeft={null}
-                        errors={undefined}
-                        touched={false}
-                        value={values.email}
-                        onChangeText={handleChange('email')}
-                        onBlur={handleBlur('email')}
-                        text="Email"
-                        IconRight={() => <Message />}
-                        mV={1}
-                        placeholder="Enter your Email"
-                        bW={1}
-                        textWidth={ms(45)}
-                        placeholderTextColor={'gray'}
-                        autoCapitalize="none"
-                        editable={!showOTP}
-                      />
-                      {errors.email && touched.email && (
-                        <Text style={{color: 'red'}}>{errors.email}</Text>
-                      )}
+        <TouchableOpacity activeOpacity={1} onPress={() => Keyboard.dismiss()}>
+          <KeyboardAvoidingView behavior="position" style={{marginTop: 10}}>
+            {forLoading ? <ActivityLoader /> : ''}
+            <Image
+              source={require('../../../assets/images/log.png')}
+              resizeMode="contain"
+              style={{width: mobileW, height: mobileW * 0.7}}
+            />
+            <View style={styles.super_div}>
+              <Formik
+                initialValues={{
+                  email: '',
+                }}
+                onSubmit={values => handleRemberPassWord(values)}
+                validationSchema={validationSchema}>
+                {({
+                  values,
+                  handleChange,
+                  handleSubmit,
+                  handleBlur,
+                  errors,
+                  touched,
+                }) => (
+                  <View>
+                    <View style={styles.mainDiv_forget_ur_pass}>
+                      <Text style={styles.forget_password}>
+                        Forgot Your Password?
+                      </Text>
+                      <View style={{marginTop: 20}}>
+                        <Input
+                          IconLeft={null}
+                          errors={undefined}
+                          touched={false}
+                          value={values.email}
+                          onChangeText={handleChange('email')}
+                          onBlur={handleBlur('email')}
+                          text="Email"
+                          IconRight={() => <Message />}
+                          mV={1}
+                          placeholder="Enter your Email"
+                          bW={1}
+                          textWidth={ms(45)}
+                          placeholderTextColor={'gray'}
+                          autoCapitalize="none"
+                          editable={!showOTP}
+                        />
+                        {errors.email && touched.email && (
+                          <Text style={{color: 'red'}}>{errors.email}</Text>
+                        )}
+                      </View>
                     </View>
-                  </View>
 
-                  <TouchableOpacity
-                    onPress={() => handleSubmit()}
-                    disabled={showOTP}
-                    style={{
-                      // marginTop: 5,
-                      backgroundColor: showOTP
-                        ? COLORS.HALFBLACK
-                        : COLORS.GREEN,
-                      alignItems: 'center',
-                      padding: 13,
-                      borderRadius: 10,
-                      width: '100%',
-                      ...Platform.select({
-                        ios: {
-                          shadowColor: '#000000',
-                          shadowOffset: {width: 0, height: 2},
-                          shadowOpacity: 0.3,
-                          shadowRadius: 4,
-                        },
-                        android: {
-                          elevation: 4,
-                        },
-                      }),
-                    }}>
+                    <TouchableOpacity
+                      onPress={() => handleSubmit()}
+                      disabled={showOTP}
+                      style={{
+                        // marginTop: 5,
+                        backgroundColor: showOTP
+                          ? COLORS.HALFBLACK
+                          : COLORS.GREEN,
+                        alignItems: 'center',
+                        padding: 13,
+                        borderRadius: 10,
+                        width: '100%',
+                        ...Platform.select({
+                          ios: {
+                            shadowColor: '#000000',
+                            shadowOffset: {width: 0, height: 2},
+                            shadowOpacity: 0.3,
+                            shadowRadius: 4,
+                          },
+                          android: {
+                            elevation: 4,
+                          },
+                        }),
+                      }}>
+                      <Text
+                        style={{
+                          fontWeight: '700',
+                          fontSize: 14,
+                          color: COLORS.BLACK,
+                        }}>
+                        Reset Password
+                      </Text>
+                    </TouchableOpacity>
+                  </View>
+                )}
+              </Formik>
+              {showOTP && (
+                <>
+                  <View style={styles.mainDiv_verify_email}>
                     <Text
                       style={{
-                        fontWeight: '700',
-                        fontSize: 14,
                         color: COLORS.BLACK,
+                        fontSize: 14,
+                        fontWeight: '600',
                       }}>
-                      Reset Password
+                      Enter the Code Below
                     </Text>
-                  </TouchableOpacity>
-                </View>
-              )}
-            </Formik>
-            {showOTP && (
-              <>
-                <View style={styles.mainDiv_verify_email}>
-                  <Text
-                    style={{
-                      color: COLORS.BLACK,
-                      fontSize: 14,
-                      fontWeight: '600',
-                    }}>
-                    Enter the Code Below
-                  </Text>
-                  <View style={styles.otp_box}>
-                    {/* {[...Array(6)].map((_, index) => (
+                    <View style={styles.otp_box}>
+                      {/* {[...Array(6)].map((_, index) => (
                     <View style={styles.otp_box}>
                       <TouchableOpacity onLongPress={()=>{console.log("Cvdfgdgdfg222222")}} >
                       <TextInput
@@ -460,227 +486,233 @@ const ForgetPassword = ({navigation}) => {
                     </View>
                     
                   ))} */}
-                    <TextInput
-                      ref={otp1}
-                      onChangeText={value => {
-                        if (value.length >= 1) {
-                          setFirstDigit(value);
-                          otp2.current.focus();
-                        }
-                        // else setFirstDigit('');1
-                      }}
-                      keyboardType="numeric"
-                      maxLength={1}
-                      style={styles.textInput_otp}
-                      value={firstDigit}
-                      onKeyPress={({nativeEvent}) => {
-                        if (
-                          nativeEvent.key == 'Backspace' &&
-                          setFirstDigit != ' '
-                        ) {
-                          setFirstDigit('');
-                        }
-                      }}
-                    />
-                    <TextInput
-                      ref={otp2}
-                      onChangeText={value => {
-                        if (value.length >= 1) {
-                          setsecondDigit(value);
-                          otp3.current.focus();
-                        } else if (value.length < 1) {
-                          setsecondDigit('');
-                          otp1.current.focus();
-                        }
-                      }}
-                      keyboardType="numeric"
-                      maxLength={1}
-                      style={styles.textInput_otp}
-                      value={secondDigit}
-                      // onKeyPress={({nativeEvent}) => {
-                      //   if (
-                      //     nativeEvent.key == 'Backspace' &&
-                      //     setsecondDigit != ' '
-                      //   ) {
-                      //     setsecondDigit('');
+                      <TextInput
+                        ref={otp1}
+                        contextMenuHidden={true}
+                        onChangeText={value => {
+                          if (value.length >= 1) {
+                            setFirstDigit(value);
+                            otp2.current.focus();
+                          }
+                          // else setFirstDigit('');1
+                        }}
+                        keyboardType="numeric"
+                        maxLength={1}
+                        style={styles.textInput_otp}
+                        value={firstDigit}
+                        onKeyPress={({nativeEvent}) => {
+                          if (
+                            nativeEvent.key == 'Backspace' &&
+                            setFirstDigit != ' '
+                          ) {
+                            setFirstDigit('');
+                          }
+                        }}
+                      />
+                      <TextInput
+                        ref={otp2}
+                        contextMenuHidden={true}
+                        onChangeText={value => {
+                          if (value.length >= 1) {
+                            setsecondDigit(value);
+                            otp3.current.focus();
+                          } else if (value.length < 1) {
+                            setsecondDigit('');
+                            otp1.current.focus();
+                          }
+                        }}
+                        keyboardType="numeric"
+                        maxLength={1}
+                        style={styles.textInput_otp}
+                        value={secondDigit}
+                        // onKeyPress={({nativeEvent}) => {
+                        //   if (
+                        //     nativeEvent.key == 'Backspace' &&
+                        //     setsecondDigit != ' '
+                        //   ) {
+                        //     setsecondDigit('');
 
-                      //   }
-                      // }}
-                    />
-                    <TextInput
-                      keyboardType="numeric"
-                      ref={otp3}
-                      onChangeText={value => {
-                        if (value.length >= 1) {
-                          setthirdDigit(value);
-                          otp4.current.focus();
-                        } else if (value.length < 1) {
-                          setthirdDigit('');
-                          otp2.current.focus();
-                        }
-                      }}
-                      maxLength={1}
-                      style={styles.textInput_otp}
-                      value={thirdDigit}
-                      // onKeyPress={({nativeEvent}) => {
-                      //   if (
-                      //     nativeEvent.key == 'Backspace' &&
-                      //     setthirdDigit != ' '
-                      //   ) {
-                      //     setthirdDigit('');
+                        //   }
+                        // }}
+                      />
+                      <TextInput
+                        keyboardType="numeric"
+                        ref={otp3}
+                        contextMenuHidden={true}
+                        onChangeText={value => {
+                          if (value.length >= 1) {
+                            setthirdDigit(value);
+                            otp4.current.focus();
+                          } else if (value.length < 1) {
+                            setthirdDigit('');
+                            otp2.current.focus();
+                          }
+                        }}
+                        maxLength={1}
+                        style={styles.textInput_otp}
+                        value={thirdDigit}
+                        // onKeyPress={({nativeEvent}) => {
+                        //   if (
+                        //     nativeEvent.key == 'Backspace' &&
+                        //     setthirdDigit != ' '
+                        //   ) {
+                        //     setthirdDigit('');
 
-                      //   }
-                      // }}
-                    />
-                    <TextInput
-                      keyboardType="numeric"
-                      ref={otp4}
-                      onChangeText={value => {
-                        if (value.length >= 1) {
-                          setforthDigit(value);
-                          otp5.current.focus();
-                        } else if (value.length < 1) {
-                          setforthDigit('');
-                          otp3.current.focus();
-                        }
-                      }}
-                      maxLength={1}
-                      style={styles.textInput_otp}
-                      value={forthDigit}
-                      // onKeyPress={({nativeEvent}) => {
-                      //   if (
-                      //     nativeEvent.key == 'Backspace' &&
-                      //     setforthDigit != ''
-                      //   ) {
-                      //     setforthDigit('');
-                      //    otp3.current.focus();
-                      //   }
-                      // }}
-                    />
-                    <TextInput
-                      keyboardType="numeric"
-                      ref={otp5}
-                      onChangeText={value => {
-                        if (value.length >= 1) {
-                          setfifthDigit(value);
-                          otp6.current.focus();
-                        } else if (value.length < 1) {
-                          setfifthDigit('');
-                          otp4.current.focus();
-                        }
-                      }}
-                      maxLength={1}
-                      style={styles.textInput_otp}
-                      value={fifthDigit}
-                      // onKeyPress={({nativeEvent}) => {
-                      //   if (
-                      //     nativeEvent.key == 'Backspace' &&
-                      //     setfifthDigit != ' '
-                      //   ) {
-                      //     setfifthDigit('');
+                        //   }
+                        // }}
+                      />
+                      <TextInput
+                        keyboardType="numeric"
+                        ref={otp4}
+                        contextMenuHidden={true}
+                        onChangeText={value => {
+                          if (value.length >= 1) {
+                            setforthDigit(value);
+                            otp5.current.focus();
+                          } else if (value.length < 1) {
+                            setforthDigit('');
+                            otp3.current.focus();
+                          }
+                        }}
+                        maxLength={1}
+                        style={styles.textInput_otp}
+                        value={forthDigit}
+                        // onKeyPress={({nativeEvent}) => {
+                        //   if (
+                        //     nativeEvent.key == 'Backspace' &&
+                        //     setforthDigit != ''
+                        //   ) {
+                        //     setforthDigit('');
+                        //    otp3.current.focus();
+                        //   }
+                        // }}
+                      />
+                      <TextInput
+                        keyboardType="numeric"
+                        ref={otp5}
+                        contextMenuHidden={true}
+                        onChangeText={value => {
+                          if (value.length >= 1) {
+                            setfifthDigit(value);
+                            otp6.current.focus();
+                          } else if (value.length < 1) {
+                            setfifthDigit('');
+                            otp4.current.focus();
+                          }
+                        }}
+                        maxLength={1}
+                        style={styles.textInput_otp}
+                        value={fifthDigit}
+                        // onKeyPress={({nativeEvent}) => {
+                        //   if (
+                        //     nativeEvent.key == 'Backspace' &&
+                        //     setfifthDigit != ' '
+                        //   ) {
+                        //     setfifthDigit('');
 
-                      //   }
-                      // }}
-                    />
-                    <TextInput
-                      keyboardType="numeric"
-                      maxLength={1}
-                      ref={otp6}
-                      onChangeText={value => {
-                        if (value.length >= 1) {
-                          setSixDigit(value);
-                          otp6.current.focus();
-                        } else if (value.length < 1) {
-                          setSixDigit('');
-                          otp5.current.focus();
-                        }
-                      }}
-                      style={styles.textInput_otp}
-                      value={sixDigit}
-                      // onKeyPress={({nativeEvent}) => {
-                      //   if (
-                      //     nativeEvent.key == 'Backspace' &&
-                      //     setSixDigit != ' '
-                      //   ) {
-                      //     setSixDigit('');
-                      //     // otp5.current.focus();
-                      //   }
-                      // }}
-                      // onSubmitEditing={verifyOTP}
-                    />
+                        //   }
+                        // }}
+                      />
+                      <TextInput
+                        keyboardType="numeric"
+                        maxLength={1}
+                        ref={otp6}
+                        contextMenuHidden={true}
+                        onChangeText={value => {
+                          if (value.length >= 1) {
+                            setSixDigit(value);
+                            otp6.current.focus();
+                          } else if (value.length < 1) {
+                            setSixDigit('');
+                            otp5.current.focus();
+                          }
+                        }}
+                        style={styles.textInput_otp}
+                        value={sixDigit}
+                        // onKeyPress={({nativeEvent}) => {
+                        //   if (
+                        //     nativeEvent.key == 'Backspace' &&
+                        //     setSixDigit != ' '
+                        //   ) {
+                        //     setSixDigit('');
+                        //     // otp5.current.focus();
+                        //   }
+                        // }}
+                        // onSubmitEditing={verifyOTP}
+                      />
+                    </View>
+                    <View style={{marginTop: 20, alignSelf: 'center'}}>
+                      {remainingTime > 0 ? (
+                        <Text>Resend Code in {remainingTime} seconds</Text>
+                      ) : (
+                        <View>
+                          <Text>
+                            Previous Code Expired. Click Resend Code Button
+                          </Text>
+                          {/* <Text>Click Resend Code Button</Text> */}
+                        </View>
+                      )}
+                    </View>
                   </View>
-                  <View style={{marginTop: 20, alignSelf: 'center'}}>
-                    {remainingTime > 0 ? (
-                      <Text>Resend Code in {remainingTime} seconds</Text>
-                    ) : (
-                      <View>
-                        <Text>
-                          Previous Code Expired. Click Resend Code Button
-                        </Text>
-                        {/* <Text>Click Resend Code Button</Text> */}
-                      </View>
-                    )}
+                  <View style={styles.otp_yet}>
+                    <Text
+                      style={{
+                        color: COLORS.BLACK,
+                        fontSize: 14,
+                        fontWeight: '600',
+                      }}>
+                      Haven't received the code yet?
+                    </Text>
+                    <TouchableOpacity
+                      style={styles.resend_OTP_btn}
+                      disabled={disablebutton}
+                      onPress={() => resendOTp(email)}>
+                      <Text style={styles.resend_otp_text}>Resend Code</Text>
+                    </TouchableOpacity>
                   </View>
-                </View>
-                <View style={styles.otp_yet}>
-                  <Text
-                    style={{
-                      color: COLORS.BLACK,
-                      fontSize: 14,
-                      fontWeight: '600',
-                    }}>
-                    Haven't received the code yet?
-                  </Text>
                   <TouchableOpacity
-                    style={styles.resend_OTP_btn}
-                    disabled={disablebutton}
-                    onPress={() => resendOTp(email)}>
-                    <Text style={styles.resend_otp_text}>Resend Code</Text>
-                  </TouchableOpacity>
-                </View>
-                <TouchableOpacity
-                  onPress={() => verifyOTP()}
-                  style={{
-                    // marginTop: 5,
-                    backgroundColor: COLORS.GREEN,
-                    alignItems: 'center',
-                    padding: 13,
-                    borderRadius: 10,
-                    width: '100%',
-                    ...Platform.select({
-                      ios: {
-                        shadowColor: '#000000',
-                        shadowOffset: {width: 0, height: 2},
-                        shadowOpacity: 0.3,
-                        shadowRadius: 4,
-                      },
-                      android: {
-                        elevation: 4,
-                      },
-                    }),
-                  }}>
-                  <Text
+                    onPress={() => verifyOTP()}
                     style={{
-                      fontWeight: '700',
-                      fontSize: 14,
-                      color: COLORS.BLACK,
+                      // marginTop: 5,
+                      backgroundColor: COLORS.GREEN,
+                      alignItems: 'center',
+                      padding: 13,
+                      borderRadius: 10,
+                      width: '100%',
+                      ...Platform.select({
+                        ios: {
+                          shadowColor: '#000000',
+                          shadowOffset: {width: 0, height: 2},
+                          shadowOpacity: 0.3,
+                          shadowRadius: 4,
+                        },
+                        android: {
+                          elevation: 4,
+                        },
+                      }),
                     }}>
-                    Confirm Code
-                  </Text>
+                    <Text
+                      style={{
+                        fontWeight: '700',
+                        fontSize: 14,
+                        color: COLORS.BLACK,
+                      }}>
+                      Confirm Code
+                    </Text>
+                  </TouchableOpacity>
+                </>
+              )}
+              <View style={styles.mainDiv_donot_account}>
+                <Text style={styles.dont_have_text}>
+                  Remember your password?{' '}
+                </Text>
+                <TouchableOpacity onPress={() => navigation.navigate('Login')}>
+                  <Text style={styles.sign_up}>Log In</Text>
                 </TouchableOpacity>
-              </>
-            )}
-            <View style={styles.mainDiv_donot_account}>
-              <Text style={styles.dont_have_text}>
-                Remember your password?{' '}
-              </Text>
-              <TouchableOpacity onPress={() => navigation.navigate('Login')}>
-                <Text style={styles.sign_up}>Log In</Text>
-              </TouchableOpacity>
+              </View>
             </View>
-          </View>
-        </KeyboardAvoidingView>
-      </TouchableOpacity>
+          </KeyboardAvoidingView>
+        </TouchableOpacity>
       </ScrollView>
     </SafeAreaView>
   );

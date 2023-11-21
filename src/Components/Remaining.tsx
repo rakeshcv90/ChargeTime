@@ -24,6 +24,7 @@ import {
   setOverusageCount,
   setOverUsage,
   setRemainingData,
+  setOverModelView,
 } from '../redux/action';
 import AnimatedLottieView from 'lottie-react-native';
 import {useFocusEffect} from '@react-navigation/native';
@@ -58,21 +59,26 @@ const Remaining = ({...props}) => {
       .get(`${API}/remainingusage/${getUserID}`)
       .then(res => {
         setTotalAllowed(res.data?.total_kwhunit);
-        if (parseInt(res.data?.kwh_unit_remaining) > 0) {
+        if (parseInt(res.data?.kwh_unit_remaining) >0) {
           remaingData = res.data?.kwh_unit_remaining;
-          dispatch(setOverUsage(false));
-          dispatch(setOverusageCount(0));
+          dispatch(setRemainingData(res.data?.kwh_unit_remaining));
+          //dispatch(setOverUsage(false));
+          // dispatch(setOverusageCount(0));
+          // dispatch(setOverModelView(false));
         } else {
           remaingData = res.data?.kwh_unit_overusage;
-          dispatch(setOverUsage(true));
-          console.log(overusageCount, 'OVERUSAGECOUNT');
+          dispatch(setRemainingData(res.data?.kwh_unit_overusage));
+         // dispatch(setOverUsage(true));
+          // setModalVisible(true)
+          // dispatch(setOverModelView(true));
+    
           if (overusageCount < 1) {
             setModalVisible(true);
             dispatch(setOverusageCount(overusage + 1));
           }
         }
 
-        dispatch(setRemainingData(remaingData));
+      
       })
       .catch(err => {
         console.log(err);
@@ -83,58 +89,58 @@ const Remaining = ({...props}) => {
     dispatch(setOverusageCount(overusage + 1));
     navigationRef.navigate('HomeOne');
   };
-  const OverusageModal = () => {
-    return (
-      <Modal
-        animationType="fade"
-        transparent={true}
-        visible={modalVisible}
-        onRequestClose={() => {
-          // dispatch(setOverModelView(false));
-          setModalVisible(!modalVisible);
-        }}>
-        <View style={styles.centeredView}>
-          <View style={styles.modalView}>
-            <Text style={styles.modalText}>Overusage</Text>
-            <AnimatedLottieView
-              source={{
-                uri: 'https://assets6.lottiefiles.com/private_files/lf30_mf7q9oho.json',
-              }} // Replace with your animation file
-              autoPlay
-              loop
-              style={{width: 50, height: 50}}
-            />
-            <Text
-              style={{
-                fontSize: 14,
-                fontWeight: '400',
-                color: COLORS.BLACK,
-              }}>
-              You have utilized your package, please purchase a new package.
-            </Text>
-            <View style={styles.button_one}>
-              <TouchableOpacity
-                style={{
-                  borderRadius: 20,
-                  padding: 10,
-                }}
-                onPress={() => {
-                  dispatch(setOverusageCount(overusage + 1));
-                  setModalVisible(false);
-                }}>
-                <Text style={styles.textStyle}>Cancel</Text>
-              </TouchableOpacity>
-              <TouchableOpacity
-                style={[styles.button, styles.buttonClose]}
-                onPress={nav}>
-                <Text style={styles.textStyle}>Purchase Plan</Text>
-              </TouchableOpacity>
-            </View>
-          </View>
-        </View>
-      </Modal>
-    );
-  };
+  // const OverusageModal = () => {
+  //   return (
+  //     <Modal
+  //       animationType="fade"
+  //       transparent={true}
+  //       visible={modalVisible}
+  //       onRequestClose={() => {
+  //         // dispatch(setOverModelView(false));
+  //         setModalVisible(!modalVisible);
+  //       }}>
+  //       <View style={styles.centeredView}>
+  //         <View style={styles.modalView}>
+  //           <Text style={styles.modalText}>Overusage</Text>
+  //           <AnimatedLottieView
+  //             source={{
+  //               uri: 'https://assets6.lottiefiles.com/private_files/lf30_mf7q9oho.json',
+  //             }} // Replace with your animation file
+  //             autoPlay
+  //             loop
+  //             style={{width: 50, height: 50}}
+  //           />
+  //           <Text
+  //             style={{
+  //               fontSize: 14,
+  //               fontWeight: '400',
+  //               color: COLORS.BLACK,
+  //             }}>
+  //             You have utilized your package, please purchase a new package.
+  //           </Text>
+  //           <View style={styles.button_one}>
+  //             <TouchableOpacity
+  //               style={{
+  //                 borderRadius: 20,
+  //                 padding: 10,
+  //               }}
+  //               onPress={() => {
+  //                 dispatch(setOverusageCount(overusage + 1));
+  //                 setModalVisible(false);
+  //               }}>
+  //               <Text style={styles.textStyle}>Cancel</Text>
+  //             </TouchableOpacity>
+  //             <TouchableOpacity
+  //               style={[styles.button, styles.buttonClose]}
+  //               onPress={nav}>
+  //               <Text style={styles.textStyle}>Purchase Plan</Text>
+  //             </TouchableOpacity>
+  //           </View>
+  //         </View>
+  //       </View>
+  //     </Modal>
+  //   );
+  // };
 
   return (
     <>
@@ -164,7 +170,7 @@ const Remaining = ({...props}) => {
             fontSize: 12,
             lineHeight: 14,
             textTransform: 'capitalize',
-            color: overusage ? COLORS.WHITE : COLORS.BLACK,
+            color: overusage ? COLORS.BLACK  : COLORS.BLACK,
             position: 'absolute',
             top: 10,
             left: 10,
@@ -179,14 +185,16 @@ const Remaining = ({...props}) => {
             alignSelf: 'center',
             zIndex: 1,
           }}>
+
           <Text
             style={{
               fontWeight: '800',
               fontSize: 16,
               lineHeight: 20,
-              color: overusage ? COLORS.WHITE : COLORS.BLACK,
+              color: overusage ? COLORS.BLACK  : COLORS.BLACK,
             }}>
             {' '}
+
             {getRemainingData ? getRemainingData : 0}
             {' kWh'}
           </Text>
@@ -195,7 +203,7 @@ const Remaining = ({...props}) => {
               fontWeight: '700',
               fontSize: 10,
               lineHeight: 12,
-              color: overusage ? COLORS.WHITE : 'rgba(61, 61, 61, 0.9)',
+              color: overusage ? COLORS.BLACK : 'rgba(61, 61, 61, 0.9)',
             }}>
             {overusage ? 'Units Used' : 'Units Left To Be Used'}
           </Text>
@@ -208,11 +216,13 @@ const Remaining = ({...props}) => {
             // end={{x: 0, y: 1}}
             style={{
               width: '100%',
-              backgroundColor: '#AFD35E',
+              backgroundColor: PLATFORM_IOS ? 'rgba(248, 84, 84, 1)' : 'rgba(248, 98, 98, 1)',
               // borderRadius: 10,
-              height: `${(getRemainingData / totalAllowed) * 100 - 20}%`,
+            // height: `${(getRemainingData / totalAllowed) * 100 - 20}%`,'
+            height: `${100 - 20}%`,
+       
               // height: `${30 - 20}%`,
-              zIndex: -1,
+             // zIndex: -1,
               // flexDirection: 'column-reverse',
             }}
           />
@@ -266,7 +276,55 @@ const Remaining = ({...props}) => {
           </>
         )}
       </View>
-      <OverusageModal />
+      {/* <Modal
+        animationType="fade"
+        transparent={true}
+        visible={modalVisible}
+        onRequestClose={() => {
+          // dispatch(setOverModelView(false));
+          setModalVisible(!modalVisible);
+        }}>
+        <View style={styles.centeredView}>
+          <View style={styles.modalView}>
+            <Text style={styles.modalText}>Overusage</Text>
+            <AnimatedLottieView
+              source={{
+                uri: 'https://assets6.lottiefiles.com/private_files/lf30_mf7q9oho.json',
+              }} // Replace with your animation file
+              autoPlay
+              loop
+              style={{width: 50, height: 50}}
+            />
+            <Text
+              style={{
+                fontSize: 14,
+                fontWeight: '400',
+                color: COLORS.BLACK,
+              }}>
+              You have utilized your package, please purchase a new package.
+            </Text>
+            <View style={styles.button_one}>
+              <TouchableOpacity
+                style={{
+                  borderRadius: 20,
+                  padding: 10,
+                }}
+                onPress={() => {
+                  dispatch(setOverusageCount(overusage + 1));
+                  setModalVisible(false);
+                }}>
+                <Text style={styles.textStyle}>Cancel</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={[styles.button, styles.buttonClose]}
+                onPress={nav}>
+                <Text style={styles.textStyle}>Purchase Plan</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </View>
+      </Modal> */}
+      {/* <OverusageModal /> */}
     </>
   );
 };

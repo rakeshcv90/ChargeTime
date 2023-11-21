@@ -203,7 +203,8 @@ const Security = () => {
             conpassword: '',
           }}
           onSubmit={(values, action) => UpdatePassword(values, action)}
-          validationSchema={ValidateSchema}>
+          validationSchema={ValidateSchema}
+          >
           {({
             values,
             handleChange,

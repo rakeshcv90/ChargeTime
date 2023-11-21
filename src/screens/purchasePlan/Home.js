@@ -50,9 +50,8 @@ export default function Home(route) {
   const [changePage, setChangePage] = useState('');
   const Tab = createMaterialTopTabNavigator();
 
-  const {getLocationID, getBasePackage, getPackageStatus,getMyLocation} = useSelector(
-    state => state,
-  );
+  const {getLocationID, getBasePackage, getPackageStatus, getMyLocation} =
+    useSelector(state => state);
 
   const [apiData, setApiData] = useState(getBasePackage || []);
 
@@ -72,6 +71,7 @@ export default function Home(route) {
       if (response?.data?.locations.length == 0) {
         setIsLoading(true);
         setShowPackage(true);
+        dispatch(setBasePackage([]));
       } else {
         setApiData(response?.data?.locations);
         dispatch(setBasePackage(response.data.locations));
@@ -121,7 +121,6 @@ export default function Home(route) {
                 flex: 1,
                 backgroundColor: '#EEEEEE',
                 padding: 5,
-                
               }}>
               <View
                 style={{
@@ -202,13 +201,36 @@ export default function Home(route) {
                 key={ind}
                 name={item?.package_name}
                 component={TabOne}
-                initialParams={{index:ind}}
+                initialParams={{index: ind}}
               />
             );
           })}
         </Tab.Navigator>
       ) : getBasePackage.length == 1 ? (
-        <TabOne item={getBasePackage[0]} />
+        <>
+              <Tab.Navigator
+          screenOptions={{
+            activeTintColor: 'blue',
+            inactiveTintColor: 'gray',
+            labelStyle: {
+              fontSize: 16,
+              fontWeight: 'bold',
+            },
+          }}
+          tabBar={props => <MyTabBar {...props} />}>
+          {getBasePackage.map((item, ind) => {
+            return (
+              <Tab.Screen
+                key={ind}
+                name={item?.package_name}
+                component={TabOne}
+                initialParams={{index: ind}}
+              />
+            );
+          })}
+        </Tab.Navigator>
+          {/* <TabOne item={getBasePackage[0]} /> */}
+        </>
       ) : (
         <View
           style={{

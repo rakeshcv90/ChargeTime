@@ -182,69 +182,80 @@ export default function PaymentGateWay({navigation, route}) {
 
   const handleAddCard = async (values, cb) => {
     const id = await createToken({...cardtype, type: 'Card'});
-    console.log('My Card Data', id.token.id);
-    setLoader(true);
+    if (id?.error) {
 
-    let exp_month = values?.validTill?.split('/')[0];
-    let exp_year = values?.validTill?.split('/')[1];
-    // let customer_number = values?.cardNumber.split(" ").join("");
-    let cust_number = values?.cardNumber.replace(/\s/g, '').slice(0, 16);
+      PLATFORM_IOS
+        ? Toast.show({
+            type: 'error',
+            text1: 'Invalid Card!',
+          })
+        : ToastAndroid.show('Invalid Card!', ToastAndroid.SHORT);
+    }else{
 
-    setGetCard_Number(values?.cardNumber);
-    try {
-      const response = await axios.post(`${API}/addcarddetail`, {
-        user_id: getUserID,
-        stripeToken: id.token.id,
-        // cust_name: values?.cardHolderName,
-        // card_number: cust_number,
-        // card_cvc: values?.cvv,
-        // card_exp_month: exp_month,
-        // card_exp_year: exp_year,
-      });
+      setLoader(true);
 
-      if (response.data.message) {
-        // cb();
-        handleGetCard();
-        //setFocusedIndex(focusIndex+1)
-        setLoader(false);
-        setCardDetails1({
-          cardHolderName: '',
-          card_number: '',
-          card_cvv: '',
-          validTill: '',
-          // card_exp_year:'',
+      let exp_month = values?.validTill?.split('/')[0];
+      let exp_year = values?.validTill?.split('/')[1];
+      // let customer_number = values?.cardNumber.split(" ").join("");
+      let cust_number = values?.cardNumber.replace(/\s/g, '').slice(0, 16);
+  
+      setGetCard_Number(values?.cardNumber);
+      try {
+        const response = await axios.post(`${API}/addcarddetail`, {
+          user_id: getUserID,
+          stripeToken: id.token.id,
+          // cust_name: values?.cardHolderName,
+          // card_number: cust_number,
+          // card_cvc: values?.cvv,
+          // card_exp_month: exp_month,
+          // card_exp_year: exp_year,
         });
-        PLATFORM_IOS
-          ? Toast.show({
-              type: 'success',
-              text1: 'Card Details Saved.',
-            })
-          : ToastAndroid.show('Card Details Saved.', ToastAndroid.SHORT);
-      } else if (response.data.error) {
-        handleGetCard();
+  
+        if (response.data.message) {
+          // cb();
+          handleGetCard();
+          //setFocusedIndex(focusIndex+1)
+          setLoader(false);
+          setCardDetails1({
+            cardHolderName: '',
+            card_number: '',
+            card_cvv: '',
+            validTill: '',
+            // card_exp_year:'',
+          });
+          PLATFORM_IOS
+            ? Toast.show({
+                type: 'success',
+                text1: 'Card Details Saved.',
+              })
+            : ToastAndroid.show('Card Details Saved.', ToastAndroid.SHORT);
+        } else if (response.data.error) {
+          handleGetCard();
+          setLoader(false);
+          // cb();
+          setCardDetails1({
+            cardHolderName: '',
+            card_number: '',
+            card_cvv: '',
+            validTill: '',
+            // card_exp_year:'',
+          });
+          PLATFORM_IOS
+            ? Toast.show({
+                type: 'success',
+                text1: 'Card Number Already Exists.',
+              })
+            : ToastAndroid.show(
+                'Card Number Already Exists.',
+                ToastAndroid.SHORT,
+              );
+        }
+      } catch (error) {
         setLoader(false);
-        // cb();
-        setCardDetails1({
-          cardHolderName: '',
-          card_number: '',
-          card_cvv: '',
-          validTill: '',
-          // card_exp_year:'',
-        });
-        PLATFORM_IOS
-          ? Toast.show({
-              type: 'success',
-              text1: 'Card Number Already Exists.',
-            })
-          : ToastAndroid.show(
-              'Card Number Already Exists.',
-              ToastAndroid.SHORT,
-            );
+        console.error('Add Card Error', error);
       }
-    } catch (error) {
-      setLoader(false);
-      console.error('Add Card Error', error);
     }
+
   };
 
   const handleGetCard = async () => {
@@ -526,8 +537,9 @@ export default function PaymentGateWay({navigation, route}) {
                             <View
                               style={{
                                 flexDirection: 'row',
-                                justifyContent: 'flex-start',
-
+                                justifyContent: 'space-evenly',
+                                alignItems:'center',
+                                //alignSelf: 'center',
                                 marginTop: 20,
                                 marginBottom: 25,
                               }}>
@@ -634,7 +646,7 @@ export default function PaymentGateWay({navigation, route}) {
                                     backgroundColor: '#F84E4E',
                                     alignItems: 'center',
                                     padding: 13,
-                                    marginLeft: 10,
+                                    marginLeft: -40,
                                     borderRadius: 150,
                                     width: '15%',
                                   }}>
@@ -759,11 +771,11 @@ export default function PaymentGateWay({navigation, route}) {
                 )}
 
                 {Platform.OS == 'android' ? (
-                  <View style={{marginTop: 20}}>
+                  <View style={{marginTop: DIMENSIONS.SCREEN_HEIGHT * 0.01}}>
                     <HorizontalLine style={styles.line} />
                   </View>
                 ) : (
-                  <View style={{marginTop: 20}}>
+                  <View style={{marginTop: DIMENSIONS.SCREEN_HEIGHT * 0.001}}>
                     <Image
                       source={require('../../../assets/images/dotted.png')}
                       style={{width: mobileW * 1}}
@@ -771,7 +783,13 @@ export default function PaymentGateWay({navigation, route}) {
                     />
                   </View>
                 )}
-                <View style={{marginTop: 10, marginBottom: 10}}>
+                <View
+                  style={{
+                    marginTop:
+                      Platform.OS == 'android'
+                        ? DIMENSIONS.SCREEN_HEIGHT * 0.001
+                        : DIMENSIONS.SCREEN_HEIGHT * 0.02,
+                  }}>
                   <Text
                     style={{
                       fontSize: 15,
@@ -815,14 +833,14 @@ export default function PaymentGateWay({navigation, route}) {
                   cardStyle={{
                     backgroundColor: COLORS.CREAM,
                     textColor: COLORS.BLACK,
-                    borderColor: COLORS.BLACK,
-                    borderWidth: 1.5,
+                    borderColor: COLORS.HALFBLACK,
+                    borderWidth: 1,
                     borderRadius: 10,
                   }}
                   style={{
                     width: '100%',
                     height: 50,
-                    marginVertical: 30,
+                    marginVertical: DIMENSIONS.SCREEN_HEIGHT * 0.02,
                   }}
                   onCardChange={cardDetails => {
                     setComplete(cardDetails.complete);
@@ -1201,18 +1219,21 @@ const styles = StyleSheet.create({
     // marginLeft: 95,
     //alignSelf:'center',
     // marginRight: 50,
-    backgroundColor: '#CCCCCC',
     alignItems: 'center',
+    backgroundColor: '#CCCCCC',
+    //alignItems: 'center',
     padding: 10,
-    borderRadius: 60,
-    width: '70%',
+    borderRadius: 10,
+    width: '50%',
+    marginLeft:-50,
+    justifyContent: 'space-between',
   },
   default: {
     backgroundColor: '#F84E4E',
     //marginLeft: 95,
     //alignSelf:'center',
     //marginRight: 50,
-
+    //justifyContent: 'space-between',
     alignItems: 'center',
     padding: 10,
     borderRadius: 60,
@@ -1222,12 +1243,12 @@ const styles = StyleSheet.create({
   defaultText: {
     color: COLORS.BLACK,
     fontSize: 12,
-    fontWeight: '400',
+    fontWeight: '500',
   },
   makeDefaultText: {
     color: 'white',
-    fontSize: 12,
-    fontWeight: '400',
+    fontSize: 15,
+    fontWeight: '500',
   },
   line: {
     marginTop: 50,

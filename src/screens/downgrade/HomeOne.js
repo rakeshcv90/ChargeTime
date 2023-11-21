@@ -162,7 +162,7 @@ export default function HomeOne(route) {
   useEffect(() => {
     const updatedNumArray = populateNumArray();
     setNumArray(updatedNumArray);
-    console.log(getPurchaseData.data);
+
   }, [getBasePackage, getPurchaseData]);
 
   const fetchData = async () => {
@@ -174,6 +174,7 @@ export default function HomeOne(route) {
       if (response?.data?.locations.length == 0) {
         setIsLoading(true);
         setShowPackage(true);
+        dispatch(setBasePackage([]));
       } else {
         setApiData(response?.data?.locations);
         dispatch(setBasePackage(response.data.locations));
@@ -365,7 +366,7 @@ export default function HomeOne(route) {
                   key={ind}
                   name={item?.package_name}
                   component={SliderOne}
-                  initialParams={{item: item, purchageData: purchageData}}
+                  initialParams={{item: item, purchageData: purchageData,index:ind}}
                 />
               );
             })}

@@ -304,7 +304,8 @@ const styles = StyleSheet.create({
   mainDiv_installation1: {
     overflow: 'hidden',
     borderRadius: 10,
-
+    marginTop: DIMENSIONS.SCREEN_HEIGHT * 0.02,
+    marginBottom: DIMENSIONS.SCREEN_HEIGHT * 0.02,
     shadowColor: '#000000',
     shadowOffset: {
       width: 4,

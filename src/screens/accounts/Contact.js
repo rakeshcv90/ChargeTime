@@ -144,7 +144,7 @@ const Contact = () => {
             width: 110,
             position: 'absolute',
             zIndex: 99,
-            top: 23,
+            top: 18,
             left: 32,
             alignItems: 'center',
           }}>

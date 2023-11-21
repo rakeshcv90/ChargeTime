@@ -50,6 +50,7 @@
     "react-native-tab-view": "^3.5.1",
     "react-native-toast-message": "^2.1.6",
     "react-native-waveview": "^1.1.0",
+    "react-native-webview": "^13.6.2",
     "react-redux": "^8.0.7",
     "redux": "^4.2.1",
     "redux-persist": "^6.0.0",

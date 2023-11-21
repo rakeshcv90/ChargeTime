@@ -33,27 +33,38 @@ import {getCompleteData, setUserRegisterData} from '../../redux/action';
 import ActivityLoader from '../../Components/ActivityLoader';
 import AnimatedLottieView from 'lottie-react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import {Formik} from 'formik';
+import * as Yup from 'yup';
 
 const mobileW = Math.round(Dimensions.get('screen').width);
 const mobileH = Math.round(Dimensions.get('window').height);
+
+const validationSchema = Yup.object().shape({
+  addressone: Yup.string()
+    .required('Please fill the required fields.')
+    .trim('Addres Line 1 cannot include leading and trailing spaces')
+    .strict(true)
+    .min(3, 'Please Enter Full Address,'),
+});
 
 export default function CompleteProfile(props) {
   const dispatch = useDispatch();
   const {navigation, route} = props;
   const {email, user_id} = route?.params;
-
   const [locationMap, setLocationMap] = useState([]);
   const [selectedValue, setSelectedValue] = useState('');
   const [newState, setState] = useState('');
   const [newZipcode, setZipCode] = useState('');
-  const [addlineone, setAddLineOne] = useState('');
-  const [addlinetwo, setAddLineTwo] = useState('');
+  // const [addlineone, setAddLineOne] = useState('');
+  // const [addlinetwo, setAddLineTwo] = useState('');
   const [value, setValue] = useState(null);
   const [locationId, setLocationId] = useState('');
   const [isFocus, setIsFocus] = useState(false);
   const [forLoading, setForLoading] = useState(false);
   const {userRegisterData} = useSelector(state => state);
   const [modalVisible, setModalVisible] = useState(false);
+  // const [nameError, setNameError] = useState(false);
+
   useEffect(() => {
     fetchOptions();
   }, []);
@@ -81,6 +92,7 @@ export default function CompleteProfile(props) {
   };
 
   const handleSelect = (id, item) => {
+    console.log();
     setIsFocus(false);
     setSelectedValue(item.location);
     setLocationId(id);
@@ -94,94 +106,114 @@ export default function CompleteProfile(props) {
         console.log(err);
       });
   };
-  const CompleteProfileFunction = async () => {
+  const CompleteProfileFunction = async value => {
     setForLoading(true);
-    if (locationId && addlineone  && newZipcode && newState) {
-      try {
-        const payload = new FormData();
-        payload.append('locationId', locationId);
-        payload.append('addlineone', addlineone);
-        payload.append('addlinetwo', addlinetwo);
-        payload.append('newZipcode', newZipcode);
-        payload.append('newState', newState);
-        payload.append('pwa_email', userRegisterData.email);
-        payload.append('pwa_mobile', userRegisterData.mobile);
-        payload.append('pwa_password', userRegisterData.password);
-        payload.append(
-          'pwa_name',
-          userRegisterData.name + ' ' + userRegisterData.lname,
-        );
+    try {
+      const payload = new FormData();
+      payload.append('locationId', locationId);
+      payload.append('addlineone', value.addressone);
+      payload.append('addlinetwo', value.addresstwo);
+      payload.append('newZipcode', newZipcode);
+      payload.append('newState', newState);
+      payload.append('pwa_email', userRegisterData.email);
+      payload.append('pwa_mobile', userRegisterData.mobile);
+      payload.append('pwa_password', userRegisterData.password);
+      payload.append('pwa_name', userRegisterData.name);
+      payload.append('lname', userRegisterData.lname);
 
-        const res = await axios({
-          url: `${API}/completeProfile`,
-          method: 'POST',
-          headers: {
-            'Content-Type': 'multipart/form-data',
-          },
-          data: payload,
-          // data: JSON.stringify({
-          //   locationId: locationId,
-          //   addlineone: addlineone,
-          //   addlinetwo: addlinetwo,
-          //   newZipcode: newZipcode,
-          //   newState: newState,
-          //   pwa_email: userRegisterData.email,
-          //   pwa_mobile: userRegisterData.mobile,
-          //   pwa_password: userRegisterData.password,
-          //   pwa_name: userRegisterData.name,
-          // }),
-        });
-        console.log(res);
-        // .then(res => res.json())
-        if (res.data) {
-          dispatch(getCompleteData(res.data));
-          dispatch(setUserRegisterData([]));
+      const res = await axios({
+        url: `${API}/completeProfile`,
+        method: 'POST',
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+        data: payload,
+        // data: JSON.stringify({
+        //   locationId: locationId,
+        //   addlineone: addlineone,
+        //   addlinetwo: addlinetwo,
+        //   newZipcode: newZipcode,
+        //   newState: newState,
+        //   pwa_email: userRegisterData.email,
+        //   pwa_mobile: userRegisterData.mobile,
+        //   pwa_password: userRegisterData.password,
+        //   pwa_name: userRegisterData.name,
+        // }),
+      });
 
-          if (res.data.success !== false) {
-            PLATFORM_IOS
-              ? Toast.show({
-                  type: 'success',
-                  text1: 'Profile added successfully.',
-                })
-              : ToastAndroid.show(
-                  'Profile added successfully.',
-                  ToastAndroid.SHORT,
-                );
-            AsyncStorage.setItem('LoginMessage', 'null1');
+      // .then(res => res.json())
+      if (res.data) {
+        dispatch(getCompleteData(res.data));
+        dispatch(setUserRegisterData([]));
 
-            // setModalVisible(true)
-            setTimeout(async () => {
-              // setModalVisible(false)
-              navigation.navigate('Login');
-            }, 3000);
+        if (res.data.success !== false) {
+          PLATFORM_IOS
+            ? Toast.show({
+                type: 'success',
+                text1: 'Profile added successfully.',
+              })
+            : ToastAndroid.show(
+                'Profile added successfully.',
+                ToastAndroid.SHORT,
+              );
+          AsyncStorage.setItem('LoginMessage', 'null1');
 
-            setForLoading(false);
-          } else {
-            // PLATFORM_IOS
-            //   ? Toast.show({
-            //       type: 'error',
-            //       text1: 'Profile already in use',
-            //       // position: 'bottom',
-            //     })
-            //   : ToastAndroid.show('Profile already in use', ToastAndroid.SHORT);
-            setForLoading(false);
-          }
+          // setModalVisible(true)
+          setTimeout(async () => {
+            // setModalVisible(false)
+            navigation.navigate('Login');
+          }, 3000);
+
+          setForLoading(false);
+        } else {
+          // PLATFORM_IOS
+          //   ? Toast.show({
+          //       type: 'error',
+          //       text1: 'Profile already in use',
+          //       // position: 'bottom',
+          //     })
+          //   : ToastAndroid.show('Profile already in use', ToastAndroid.SHORT);
+          setForLoading(false);
         }
-      } catch (err) {
-        setForLoading(false);
       }
-    } else {
-      PLATFORM_IOS
-        ? Toast.show({
-            type: 'success',
-            text1: 'Please fill the required fields.',
-          })
-        : ToastAndroid.show(
-            'Please fill the required fields.',
-            ToastAndroid.SHORT,
-          );
+    } catch (err) {
       setForLoading(false);
     }
+    // if (addlineone.trim().length == 0) {
+    //   setForLoading(false);
+
+    //   PLATFORM_IOS
+    //     ? Toast.show({
+    //         type: 'success',
+    //         text1: 'Please fill the required fields.',
+    //       })
+    //     : ToastAndroid.show(
+    //         'Please fill the required fields.',
+    //         ToastAndroid.SHORT,
+    //       );
+    //   setForLoading(false);
+    // } else if (addlineone.length < 4) {
+    //   PLATFORM_IOS
+    //     ? Toast.show({
+    //         type: 'success',
+    //         text1: 'Please Enter Full Address,',
+    //       })
+    //     : ToastAndroid.show('Please Enter Full Address', ToastAndroid.SHORT);
+    //   setForLoading(false);
+    // } else if (locationId && addlineone && newZipcode && newState) {
+
+    // } else {
+    //   PLATFORM_IOS
+    //     ? Toast.show({
+    //         type: 'success',
+    //         text1: 'Please fill the required fields.',
+    //       })
+    //     : ToastAndroid.show(
+    //         'Please fill the required fields.',
+    //         ToastAndroid.SHORT,
+    //       );
+    //   setForLoading(false);
+    // }
   };
 
   const OverusageModal = () => {
@@ -262,90 +294,140 @@ export default function CompleteProfile(props) {
                 onChange={item => handleSelect(item.id, item)}
                 itemTextStyle={{color: 'black'}}
               />
-            </View>
+              {!selectedValue && (
+                <Text style={{color: 'red', alignSelf: 'center', fontSize: 12}}>
+                  Installation Location cannot be blank.
+                </Text>
+              )}
+              <Formik
+                initialValues={{
+                  addressone: '',
+                  addresstwo: '',
+                }}
+                enableReinitialize={true}
+                onSubmit={(values, action) => CompleteProfileFunction(values)}
+                validationSchema={validationSchema}>
+                {({
+                  values,
+                  handleChange,
+                  handleSubmit,
+                  handleBlur,
+                  errors,
+                  touched,
+                  setFieldValue,
+                  setFieldTouched,
+                  setFieldError,
+                  resetForm,
+                }) => (
+                  <>
+                    <Input
+                      IconLeft={null}
+                      errors={errors.addressone}
+                      touched={touched.addressone}
+                      value={values.addressone}
+                      // onChangeText={values => {
+                      //   setAddLineOne(values);
+                      // }}
+                      onChangeText={handleChange('addressone')}
+                      text="Address Line 1 *"
+                      IconRight={() => <Address />}
+                      mV={20}
+                      placeholder="Eg. Connecticut House"
+                      bW={1}
+                      textWidth={'45%'}
+                      placeholderTextColor={COLORS.HALFBLACK}
+                    />
 
-            <Input
-              IconLeft={null}
-              errors={undefined}
-              touched={false}
-              value={addlineone}
-              onChangeText={values => setAddLineOne(values)}
-              //onBlur={handleBlur('name')}
+                    <Input
+                      IconLeft={null}
+                      errors={errors.addresstwo}
+                      touched={touched.addresstwo}
+                      value={values.addresstwo}
+                      // onChangeText={values => setAddLineTwo(values)}
+                      onChangeText={handleChange('addresstwo')}
+                      text="Address Line 2"
+                      IconRight={() => <Address />}
+                      mV={0}
+                      placeholder="Apart Street Number-3,Block"
+                      bW={1}
+                      textWidth={'45%'}
+                      placeholderTextColor={COLORS.HALFBLACK}
+                    />
+                    <View style={styles.mainDiv_state_ZIP}>
+                      <View style={styles.zip_state_view}>
+                        <Input
+                          IconLeft={null}
+                          errors={undefined}
+                          touched={false}
+                          value={newZipcode}
+                          //     onChangeText={handleChange('name')}
+                          // onBlur={handleBlur('name')}
 
-              text="Address Line 1"
-              IconRight={() => <Address />}
-              mV={15}
-              placeholder="Eg. Connecticut House"
-              bW={1}
-              textWidth={'45%'}
-              placeholderTextColor={COLORS.HALFBLACK}
-            />
+                          text="ZIP Code"
+                          IconRight={null}
+                          mV={15}
+                          placeholder="1100000"
+                          bW={1}
+                          textWidth={'70%'}
+                          placeholderTextColor={COLORS.HALFBLACK}
+                          w="half"
+                          editable={false}
+                        />
+                      </View>
+                      <View style={styles.zip_state_view}>
+                        <Input
+                          IconLeft={null}
+                          errors={undefined}
+                          touched={false}
+                          value={newState}
+                          //     onChangeText={handleChange('name')}
+                          // onBlur={handleBlur('name')}
 
-            <Input
-              IconLeft={null}
-              errors={undefined}
-              touched={false}
-              value={addlinetwo}
-              onChangeText={values => setAddLineTwo(values)}
-              text="Address Line 2"
-              IconRight={() => <Address />}
-              mV={15}
-              placeholder="Apart Street Number-3,Block"
-              bW={1}
-              textWidth={'45%'}
-              placeholderTextColor={COLORS.HALFBLACK}
-            />
-            <View style={styles.mainDiv_state_ZIP}>
-              <View style={styles.zip_state_view}>
-                <Input
-                  IconLeft={null}
-                  errors={undefined}
-                  touched={false}
-                  value={newZipcode}
-                  //     onChangeText={handleChange('name')}
-                  // onBlur={handleBlur('name')}
-
-                  text="ZIP Code"
-                  IconRight={null}
-                  mV={15}
-                  placeholder="1100000"
-                  bW={1}
-                  textWidth={'70%'}
-                  placeholderTextColor={COLORS.HALFBLACK}
-                  w="half"
-                  editable={false}
-                />
-              </View>
-              <View style={styles.zip_state_view}>
-                <Input
-                  IconLeft={null}
-                  errors={undefined}
-                  touched={false}
-                  value={newState}
-                  //     onChangeText={handleChange('name')}
-                  // onBlur={handleBlur('name')}
-
-                  text="State"
-                  IconRight={null}
-                  mV={15}
-                  placeholder="CA"
-                  bW={1}
-                  textWidth={'50%'}
-                  placeholderTextColor={COLORS.HALFBLACK}
-                  w="half"
-                  editable={false}
-                />
-              </View>
+                          text="State"
+                          IconRight={null}
+                          mV={15}
+                          placeholder="CA"
+                          bW={1}
+                          textWidth={'50%'}
+                          placeholderTextColor={COLORS.HALFBLACK}
+                          w="half"
+                          editable={false}
+                        />
+                      </View>
+                    </View>
+                    <View
+                      style={{
+                        flexDirection: 'row',
+                        justifyContent: 'center',
+                      }}>
+                      <TouchableOpacity
+                        onPress={handleSubmit}
+                        disabled={selectedValue == '' ? true : false}
+                        style={styles.create_profile_Touchable}>
+                        <Text
+                          style={{
+                            color: COLORS.BLACK,
+                            fontSize: 14,
+                            fontWeight: '700',
+                          }}>
+                          Create Profile
+                        </Text>
+                      </TouchableOpacity>
+                    </View>
+                  </>
+                )}
+              </Formik>
             </View>
           </View>
           <View></View>
-          <View
+          {/* <View
             style={{
               flexDirection: 'row',
               justifyContent: 'center',
             }}>
             <TouchableOpacity
               onPress={CompleteProfileFunction}
+              // disabled={nameError}
               style={styles.create_profile_Touchable}>
               <Text
                 style={{
@@ -356,7 +438,7 @@ export default function CompleteProfile(props) {
                 Create Profile
               </Text>
             </TouchableOpacity>
-          </View>
+          </View> */}
         </View>
         {/* </KeyboardAvoidingView> */}
       </ScrollView>
@@ -414,6 +496,8 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     gap: 5,
+    marginLeft:4,
+    marginRight:4
   },
   zip_state_view: {
     display: 'flex',

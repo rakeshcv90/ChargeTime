@@ -14,6 +14,7 @@ import {useEffect, useState} from 'react';
 import {PLATFORM_IOS} from './src/constants/DIMENSIONS';
 import axios from 'axios';
 import {API} from './src/api/API';
+import {CommonActions} from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {
   setBasePackage,
@@ -25,22 +26,25 @@ import {
   userProfileData,
   setMaintainence,
   setMyLocation,
+  setIsAuthorized,
 } from './src/redux/action';
 
 import {PermissionsAndroid} from 'react-native';
 import { StripeProvider } from '@stripe/stripe-react-native';
+import { persistor } from './src/redux/store';
 export const navigationRef = createNavigationContainerRef();
 
-export default function App() {
+export default function App({navigation}) {
   const {maintainence} = useSelector(state => state);
   const [token1, setToken] = useState('');
   const dispatch = useDispatch();
+  
   const publishableKey =
     'pk_live_51LCrEBJPfbfzje02kM4bLe9H6mEIVNkpZwxrcNSNOA8TO0WyfSAcZhjPsCgG7pYuwdE1QjFzmd3bew2A2ch3lqCE00NG2kiGDs';
 
-  // console.log("fgfgfgfgfg555555",getLocationID)
+
   useEffect(() => {
-    setLoginMessage();
+    // setLoginMessage();
     let unsubscribe = null;
     let token = 0;
     let count = 0;
@@ -240,13 +244,15 @@ export default function App() {
           .then(res => {
             if (parseInt(res.data?.kwh_unit_remaining) > 0) {
               remaingData = res.data?.kwh_unit_remaining;
+              dispatch(setRemainingData(res.data?.kwh_unit_remaining));
               dispatch(setOverUsage(false));
             } else {
               remaingData = res.data?.kwh_unit_overusage;
+              dispatch(setRemainingData( res.data?.kwh_unit_overusage));
               dispatch(setOverUsage(true));
             }
             console.log('first', res.data);
-            dispatch(setRemainingData(remaingData));
+            
           })
           .catch(err => {
             console.log(err);
@@ -335,10 +341,10 @@ export default function App() {
           );
 
           if (response?.data?.locations.length == 0) {
-            // dispatch(setBasePackage([]));
+             dispatch(setBasePackage([]));
           } else {
             dispatch(setBasePackage(response.data.locations));
-            console.log('44444444444', response.data.locations);
+         
           }
         } catch (error) {
           console.error('Error fetching data:', error);
@@ -368,7 +374,24 @@ export default function App() {
             largeIcon: require('./assets/ic_launcher.png'),
           },
         });
-      } else {
+      } 
+      else if(notification_id ==='Deleted'){
+        notifee.displayNotification({
+          title: data?.data?.title,
+          body: data.data.message,
+
+          android: {
+            channelId: channelId,
+            smallIcon: 'custom_notification_icon',
+            largeIcon: require('./assets/ic_launcher.png'),
+          },
+        });
+        DeleteAccount()
+     
+
+      }
+      else {
+        
         notifee.displayNotification({
           title: data?.data?.title,
           body: data.data.message,
@@ -453,9 +476,9 @@ export default function App() {
       return unsubscribe;
     }
   }, []);
-  const setLoginMessage = async () => {
-    AsyncStorage.setItem('LoginMessage', 'null');
-  };
+  // const setLoginMessage = async () => {
+  //   AsyncStorage.setItem('LoginMessage', 'null');
+  // };
   // useEffect(() => {
   //   remainigUsuageData();
   // }, []);
@@ -476,6 +499,22 @@ export default function App() {
   //       console.log(err);
   //     });
   // };
+  const DeleteAccount=async()=>{
+    await AsyncStorage.clear();
+    dispatch(setIsAuthorized(false));
+    await persistor.purge();
+    navigationRef.dispatch(
+      CommonActions.reset({
+        index: 0,
+        routes: [
+          {
+            name: 'LoginStack',
+          },
+        ],
+      }),
+    );
+    // navigationRef.navigate('Login');
+  }
   return (
     <>
       <NavigationContainer ref={navigationRef}>
@@ -487,7 +526,7 @@ export default function App() {
         merchantIdentifier="merchant.identifier" // required for Apple Pay
         urlScheme="your-url-scheme" // required for 3D Secure and bank redirects
       ></StripeProvider>
-      <Toast position="bottom" />
+      <Toast  />
     </>
   );
 }

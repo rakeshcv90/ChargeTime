@@ -28,7 +28,7 @@ import {PLATFORM_IOS} from '../../constants/DIMENSIONS';
 import ActivityLoader from '../../Components/ActivityLoader';
 import AnimatedLottieView from 'lottie-react-native';
 import {useSelector} from 'react-redux';
-import Clipboard from '@react-native-clipboard/clipboard';
+// import Clipboard from '@react-native-clipboard/clipboard';
 
 //   const mobileH = Math.round(Dimensions.get('window').height);
 const mobileW = Math.round(Dimensions.get('screen').width);
@@ -41,7 +41,7 @@ export default function VerifyEmail(props) {
   const [stopTimer, setStopTimer] = useState(false);
   const [statusCheck, setStatusCheck] = useState(false);
   const [forLoading, setForLoading] = useState(false);
-  const [remainingTime, setRemainingTime] = useState(60);
+  const [remainingTime, setRemainingTime] = useState(route?.params.time);
   const [timerActive, setTimerActive] = useState(true);
   const [disablebutton, setdisableButton] = useState(false);
   const [otp, setOtp] = useState('');
@@ -52,7 +52,9 @@ export default function VerifyEmail(props) {
   const [forthDigit, setforthDigit] = useState('');
   const [fifthDigit, setfifthDigit] = useState('');
   const [sixDigit, setSixDigit] = useState('');
-
+  const [currentTIme, setCurrentTIme] = useState(new Date());
+  const [currentTIme1, setCurrentTIme1] = useState();
+  // console.log("My DATa is",route.params.time)
   const theme = useColorScheme();
   const isDark = theme === 'dark';
   const otp1 = useRef();
@@ -62,126 +64,145 @@ export default function VerifyEmail(props) {
   const otp5 = useRef();
   const otp6 = useRef();
   const {userRegisterData} = useSelector(state => state);
+
   const verifyOTP = async () => {
-    const otp =
-      firstDigit +
-      secondDigit +
-      thirdDigit +
-      forthDigit +
-      fifthDigit +
-      sixDigit;
-    if (otp.length == 0) {
-      PLATFORM_IOS
-        ? Toast.show({
-            type: 'error',
-            text1: 'Please Enter the Code',
-            // position: 'bottom',
-          })
-        : ToastAndroid.show('Please enter the Code', ToastAndroid.SHORT);
-    } else if (otp.length < 6) {
-      PLATFORM_IOS
-        ? Toast.show({
-            type: 'error',
-            text1: 'Please Enter the Code',
-            // position: 'bottom',
-          })
-        : ToastAndroid.show('Please enter the Code', ToastAndroid.SHORT);
-    } else if (email == '') {
-      PLATFORM_IOS
-        ? Toast.show({
-            type: 'error',
-            text1: 'Enter Email ID ',
-            // position: 'bottom',
-          })
-        : ToastAndroid.show('Enter Email ID', ToastAndroid.SHORT);
-    } else {
-      setForLoading(true);
-      try {
-        let payload = new FormData();
-        payload.append('email', email);
-        payload.append('otp', otp);
-        console.log('Payload', payload);
-        const res = await axios({
-          url: `${API}/verifyotp`,
-          method: 'POST',
-          headers: {
-            'Content-Type': 'multipart/form-data',
-          },
-          data: payload,
-        });
-        if (res.data) {
-          if (res.data.message !== 'Invalid OTP or OTP expired') {
-            PLATFORM_IOS
-              ? Toast.show({
-                  type: 'success',
-                  text1: 'Email Verified.',
-                })
-              : ToastAndroid.show('Email Verified.', ToastAndroid.SHORT);
-            navigation.navigate('CompleteProfile', {
-              email: email,
-              user_id: user_id,
-            });
-            setForLoading(false);
-            setFirstDigit('');
-            setsecondDigit('');
-            setthirdDigit('');
-            setforthDigit('');
-            setfifthDigit('');
-            setSixDigit('');
-            Keyboard.dismiss();
+    const date1 = new Date(currentTIme);
+    const timeDifferenceInMilliseconds = currentTIme1 - date1;
+    const secondsDifference = Math.floor(timeDifferenceInMilliseconds / 1000);
+    const minutesDifference = Math.floor(secondsDifference / 60);
+    const hoursDifference = Math.floor(minutesDifference / 60);
+
+    if (secondsDifference <= 180) {
+      const otp =
+        firstDigit +
+        secondDigit +
+        thirdDigit +
+        forthDigit +
+        fifthDigit +
+        sixDigit;
+      if (otp.length == 0) {
+        PLATFORM_IOS
+          ? Toast.show({
+              type: 'error',
+              text1: 'Please Enter the Code',
+              // position: 'bottom',
+            })
+          : ToastAndroid.show('Please enter the Code', ToastAndroid.SHORT);
+      } else if (otp.length < 6) {
+        PLATFORM_IOS
+          ? Toast.show({
+              type: 'error',
+              text1: 'Please Enter the Code',
+              // position: 'bottom',
+            })
+          : ToastAndroid.show('Please enter the Code', ToastAndroid.SHORT);
+      } else if (email == '') {
+        PLATFORM_IOS
+          ? Toast.show({
+              type: 'error',
+              text1: 'Enter Email ID ',
+              // position: 'bottom',
+            })
+          : ToastAndroid.show('Enter Email ID', ToastAndroid.SHORT);
+      } else {
+        setForLoading(true);
+        try {
+          let payload = new FormData();
+          payload.append('email', email);
+          payload.append('otp', otp);
+          console.log('Payload', payload);
+          const res = await axios({
+            url: `${API}/verifyotp`,
+            method: 'POST',
+            headers: {
+              'Content-Type': 'multipart/form-data',
+            },
+            data: payload,
+          });
+          if (res.data) {
+            if (res.data.message !== 'Invalid OTP or OTP expired') {
+              PLATFORM_IOS
+                ? Toast.show({
+                    type: 'success',
+                    text1: 'Email Verified.',
+                  })
+                : ToastAndroid.show('Email Verified.', ToastAndroid.SHORT);
+              navigation.navigate('CompleteProfile', {
+                email: email,
+                user_id: user_id,
+              });
+              setForLoading(false);
+              setFirstDigit('');
+              setsecondDigit('');
+              setthirdDigit('');
+              setforthDigit('');
+              setfifthDigit('');
+              setSixDigit('');
+              Keyboard.dismiss();
+            } else {
+              PLATFORM_IOS
+                ? Toast.show({
+                    type: 'error',
+                    text1: 'Code Invalid',
+                    // position: 'bottom',
+                  })
+                : ToastAndroid.show('Code Invalid', ToastAndroid.SHORT);
+
+              setForLoading(false);
+              setFirstDigit('');
+              setsecondDigit('');
+              setthirdDigit('');
+              setforthDigit('');
+              setfifthDigit('');
+              setSixDigit('');
+              Keyboard.dismiss();
+            }
           } else {
             PLATFORM_IOS
               ? Toast.show({
                   type: 'error',
-                  text1: 'Code Invalid/Expired',
+                  text1: 'Please fill the required details',
                   // position: 'bottom',
                 })
-              : ToastAndroid.show('Code Invalid/Expired', ToastAndroid.SHORT);
-
-            setForLoading(false);
-            setFirstDigit('');
-            setsecondDigit('');
-            setthirdDigit('');
-            setforthDigit('');
-            setfifthDigit('');
-            setSixDigit('');
-            Keyboard.dismiss();
+              : ToastAndroid.show(
+                  'Please fill the required details',
+                  ToastAndroid.SHORT,
+                );
           }
-        } else {
-          PLATFORM_IOS
-            ? Toast.show({
-                type: 'error',
-                text1: 'Please fill the required details',
-                // position: 'bottom',
-              })
-            : ToastAndroid.show(
-                'Please fill the required details',
-                ToastAndroid.SHORT,
-              );
+          setForLoading(false);
+          setFirstDigit('');
+          setsecondDigit('');
+          setthirdDigit('');
+          setforthDigit('');
+          setfifthDigit('');
+          setSixDigit('');
+          Keyboard.dismiss();
+        } catch (error) {
+          console.error('sdsfsfs11111', error);
+          setForLoading(false);
+          setFirstDigit('');
+          setsecondDigit('');
+          setthirdDigit('');
+          setforthDigit('');
+          setfifthDigit('');
+          setSixDigit('');
+          Keyboard.dismiss();
         }
-        setForLoading(false);
-        setFirstDigit('');
-        setsecondDigit('');
-        setthirdDigit('');
-        setforthDigit('');
-        setfifthDigit('');
-        setSixDigit('');
-        Keyboard.dismiss();
-      } catch (error) {
-        console.error('sdsfsfs11111', error);
-        setForLoading(false);
-        setFirstDigit('');
-        setsecondDigit('');
-        setthirdDigit('');
-        setforthDigit('');
-        setfifthDigit('');
-        setSixDigit('');
-        Keyboard.dismiss();
       }
+    } else {
+      PLATFORM_IOS
+        ? Toast.show({
+            type: 'error',
+            text1: 'Code Expired',
+            // position: 'bottom',
+          })
+        : ToastAndroid.show('Code Expired', ToastAndroid.SHORT);
     }
   };
   const resendOTp = async () => {
-    setRemainingTime(60);
+    setRemainingTime(route?.params.time);
+
+    setCurrentTIme(new Date());
     setTimerActive(true);
     setFirstDigit('');
     setsecondDigit('');
@@ -247,8 +268,17 @@ export default function VerifyEmail(props) {
   };
 
   const resendLink = async () => {
+    const now = new Date();
+    const year = now.getFullYear();
+    const month = String(now.getMonth() + 1).padStart(2, '0');
+    const day = String(now.getDate()).padStart(2, '0');
+    const hours = String(now.getHours()).padStart(2, '0');
+    const minutes = String(now.getMinutes()).padStart(2, '0');
+    const seconds = String(now.getSeconds()).padStart(2, '0');
+    var newtime = `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+
     setdisableButton(true);
-    setRemainingTime(60);
+    setRemainingTime(route?.params.time);
     setTimerActive(true);
     setFirstDigit('');
     setsecondDigit('');
@@ -260,6 +290,7 @@ export default function VerifyEmail(props) {
     try {
       let payload = new FormData();
       payload.append('pwa_email', email);
+
       const res = await axios(`${API}/resetemail`, {
         method: 'POST',
         headers: {
@@ -343,6 +374,7 @@ export default function VerifyEmail(props) {
     if (timerActive && remainingTime > 0) {
       const timer = setInterval(() => {
         setRemainingTime(prevTime => prevTime - 1);
+        setCurrentTIme1(new Date());
       }, 1000);
 
       return () => clearInterval(timer);
@@ -578,6 +610,7 @@ export default function VerifyEmail(props) {
                     autoFocus
                     style={styles.textInput_otp}
                     value={firstDigit}
+                    contextMenuHidden={true}
                     onKeyPress={({nativeEvent}) => {
                       if (
                         nativeEvent.key == 'Backspace' &&
@@ -589,6 +622,7 @@ export default function VerifyEmail(props) {
                   />
                   <TextInput
                     ref={otp2}
+                    contextMenuHidden={true}
                     onChangeText={value => {
                       if (value.length >= 1) {
                         setsecondDigit(value);
@@ -615,6 +649,7 @@ export default function VerifyEmail(props) {
                   <TextInput
                     keyboardType="numeric"
                     ref={otp3}
+                    contextMenuHidden={true}
                     onChangeText={value => {
                       if (value.length >= 1) {
                         setthirdDigit(value);
@@ -640,6 +675,7 @@ export default function VerifyEmail(props) {
                   <TextInput
                     keyboardType="numeric"
                     ref={otp4}
+                    contextMenuHidden={true}
                     onChangeText={value => {
                       if (value.length >= 1) {
                         setforthDigit(value);
@@ -665,6 +701,7 @@ export default function VerifyEmail(props) {
                   <TextInput
                     keyboardType="numeric"
                     ref={otp5}
+                    contextMenuHidden={true}
                     onChangeText={value => {
                       if (value.length >= 1) {
                         setfifthDigit(value);
@@ -690,6 +727,7 @@ export default function VerifyEmail(props) {
                   <TextInput
                     keyboardType="numeric"
                     ref={otp6}
+                    contextMenuHidden={true}
                     onChangeText={value => {
                       if (value.length >= 1) {
                         setSixDigit(value);
@@ -737,7 +775,9 @@ export default function VerifyEmail(props) {
                   // paddingVertical:20
                 }}>
                 <TouchableOpacity
-                  onPress={verifyOTP}
+                  onPress={() => {
+                    verifyOTP();
+                  }}
                   style={{
                     marginTop: 20,
                     backgroundColor: '#B1D34F',

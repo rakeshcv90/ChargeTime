@@ -137,7 +137,6 @@ const Subscription = ({navigation, route}) => {
     axios
       .get(`${API}/currentplan/${getUserID}`)
       .then(res => {
-        console.log("My current Plan is",res.data)
         setForLoading(false);
         setModalVisible(false);
 
@@ -292,7 +291,7 @@ const Subscription = ({navigation, route}) => {
         method: 'get'
       });
       if (res.data) {
-        console.log(res.data)
+        console.log("My Plan Status",res.data)
         if (res.data.PlanStatus == '0' || res.data.PlanStatus == null) {
           setText('Pause Subscription');
         } else {
@@ -365,7 +364,7 @@ const Subscription = ({navigation, route}) => {
                 paddingHorizontal: 30,
                 color: COLORS.BLACK,
               }}>
-              No (Active / Scheduled ) Package Available.
+              No (Active/Scheduled) Package Available.
             </Text>
             {/* <Text
               style={{
@@ -585,8 +584,70 @@ const Subscription = ({navigation, route}) => {
             </View>
           </ScrollView>
         )}
+         <Modal
+        animationType="slide"
+        transparent={true}
+        visible={modalVisible}
+        onRequestClose={() => {
+          setModalVisible(!modalVisible);
+        }}>
+        <View style={styles.centeredView}>
+          <View style={styles.modalView}>
+            <Text style={styles.modalText}>Cancel Subscription</Text>
+            <AnimatedLottieView
+              source={{
+                uri: 'https://assets6.lottiefiles.com/private_files/lf30_mf7q9oho.json',
+              }} // Replace with your animation file
+              autoPlay
+              loop
+              style={{width: 50, height: 50}}
+            />
+            <Text
+              style={{
+                fontSize: 14,
+                fontWeight: '400',
+                color: COLORS.BLACK,
+              }}>
+              Do you really want to cancel your Subscription
+            </Text>
+            <Text
+              style={{
+                fontSize: 14,
+                fontWeight: '400',
+                color: COLORS.RED,
+                marginVertical: 5,
+              }}>
+              All your (Active / Scheduled ) Subscriptions will be Cancelled
+            </Text>
+            <View
+              style={{
+                flexDirection: 'row',
+                justifyContent: 'flex-end',
+                alignItems: 'center',
+              }}>
+              <View style={styles.button_one}>
+                <Pressable
+                  style={{
+                    borderRadius: 20,
+                    padding: 10,
+                  }}
+                  onPress={() => setModalVisible(false)}>
+                  <Text style={styles.textStyle}>Cancel</Text>
+                </Pressable>
+              </View>
+              <View style={styles.button_one}>
+                <Pressable
+                  style={[styles.button, styles.buttonClose]}
+                  onPress={PlanCancel}>
+                  <Text style={styles.textStyle}>OK</Text>
+                </Pressable>
+              </View>
+            </View>
+          </View>
+        </View>
+      </Modal>
       </SafeAreaView>
-      <CancelModal />
+      {/* <CancelModal /> */}
       {forLoading && <ActivityLoader />}
     </>
   );

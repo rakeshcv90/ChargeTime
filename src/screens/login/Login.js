@@ -60,7 +60,9 @@ import {
   setBasePackage,
   setOverUsage,
   setSubscriptionStatus,
+  setOverModelView,
   setMaintainence,
+  setPuchaseAllPlans,
 } from '../../redux/action';
 import axios from 'axios';
 import {navigationRef} from '../../../App';
@@ -208,10 +210,13 @@ export default function Login({navigation}) {
             password: password,
             device_token: token1,
             notification_status: 'true',
+            login_status: 1,
           },
         });
+
         if (res.data) {
           // AsyncStorage.setItem('loginDataOne', JSON.stringify(data.locationid ));
+
           if (
             res.data.splash_notification == 0 ||
             res.data.splash_notification == null
@@ -233,11 +238,8 @@ export default function Login({navigation}) {
               if (res.data.status == 'All details available') {
                 dispatch(setEmailData(res.data?.email));
                 dispatch(setPackageStatus(true));
-
                 dispatch(getLocationID(res.data?.locationid));
-
                 fetchGraphData(res.data?.user_id);
-
                 dispatch(setDeviceId(''));
               } else if (
                 res.data.status ==
@@ -249,6 +251,7 @@ export default function Login({navigation}) {
                 dispatch(getLocationID(res.data?.locationid));
                 dispatch(setIsAuthorized(true));
                 getPlanCurrent(res.data?.user_id);
+                getAllPurchasePlan(res.data?.user_id);
                 dispatch(
                   setDeviceId(
                     'Your Account is not currently linked with a TRO Charger. Please contact customer service if you believe this is an error.',
@@ -272,6 +275,14 @@ export default function Login({navigation}) {
                     'Email Id does not exist!',
                     ToastAndroid.SHORT,
                   );
+              setForLoading(false);
+            } else if (res.data.status == 'Already login in another device!') {
+              PLATFORM_IOS
+                ? Toast.show({
+                    type: 'error',
+                    text1: res.data.message,
+                  })
+                : ToastAndroid.show(res.data.message, ToastAndroid.SHORT);
               setForLoading(false);
             } else {
               PLATFORM_IOS
@@ -336,16 +347,45 @@ export default function Login({navigation}) {
     axios
       .get(`${API}/dailyusagedeviceid/${userID}`)
       .then(res => {
-        dispatch(setGraphData(res.data.Dayusagewithgraph));
-        dispatch(setWeekGraphData(res.data.weeklyusagewithgraph));
-        dispatch(setMonthGraphData(res?.data.monthlyusagewithgraph));
-        dispatch(setQuarterGraphData(res?.data.threemonthusagewithgraph));
-        dispatch(setYearGraphData(res?.data.yearlyusagewithgraph));
+        console.log('Dailay Use Data is', res.data.length);
+        if (res.data.length > 0) {
+          dispatch(setGraphData(res.data.Dayusagewithgraph));
+          dispatch(setWeekGraphData(res.data.weeklyusagewithgraph));
+          dispatch(setMonthGraphData(res?.data.monthlyusagewithgraph));
+          dispatch(setQuarterGraphData(res?.data.threemonthusagewithgraph));
+          dispatch(setYearGraphData(res?.data.yearlyusagewithgraph));
 
-        dailyUsuagekwh(userID);
-        fetchBoxTwoDashboardData(userID);
-        fetchStatusdata(userID);
-        getPlanCurrent(userID);
+          dailyUsuagekwh(userID);
+          fetchBoxTwoDashboardData(userID);
+          fetchStatusdata(userID);
+          getAllPurchasePlan(userID);
+          getPlanCurrent(userID);
+        } else if (res.data.length == undefined) {
+          dispatch(setGraphData(res.data.Dayusagewithgraph));
+          dispatch(setWeekGraphData(res.data.weeklyusagewithgraph));
+          dispatch(setMonthGraphData(res?.data.monthlyusagewithgraph));
+          dispatch(setQuarterGraphData(res?.data.threemonthusagewithgraph));
+          dispatch(setYearGraphData(res?.data.yearlyusagewithgraph));
+
+          dailyUsuagekwh(userID);
+          fetchBoxTwoDashboardData(userID);
+          fetchStatusdata(userID);
+          getAllPurchasePlan(userID);
+          getPlanCurrent(userID);
+        } else {
+          dispatch(setGraphData({message}));
+          dispatch(setWeekGraphData({message}));
+          dispatch(setMonthGraphData({message}));
+          dispatch(setQuarterGraphData({message}));
+          dispatch(setYearGraphData({message}));
+
+          dailyUsuagekwh(userID);
+          fetchBoxTwoDashboardData(userID);
+          fetchStatusdata(userID);
+          getAllPurchasePlan(userID);
+          getPlanCurrent(userID);
+        }
+
         // navigation.navigate('DrawerStack');
       })
       .catch(err => {
@@ -356,6 +396,7 @@ export default function Login({navigation}) {
         dispatch(setYearGraphData({message}));
 
         getPlanCurrent(userID);
+        getAllPurchasePlan(userID);
       });
   };
 
@@ -381,13 +422,16 @@ export default function Login({navigation}) {
       .then(res => {
         if (parseInt(res.data?.kwh_unit_remaining) > 0) {
           remaingData = res.data?.kwh_unit_remaining;
+          dispatch(setRemainingData(res.data?.kwh_unit_remaining));
           dispatch(setOverUsage(false));
+          dispatch(setOverModelView(false));
         } else {
           remaingData = res.data?.kwh_unit_overusage;
-
+          dispatch(setRemainingData(res.data?.kwh_unit_overusage));
           dispatch(setOverUsage(true));
+          dispatch(setOverModelView(true));
         }
-        dispatch(setRemainingData(remaingData));
+        // dispatch(setRemainingData(remaingData));
         setForLoading(false);
       })
       .catch(err => {
@@ -426,7 +470,7 @@ export default function Login({navigation}) {
     axios
       .get(`${API}/currentplan/${userId}`)
       .then(res => {
-        console.log("CURENT PLAN", res.data)
+        console.log('CURENT PLAN', res.data);
         setForLoading(false);
         PLATFORM_IOS
           ? Toast.show({
@@ -452,19 +496,44 @@ export default function Login({navigation}) {
         console.log('Error-6', err);
       });
   };
-  const getSubscriptionStatus = data => {
-    axios
-      .get(`${API}/planstatuspauseresume/${data}/`)
-      .then(res => {
-        dispatch(setSubscriptionStatus(res.data.PlanStatus));
-      })
-      .catch(err => {
-        console.log('Error-7', err);
-      });
+  const getSubscriptionStatus = async nameid => {
+    try {
+      const response = await fetch(`${API}/planstatuspauseresume/${nameid}`);
+      const res = await response.json();
+      // console.log("CJKBBHJVCVHJCC H",res.PlanStatus)
+      dispatch(setSubscriptionStatus(res.PlanStatus));
+      setForLoading(false);
+
+    } catch (error) {
+      console.log('Error-7', error);
+      setForLoading(false);
+    }
+
+    // axios
+    //   .get(`${API}/planstatuspauseresume/${nameid}/`)
+    //   .then(res => {
+    //     console.log("CJKBBHJVCVHJCC H",res.data)
+    //     dispatch(setSubscriptionStatus(res.data.PlanStatus));
+    //     setForLoading(false);
+    //   })
+    //   .catch(err => {
+    //     console.log('Error-7', err);
+    //     setForLoading(false);
+    //   });
   };
   const sendToForgetpassword = () => {
     Clipboard.setString('');
     navigation.navigate('ForgetPassword');
+  };
+  const getAllPurchasePlan = userId => {
+    axios
+      .get(`${API}/allpurchaseplans/${userId}`)
+      .then(res => {
+        dispatch(setPuchaseAllPlans(res?.data));
+      })
+      .catch(err => {
+        console.log('Error-10', err);
+      });
   };
   return (
     <SafeAreaView style={{backgroundColor: COLORS.CREAM, flex: 1}}>
@@ -491,7 +560,7 @@ export default function Login({navigation}) {
             bW={1}
             textWidth={ms(45)}
             placeholderTextColor={COLORS.HALFBLACK}
-            keyboardType='email-address'
+            keyboardType="email-address"
             autoCapitalize="none"
           />
 
