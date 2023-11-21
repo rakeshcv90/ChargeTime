@@ -213,6 +213,7 @@ export default function Login({navigation}) {
             login_status: 1,
           },
         });
+
         if (res.data) {
           // AsyncStorage.setItem('loginDataOne', JSON.stringify(data.locationid ));
 
@@ -346,7 +347,7 @@ export default function Login({navigation}) {
     axios
       .get(`${API}/dailyusagedeviceid/${userID}`)
       .then(res => {
-        console.log("Dailay Use Data is",res.data.length )
+        console.log('Dailay Use Data is', res.data.length);
         if (res.data.length > 0) {
           dispatch(setGraphData(res.data.Dayusagewithgraph));
           dispatch(setWeekGraphData(res.data.weeklyusagewithgraph));
@@ -359,7 +360,7 @@ export default function Login({navigation}) {
           fetchStatusdata(userID);
           getAllPurchasePlan(userID);
           getPlanCurrent(userID);
-        } else if(res.data.length==undefined){
+        } else if (res.data.length == undefined) {
           dispatch(setGraphData(res.data.Dayusagewithgraph));
           dispatch(setWeekGraphData(res.data.weeklyusagewithgraph));
           dispatch(setMonthGraphData(res?.data.monthlyusagewithgraph));
@@ -371,10 +372,7 @@ export default function Login({navigation}) {
           fetchStatusdata(userID);
           getAllPurchasePlan(userID);
           getPlanCurrent(userID);
-        }
-        
-        
-        else {
+        } else {
           dispatch(setGraphData({message}));
           dispatch(setWeekGraphData({message}));
           dispatch(setMonthGraphData({message}));
@@ -498,15 +496,30 @@ export default function Login({navigation}) {
         console.log('Error-6', err);
       });
   };
-  const getSubscriptionStatus = data => {
-    axios
-      .get(`${API}/planstatuspauseresume/${data}/`)
-      .then(res => {
-        dispatch(setSubscriptionStatus(res.data.PlanStatus));
-      })
-      .catch(err => {
-        console.log('Error-7', err);
-      });
+  const getSubscriptionStatus = async nameid => {
+    try {
+      const response = await fetch(`${API}/planstatuspauseresume/${nameid}`);
+      const res = await response.json();
+      // console.log("CJKBBHJVCVHJCC H",res.PlanStatus)
+      dispatch(setSubscriptionStatus(res.PlanStatus));
+      setForLoading(false);
+
+    } catch (error) {
+      console.log('Error-7', error);
+      setForLoading(false);
+    }
+
+    // axios
+    //   .get(`${API}/planstatuspauseresume/${nameid}/`)
+    //   .then(res => {
+    //     console.log("CJKBBHJVCVHJCC H",res.data)
+    //     dispatch(setSubscriptionStatus(res.data.PlanStatus));
+    //     setForLoading(false);
+    //   })
+    //   .catch(err => {
+    //     console.log('Error-7', err);
+    //     setForLoading(false);
+    //   });
   };
   const sendToForgetpassword = () => {
     Clipboard.setString('');

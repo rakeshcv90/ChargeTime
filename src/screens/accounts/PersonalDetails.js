@@ -196,7 +196,7 @@ const PersonalDetails = ({route}) => {
           text="First Name"
           mV={5}
           textWidth={'30%'}
-          placeholderTextColor={COLORS.BLACK}
+          placeholderTextColor={COLORS.HALFBLACK}
           style={{
             color: COLORS.BLACK,
             fontFamily: 'Roboto',
@@ -233,7 +233,7 @@ const PersonalDetails = ({route}) => {
           text="Last Name"
           mV={5}
           textWidth={'30%'}
-          placeholderTextColor={COLORS.BLACK}
+          placeholderTextColor={COLORS.HALFBLACK}
           placeholder="Ex. Doe"
           style={{
             color: COLORS.BLACK,
@@ -258,6 +258,7 @@ const PersonalDetails = ({route}) => {
           bR={3}
           bW={0.4}
           bColor={COLORS.BLACK}
+          placeholder="Enter Mobile Number"
           text="Phone No."
           mV={15}
           keyboardType="numeric"

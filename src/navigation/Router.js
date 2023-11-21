@@ -531,7 +531,8 @@ const LoginStack = () => {
       <Stack.Screen
         name="Login"
         component={Login}
-        options={{gestureEnabled: false}}
+        options={{gestureEnabled: false
+        }}
       />
       <Stack.Screen name="Register" component={Register} />
       <Stack.Screen name="VerifyEmail" component={VerifyEmail} />

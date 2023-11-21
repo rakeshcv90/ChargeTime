@@ -37,13 +37,14 @@ const Introduction = ({navigation}) => {
           source={require('../../assets/images/Intro.png')}
           style={styles.splash_botm_image}
         />
-        <ScrollView >
+
         <View
           style={{
-            marginHorizontal: 30,
+            marginHorizontal: 20,
             alignItems: 'center',
             justifyContent: 'center',
-            marginVertical: 40,
+            marginTop: 30,
+            height: mobileH * 0.35,
           }}>
           <Text
             style={{
@@ -57,30 +58,40 @@ const Introduction = ({navigation}) => {
             }}>
             Manage your EV Charger
           </Text>
-          <Text
+          <ScrollView
+            showsVerticalScrollIndicator={false}
             style={{
-              fontSize: 15,
-              fontWeight: '500',
-              lineHeight: 25,
-              textAlign: 'justify',
-              color: COLORS.BLACK,
+              padding:5,
+              marginVertical: -0,
             }}>
-           ChargeTime is your passport to a seamless charging experience for your vehicle. 
-           With our app, you can effortlessly connect with your charging device remotely, 
-           giving you the power to charge your vehicle from the comfort of your fingertips. 
-           No matter where you are, initiate and monitor the charging process seamlessly. 
-           Keep tabs on your charging usage data effortlessly. 
-           Stay informed about your vehicle's power consumption and make informed decisions.
-           Upgrade or downgrade your package based on your usage needs. 
-           Our app provides you the flexibility to choose the charging plan that suits you best.
-          </Text>
+            <Text
+              style={{
+                fontSize: 15,
+                fontWeight: '500',
+                lineHeight: 25,
+                textAlign: 'justify',
+                color: '#848482',
+              }}>
+              Welcome & Thank You for choosing ChargeTime – hosted by TRO Energy
+              Solutions! is your passport to a seamless charging experience for
+              your vehicle. With our app, you can connect with your charging
+              device remotely, giving you the power to charge your vehicle from
+              the convenience of your mobile device. No matter where you are,
+              you can start and monitor the charging process seamlessly. Keep
+              tabs on your charging usage data effortlessly. Stay informed about
+              your vehicle's power consumption and make informed decisions.
+              Upgrade or downgrade your package based on your usage needs. Our
+              app provides you the flexibility to choose the charging plan that
+              suits you best.
+            </Text>
+          </ScrollView>
         </View>
         <View
           style={{
             flexDirection: 'row',
             justifyContent: 'center',
-           marginTop: mobileH < 700 ? 0 : 30,
-           marginBottom:30,
+            marginTop: mobileH < 700 ? 0 : 10,
+            marginBottom: 20,
             marginHorizontal: 20,
           }}>
           <TouchableOpacity
@@ -107,7 +118,6 @@ const Introduction = ({navigation}) => {
             <Text style={styles.btntext}>GET STARTED</Text>
           </TouchableOpacity>
         </View>
-        </ScrollView>
       </View>
     </SafeAreaView>
   );
