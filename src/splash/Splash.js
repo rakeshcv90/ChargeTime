@@ -24,7 +24,6 @@ const Splash = () => {
       duration: 1000,
       useNativeDriver: true,
     }).start(() => {
-
       setImageSource(require('../../assets/images/splash_screen_top.png'));
     });
   }, []);
@@ -32,25 +31,22 @@ const Splash = () => {
     try {
       const isFirstTime = await AsyncStorage.getItem('isFirstTime');
       if (isFirstTime === null || isFirstTime == undefined) {
-     
         setTimeout(async () => {
           await AsyncStorage.setItem('isFirstTime', 'true');
           navigationRef.navigate('Introduction');
         }, 3000);
       } else {
         //navigationRef.navigate('Login');
-         {!isAuthorized ? (
-        setTimeout(async () => {
-        navigationRef.navigate('Login');
-        },2000)
-      ) : (
-        
-        navigationRef.navigate('DrawerStack')
-      )} 
+        {
+          !isAuthorized
+            ? setTimeout(async () => {
+                navigationRef.navigate('Login');
+              }, 2000)
+            : navigationRef.navigate('DrawerStack');
+        }
       }
     } catch (error) {
       console.log('Error checking first time:', error);
-    
     }
   };
 
@@ -58,7 +54,7 @@ const Splash = () => {
   const images = [
     require('../../assets/unnamed.png'),
     require('../../assets/images/splash_screen_top.png'),
-  ]; 
+  ];
 
   const scaleValue = useRef(new Animated.Value(0)).current;
 
@@ -66,7 +62,6 @@ const Splash = () => {
     <>
       <View style={styles.container}>
         <Animated.Image
-  
           style={[
             styles.splash_image,
             {
@@ -81,7 +76,6 @@ const Splash = () => {
           style={styles.splash_botm_image}
         />
       </View>
-  
     </>
   );
 };

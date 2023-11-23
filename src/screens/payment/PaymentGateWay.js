@@ -185,7 +185,6 @@ export default function PaymentGateWay({navigation, route}) {
           })
         : ToastAndroid.show('Invalid Card!', ToastAndroid.SHORT);
     } else {
-      console.log('My Card Data11111', id);
       setLoader(true);
       let payload = new FormData();
       // let exp_month = cardData?.validTill?.split('/')[0];
@@ -201,8 +200,8 @@ export default function PaymentGateWay({navigation, route}) {
       payload.append('user_id', getUserID);
       payload.append('stripeToken', id.token.id);
       payload.append('voucherCode', coupon == null ? '' : coupon);
-     payload.append('coupon_id', couponcode == null ? '' : couponcode);
-     console.log("PAYLOAD DATA",payload)
+      payload.append('coupon_id', couponcode == null ? '' : couponcode);
+      console.log('PAYLOAD DATA', payload);
 
       try {
         const response = await axios.post(`${API}/checkout`, payload, {
@@ -210,8 +209,18 @@ export default function PaymentGateWay({navigation, route}) {
             'Content-Type': 'multipart/form-data',
           },
         });
-        if ((response.data.status = 'success')) {
-          // handleAddCard(values)
+        console.log('My Test123', response.data.status);
+        if (response.data.status == 'Same package allready purchased') {
+          PLATFORM_IOS
+            ? Toast.show({
+                type: 'error',
+                text1: response.data.status,
+              })
+            : ToastAndroid.show(response.data.status, ToastAndroid.SHORT);
+          setModalVisible1(false);
+          setLoader(false);
+          getDeviceIDData()
+        } else if (response.data.status == 'success') {
           setModalVisible(true);
           setModalVisible1(false);
           setLoader(false);
@@ -227,6 +236,32 @@ export default function PaymentGateWay({navigation, route}) {
           setModalVisible1(false);
           setLoader(false);
         }
+        // if ((response.data.status = 'success')) {
+        //   // handleAddCard(values)
+        //   setModalVisible(true);
+        //   setModalVisible1(false);
+        //   setLoader(false);
+        //   setshow(false);
+        //   setshow1(true);
+        // } else if (response.data.message == 'Same package allready purchased') {
+        //   PLATFORM_IOS
+        //     ? Toast.show({
+        //         type: 'success',
+        //         text1: response.data.message,
+        //       })
+        //     : ToastAndroid.show(response.data.message, ToastAndroid.SHORT);
+        //   setModalVisible2(false);
+        //   setLoader(false);
+        // } else {
+        //   PLATFORM_IOS
+        //     ? Toast.show({
+        //         type: 'success',
+        //         text1: 'Invalid Card Details !',
+        //       })
+        //     : ToastAndroid.show('Invalid Card Details !', ToastAndroid.SHORT);
+        //   setModalVisible1(false);
+        //   setLoader(false);
+        // }
       } catch (err) {
         setLoader(false);
         console.log('test111111', err);
@@ -285,14 +320,25 @@ export default function PaymentGateWay({navigation, route}) {
           'Content-Type': 'multipart/form-data',
         },
       });
-      if ((response.data.status = 'success')) {
-        // handleAddCard(values)
+      console.log('My Test', response.data);
+      if (response.data.status == 'Same package allready purchased') {
+        PLATFORM_IOS
+          ? Toast.show({
+              type: 'error',
+              text1: response.data.status,
+            })
+          : ToastAndroid.show(response.data.status, ToastAndroid.SHORT);
+        setModalVisible2(false);
+        setLoader(false);
+        getDeviceIDData()
+      } else if (response.data.status == 'success') {
         setModalVisible(true);
         setModalVisible2(false);
         setLoader(false);
         setshow(false);
         setshow1(true);
       } else {
+        console.log('sdfdsfdsfsdfsdfsdfsdfds');
         PLATFORM_IOS
           ? Toast.show({
               type: 'success',
@@ -302,6 +348,22 @@ export default function PaymentGateWay({navigation, route}) {
         setModalVisible2(false);
         setLoader(false);
       }
+      // if ((response.data.status = 'success')) {
+      //   // handleAddCard(values)
+      //   setModalVisible(true);
+      //   setModalVisible2(false);
+      //   setLoader(false);
+      //   setshow(false);
+      //   setshow1(true);
+      // } else if ((response.data.status=='Same package allready purchased')) {
+      //   PLATFORM_IOS
+      //     ? Toast.show({
+      //         type: 'success',
+      //         text1: response.data.message,
+      //       })
+      //     : ToastAndroid.show(response.data.message, ToastAndroid.SHORT);
+      //   setModalVisible2(false);
+      //   setLoader(false);
     } catch (err) {
       console.log('TEsting Data', err);
       setLoader(false);
@@ -338,15 +400,15 @@ export default function PaymentGateWay({navigation, route}) {
           if (route.params.purchageData == 'DOWNGRADE') {
             dispatch(setDeviceId(res.data.message));
             getPlanCurrent();
-            getAllPurchasePlan()
+            getAllPurchasePlan();
             navigationRef.navigate('Home');
           }
           dispatch(setDeviceId(res.data.message));
           getPlanCurrent();
-          getAllPurchasePlan()
+          getAllPurchasePlan();
         } else {
           getPlanCurrent();
-          getAllPurchasePlan()
+          getAllPurchasePlan();
           dispatch(setDeviceId(res.data.message));
           navigationRef.navigate('DrawerStack');
 
@@ -380,16 +442,16 @@ export default function PaymentGateWay({navigation, route}) {
         console.log(err);
       });
   };
-  const getAllPurchasePlan=(userId)=>{
+  const getAllPurchasePlan = userId => {
     axios
-    .get(`${API}/allpurchaseplans/${getUserID}`)
-    .then(res => {
-      dispatch(setPuchaseAllPlans(res?.data));
-    })
-    .catch(err => {
-      console.log('Error-10', err);
-    });
-  }
+      .get(`${API}/allpurchaseplans/${getUserID}`)
+      .then(res => {
+        dispatch(setPuchaseAllPlans(res?.data));
+      })
+      .catch(err => {
+        console.log('Error-10', err);
+      });
+  };
 
   function formatCreditCardNumber(cardNumber) {
     const digitsOnly = cardNumber.replace(/\D/g, '');
@@ -532,14 +594,13 @@ export default function PaymentGateWay({navigation, route}) {
     }
   };
   const updatePacakgeData = async () => {
-
     try {
       const response = await axios.get(
         `${API}/packagePlan/${route.params.data.id}`,
       );
 
       if (response?.data?.locations.length == 0) {
-         dispatch(setBasePackage([]));
+        dispatch(setBasePackage([]));
       } else {
         dispatch(setBasePackage(response.data.locations));
         const datafilter = response.data.locations.filter(item => {
@@ -620,13 +681,18 @@ export default function PaymentGateWay({navigation, route}) {
                     }}>
                     Thank you for subscribing!
                   </Text>
-                  <TouchableOpacity style={[styles.button, styles.buttonClose,styles.button_one]}
-                  // style={[styles.button, styles.buttonClose]}
-                  onPress={getDeviceIDData}>
+                  <TouchableOpacity
+                    style={[
+                      styles.button,
+                      styles.buttonClose,
+                      styles.button_one,
+                    ]}
+                    // style={[styles.button, styles.buttonClose]}
+                    onPress={getDeviceIDData}>
                     {/* <Pressable */}
-                      
-                      {/* > */}
-                      <Text style={styles.textStyle}>OK</Text>
+
+                    {/* > */}
+                    <Text style={styles.textStyle}>OK</Text>
                     {/* </Pressable> */}
                   </TouchableOpacity>
                 </View>
@@ -721,7 +787,7 @@ export default function PaymentGateWay({navigation, route}) {
                                         {String(item.cust_name)}
                                       </Text>
                                     </View> */}
-                                      <View style={{gap: ms(5),top:-10}}>
+                                      <View style={{gap: ms(5), top: -10}}>
                                         <Text
                                           style={{
                                             fontWeight: '600',
@@ -745,7 +811,7 @@ export default function PaymentGateWay({navigation, route}) {
                                           )}
                                         </Text>
                                       </View>
-                                      <View style={{gap: ms(5),top:-10}}>
+                                      <View style={{gap: ms(5), top: -10}}>
                                         <Text
                                           style={{
                                             fontWeight: '600',
@@ -1100,9 +1166,9 @@ export default function PaymentGateWay({navigation, route}) {
                           updatePacakgeData();
                         }}
                         style={{
-                        alignSelf:'flex-end',
-                  
-                          width:DIMENSIONS.SCREEN_WIDTH*0.3
+                          alignSelf: 'flex-end',
+
+                          width: DIMENSIONS.SCREEN_WIDTH * 0.3,
                         }}>
                         <Text style={styles.couponText}>Apply Coupon </Text>
                       </TouchableOpacity>
@@ -1332,20 +1398,25 @@ export default function PaymentGateWay({navigation, route}) {
 
               <View style={{flexDirection: 'row'}}>
                 {/* <View style={styles.button_one}> */}
-                  <TouchableOpacity
-                    style={[styles.button, styles.buttonClose,styles.button_one]}
-                    onPress={() => {
-                      setModalVisible1(false);
-                    }}>
-                    <Text style={styles.textStyle}>Cancel</Text>
-                  </TouchableOpacity>
+                <TouchableOpacity
+                  style={[styles.button, styles.buttonClose, styles.button_one]}
+                  onPress={() => {
+                    setModalVisible1(false);
+                  }}>
+                  <Text style={styles.textStyle}>Cancel</Text>
+                </TouchableOpacity>
                 {/* </View> */}
                 {/* <View style={[styles.button_one, {marginHorizontal: 15}]}> */}
-                  <TouchableOpacity
-                    style={[styles.button, styles.buttonClose,styles.button_one, {marginHorizontal: 15}]}
-                    onPress={handlePaymentSubmit}>
-                    <Text style={styles.textStyle}>Submit</Text>
-                  </TouchableOpacity>
+                <TouchableOpacity
+                  style={[
+                    styles.button,
+                    styles.buttonClose,
+                    styles.button_one,
+                    {marginHorizontal: 15},
+                  ]}
+                  onPress={handlePaymentSubmit}>
+                  <Text style={styles.textStyle}>Submit</Text>
+                </TouchableOpacity>
                 {/* </View> */}
               </View>
             </View>
@@ -1432,20 +1503,25 @@ export default function PaymentGateWay({navigation, route}) {
 
               <View style={{flexDirection: 'row'}}>
                 {/* <View style={styles.button_one}> */}
-                  <TouchableOpacity
-                    style={[styles.button, styles.buttonClose,styles.button_one]}
-                    onPress={() => {
-                      setModalVisible2(false);
-                    }}>
-                    <Text style={styles.textStyle}>Cancel</Text>
-                  </TouchableOpacity>
+                <TouchableOpacity
+                  style={[styles.button, styles.buttonClose, styles.button_one]}
+                  onPress={() => {
+                    setModalVisible2(false);
+                  }}>
+                  <Text style={styles.textStyle}>Cancel</Text>
+                </TouchableOpacity>
                 {/* </View> */}
                 {/* <View style={[styles.button_one, {marginHorizontal: 15}]}> */}
-                  <TouchableOpacity
-                    style={[styles.button, styles.buttonClose,styles.button_one, {marginHorizontal: 15}]}
-                    onPress={handleCardSubmit}>
-                    <Text style={styles.textStyle}>Submit</Text>
-                  </TouchableOpacity>
+                <TouchableOpacity
+                  style={[
+                    styles.button,
+                    styles.buttonClose,
+                    styles.button_one,
+                    {marginHorizontal: 15},
+                  ]}
+                  onPress={handleCardSubmit}>
+                  <Text style={styles.textStyle}>Submit</Text>
+                </TouchableOpacity>
                 {/* </View> */}
               </View>
             </View>
