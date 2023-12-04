@@ -9,13 +9,16 @@ import Router from './src/navigation/Router';
 import Maintainence from './src/Components/Maintainence';
 import {useDispatch, useSelector} from 'react-redux';
 import messaging from '@react-native-firebase/messaging';
-import notifee, {EventType} from '@notifee/react-native';
+import notifee, {AndroidStyle, EventType} from '@notifee/react-native';
 import {useEffect, useState} from 'react';
 import {PLATFORM_IOS} from './src/constants/DIMENSIONS';
 import axios from 'axios';
 import {API} from './src/api/API';
 import {CommonActions} from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import codePush from 'react-native-code-push';
+import {View, Text, ActivityIndicator, } from 'react-native';
+
 import {
   setBasePackage,
   setChargerStatus,
@@ -29,19 +32,26 @@ import {
   setIsAuthorized,
 } from './src/redux/action';
 
-import {PermissionsAndroid} from 'react-native';
-import { StripeProvider } from '@stripe/stripe-react-native';
-import { persistor } from './src/redux/store';
+import {Modal, PermissionsAndroid} from 'react-native';
+import {StripeProvider} from '@stripe/stripe-react-native';
+import {persistor} from './src/redux/store';
 export const navigationRef = createNavigationContainerRef();
 
-export default function App({navigation}) {
+let codePushOptions = {checkFrequency: codePush.CheckFrequency.MANUAL};
+
+const App = ({navigation}) => {
   const {maintainence} = useSelector(state => state);
   const [token1, setToken] = useState('');
+  const [progress, setProgress] = useState(false);
   const dispatch = useDispatch();
-  
+
+  //For Ios
+  //appcenter codepush release-react -a rakeshrao/TRO-ChargeTIme -d Production
+
+  //For Android
+  //appcenter codepush release-react -a rakeshrao/TRO-ChargeTimeAndroid -d Production
   const publishableKey =
     'pk_live_51LCrEBJPfbfzje02kM4bLe9H6mEIVNkpZwxrcNSNOA8TO0WyfSAcZhjPsCgG7pYuwdE1QjFzmd3bew2A2ch3lqCE00NG2kiGDs';
-
 
   useEffect(() => {
     // setLoginMessage();
@@ -84,8 +94,16 @@ export default function App({navigation}) {
             // this.removeDeliveredNotification(notification.notificationId)
           }
         });
+        unsubscribe = messaging().getInitialNotification(remoteMessage => {
+          if (remoteMessage) {
+            // const notification = remoteMessage.notification;
+            //onOpenNotification(notification)
 
-        const initialNotification = await notifee.getInitialNotification();
+            onDisplayNotification(remoteMessage);
+            // this.removeDeliveredNotification(notification.notificationId)
+          }
+        });
+        // const initialNotification = await notifee.getInitialNotification();
 
         unsubscribe = messaging().onMessage(async remoteMessage => {
           onDisplayNotification(remoteMessage);
@@ -248,11 +266,10 @@ export default function App({navigation}) {
               dispatch(setOverUsage(false));
             } else {
               remaingData = res.data?.kwh_unit_overusage;
-              dispatch(setRemainingData( res.data?.kwh_unit_overusage));
+              dispatch(setRemainingData(res.data?.kwh_unit_overusage));
               dispatch(setOverUsage(true));
             }
             console.log('first', res.data);
-            
           })
           .catch(err => {
             console.log(err);
@@ -307,6 +324,7 @@ export default function App({navigation}) {
             channelId: channelId,
             smallIcon: 'custom_notification_icon',
             largeIcon: require('./assets/ic_launcher.png'),
+            //style:{ type: AndroidStyle.BIGPICTURE, picture: require('./assets/images/car_one.png') }
           },
         });
 
@@ -324,7 +342,7 @@ export default function App({navigation}) {
           console.error('Error222', error);
         }
       } else if (notification_id === 'Price') {
-        console.log(data)
+        console.log(data);
         notifee.displayNotification({
           title: data.data.message,
           //body: data.data.message,
@@ -341,10 +359,9 @@ export default function App({navigation}) {
           );
 
           if (response?.data?.locations.length == 0) {
-             dispatch(setBasePackage([]));
+            dispatch(setBasePackage([]));
           } else {
             dispatch(setBasePackage(response.data.locations));
-         
           }
         } catch (error) {
           console.error('Error fetching data:', error);
@@ -374,8 +391,7 @@ export default function App({navigation}) {
             largeIcon: require('./assets/ic_launcher.png'),
           },
         });
-      } 
-      else if(notification_id ==='Deleted'){
+      } else if (notification_id === 'Deleted') {
         notifee.displayNotification({
           title: data?.data?.title,
           body: data.data.message,
@@ -386,12 +402,8 @@ export default function App({navigation}) {
             largeIcon: require('./assets/ic_launcher.png'),
           },
         });
-        DeleteAccount()
-     
-
-      }
-      else {
-        
+        DeleteAccount();
+      } else {
         notifee.displayNotification({
           title: data?.data?.title,
           body: data.data.message,
@@ -476,6 +488,91 @@ export default function App({navigation}) {
       return unsubscribe;
     }
   }, []);
+  useEffect(() => {
+    codePush.sync(
+      {
+        updateDialog: true,
+        installMode: codePush.InstallMode.IMMEDIATE,
+       // installMode: codePush.InstallMode.MANUAL,
+      },
+      codePushStatusDidChange,
+      codePushDownloadDidProgress,
+    );
+  }, []);
+  const codePushStatusDidChange = syncStatus => {
+    switch (syncStatus) {
+      case codePush.SyncStatus.CHECKING_FOR_UPDATE:
+        console.log('Checking for update.');
+        break;
+      case codePush.SyncStatus.DOWNLOADING_PACKAGE:
+        console.log('Download packaging....');
+        break;
+      case codePush.SyncStatus.AWAITING_USER_ACTION:
+        console.log('Awaiting user action....');
+        break;
+      case codePush.SyncStatus.INSTALLING_UPDATE:
+        console.log('Installing update');
+        setProgress(false);
+        break;
+      case codePush.SyncStatus.UP_TO_DATE:
+        console.log('codepush status up to date');
+        break;
+      case codePush.SyncStatus.UPDATE_IGNORED:
+        console.log('update cancel by user');
+        setProgress(false);
+        break;
+      case codePush.SyncStatus.UPDATE_INSTALLED:
+        console.log('Update installed and will be applied on restart.');
+        setProgress(false);
+        break;
+      case codePush.SyncStatus.UNKNOWN_ERROR:
+        console.log('An unknown error occurred');
+        setProgress(false);
+        break;
+    }
+  };
+  const codePushDownloadDidProgress = progress => {
+    setProgress(progress);
+  };
+  const showProgressView = () => {
+    return (
+      <Modal visible={true} transparent>
+        <View
+          style={{
+            flex: 1,
+            backgroundColor: 'rgba(0,0,0,0.8)',
+            justifyContent: 'center',
+            alignItems: 'center',
+          }}>
+          <View
+            style={{
+              backgroundColor: 'white',
+              borderRadius: 8,
+              padding: 16,
+            }}>
+            <Text>In Progress.......</Text>
+
+            <View style={{alignItems: 'center'}}>
+              <Text style={{marginTop: 16}}>{`${(
+                Number(progress?.receivedBytes) / 1048576
+              ).toFixed(2)}MB/${(
+                Number(progress?.totalBytes) / 1048576
+              ).toFixed(2)}`}</Text>
+              <ActivityIndicator style={{marginVertical: 8}} color={'blue'} />
+              <Text>
+                {(
+                  (Number(progress?.receivedBytes) /
+                    Number(progress?.totalBytes)) *
+                  100
+                ).toFixed(0)}
+                %
+              </Text>
+            </View>
+          </View>
+        </View>
+      </Modal>
+    );
+  };
   // const setLoginMessage = async () => {
   //   AsyncStorage.setItem('LoginMessage', 'null');
   // };
@@ -499,7 +596,7 @@ export default function App({navigation}) {
   //       console.log(err);
   //     });
   // };
-  const DeleteAccount=async()=>{
+  const DeleteAccount = async () => {
     await AsyncStorage.clear();
     dispatch(setIsAuthorized(false));
     await persistor.purge();
@@ -514,7 +611,7 @@ export default function App({navigation}) {
       }),
     );
     // navigationRef.navigate('Login');
-  }
+  };
   return (
     <>
       <NavigationContainer ref={navigationRef}>
@@ -526,7 +623,9 @@ export default function App({navigation}) {
         merchantIdentifier="merchant.identifier" // required for Apple Pay
         urlScheme="your-url-scheme" // required for 3D Secure and bank redirects
       ></StripeProvider>
-      <Toast  />
+      <Toast />
+      {!!progress ? showProgressView() : null}
     </>
   );
-}
+};
+export default codePush(codePushOptions)(App);

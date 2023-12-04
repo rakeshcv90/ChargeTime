@@ -210,7 +210,7 @@ export default function Login({navigation}) {
             password: password,
             device_token: token1,
             notification_status: 'true',
-            login_status: 1,
+            login_status: 0,
           },
         });
 
