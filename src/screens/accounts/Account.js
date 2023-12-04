@@ -277,7 +277,7 @@ console.log("User Id",getUserID)
               </View>
             </TouchableOpacity>
           )})}
-          <View style={styles.row}>
+          {/* <View style={styles.row}>
             <Image
               source={require('../../../assets/images/Theme.png')}
               style={styles.icon}
@@ -286,7 +286,7 @@ console.log("User Id",getUserID)
             <TouchableOpacity style={styles.button}>
               <Text style={styles.buttonText}>Follow System</Text>
             </TouchableOpacity>
-          </View>
+          </View> */}
           <View style={styles.addContainer}>
             <TouchableOpacity
               style={styles.listItem}
