@@ -45,7 +45,7 @@ const App = ({navigation}) => {
   const [progress, setProgress] = useState(false);
   const dispatch = useDispatch();
 
-  //For Ios
+  //For Ios also use before use code Push (appcenter login)
   //appcenter codepush release-react -a rakeshrao/TRO-ChargeTIme -d Production
 
   //For Android
