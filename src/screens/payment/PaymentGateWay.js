@@ -210,7 +210,7 @@ export default function PaymentGateWay({navigation, route}) {
           },
         });
         console.log('My Test123', response.data.status);
-        if (response.data.status == 'Same package allready purchased') {
+        if (response.data.status == 'Same package already purchased') {
           PLATFORM_IOS
             ? Toast.show({
                 type: 'error',
@@ -219,7 +219,7 @@ export default function PaymentGateWay({navigation, route}) {
             : ToastAndroid.show(response.data.status, ToastAndroid.SHORT);
           setModalVisible1(false);
           setLoader(false);
-          getDeviceIDData()
+          getDeviceIDData();
         } else if (response.data.status == 'success') {
           setModalVisible(true);
           setModalVisible1(false);
@@ -330,7 +330,7 @@ export default function PaymentGateWay({navigation, route}) {
           : ToastAndroid.show(response.data.status, ToastAndroid.SHORT);
         setModalVisible2(false);
         setLoader(false);
-        getDeviceIDData()
+        getDeviceIDData();
       } else if (response.data.status == 'success') {
         setModalVisible(true);
         setModalVisible2(false);
@@ -500,6 +500,7 @@ export default function PaymentGateWay({navigation, route}) {
     }
   };
   const coupenDetail = data => {
+   // console.log("DSDSD444444",route.params.details.locations[0])
     if (data == null) {
       setCoupenError('Enter Coupon Code');
       setCoupenStates(true);
@@ -512,20 +513,30 @@ export default function PaymentGateWay({navigation, route}) {
       setLoader(true);
       axios
         .get(
-          `${API}/couponpricetblvalid/${data}/${route.params.details.locations[0].price_stripe_id}`,
+          `${API}/couponpricetblvalid/${data}/${route.params.details.locations[0].id}/${route.params.details.locations[0].package_name}`,
         )
         .then(res => {
           setLoader(false);
-          console.log('fsfdsfds', res.data.couponstatus);
-          if (res.data.couponstatus == 'true' && voucherStatus) {
-            setCoupenError('Coupon Applied!');
-            setCoupenStates(true);
-            setColor(true);
+          console.log('Responser Coupan', res.data);
+          if (res.data.couponstatus == 'true') {
+            getVoucherDetails(res.data.coupon_id);
+            setCoupencode(res.data.coupon_id);
+            
           } else {
             setCoupenError('Coupon Expired/Invalid!');
             setCoupenStates(true);
             setColor(false);
           }
+
+          // if (res.data.couponstatus == 'true' && voucherStatus) {
+          //   setCoupenError('Coupon Applied!');
+          //   setCoupenStates(true);
+          //   setColor(true);
+          // } else {
+          //   setCoupenError('Coupon Expired/Invalid!');
+          //   setCoupenStates(true);
+          //   setColor(false);
+          // }
         })
         .catch(err => {
           console.log(err);
@@ -593,46 +604,58 @@ export default function PaymentGateWay({navigation, route}) {
       setModalVisible2(true);
     }
   };
-  const updatePacakgeData = async () => {
-    try {
-      const response = await axios.get(
-        `${API}/packagePlan/${route.params.data.id}`,
-      );
+  // const updatePacakgeData = async () => {
+  //   try {
+  //     const response = await axios.get(
+  //       `${API}/packagePlan/${route.params.data.id}`,
+  //     );
 
-      if (response?.data?.locations.length == 0) {
-        dispatch(setBasePackage([]));
-      } else {
-        dispatch(setBasePackage(response.data.locations));
-        const datafilter = response.data.locations.filter(item => {
-          return item.package_name == route.params.data.package_name;
-        });
-        console.log('666666666666666', datafilter[0].coupon_id);
-        if (datafilter[0].coupon_id != undefined) {
-          getVoucherDetails(datafilter[0].coupon_id);
-          setCoupencode(datafilter[0].coupon_id);
-          setshow(true);
-          setshow1(false);
-        } else {
-          PLATFORM_IOS
-            ? Toast.show({
-                type: 'error',
-                text1: 'Coupon Not Available',
-              })
-            : ToastAndroid.show('Coupon Not Available', ToastAndroid.SHORT);
-        }
-      }
-    } catch (error) {
-      console.error('Error fetching data:', error);
-    }
-  };
+  //     if (response?.data?.locations.length == 0) {
+  //       dispatch(setBasePackage([]));
+  //     } else {
+  //       dispatch(setBasePackage(response.data.locations));
+  //       const datafilter = response.data.locations.filter(item => {
+  //         return item.package_name == route.params.data.package_name;
+  //       });
+  //       console.log('Location Details', datafilter);
+  //       if (datafilter[0].coupon_id != undefined) {
+  //         // getVoucherDetails(datafilter[0].coupon_id);
+  //         // setCoupencode(datafilter[0].coupon_id);
+  //         setshow(true);
+  //         setshow1(false);
+  //       } else {
+  //         PLATFORM_IOS
+  //           ? Toast.show({
+  //               type: 'error',
+  //               text1: 'Coupon Not Available',
+  //             })
+  //           : ToastAndroid.show('Coupon Not Available', ToastAndroid.SHORT);
+  //       }
+  //     }
+  //   } catch (error) {
+  //     console.error('Error fetching data:', error);
+  //   }
+  // };
   const getVoucherDetails = data => {
-    console.log('666666666666666', data);
     axios
       .get(`${API}/couponret/${data}`)
       .then(res => {
-        console.log('666666666666666', res.data);
-        //setvoucherStatus(res.data.valid);
-        setvoucherStatus(res.data.valid);
+       console.log("FSDFSFSFSFSFS",res?.data)
+        if(res?.data?.valid==true){
+          setCoupenError('Coupon Applied!');
+          setCoupenStates(true);
+          setColor(true);
+          setvoucherStatus(res.data.valid);
+        }else{
+          setCoupenError('Coupon Expired/Invalid!');
+          setCoupenStates(true);
+          setColor(false);
+          setvoucherStatus(res.data.valid);
+        }
+        
+        //
+
+       
       })
       .catch(err => {
         console.log('ffffffffff', err);
@@ -1160,7 +1183,7 @@ export default function PaymentGateWay({navigation, route}) {
                         console.log('focusField', focusedField);
                       }}
                     />
-                    {show1 && (
+                    {/* {show1 && (
                       <TouchableOpacity
                         onPress={() => {
                           updatePacakgeData();
@@ -1172,80 +1195,80 @@ export default function PaymentGateWay({navigation, route}) {
                         }}>
                         <Text style={styles.couponText}>Apply Coupon </Text>
                       </TouchableOpacity>
-                    )}
-                    {show && (
+                    )} */}
+                    {/* {show && ( */}
+                    <View
+                      style={{
+                        flexDirection: 'row',
+                        justifyContent: 'space-between',
+                        alignContent: 'center',
+                        marginLeft: 6,
+                      }}>
+                      <Input
+                        errors={couponerror}
+                        onChangeText={text => {
+                          setCoupen(text);
+                          if (text.length <= 0) {
+                            setCoupenError('');
+                          }
+                        }}
+                        value={coupon}
+                        touched={coupenStates}
+                        text="Coupon"
+                        placeholder="AZVP901AD"
+                        bW={1}
+                        textWidth={ms(70)}
+                        placeholderTextColor={COLORS.HALFBLACK}
+                        w="half"
+                        bR={10}
+                        // keyboardType="numeric"
+                        maxLength={20}
+                        colorText={color}
+                      />
                       <View
                         style={{
-                          flexDirection: 'row',
-                          justifyContent: 'space-between',
-                          alignContent: 'center',
-                          marginLeft: 6,
+                          backgroundColor: COLORS.GREEN,
+                          paddingHorizontal: 20,
+                          paddingVertical: 15,
+                          alignSelf: 'center',
+
+                          borderRadius: 10,
+                          ...Platform.select({
+                            ios: {
+                              shadowColor: '#000000',
+                              shadowOffset: {width: 0, height: 2},
+                              shadowOpacity: 0.3,
+                              shadowRadius: 4,
+                            },
+                            android: {
+                              elevation: 4,
+                            },
+                          }),
                         }}>
-                        <Input
-                          errors={couponerror}
-                          onChangeText={text => {
-                            setCoupen(text);
-                            if (text.length <= 0) {
-                              setCoupenError('');
-                            }
+                        <TouchableOpacity
+                          onPress={() => {
+                            coupenDetail(coupon);
                           }}
-                          value={coupon}
-                          touched={coupenStates}
-                          text="Coupon"
-                          placeholder="AZVP901AD"
-                          bW={1}
-                          textWidth={ms(70)}
-                          placeholderTextColor={COLORS.HALFBLACK}
-                          w="half"
-                          bR={10}
-                          // keyboardType="numeric"
-                          maxLength={20}
-                          colorText={color}
-                        />
-                        <View
                           style={{
-                            backgroundColor: COLORS.GREEN,
-                            paddingHorizontal: 20,
-                            paddingVertical: 15,
+                            alignItems: 'center',
                             alignSelf: 'center',
+                            backgroundColor: COLORS.GREEN,
 
                             borderRadius: 10,
-                            ...Platform.select({
-                              ios: {
-                                shadowColor: '#000000',
-                                shadowOffset: {width: 0, height: 2},
-                                shadowOpacity: 0.3,
-                                shadowRadius: 4,
-                              },
-                              android: {
-                                elevation: 4,
-                              },
-                            }),
                           }}>
-                          <TouchableOpacity
-                            onPress={() => {
-                              coupenDetail(coupon);
-                            }}
+                          <Text
                             style={{
-                              alignItems: 'center',
-                              alignSelf: 'center',
-                              backgroundColor: COLORS.GREEN,
-
-                              borderRadius: 10,
+                              fontSize: 14,
+                              fontWeight: '700',
+                              textAlign: 'center',
+                              color: COLORS.BLACK,
                             }}>
-                            <Text
-                              style={{
-                                fontSize: 14,
-                                fontWeight: '700',
-                                textAlign: 'center',
-                                color: COLORS.BLACK,
-                              }}>
-                              Validate
-                            </Text>
-                          </TouchableOpacity>
-                        </View>
+                            Validate
+                          </Text>
+                        </TouchableOpacity>
                       </View>
-                    )}
+                    </View>
+                    {/* )} */}
                     <View style={styles.bottom_tab}>
                       <TouchableOpacity
                         onPress={() => navigation.goBack()}
