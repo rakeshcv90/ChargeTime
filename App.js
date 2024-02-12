@@ -550,16 +550,16 @@ const App = ({navigation}) => {
               borderRadius: 8,
               padding: 16,
             }}>
-            <Text>In Progress.......</Text>
+            <Text style={{color:'black'}}>In Progress.......</Text>
 
             <View style={{alignItems: 'center'}}>
-              <Text style={{marginTop: 16}}>{`${(
+              <Text style={{marginTop: 16,color:'black'}}>{`${(
                 Number(progress?.receivedBytes) / 1048576
               ).toFixed(2)}MB/${(
                 Number(progress?.totalBytes) / 1048576
               ).toFixed(2)}`}</Text>
               <ActivityIndicator style={{marginVertical: 8}} color={'blue'} />
-              <Text>
+              <Text style={{color:'black'}}>
                 {(
                   (Number(progress?.receivedBytes) /
                     Number(progress?.totalBytes)) *
