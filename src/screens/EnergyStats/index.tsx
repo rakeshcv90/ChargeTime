@@ -366,10 +366,11 @@ export default function EnergyStats() {
               }}>
               <AnimatedLottieView
                 source={{
-                  uri: 'https://assets5.lottiefiles.com/packages/lf20_v4UB4ch6dZ.json',
+                  uri: 'https://lottie.host/a18631fc-3895-4d33-8395-8a338608b16a/BIk5hlIWG8.json',
                 }} // Replace with your animation file
                 autoPlay
                 loop
+                
                 style={{width: 150, height: 150}}
               />
               <AnimatedLottieView
@@ -393,6 +394,7 @@ export default function EnergyStats() {
                 lineHeight: 25,
                 textAlign: 'center',
                 paddingHorizontal: 30,
+                color:COLORS.BLACK
               }}>
               {getDeviceID}
             </Text>

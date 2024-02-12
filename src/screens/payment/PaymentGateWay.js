@@ -151,6 +151,7 @@ export default function PaymentGateWay({navigation, route}) {
   const [modalVisible2, setModalVisible2] = useState(false);
   const [saveCardDetails, setSaveCardDetails] = useState();
   const [loader, setLoader] = useState(false);
+  const[desible,setDesible]=useState(false)
 
   const dispatch = useDispatch();
 
@@ -173,6 +174,7 @@ export default function PaymentGateWay({navigation, route}) {
   };
 
   const handlePaymentSubmit = async () => {
+    setDesible(true)
     const id = await createToken({...cardtype, type: 'Card'});
     console.log('TEST DATA', id);
 
@@ -220,12 +222,14 @@ export default function PaymentGateWay({navigation, route}) {
           setModalVisible1(false);
           setLoader(false);
           getDeviceIDData();
+          setDesible(false)
         } else if (response.data.status == 'success') {
           setModalVisible(true);
           setModalVisible1(false);
           setLoader(false);
           setshow(false);
           setshow1(true);
+          setDesible(false)
         } else {
           PLATFORM_IOS
             ? Toast.show({
@@ -235,6 +239,7 @@ export default function PaymentGateWay({navigation, route}) {
             : ToastAndroid.show('Invalid Card Details !', ToastAndroid.SHORT);
           setModalVisible1(false);
           setLoader(false);
+          setDesible(false)
         }
         // if ((response.data.status = 'success')) {
         //   // handleAddCard(values)
@@ -265,7 +270,7 @@ export default function PaymentGateWay({navigation, route}) {
       } catch (err) {
         setLoader(false);
         console.log('test111111', err);
-
+        setDesible(false)
         if (err.response) {
           PLATFORM_IOS
             ? Toast.show({
@@ -338,7 +343,7 @@ export default function PaymentGateWay({navigation, route}) {
         setshow(false);
         setshow1(true);
       } else {
-        console.log('sdfdsfdsfsdfsdfsdfsdfds');
+        console.log('sdfdsfdsfsdfsdfsdfsdfds',response.data);
         PLATFORM_IOS
           ? Toast.show({
               type: 'success',
@@ -1160,6 +1165,7 @@ export default function PaymentGateWay({navigation, route}) {
 
                     <CardField
                       postalCodeEnabled={false}
+                    
                       placeholders={{
                         number: '4242 4242 4242 4242',
                         cvc: 'CVC',
@@ -1170,6 +1176,7 @@ export default function PaymentGateWay({navigation, route}) {
                         borderColor: COLORS.HALFBLACK,
                         borderWidth: 1,
                         borderRadius: 10,
+                        placeholderColor:COLORS.HALFBLACK          
                       }}
                       style={{
                         width: '100%',
@@ -1352,6 +1359,7 @@ export default function PaymentGateWay({navigation, route}) {
           <View style={styles.centeredView}>
             <View style={styles.modalView}>
               <Text style={styles.modalText}>Confirm Payment</Text>
+         
               <ImageBackground
                 source={require('../../../assets/images/visaCard.png')}
                 resizeMode="contain"
@@ -1437,7 +1445,9 @@ export default function PaymentGateWay({navigation, route}) {
                     styles.button_one,
                     {marginHorizontal: 15},
                   ]}
-                  onPress={handlePaymentSubmit}>
+                  disabled={desible}
+                 onPress={handlePaymentSubmit}
+                  >
                   <Text style={styles.textStyle}>Submit</Text>
                 </TouchableOpacity>
                 {/* </View> */}
