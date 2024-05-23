@@ -213,7 +213,8 @@ export default function Login({navigation}) {
             login_status: 0,
           },
         });
-
+       
+      
         if (res.data) {
           // AsyncStorage.setItem('loginDataOne', JSON.stringify(data.locationid ));
 
@@ -235,6 +236,7 @@ export default function Login({navigation}) {
               setEmail('');
               setPassword('');
               await AsyncStorage.setItem('isAuthorized', res.data.user_id + '');
+              console.log("SDFdsfsdfsdfdsf",res.data)
               if (res.data.status == 'All details available') {
                 dispatch(setEmailData(res.data?.email));
                 dispatch(setPackageStatus(true));
@@ -348,7 +350,7 @@ export default function Login({navigation}) {
       .get(`${API}/dailyusagedeviceid/${userID}`)
       .then(res => {
         console.log('Dailay Use Data is', res.data.length);
-        if (res.data.length > 0) {
+        if (res?.data?.length > 0) {
           dispatch(setGraphData(res.data.Dayusagewithgraph));
           dispatch(setWeekGraphData(res.data.weeklyusagewithgraph));
           dispatch(setMonthGraphData(res?.data.monthlyusagewithgraph));
@@ -525,15 +527,27 @@ export default function Login({navigation}) {
     Clipboard.setString('');
     navigation.navigate('ForgetPassword');
   };
-  const getAllPurchasePlan = userId => {
-    axios
-      .get(`${API}/allpurchaseplans/${userId}`)
-      .then(res => {
-        dispatch(setPuchaseAllPlans(res?.data));
-      })
-      .catch(err => {
-        console.log('Error-10', err);
-      });
+  const getAllPurchasePlan = async(userId) => {
+    console.log("Fffffff",userId)
+    // axios
+    //   .get(`${API}/allpurchaseplans/${userId}`)
+    //   .then(res => {
+    //     dispatch(setPuchaseAllPlans(res?.data));
+    //   })
+    //   .catch(err => {
+    //     console.log('Error-10', err);
+    //   });
+    try {
+      const response = await fetch(`${API}/allpurchaseplans/${userId}`);
+      const res = await response.json();
+      dispatch(setPuchaseAllPlans(res?.data));
+
+
+    } catch (error) {
+      console.log('Error-10', err);
+  
+    }
+
   };
   return (
     <SafeAreaView style={{backgroundColor: COLORS.CREAM, flex: 1}}>
