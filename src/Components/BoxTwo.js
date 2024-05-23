@@ -29,7 +29,7 @@ const BoxTwo = ({data}) => {
         return <Text style={styles.installation_text}>{datatex}</Text>;
       }else{
       var datatest=''
-        getPurchaseAllPlans.forEach(item => {
+        getPurchaseAllPlans?.forEach(item => {
         
           if(item.energy_plan==data?.package_name&&item.subscription_status=="active"){
             datatest='( Active )'

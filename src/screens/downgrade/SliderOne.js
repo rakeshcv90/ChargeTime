@@ -92,7 +92,7 @@ export default function SliderOne(props) {
       <View style={styles.managing_width}>
 
         {/* <BoxTwo data={props.route.params.item} /> */}
-        <BoxTwo data={ getBasePackage[props?.route?.params.index]} />
+        <BoxTwo data={ getBasePackage[props?.route?.params?.index]} />
         {/* data={props?.item || getBasePackage[props?.route?.params.index]} */}
         {getPurchaseData.data != 'Package not found' &&
           getPurchaseData.data.energy_plan.toLowerCase() ===

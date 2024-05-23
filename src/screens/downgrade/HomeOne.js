@@ -145,7 +145,7 @@ export default function HomeOne(route) {
         const num =
           getPurchaseData.data != 'Package not found'
             ? item.package_name.toLowerCase() ===
-              getPurchaseData.data.energy_plan.toLowerCase()
+              getPurchaseData?.data?.energy_plan?.toLowerCase()
             : '';
 
         numArray.push(num);
@@ -351,11 +351,11 @@ export default function HomeOne(route) {
             getBasePackage.map((item, ind) => {
               let purchageData =
                 getPurchaseData.data != 'Package not found'
-                  ? item.kwh > getPurchaseData.data.kwh
+                  ? item?.kwh > getPurchaseData?.data?.kwh
                     ? 'UPGRADE'
-                    : item.kwh < getPurchaseData.data.kwh
+                    : item?.kwh < getPurchaseData?.data?.kwh
                     ? 'DOWNGRADE'
-                    : `Renewal Date: \n${getPurchaseData.data.End_validity}` // This will be displayed when item.kwh == getPurchaseData.data.kwh
+                    : `Renewal Date: \n${getPurchaseData?.data?.End_validity}` // This will be displayed when item.kwh == getPurchaseData.data.kwh
                   : '';
               // let num =
               //   (item.package_name.toLowerCase() === getPurchaseData.length) !=
