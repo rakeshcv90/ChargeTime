@@ -13,11 +13,23 @@ import {
 import React, {useState} from 'react';
 import COLORS from '../constants/COLORS';
 import {DIMENSIONS} from '../constants/DIMENSIONS';
+import {useSelector} from 'react-redux';
+import moment from 'moment';
 
 const mobileW = Math.round(Dimensions.get('screen').width);
 
 const PriceValiditySubs = ({data}) => {
   const [showBox, setShowBox] = useState(true);
+  const getSubscriptionCancelStatus = useSelector(
+    state => state.getSubscriptionCancelStatus,
+  );
+  const givenDate = data?.End_validity;
+  const currentDate = moment();
+  const dateFormat = 'DD-MMM-YYYY';
+
+  const isPassed = getSubscriptionCancelStatus
+    ? moment(givenDate, dateFormat).isBefore(currentDate)
+    : false;
   return (
     <View
       style={
@@ -26,7 +38,7 @@ const PriceValiditySubs = ({data}) => {
           : styles.mainDiv_installation
       }>
       <TouchableOpacity
-      activeOpacity={1}
+        activeOpacity={1}
         style={[
           styles.install_touchable,
           {borderTopLeftRadius: 10, borderTopRightRadius: 10},
@@ -40,37 +52,36 @@ const PriceValiditySubs = ({data}) => {
       </TouchableOpacity>
 
       <>
-   
         <View style={styles.location_div}>
           <Text style={styles.installation_text2}>Package Name:</Text>
           <Text style={styles.force_base}>{data?.energy_plan}</Text>
         </View>
-  
-        <View style={{backgroundColor:COLORS.WHITE}}>
-        <Image
-          // style={styles.img_width}
-          source={require('../../assets/images/dotted.png')}
-          resizeMode="stretch"
-          style={{
-            alignSelf: 'center',
-            width: Platform.OS === 'android' ? mobileW : mobileW - 40,
-          }}
-        />
+
+        <View style={{backgroundColor: COLORS.WHITE}}>
+          <Image
+            // style={styles.img_width}
+            source={require('../../assets/images/dotted.png')}
+            resizeMode="stretch"
+            style={{
+              alignSelf: 'center',
+              width: Platform.OS === 'android' ? mobileW : mobileW - 40,
+            }}
+          />
         </View>
         <View style={styles.location_div}>
           <Text style={styles.installation_text2}>Price: </Text>
           <Text style={styles.force_base}>$ {data?.energy_price}</Text>
         </View>
-        <View style={{backgroundColor:COLORS.WHITE}}>
-        <Image
-          // style={styles.img_width}
-          source={require('../../assets/images/dotted.png')}
-          resizeMode="stretch"
-          style={{
-            alignSelf: 'center',
-            width: Platform.OS === 'android' ? mobileW : mobileW - 40,
-          }}
-        />
+        <View style={{backgroundColor: COLORS.WHITE}}>
+          <Image
+            // style={styles.img_width}
+            source={require('../../assets/images/dotted.png')}
+            resizeMode="stretch"
+            style={{
+              alignSelf: 'center',
+              width: Platform.OS === 'android' ? mobileW : mobileW - 40,
+            }}
+          />
         </View>
         <View
           style={[
@@ -81,7 +92,9 @@ const PriceValiditySubs = ({data}) => {
             },
           ]}>
           <Text style={styles.installation_text2}>Renewal Date:</Text>
-          <Text style={styles.force_base}>{data?.End_validity}</Text>
+          <Text style={styles.force_base}>
+            {isPassed ? '--' : data?.End_validity}
+          </Text>
         </View>
       </>
     </View>

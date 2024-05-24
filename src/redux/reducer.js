@@ -40,6 +40,7 @@ const initialState = {
   overusageCount: 0,
   getMyLocation: '',
   getPurchaseAllPlans: [],
+  getSubscriptionCancelStatus: false
 };
 
 const rootReducer = (state = initialState, action) => {
@@ -122,6 +123,8 @@ const rootReducer = (state = initialState, action) => {
       return {...state, overusageCount: action.payload};
     case types.LOCATION_ID:
       return {...state, getMyLocation: action.payload};
+    case types.SUBSCRIPTION_CANCEL_STATUS:
+      return {...state, getSubscriptionCancelStatus: action.payload};
     case types.LOG_OUT:
       return {...initialState};
     case types.RESET_APP:

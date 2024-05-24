@@ -63,6 +63,7 @@ import {
   setOverModelView,
   setMaintainence,
   setPuchaseAllPlans,
+  setSubcriptionCancelStatus,
 } from '../../redux/action';
 import axios from 'axios';
 import {navigationRef} from '../../../App';
@@ -243,10 +244,12 @@ export default function Login({navigation}) {
                 dispatch(getLocationID(res.data?.locationid));
                 fetchGraphData(res.data?.user_id);
                 dispatch(setDeviceId(''));
+                dispatch(setSubcriptionCancelStatus(res.data?.subscription_cancel_status == 1));
               } else if (
                 res.data.status ==
                 'Your Account is not currently linked with a TRO Charger. Please contact customer service if you believe this is an error.'
-              ) {
+                ) {
+                dispatch(setSubcriptionCancelStatus(res.data?.subscription_cancel_status == 1));
                 dispatch(setEmailData(res.data?.email));
                 dispatch(setPackageStatus(true));
                 dispatch(setUserID(res.data?.user_id));

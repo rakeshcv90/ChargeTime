@@ -53,10 +53,12 @@ import {
   setYearGraphData,
   setSubscriptionStatus,
   setOverModelView,
+  setSubcriptionCancelStatus,
 } from '../../redux/action';
 import ButtonSlider2 from '../../Components/ButtonSlider2';
 import Toast from 'react-native-toast-message';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import PauseModal from '../../Components/PauseModal';
 
 const mobileW = Math.round(Dimensions.get('screen').width);
 
@@ -243,9 +245,7 @@ export default function EnergyStats() {
           dispatch(setYearGraphData(res?.data.yearlyusagewithgraph));
           dailyUsuagekwh(getUserID);
           setIsLoading(false);
-        } 
-        
-        else if(res.data.length==undefined){
+        } else if (res.data.length == undefined) {
           dispatch(setGraphData(res.data.Dayusagewithgraph));
           dispatch(setWeekGraphData(res.data.weeklyusagewithgraph));
           dispatch(setMonthGraphData(res?.data.monthlyusagewithgraph));
@@ -253,9 +253,7 @@ export default function EnergyStats() {
           dispatch(setYearGraphData(res?.data.yearlyusagewithgraph));
           dailyUsuagekwh(getUserID);
           setIsLoading(false);
-        }
-        
-        else {
+        } else {
           dispatch(setGraphData({message}));
           dispatch(setWeekGraphData({message}));
           dispatch(setMonthGraphData({message}));
@@ -273,18 +271,14 @@ export default function EnergyStats() {
     axios
       .get(`${API}/dailyusage/${userId}`)
       .then(res => {
-      
         if (res?.data) {
           dispatch(setKwhData(res?.data));
         }
 
         remainigUsuageData(getUserID);
         setIsLoading(false);
-      }
-      )
-      .catch(err => {
- 
-      });
+      })
+      .catch(err => {});
   };
   const remainigUsuageData = (userId: string) => {
     let remaingData;
@@ -295,14 +289,14 @@ export default function EnergyStats() {
         if (parseInt(res.data?.kwh_unit_remaining) > 0) {
           remaingData = res.data?.kwh_unit_remaining;
           dispatch(setRemainingData(res.data?.kwh_unit_remaining));
-        
+
           dispatch(setOverUsage(false));
           dispatch(setOverModelView(false));
           setIsLoading(false);
         } else {
           remaingData = res.data?.kwh_unit_overusage;
           dispatch(setRemainingData(res.data?.kwh_unit_overusage));
-         
+
           dispatch(setOverUsage(true));
           dispatch(setOverModelView(true));
           setIsLoading(false);
@@ -323,6 +317,11 @@ export default function EnergyStats() {
       .get(`${API}/currentplan/${userId}`)
       .then(res => {
         dispatch(setBoxTwoDataForDashboard(res?.data));
+        dispatch(
+          setSubcriptionCancelStatus(
+            res.data?.data?.subscription_cancel_status == 1?true:false,
+          ),
+        );
         setIsLoading(false);
       })
       .catch(err => {
@@ -370,7 +369,6 @@ export default function EnergyStats() {
                 }} // Replace with your animation file
                 autoPlay
                 loop
-                
                 style={{width: 150, height: 150}}
               />
               <AnimatedLottieView
@@ -394,7 +392,7 @@ export default function EnergyStats() {
                 lineHeight: 25,
                 textAlign: 'center',
                 paddingHorizontal: 30,
-                color:COLORS.BLACK
+                color: COLORS.BLACK,
               }}>
               {getDeviceID}
             </Text>
@@ -611,6 +609,7 @@ export default function EnergyStats() {
         )}
       </SafeAreaView>
       {isLoading && <ActivityLoader />}
+      {/* <PauseModal /> */}
     </>
   );
 }

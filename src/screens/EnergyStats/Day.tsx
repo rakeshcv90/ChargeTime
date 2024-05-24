@@ -35,6 +35,9 @@ import {
   setYearGraphData,
   setSubscriptionStatus,
   setOverModelView,
+  setPurchaseData,
+  setPackageStatus,
+  setSubcriptionCancelStatus,
 } from '../../redux/action';
 import {API} from '../../api/API';
 import AnimatedLottieView from 'lottie-react-native';
@@ -103,6 +106,7 @@ const Day = (props: any) => {
     dailyUsuagekwh(getUserID);
     fetchGraphData();
     fetchStatusdata(getUserID);
+    getPlanCurrent();
   };
 
   const remainigUsuageData = () => {
@@ -155,6 +159,29 @@ const Day = (props: any) => {
       })
       .catch(err => {
         console.log('fetchStatusdata111', err);
+      });
+  };
+  const getPlanCurrent = () => {
+    axios
+      .get(`${API}/currentplan/${getUserID}`)
+      .then(res => {
+        console.log(res.data?.data, 'asdsadads');
+        if (res.data.data == 'Package not found') {
+          dispatch(setPurchaseData(res.data));
+          dispatch(setBoxTwoDataForDashboard(res.data));
+          dispatch(setPackageStatus(false));
+        } else {
+          dispatch(
+            setSubcriptionCancelStatus(
+              res.data?.data?.subscription_cancel_status == 1 ? true : false,
+            ),
+          );
+          dispatch(setPurchaseData(res?.data));
+          dispatch(setBoxTwoDataForDashboard(res?.data));
+        }
+      })
+      .catch(err => {
+        console.log(err);
       });
   };
   const nav = () => {

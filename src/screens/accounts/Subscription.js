@@ -32,6 +32,7 @@ import {
   setPackageStatus,
   setPlanStatus,
   setPurchaseData,
+  setSubcriptionCancelStatus,
   setSubscriptionStatus,
 } from '../../redux/action';
 import {userSubsData} from '../../redux/action';
@@ -49,6 +50,9 @@ const Subscription = ({navigation, route}) => {
   const getPurchaseData = useSelector(state => state.getPurchaseData);
   const {getChargerStatus, getDeviceID, subscriptionStatus} = useSelector(
     state => state,
+  );
+  const getSubscriptionCancelStatus = useSelector(
+    state => state.getSubscriptionCancelStatus,
   );
 
   const [text, setText] = useState(
@@ -113,7 +117,12 @@ const Subscription = ({navigation, route}) => {
           },
         ];
         dispatch(UpdatedCurrentPlan(updatedData));
-        getPlanCurrent();
+        dispatch(
+          setSubcriptionCancelStatus(
+            response.data?.subscription_cancel_status == 1,
+          ),
+        );
+        // getPlanCurrent();
         // PlanStatus()
         PLATFORM_IOS
           ? Toast.show({
@@ -139,13 +148,16 @@ const Subscription = ({navigation, route}) => {
       .then(res => {
         setForLoading(false);
         setModalVisible(false);
-
         if (res.data.data == 'Package not found') {
           dispatch(setPurchaseData(res.data));
-
           setGetData(res.data);
           dispatch(setPackageStatus(false));
         } else {
+          dispatch(
+            setSubcriptionCancelStatus(
+              res.data?.data?.subscription_cancel_status == 1 ? true : false,
+            ),
+          );
           dispatch(setPurchaseData(res?.data));
           setGetData(res.data);
         }
@@ -288,10 +300,10 @@ const Subscription = ({navigation, route}) => {
       const res = await axios({
         url: `https://troes.io/Admin/public/api/planstatuspauseresume/${getUserID}`,
         // url: `${API}/planstatuspauseresume/${getUserID}/`,
-        method: 'get'
+        method: 'get',
       });
       if (res.data) {
-        console.log("My Plan Status",res.data)
+        console.log('My Plan Status', res.data);
         if (res.data.PlanStatus == '0' || res.data.PlanStatus == null) {
           setText('Pause Subscription');
         } else {
@@ -511,43 +523,48 @@ const Subscription = ({navigation, route}) => {
             <View
               style={{
                 flexDirection: 'row',
-
-                ...styles.managing_width,
-
-                marginVertical: 20,
+                justifyContent: getSubscriptionCancelStatus
+                  ? 'center'
+                  : 'space-between',
+                width: DIMENSIONS.SCREEN_WIDTH * 0.9,
+                alignItems: 'center',
+                alignSelf: 'center',
+                marginVertical: 10,
               }}>
-              <TouchableOpacity
-                onPress={() => {
-                  setModalVisible(true);
-                }}
-                style={{
-                  width: DIMENSIONS.SCREEN_WIDTH * 0.4,
-                  height: (DIMENSIONS.SCREEN_HEIGHT * 6) / 100,
-                  backgroundColor: '#F84E4E',
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                  borderRadius: 10,
-                  ...Platform.select({
-                    ios: {
-                      shadowColor: '#000000',
-                      shadowOffset: {width: 0, height: 2},
-                      shadowOpacity: 0.3,
-                      shadowRadius: 4,
-                    },
-                    android: {
-                      elevation: 4,
-                    },
-                  }),
-                }}>
-                <Text
+              {!getSubscriptionCancelStatus && (
+                <TouchableOpacity
+                  onPress={() => {
+                    setModalVisible(true);
+                  }}
                   style={{
-                    color: COLORS.WHITE,
-                    fontSize: 14,
-                    fontWeight: '500',
+                    width: DIMENSIONS.SCREEN_WIDTH * 0.4,
+                    height: (DIMENSIONS.SCREEN_HEIGHT * 6) / 100,
+                    backgroundColor: '#F84E4E',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    borderRadius: 10,
+                    ...Platform.select({
+                      ios: {
+                        shadowColor: '#000000',
+                        shadowOffset: {width: 0, height: 2},
+                        shadowOpacity: 0.3,
+                        shadowRadius: 4,
+                      },
+                      android: {
+                        elevation: 4,
+                      },
+                    }),
                   }}>
-                  Cancel Subscription
-                </Text>
-              </TouchableOpacity>
+                  <Text
+                    style={{
+                      color: COLORS.WHITE,
+                      fontSize: 14,
+                      fontWeight: '500',
+                    }}>
+                    Cancel Subscription
+                  </Text>
+                </TouchableOpacity>
+              )}
               <TouchableOpacity
                 onPress={() => {
                   getSubscriptionStatus();
@@ -555,7 +572,7 @@ const Subscription = ({navigation, route}) => {
                 style={{
                   width: DIMENSIONS.SCREEN_WIDTH * 0.4,
                   height: (DIMENSIONS.SCREEN_HEIGHT * 6) / 100,
-                  marginLeft: DIMENSIONS.SCREEN_WIDTH * 0.1,
+                  // marginLeft: DIMENSIONS.SCREEN_WIDTH * 0.1,
                   borderRadius: 10,
                   justifyContent: 'center',
                   alignItems: 'center',
@@ -584,68 +601,68 @@ const Subscription = ({navigation, route}) => {
             </View>
           </ScrollView>
         )}
-         <Modal
-        animationType="slide"
-        transparent={true}
-        visible={modalVisible}
-        onRequestClose={() => {
-          setModalVisible(!modalVisible);
-        }}>
-        <View style={styles.centeredView}>
-          <View style={styles.modalView}>
-            <Text style={styles.modalText}>Cancel Subscription</Text>
-            <AnimatedLottieView
-              source={{
-                uri: 'https://assets6.lottiefiles.com/private_files/lf30_mf7q9oho.json',
-              }} // Replace with your animation file
-              autoPlay
-              loop
-              style={{width: 50, height: 50}}
-            />
-            <Text
-              style={{
-                fontSize: 14,
-                fontWeight: '400',
-                color: COLORS.BLACK,
-              }}>
-              Do you really want to cancel your Subscription
-            </Text>
-            <Text
-              style={{
-                fontSize: 14,
-                fontWeight: '400',
-                color: COLORS.RED,
-                marginVertical: 5,
-              }}>
-              All your (Active / Scheduled ) Subscriptions will be Cancelled
-            </Text>
-            <View
-              style={{
-                flexDirection: 'row',
-                justifyContent: 'flex-end',
-                alignItems: 'center',
-              }}>
-              <View style={styles.button_one}>
-                <Pressable
-                  style={{
-                    borderRadius: 20,
-                    padding: 10,
-                  }}
-                  onPress={() => setModalVisible(false)}>
-                  <Text style={styles.textStyle}>Cancel</Text>
-                </Pressable>
-              </View>
-              <View style={styles.button_one}>
-                <Pressable
-                  style={[styles.button, styles.buttonClose]}
-                  onPress={PlanCancel}>
-                  <Text style={styles.textStyle}>OK</Text>
-                </Pressable>
+        <Modal
+          animationType="slide"
+          transparent={true}
+          visible={modalVisible}
+          onRequestClose={() => {
+            setModalVisible(!modalVisible);
+          }}>
+          <View style={styles.centeredView}>
+            <View style={styles.modalView}>
+              <Text style={styles.modalText}>Cancel Subscription</Text>
+              <AnimatedLottieView
+                source={{
+                  uri: 'https://assets6.lottiefiles.com/private_files/lf30_mf7q9oho.json',
+                }} // Replace with your animation file
+                autoPlay
+                loop
+                style={{width: 50, height: 50}}
+              />
+              <Text
+                style={{
+                  fontSize: 14,
+                  fontWeight: '400',
+                  color: COLORS.BLACK,
+                }}>
+                Do you really want to cancel your Subscription
+              </Text>
+              <Text
+                style={{
+                  fontSize: 14,
+                  fontWeight: '400',
+                  color: COLORS.RED,
+                  marginVertical: 5,
+                }}>
+                All your (Active / Scheduled ) Subscriptions will be Cancelled
+              </Text>
+              <View
+                style={{
+                  flexDirection: 'row',
+                  justifyContent: 'flex-end',
+                  alignItems: 'center',
+                }}>
+                <View style={styles.button_one}>
+                  <Pressable
+                    style={{
+                      borderRadius: 20,
+                      padding: 10,
+                    }}
+                    onPress={() => setModalVisible(false)}>
+                    <Text style={styles.textStyle}>Cancel</Text>
+                  </Pressable>
+                </View>
+                <View style={styles.button_one}>
+                  <Pressable
+                    style={[styles.button, styles.buttonClose]}
+                    onPress={PlanCancel}>
+                    <Text style={styles.textStyle}>OK</Text>
+                  </Pressable>
+                </View>
               </View>
             </View>
           </View>
-        </View>
-      </Modal>
+        </Modal>
       </SafeAreaView>
       {/* <CancelModal /> */}
       {forLoading && <ActivityLoader />}

@@ -124,6 +124,9 @@ export const setMyLocation = data => {
 export const setPuchaseAllPlans = data => {
   return {type: types.SET_PUCHASE_ALL_PLANS,payload: data};
 };
+export const setSubcriptionCancelStatus = data => {
+  return {type: types.SUBSCRIPTION_CANCEL_STATUS,payload: data};
+};
 
 
 
