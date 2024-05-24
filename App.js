@@ -488,17 +488,17 @@ const App = ({navigation}) => {
       return unsubscribe;
     }
   }, []);
-  useEffect(() => {
-    codePush.sync(
-      {
-        updateDialog: true,
-        installMode: codePush.InstallMode.IMMEDIATE,
-       // installMode: codePush.InstallMode.MANUAL,
-      },
-      codePushStatusDidChange,
-      codePushDownloadDidProgress,
-    );
-  }, []);
+  // useEffect(() => {
+  //   codePush.sync(
+  //     {
+  //       updateDialog: true,
+  //       installMode: codePush.InstallMode.IMMEDIATE,
+  //      // installMode: codePush.InstallMode.MANUAL,
+  //     },
+  //     codePushStatusDidChange,
+  //     codePushDownloadDidProgress,
+  //   );
+  // }, []);
   const codePushStatusDidChange = syncStatus => {
     switch (syncStatus) {
       case codePush.SyncStatus.CHECKING_FOR_UPDATE:
