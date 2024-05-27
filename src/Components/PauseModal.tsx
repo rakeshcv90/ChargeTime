@@ -1,31 +1,72 @@
-import {Modal, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
-import React from 'react';
+import {
+  Modal,
+  StyleSheet,
+  Text,
+  ToastAndroid,
+  TouchableOpacity,
+  View,
+} from 'react-native';
+import React, {FC, useState} from 'react';
 import COLORS from '../constants/COLORS';
-import {DIMENSIONS} from '../constants/DIMENSIONS';
+import {DIMENSIONS, PLATFORM_IOS} from '../constants/DIMENSIONS';
 import {useDispatch, useSelector} from 'react-redux';
 import Overusageimage from '../../assets/svgs/Overusageimage';
-import { navigationRef } from '../../App';
+import {navigationRef} from '../../App';
+import axios from 'axios';
+import {API} from '../api/API';
+import Toast from 'react-native-toast-message';
+import {setSubscriptionStatus} from '../redux/action';
+import ActivityLoader from './ActivityLoader';
 
-const PauseModal = () => {
+type Props = {
+  paused: boolean;
+  setPaused: Function;
+};
+const PauseModal: FC<Props> = ({paused, setPaused}) => {
   const dispatch = useDispatch();
-  const {subscriptionStatus} = useSelector((state: any) => state);
-  const nav = () => {
-    // setModalVisible(!modalVisible);
-    // dispatch(setOverusageCount(overusage + 1));
-    navigationRef.navigate('HomeOne');
+  const {subscriptionStatus, getUserID} = useSelector((state: any) => state);
+  const [isLoading, setIsLoading] = useState(false);
+
+  const postSubscriptionStatus = async () => {
+    try {
+      const res = await axios({
+        url: `${API}/subscription_resume/${getUserID}`,
+      });
+      if (res.data) {
+        PLATFORM_IOS
+          ? Toast.show({
+              type: 'success',
+              text1: res.data.subscription,
+            })
+          : ToastAndroid.show(res.data.subscription, ToastAndroid.SHORT);
+        getSubscriptionStatus();
+      }
+    } catch (error) {
+      console.log('dddd1111', error);
+    }
+  };
+  const getSubscriptionStatus = async () => {
+    try {
+      const response = await fetch(`${API}/planstatuspauseresume/${getUserID}`);
+      const res = await response.json();
+      dispatch(setSubscriptionStatus(res.PlanStatus));
+      setPaused(res.PlanStatus == '1' ? true : false);
+    } catch (error) {
+      console.log('Error-7', error);
+    }
   };
   return (
     <Modal
       animationType="fade"
       transparent={true}
-      visible={subscriptionStatus == '1'}
+      visible={paused}
       onRequestClose={() => {
         // dispatch(setOverModelView(false));
         //  setModalVisible(!modalVisible);
       }}>
       <View style={styles.centeredView}>
         <View style={styles.modalView}>
-          <Text style={styles.modalText}>Overusage</Text>
+          <Text style={styles.modalText}>Account is Paused</Text>
           {/* <AnimatedLottieView
           source={{
             uri: 'https://assets6.lottiefiles.com/private_files/lf30_mf7q9oho.json',
@@ -41,7 +82,7 @@ const PauseModal = () => {
               fontWeight: '400',
               color: COLORS.BLACK,
             }}>
-            You have utilized your package, please purchase a new package.
+            Your Subscription has been paused. Please resume it
           </Text>
           <View style={styles.button_one}>
             <TouchableOpacity
@@ -50,16 +91,14 @@ const PauseModal = () => {
                 padding: 10,
               }}
               onPress={() => {
-                //dispatch(setOverusageCount(overusage + 1));
-                //   setModalVisible(false);
-                // dispatch(setOverModelView(false));
+                setPaused(false);
               }}>
               <Text style={styles.textStyle}>Cancel</Text>
             </TouchableOpacity>
             <TouchableOpacity
-              style={[styles.button, styles.buttonClose]}
-              onPress={nav}>
-              <Text style={styles.textStyle}>Purchase Plan</Text>
+              style={[styles.button, styles.buttonClose, {padding: 5}]}
+              onPress={postSubscriptionStatus}>
+              <Text style={styles.textStyle}>Resume</Text>
             </TouchableOpacity>
           </View>
         </View>
@@ -70,10 +109,10 @@ const PauseModal = () => {
 
 const styles = StyleSheet.create({
   modalView: {
-    margin: 20,
     backgroundColor: '#F5F5F5',
     borderRadius: 20,
-    padding: 35,
+    padding: 15,
+    paddingVertical: 25,
     alignItems: 'center',
     // shadowColor: '#000',
     // shadowOffset: {
@@ -86,11 +125,11 @@ const styles = StyleSheet.create({
     width: DIMENSIONS.SCREEN_WIDTH * 0.8,
   },
   button_one: {
-    // marginLeft: 80,
     marginTop: 20,
     alignItems: 'center',
     justifyContent: 'space-between',
     flexDirection: 'row',
+    width: '80%',
   },
   button: {
     borderRadius: 20,

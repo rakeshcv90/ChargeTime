@@ -43,6 +43,7 @@ import axios from 'axios';
 import Remaining from '../../Components/Remaining';
 import ActivityLoader from '../../Components/ActivityLoader';
 import RemainingHorizontal from '../../Components/RemainingHorizontal';
+import PauseModal from '../../Components/PauseModal';
 
 const mobileW = Math.round(Dimensions.get('screen').width);
 const Subscription = ({navigation, route}) => {
@@ -64,6 +65,7 @@ const Subscription = ({navigation, route}) => {
   const [forLoading, setForLoading] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
   const [getData, setGetData] = useState([]);
+  const [paused, setPaused] = useState(false);
 
   const dispatch = useDispatch();
   useEffect(() => {
@@ -134,6 +136,7 @@ const Subscription = ({navigation, route}) => {
               ToastAndroid.SHORT,
             );
         setModalVisible(false);
+        setForLoading(false);
       }
     } catch (error) {
       setForLoading(false);
@@ -239,7 +242,7 @@ const Subscription = ({navigation, route}) => {
     try {
       const res = await axios({
         url:
-          text == 'Pause Subscription'
+          subscriptionStatus == '0' || subscriptionStatus == null
             ? `${API}/subscription_pause/${getUserID}`
             : `${API}/subscription_resume/${getUserID}`,
       });
@@ -298,17 +301,13 @@ const Subscription = ({navigation, route}) => {
   const getSubscriptionStatus1 = async () => {
     try {
       const res = await axios({
-        url: `https://troes.io/Admin/public/api/planstatuspauseresume/${getUserID}`,
+        url: `${API}/planstatuspauseresume/${getUserID}`,
         // url: `${API}/planstatuspauseresume/${getUserID}/`,
         method: 'get',
       });
       if (res.data) {
-        console.log('My Plan Status', res.data);
-        if (res.data.PlanStatus == '0' || res.data.PlanStatus == null) {
-          setText('Pause Subscription');
-        } else {
-          setText('Resume Subscription');
-        }
+        console.log('My Plan Status', res.data, getUserID);
+        setPaused(res.data.PlanStatus == '1' ? true : false);
         dispatch(setSubscriptionStatus(res.data.PlanStatus));
       }
     } catch (error) {
@@ -523,60 +522,29 @@ const Subscription = ({navigation, route}) => {
             <View
               style={{
                 flexDirection: 'row',
-                justifyContent: getSubscriptionCancelStatus
-                  ? 'center'
-                  : 'space-between',
+                justifyContent: 'space-between',
                 width: DIMENSIONS.SCREEN_WIDTH * 0.9,
                 alignItems: 'center',
                 alignSelf: 'center',
                 marginVertical: 10,
               }}>
-              {!getSubscriptionCancelStatus && (
-                <TouchableOpacity
-                  onPress={() => {
-                    setModalVisible(true);
-                  }}
-                  style={{
-                    width: DIMENSIONS.SCREEN_WIDTH * 0.4,
-                    height: (DIMENSIONS.SCREEN_HEIGHT * 6) / 100,
-                    backgroundColor: '#F84E4E',
-                    justifyContent: 'center',
-                    alignItems: 'center',
-                    borderRadius: 10,
-                    ...Platform.select({
-                      ios: {
-                        shadowColor: '#000000',
-                        shadowOffset: {width: 0, height: 2},
-                        shadowOpacity: 0.3,
-                        shadowRadius: 4,
-                      },
-                      android: {
-                        elevation: 4,
-                      },
-                    }),
-                  }}>
-                  <Text
-                    style={{
-                      color: COLORS.WHITE,
-                      fontSize: 14,
-                      fontWeight: '500',
-                    }}>
-                    Cancel Subscription
-                  </Text>
-                </TouchableOpacity>
-              )}
               <TouchableOpacity
+                disabled={
+                  subscriptionStatus == '1' || getSubscriptionCancelStatus
+                }
                 onPress={() => {
-                  getSubscriptionStatus();
+                  setModalVisible(true);
                 }}
                 style={{
                   width: DIMENSIONS.SCREEN_WIDTH * 0.4,
                   height: (DIMENSIONS.SCREEN_HEIGHT * 6) / 100,
-                  // marginLeft: DIMENSIONS.SCREEN_WIDTH * 0.1,
-                  borderRadius: 10,
+                  backgroundColor:
+                    subscriptionStatus == '1' || getSubscriptionCancelStatus
+                      ? 'lightgrey'
+                      : '#F84E4E',
                   justifyContent: 'center',
                   alignItems: 'center',
-                  backgroundColor: COLORS.GREEN,
+                  borderRadius: 10,
                   ...Platform.select({
                     ios: {
                       shadowColor: '#000000',
@@ -591,11 +559,52 @@ const Subscription = ({navigation, route}) => {
                 }}>
                 <Text
                   style={{
-                    color: COLORS.BLACK,
+                    color: COLORS.WHITE,
                     fontSize: 14,
                     fontWeight: '500',
                   }}>
-                  {text}
+                  Cancel Subscription
+                </Text>
+              </TouchableOpacity>
+
+              <TouchableOpacity
+                disabled={getSubscriptionCancelStatus}
+                onPress={() => {
+                  getSubscriptionStatus();
+                }}
+                style={{
+                  width: DIMENSIONS.SCREEN_WIDTH * 0.4,
+                  height: (DIMENSIONS.SCREEN_HEIGHT * 6) / 100,
+                  // marginLeft: DIMENSIONS.SCREEN_WIDTH * 0.1,
+                  borderRadius: 10,
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  backgroundColor: getSubscriptionCancelStatus
+                    ? 'lightgrey'
+                    : COLORS.GREEN,
+                  ...Platform.select({
+                    ios: {
+                      shadowColor: '#000000',
+                      shadowOffset: {width: 0, height: 2},
+                      shadowOpacity: 0.3,
+                      shadowRadius: 4,
+                    },
+                    android: {
+                      elevation: 4,
+                    },
+                  }),
+                }}>
+                <Text
+                  style={{
+                    color: getSubscriptionCancelStatus
+                      ? COLORS.WHITE
+                      : COLORS.BLACK,
+                    fontSize: 14,
+                    fontWeight: '500',
+                  }}>
+                  {subscriptionStatus == '0' || subscriptionStatus == null
+                    ? 'Pause Subscription'
+                    : 'Resume Subscription'}
                 </Text>
               </TouchableOpacity>
             </View>
@@ -664,7 +673,7 @@ const Subscription = ({navigation, route}) => {
           </View>
         </Modal>
       </SafeAreaView>
-      {/* <CancelModal /> */}
+      {paused && <PauseModal paused={paused} setPaused={setPaused} />}
       {forLoading && <ActivityLoader />}
     </>
   );

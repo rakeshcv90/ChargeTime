@@ -37,7 +37,7 @@ import {API} from '../../api/API';
 import ActivityLoader from '../../Components/ActivityLoader';
 import DrawerOpen from '../../Components/DrawerOpen';
 import {navigationRef} from '../../../App';
-import {DrawerActions} from '@react-navigation/native';
+import {DrawerActions, useIsFocused} from '@react-navigation/native';
 import AnimatedLottieView from 'lottie-react-native';
 import {
   setBoxTwoDataForDashboard,
@@ -165,15 +165,14 @@ export default function EnergyStats() {
   const Tab = createMaterialTopTabNavigator();
   const [showCar, setShowCar] = useState(true);
   const [offline, setOffline] = useState(true);
-  const [charging, setCharging] = useState(true);
+  const [paused, setPaused] = useState(false);
   const [deviceIdTemp, setDeviceIdTemp] = useState('');
 
   const [isLoading, setIsLoading] = useState(false);
   const {getGraphData} = useSelector((state: any) => state);
-
-  const {getChargerStatus, getDeviceID, getUserID} = useSelector(
-    (state: any) => state,
-  );
+  const isFocused = useIsFocused();
+  const {getChargerStatus, getDeviceID, getUserID, subscriptionStatus} =
+    useSelector((state: any) => state);
 
   const [toggleState, setToggleState] = useState(false);
   const dispatch = useDispatch();
@@ -182,7 +181,6 @@ export default function EnergyStats() {
       'hardwareBackPress',
       handleBackButton,
     );
-
     return () => backHandler.remove();
   }, []);
 
@@ -194,7 +192,19 @@ export default function EnergyStats() {
     setToggleState(value);
     navigationRef.dispatch(DrawerActions.closeDrawer());
   };
-
+  useEffect(() => {
+    if (isFocused) getSubscriptionStatus();
+  }, [isFocused]);
+  const getSubscriptionStatus = async () => {
+    try {
+      const response = await fetch(`${API}/planstatuspauseresume/${getUserID}`);
+      const res = await response.json();
+      dispatch(setSubscriptionStatus(res.PlanStatus));
+      setPaused(res.PlanStatus == '1' ? true : false);
+    } catch (error) {
+      console.log('Error-7', error);
+    }
+  };
   const getDeviceIDData = () => {
     setIsLoading(true);
     axios
@@ -319,7 +329,7 @@ export default function EnergyStats() {
         dispatch(setBoxTwoDataForDashboard(res?.data));
         dispatch(
           setSubcriptionCancelStatus(
-            res.data?.data?.subscription_cancel_status == 1?true:false,
+            res.data?.data?.subscription_cancel_status == 1 ? true : false,
           ),
         );
         setIsLoading(false);
@@ -609,7 +619,7 @@ export default function EnergyStats() {
         )}
       </SafeAreaView>
       {isLoading && <ActivityLoader />}
-      {/* <PauseModal /> */}
+      {paused && <PauseModal paused={paused} setPaused={setPaused} />}
     </>
   );
 }
