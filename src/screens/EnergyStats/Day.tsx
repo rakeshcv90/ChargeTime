@@ -116,7 +116,7 @@ const Day = (props: any) => {
       .get(`${API}/remainingusage/${getUserID}`)
       .then(res => {
         console.log('Over Use Data is', res.data);
-        if (parseInt(res.data?.kwh_unit_remaining) > 0) {
+        if (parseInt(res.data?.kwh_unit_remaining) >= 0) {
           remaingData = res.data?.kwh_unit_remaining;
           dispatch(setRemainingData(res.data?.kwh_unit_remaining));
 
@@ -173,7 +173,11 @@ const Day = (props: any) => {
         } else {
           dispatch(
             setSubcriptionCancelStatus(
-              res.data?.data?.subscription_cancel_status == 1 ? true : false,
+              res.data?.data?.subscription_cancel_status == 1
+                ? 1
+                : res.data?.data?.subscription_cancel_status == 2
+                ? 2
+                : 0,
             ),
           );
           dispatch(setPurchaseData(res?.data));

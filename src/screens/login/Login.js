@@ -214,8 +214,7 @@ export default function Login({navigation}) {
             login_status: 0,
           },
         });
-       
-      
+
         if (res.data) {
           // AsyncStorage.setItem('loginDataOne', JSON.stringify(data.locationid ));
 
@@ -237,19 +236,27 @@ export default function Login({navigation}) {
               setEmail('');
               setPassword('');
               await AsyncStorage.setItem('isAuthorized', res.data.user_id + '');
-              console.log("SDFdsfsdfsdfdsf",res.data)
+
+              console.log('subCancelStatus', res.data);
+              dispatch(
+                setSubcriptionCancelStatus(
+                  res.data?.subscription_cancel_status == 1
+                    ? 1
+                    : res.data?.subscription_cancel_status == 2
+                    ? 2
+                    : 0,
+                ),
+              );
               if (res.data.status == 'All details available') {
                 dispatch(setEmailData(res.data?.email));
                 dispatch(setPackageStatus(true));
                 dispatch(getLocationID(res.data?.locationid));
                 fetchGraphData(res.data?.user_id);
                 dispatch(setDeviceId(''));
-                dispatch(setSubcriptionCancelStatus(res.data?.subscription_cancel_status == 1));
               } else if (
                 res.data.status ==
                 'Your Account is not currently linked with a TRO Charger. Please contact customer service if you believe this is an error.'
-                ) {
-                dispatch(setSubcriptionCancelStatus(res.data?.subscription_cancel_status == 1));
+              ) {
                 dispatch(setEmailData(res.data?.email));
                 dispatch(setPackageStatus(true));
                 dispatch(setUserID(res.data?.user_id));
@@ -425,7 +432,7 @@ export default function Login({navigation}) {
     axios
       .get(`${API}/remainingusage/${userId}`)
       .then(res => {
-        if (parseInt(res.data?.kwh_unit_remaining) > 0) {
+        if (parseInt(res.data?.kwh_unit_remaining) >= 0) {
           remaingData = res.data?.kwh_unit_remaining;
           dispatch(setRemainingData(res.data?.kwh_unit_remaining));
           dispatch(setOverUsage(false));
@@ -508,7 +515,6 @@ export default function Login({navigation}) {
       // console.log("CJKBBHJVCVHJCC H",res.PlanStatus)
       dispatch(setSubscriptionStatus(res.PlanStatus));
       setForLoading(false);
-
     } catch (error) {
       console.log('Error-7', error);
       setForLoading(false);
@@ -530,8 +536,8 @@ export default function Login({navigation}) {
     Clipboard.setString('');
     navigation.navigate('ForgetPassword');
   };
-  const getAllPurchasePlan = async(userId) => {
-    console.log("Fffffff",userId)
+  const getAllPurchasePlan = async userId => {
+    console.log('Fffffff', userId);
     // axios
     //   .get(`${API}/allpurchaseplans/${userId}`)
     //   .then(res => {
@@ -544,13 +550,9 @@ export default function Login({navigation}) {
       const response = await fetch(`${API}/allpurchaseplans/${userId}`);
       const res = await response.json();
       dispatch(setPuchaseAllPlans(res?.data));
-
-
     } catch (error) {
       console.log('Error-10', err);
-  
     }
-
   };
   return (
     <SafeAreaView style={{backgroundColor: COLORS.CREAM, flex: 1}}>

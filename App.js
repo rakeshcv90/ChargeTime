@@ -260,7 +260,7 @@ const App = ({navigation}) => {
         axios
           .get(`${API}/remainingusage/${getUserID}`)
           .then(res => {
-            if (parseInt(res.data?.kwh_unit_remaining) > 0) {
+            if (parseInt(res.data?.kwh_unit_remaining) >= 0) {
               remaingData = res.data?.kwh_unit_remaining;
               dispatch(setRemainingData(res.data?.kwh_unit_remaining));
               dispatch(setOverUsage(false));
@@ -585,7 +585,7 @@ const App = ({navigation}) => {
   //   axios
   //     .get(`${API}/remainingusage/${getUserID}`)
   //     .then(res => {
-  //       if (parseInt(res.data?.kwh_unit_remaining) > 0) {
+  //       if (parseInt(res.data?.kwh_unit_remaining) >= 0) {
   //         dispatch(setOverModelView(false));
   //       } else {
   //         remaingData = res.data?.kwh_unit_overusage;

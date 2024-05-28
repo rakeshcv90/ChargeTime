@@ -21,7 +21,7 @@ import {useSelector} from 'react-redux';
 import {DIMENSIONS} from '../constants/DIMENSIONS';
 
 const BoxFive = ({data, purchageData, disabled}) => {
-  const {getUserID} = useSelector(state => state);
+  const {getUserID, getSubscriptionCancelStatus} = useSelector(state => state);
 
   const [message, setMessage] = useState('');
   const [modalVisible, setModalVisible] = useState(false);
@@ -94,7 +94,12 @@ const BoxFive = ({data, purchageData, disabled}) => {
         style={[
           styles.mainDiv_purchage_dollar,
           styles.shadowProp,
-          {flexDirection: purchageData == 'UPGRADE' ? 'row-reverse' : 'row'},
+          {
+            flexDirection:
+              purchageData == 'UPGRADE' || getSubscriptionCancelStatus == 1
+                ? 'row-reverse'
+                : 'row',
+          },
         ]}>
         <View>
           <TouchableOpacity
@@ -115,7 +120,9 @@ const BoxFive = ({data, purchageData, disabled}) => {
                 styles.purchage_text,
                 {color: disabled ? COLORS.WHITE : COLORS.WHITE},
               ]}>
-              {purchageData}
+              {getSubscriptionCancelStatus == 1
+                ? purchageData?.replace('Renewal', 'Cancelled')
+                : purchageData}
             </Text>
           </TouchableOpacity>
         </View>
@@ -132,12 +139,9 @@ const BoxFive = ({data, purchageData, disabled}) => {
 
 export default BoxFive;
 const styles = StyleSheet.create({
-  managing_width: {
-  
-  },
+  managing_width: {},
   shadowProp: {
     backgroundColor: 'white',
-
   },
   mainDiv_installation: {
     borderWidth: 1,
@@ -210,7 +214,10 @@ const styles = StyleSheet.create({
     borderColor: COLORS.GREEN,
     borderRadius: 5,
     backgroundColor: COLORS.WHITE,
-    marginTop: Platform.OS=='android'?DIMENSIONS.SCREEN_HEIGHT*0.01:DIMENSIONS.SCREEN_HEIGHT*0.02,
+    marginTop:
+      Platform.OS == 'android'
+        ? DIMENSIONS.SCREEN_HEIGHT * 0.01
+        : DIMENSIONS.SCREEN_HEIGHT * 0.02,
     paddingHorizontal: 10,
     paddingVertical: 10,
     borderRadius: 16,
@@ -226,8 +233,7 @@ const styles = StyleSheet.create({
   dollar_div: {
     flexDirection: 'row',
     alignItems: 'center',
-    width:DIMENSIONS.SCREEN_WIDTH*.35,
-
+    width: DIMENSIONS.SCREEN_WIDTH * 0.35,
   },
   per_month: {
     fontWeight: 500,
@@ -245,7 +251,7 @@ const styles = StyleSheet.create({
   purchage_text: {
     fontWeight: '700',
     fontSize: 14,
-    textTransform: 'capitalize'
+    textTransform: 'capitalize',
   },
   modalText: {
     marginBottom: 15,

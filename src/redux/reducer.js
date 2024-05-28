@@ -40,7 +40,7 @@ const initialState = {
   overusageCount: 0,
   getMyLocation: '',
   getPurchaseAllPlans: [],
-  getSubscriptionCancelStatus: false
+  getSubscriptionCancelStatus: 0
 };
 
 const rootReducer = (state = initialState, action) => {

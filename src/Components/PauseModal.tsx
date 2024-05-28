@@ -21,8 +21,10 @@ import ActivityLoader from './ActivityLoader';
 type Props = {
   paused: boolean;
   setPaused: Function;
+  cancel1?: boolean;
+  cancel2?: boolean;
 };
-const PauseModal: FC<Props> = ({paused, setPaused}) => {
+const PauseModal: FC<Props> = ({paused, setPaused, cancel1, cancel2}) => {
   const dispatch = useDispatch();
   const {subscriptionStatus, getUserID} = useSelector((state: any) => state);
   const [isLoading, setIsLoading] = useState(false);
@@ -55,6 +57,9 @@ const PauseModal: FC<Props> = ({paused, setPaused}) => {
       console.log('Error-7', error);
     }
   };
+  const plan = () => {
+    navigationRef.current?.navigate('Home');
+  };
   return (
     <Modal
       animationType="fade"
@@ -66,7 +71,9 @@ const PauseModal: FC<Props> = ({paused, setPaused}) => {
       }}>
       <View style={styles.centeredView}>
         <View style={styles.modalView}>
-          <Text style={styles.modalText}>Account is Paused</Text>
+          <Text style={styles.modalText}>
+            Account is {cancel1 || cancel2? 'Cancelled' : 'Paused'}
+          </Text>
           {/* <AnimatedLottieView
           source={{
             uri: 'https://assets6.lottiefiles.com/private_files/lf30_mf7q9oho.json',
@@ -82,7 +89,11 @@ const PauseModal: FC<Props> = ({paused, setPaused}) => {
               fontWeight: '400',
               color: COLORS.BLACK,
             }}>
-            Your Subscription has been paused. Please resume it
+            {cancel1
+              ? `You don't have a plan can use Remaining usage until its over`
+              : cancel2
+              ? `Purchase a plan to check again`
+              : 'Your Subscription has been paused. Please resume it'}
           </Text>
           <View style={styles.button_one}>
             <TouchableOpacity
@@ -97,8 +108,10 @@ const PauseModal: FC<Props> = ({paused, setPaused}) => {
             </TouchableOpacity>
             <TouchableOpacity
               style={[styles.button, styles.buttonClose, {padding: 5}]}
-              onPress={postSubscriptionStatus}>
-              <Text style={styles.textStyle}>Resume</Text>
+              onPress={cancel1 || cancel2 ? postSubscriptionStatus : plan}>
+              <Text style={styles.textStyle}>
+                {cancel1 || cancel2 ? 'Purchase Plan' : 'Resume'}
+              </Text>
             </TouchableOpacity>
           </View>
         </View>

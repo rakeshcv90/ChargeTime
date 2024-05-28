@@ -307,7 +307,12 @@ const Subscription = ({navigation, route}) => {
       });
       if (res.data) {
         console.log('My Plan Status', res.data, getUserID);
-        setPaused(res.data.PlanStatus == '1' ? true : false);
+        res.data.PlanStatus == '1'
+          ? setPaused(
+              getSubscriptionCancelStatus == 1 ||
+                getSubscriptionCancelStatus == 2,
+            )
+          : setPaused(res.data.PlanStatus == '1' ? true : false);
         dispatch(setSubscriptionStatus(res.data.PlanStatus));
       }
     } catch (error) {
@@ -530,7 +535,7 @@ const Subscription = ({navigation, route}) => {
               }}>
               <TouchableOpacity
                 disabled={
-                  subscriptionStatus == '1' || getSubscriptionCancelStatus
+                  subscriptionStatus == '1' || getSubscriptionCancelStatus != 0
                 }
                 onPress={() => {
                   setModalVisible(true);
@@ -539,7 +544,8 @@ const Subscription = ({navigation, route}) => {
                   width: DIMENSIONS.SCREEN_WIDTH * 0.4,
                   height: (DIMENSIONS.SCREEN_HEIGHT * 6) / 100,
                   backgroundColor:
-                    subscriptionStatus == '1' || getSubscriptionCancelStatus
+                    subscriptionStatus == '1' ||
+                    getSubscriptionCancelStatus != 0
                       ? 'lightgrey'
                       : '#F84E4E',
                   justifyContent: 'center',
@@ -568,7 +574,7 @@ const Subscription = ({navigation, route}) => {
               </TouchableOpacity>
 
               <TouchableOpacity
-                disabled={getSubscriptionCancelStatus}
+                disabled={getSubscriptionCancelStatus != 0}
                 onPress={() => {
                   getSubscriptionStatus();
                 }}
@@ -579,9 +585,10 @@ const Subscription = ({navigation, route}) => {
                   borderRadius: 10,
                   justifyContent: 'center',
                   alignItems: 'center',
-                  backgroundColor: getSubscriptionCancelStatus
-                    ? 'lightgrey'
-                    : COLORS.GREEN,
+                  backgroundColor:
+                    getSubscriptionCancelStatus != 0
+                      ? 'lightgrey'
+                      : COLORS.GREEN,
                   ...Platform.select({
                     ios: {
                       shadowColor: '#000000',
@@ -596,9 +603,10 @@ const Subscription = ({navigation, route}) => {
                 }}>
                 <Text
                   style={{
-                    color: getSubscriptionCancelStatus
-                      ? COLORS.WHITE
-                      : COLORS.BLACK,
+                    color:
+                      getSubscriptionCancelStatus != 0
+                        ? COLORS.WHITE
+                        : COLORS.BLACK,
                     fontSize: 14,
                     fontWeight: '500',
                   }}>

@@ -99,7 +99,7 @@ export const DrawerScreenPart = ({navigation}) => {
 export const ChargerStatus = ({navigation}) => {
   const user_ID = useSelector(state => state.getUserID);
   const dispatch = useDispatch();
-  
+
   const handleLogOut = async () => {
     try {
       const res = await axios(`${API}/logout/${user_ID}`, {
@@ -109,8 +109,6 @@ export const ChargerStatus = ({navigation}) => {
         },
       });
       if (res.data.message == 'Your account is successfully logout') {
- 
-
         await AsyncStorage.clear();
         await persistor.purge();
         dispatch(setLogout());
@@ -131,7 +129,6 @@ export const ChargerStatus = ({navigation}) => {
       await AsyncStorage.clear();
       await persistor.purge();
       dispatch(setLogout());
-  
     }
   };
   return (
@@ -160,10 +157,12 @@ const DrawerNavigation = () => {
   const [focus, setFocus] = useState();
   const [focusOne, setFocusOne] = useState();
   const [focusTwo, setFocusTwo] = useState();
-  const {getPackageStatus, getChargerStatus, getDeviceID} = useSelector(
-    state => state,
-  );
-
+  const {
+    getPackageStatus,
+    getChargerStatus,
+    getDeviceID,
+    getSubscriptionCancelStatus,
+  } = useSelector(state => state);
   return (
     <Drawer.Navigator
       screenOptions={{
@@ -174,7 +173,7 @@ const DrawerNavigation = () => {
         gestureEnabled: false,
       }}
       drawerContent={props => <CustomDrawerContent {...props} />}>
-      {getPackageStatus ? (
+      {getSubscriptionCancelStatus == 2 || getPackageStatus ? (
         <>
           <Drawer.Screen
             options={{
@@ -531,8 +530,7 @@ const LoginStack = () => {
       <Stack.Screen
         name="Login"
         component={Login}
-        options={{gestureEnabled: false
-        }}
+        options={{gestureEnabled: false}}
       />
       <Stack.Screen name="Register" component={Register} />
       <Stack.Screen name="VerifyEmail" component={VerifyEmail} />

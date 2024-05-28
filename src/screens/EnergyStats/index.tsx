@@ -164,15 +164,19 @@ function MyTabBar({state, descriptors, navigation}) {
 export default function EnergyStats() {
   const Tab = createMaterialTopTabNavigator();
   const [showCar, setShowCar] = useState(true);
-  const [offline, setOffline] = useState(true);
+  const [cancelled, setCancelled] = useState(false);
   const [paused, setPaused] = useState(false);
   const [deviceIdTemp, setDeviceIdTemp] = useState('');
 
   const [isLoading, setIsLoading] = useState(false);
   const {getGraphData} = useSelector((state: any) => state);
   const isFocused = useIsFocused();
-  const {getChargerStatus, getDeviceID, getUserID, subscriptionStatus} =
-    useSelector((state: any) => state);
+  const {
+    getChargerStatus,
+    getDeviceID,
+    getUserID,
+    getSubscriptionCancelStatus,
+  } = useSelector((state: any) => state);
 
   const [toggleState, setToggleState] = useState(false);
   const dispatch = useDispatch();
@@ -193,7 +197,10 @@ export default function EnergyStats() {
     navigationRef.dispatch(DrawerActions.closeDrawer());
   };
   useEffect(() => {
-    if (isFocused) getSubscriptionStatus();
+    if (isFocused) {
+      // fetchBoxTwoDashboardData(getUserID);
+      getSubscriptionStatus();
+    }
   }, [isFocused]);
   const getSubscriptionStatus = async () => {
     try {
@@ -296,7 +303,7 @@ export default function EnergyStats() {
     axios
       .get(`${API}/remainingusage/${userId}`)
       .then(res => {
-        if (parseInt(res.data?.kwh_unit_remaining) > 0) {
+        if (parseInt(res.data?.kwh_unit_remaining) >= 0) {
           remaingData = res.data?.kwh_unit_remaining;
           dispatch(setRemainingData(res.data?.kwh_unit_remaining));
 
@@ -329,8 +336,15 @@ export default function EnergyStats() {
         dispatch(setBoxTwoDataForDashboard(res?.data));
         dispatch(
           setSubcriptionCancelStatus(
-            res.data?.data?.subscription_cancel_status == 1 ? true : false,
+            res.data?.data?.subscription_cancel_status == 1
+              ? 1
+              : res.data?.data?.subscription_cancel_status == 2
+              ? 2
+              : 0,
           ),
+        );
+        setCancelled(
+          res.data?.data?.subscription_cancel_status == 1 ? true : false,
         );
         setIsLoading(false);
       })
@@ -619,7 +633,13 @@ export default function EnergyStats() {
         )}
       </SafeAreaView>
       {isLoading && <ActivityLoader />}
-      {paused && <PauseModal paused={paused} setPaused={setPaused} />}
+      {(paused || cancelled) && (
+        <PauseModal
+          paused={paused ? paused : cancelled}
+          setPaused={paused ? setPaused : setCancelled}
+          cancel={getSubscriptionCancelStatus}
+        />
+      )}
     </>
   );
 }

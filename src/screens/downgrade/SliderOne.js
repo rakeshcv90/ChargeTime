@@ -37,19 +37,22 @@ import {
   setPurchaseData,
 } from '../../redux/action';
 import RemainingHorizontal from '../../Components/RemainingHorizontal';
+import PurchseButton from '../../Components/PurchseButton';
 
 export default function SliderOne(props) {
   const [forLoading, setForLoading] = useState(false);
   const [planStatus, setPlanStatuss] = useState(false);
   // const [schedulePackageName, setSchedulePackageName] = useState('');
   const dispatch = useDispatch();
-  const {getUserID, getPurchaseData, getPlanStatus,getBasePackage} = useSelector(
-    state => state,
-  );
- 
+  const {
+    getUserID,
+    getPurchaseData,
+    getSubscriptionCancelStatus,
+    getBasePackage,
+  } = useSelector(state => state);
+
   useEffect(() => {
     getPlanCurrent();
- 
   }, []);
   const handleRefresh = () => {
     setRefresh(true);
@@ -63,8 +66,6 @@ export default function SliderOne(props) {
     axios
       .get(`${API}/currentplan/${getUserID}`)
       .then(res => {
-    
-
         if (res.data.data == 'Package not found') {
           dispatch(setPurchaseData(res.data));
           dispatch(setPackageStatus(false));
@@ -78,21 +79,15 @@ export default function SliderOne(props) {
       });
   };
 
-
-
   return (
     <ScrollView
       showsVerticalScrollIndicator={false}
-      style={{backgroundColor: COLORS.CREAM, flex: 1,
-     
-    }}
-      >
+      style={{backgroundColor: COLORS.CREAM, flex: 1}}>
       {forLoading ? <ActivityLoader /> : ''}
 
       <View style={styles.managing_width}>
-
         {/* <BoxTwo data={props.route.params.item} /> */}
-        <BoxTwo data={ getBasePackage[props?.route?.params?.index]} />
+        <BoxTwo data={getBasePackage[props?.route?.params?.index]} />
         {/* data={props?.item || getBasePackage[props?.route?.params.index]} */}
         {getPurchaseData.data != 'Package not found' &&
           getPurchaseData.data.energy_plan.toLowerCase() ===
@@ -113,7 +108,9 @@ export default function SliderOne(props) {
               getPurchaseData.data.energy_plan.toLowerCase() ===
                 props.route.params.item.package_name.toLowerCase()
                 ? 0
-                : Platform.OS=='android'?-15:0,
+                : Platform.OS == 'android'
+                ? -15
+                : 0,
           }}>
           <InstallationBase data={props.route.params.item} />
         </View>
@@ -144,6 +141,9 @@ export default function SliderOne(props) {
               disabled
             />
           )}
+        {getSubscriptionCancelStatus == 2 && (
+          <PurchseButton data={getBasePackage[props?.route?.params.index]} />
+        )}
         {/* {!forLoading &&
           getPlanStatus.length !== 0 &&
           getPlanStatus.item_name.toLowerCase() ==
@@ -167,7 +167,7 @@ const styles = StyleSheet.create({
   managing_width: {
     paddingHorizontal: 20,
     // backgroundColor: COLORS.CREAM, flex: 1,
-    marginBottom:DIMENSIONS.SCREEN_HEIGHT*0.02
+    marginBottom: DIMENSIONS.SCREEN_HEIGHT * 0.02,
     // backgroundColor:"red"
     // marginVertical: 10,
     //   paddingTop:20
