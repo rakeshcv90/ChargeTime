@@ -37,7 +37,6 @@ import {
   setOverModelView,
   setPurchaseData,
   setPackageStatus,
-  setSubcriptionCancelStatus,
 } from '../../redux/action';
 import {API} from '../../api/API';
 import AnimatedLottieView from 'lottie-react-native';
@@ -55,13 +54,12 @@ const Day = (props: any) => {
     overusage,
     overModelView,
   } = useSelector((state: any) => state);
-
+const {handleRefresh, refresh} = props?.route?.params
   const [toggleState, setToggleState] = useState(false);
 
   const handleToggle = (value: any) => setToggleState(value);
   const dispatch = useDispatch();
   const [showSlider, setShowSlider] = useState(true);
-  const [refresh, setRefresh] = useState(false);
   const ScrollRef = useRef(null);
   const [modalVisible, setModalVisible] = useState(false);
 
@@ -96,17 +94,6 @@ const Day = (props: any) => {
       .catch(err => {
         console.log('fetchGraphData11', err);
       });
-  };
-  const handleRefresh = () => {
-    setRefresh(true);
-    // setTimeout(() => {
-    //   setRefresh(false);
-    // }, 2000);
-    remainigUsuageData();
-    dailyUsuagekwh(getUserID);
-    fetchGraphData();
-    fetchStatusdata(getUserID);
-    getPlanCurrent();
   };
 
   const remainigUsuageData = () => {
@@ -159,33 +146,6 @@ const Day = (props: any) => {
       })
       .catch(err => {
         console.log('fetchStatusdata111', err);
-      });
-  };
-  const getPlanCurrent = () => {
-    axios
-      .get(`${API}/currentplan/${getUserID}`)
-      .then(res => {
-        console.log(res.data?.data, 'asdsadads');
-        if (res.data.data == 'Package not found') {
-          dispatch(setPurchaseData(res.data));
-          dispatch(setBoxTwoDataForDashboard(res.data));
-          dispatch(setPackageStatus(false));
-        } else {
-          dispatch(
-            setSubcriptionCancelStatus(
-              res.data?.data?.subscription_cancel_status == 1
-                ? 1
-                : res.data?.data?.subscription_cancel_status == 2
-                ? 2
-                : 0,
-            ),
-          );
-          dispatch(setPurchaseData(res?.data));
-          dispatch(setBoxTwoDataForDashboard(res?.data));
-        }
-      })
-      .catch(err => {
-        console.log(err);
       });
   };
   const nav = () => {

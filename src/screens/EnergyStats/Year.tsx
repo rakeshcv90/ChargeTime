@@ -2,7 +2,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable react-native/no-inline-styles */
-import {View, Text, ScrollView} from 'react-native';
+import {View, Text, ScrollView, RefreshControl} from 'react-native';
 import React, {useEffect, useRef, useState} from 'react';
 
 import COLORS from '../../constants/COLORS';
@@ -14,13 +14,14 @@ import PriceValidity from '../../Components/PriceValidity';
 import ButtonSlider from '../../Components/ButtonSlider';
 import {useSelector} from 'react-redux';
 
-export default function Year() {
+const Year = (props: any) => {
   const [showSlider, setShowSlider] = useState(true);
   const ScrollRef = useRef(null);
   useEffect(() => {
     setShowSlider(true);
 
   }, []);
+  const {handleRefresh, refresh} = props?.route?.params
   const {getYearData, getBoxTwoDataForDashboard} = useSelector(
     (state: any) => state,
   );
@@ -36,7 +37,13 @@ export default function Year() {
           showsVerticalScrollIndicator={false}
           keyboardShouldPersistTaps="handled"
           onScrollBeginDrag={() => setShowSlider(false)}
-          //   onScrollToTop={() => setShowSlider(true)}
+          refreshControl={
+            <RefreshControl
+              refreshing={refresh}
+              colors={[COLORS.GREEN]}
+              onRefresh={handleRefresh}
+            />
+          }
           onScrollEndDrag={() => setShowSlider(true)}>
           <View
             style={{
@@ -77,3 +84,5 @@ export default function Year() {
     </>
   );
 }
+
+export default Year

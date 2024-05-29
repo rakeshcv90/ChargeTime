@@ -119,9 +119,18 @@ const Subscription = ({navigation, route}) => {
           },
         ];
         dispatch(UpdatedCurrentPlan(updatedData));
+        const subCancelStatus = response?.data?.subscription_cancel_status;
         dispatch(
           setSubcriptionCancelStatus(
-            response.data?.subscription_cancel_status == 1,
+            subCancelStatus == 1
+              ? 1
+              : subCancelStatus == 2
+              ? 2
+              : subCancelStatus == 3
+              ? 3
+              : subCancelStatus == 4
+              ? 4
+              : 0,
           ),
         );
         // getPlanCurrent();
@@ -156,9 +165,18 @@ const Subscription = ({navigation, route}) => {
           setGetData(res.data);
           dispatch(setPackageStatus(false));
         } else {
+          const subCancelStatus = res.data?.data?.subscription_cancel_status;
           dispatch(
             setSubcriptionCancelStatus(
-              res.data?.data?.subscription_cancel_status == 1 ? true : false,
+              subCancelStatus == 1
+                ? 1
+                : subCancelStatus == 2
+                ? 2
+                : subCancelStatus == 3
+                ? 3
+                : subCancelStatus == 4
+                ? 4
+                : 0,
             ),
           );
           dispatch(setPurchaseData(res?.data));
@@ -307,12 +325,13 @@ const Subscription = ({navigation, route}) => {
       });
       if (res.data) {
         console.log('My Plan Status', res.data, getUserID);
-        res.data.PlanStatus == '1'
-          ? setPaused(
-              getSubscriptionCancelStatus == 1 ||
-                getSubscriptionCancelStatus == 2,
-            )
-          : setPaused(res.data.PlanStatus == '1' ? true : false);
+        // res.data.PlanStatus == '1'
+        //   ? setPaused(
+        //       getSubscriptionCancelStatus == 1 ||
+        //         getSubscriptionCancelStatus == 2,
+        //     )
+        //   :
+        setPaused(res.data.PlanStatus == '1' ? true : false);
         dispatch(setSubscriptionStatus(res.data.PlanStatus));
       }
     } catch (error) {
@@ -681,7 +700,12 @@ const Subscription = ({navigation, route}) => {
           </View>
         </Modal>
       </SafeAreaView>
-      {paused && <PauseModal paused={paused} setPaused={setPaused} />}
+      <PauseModal
+        paused={paused}
+        setPaused={setPaused}
+        cancel1={getSubscriptionCancelStatus == 1}
+        cancel2={getSubscriptionCancelStatus == 2}
+      />
       {forLoading && <ActivityLoader />}
     </>
   );

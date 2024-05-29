@@ -1,7 +1,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable react-native/no-inline-styles */
-import {View, Text, ScrollView} from 'react-native';
+import {View, Text, ScrollView, RefreshControl} from 'react-native';
 import React, {useEffect, useRef, useState} from 'react';
 
 import COLORS from '../../constants/COLORS';
@@ -16,7 +16,7 @@ import axios from 'axios';
 import {API} from '../../api/API';
 import {setWeekGraphData} from '../../redux/action';
 
-export default function Week() {
+const Week = (props: any) => {
   const [showSlider, setShowSlider] = useState(true);
   const dispatch = useDispatch();
   const ScrollRef = useRef(null);
@@ -24,6 +24,7 @@ export default function Week() {
     setShowSlider(true);
 
   }, []);
+  const {handleRefresh, refresh} = props?.route?.params
   const {getWeekGraphData, getBoxTwoDataForDashboard} = useSelector(
     (state: any) => state,
   );
@@ -51,7 +52,13 @@ export default function Week() {
           showsVerticalScrollIndicator={false}
           keyboardShouldPersistTaps="handled"
           onScrollBeginDrag={() => setShowSlider(false)}
-          //   onScrollToTop={() => setShowSlider(true)}
+          refreshControl={
+            <RefreshControl
+              refreshing={refresh}
+              colors={[COLORS.GREEN]}
+              onRefresh={handleRefresh}
+            />
+          }
           onScrollEndDrag={() => setShowSlider(true)}>
           <View
             style={{
@@ -94,3 +101,5 @@ export default function Week() {
     </>
   );
 }
+
+export default Week

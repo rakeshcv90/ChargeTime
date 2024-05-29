@@ -167,6 +167,7 @@ export default function EnergyStats() {
   const [cancelled, setCancelled] = useState(false);
   const [paused, setPaused] = useState(false);
   const [deviceIdTemp, setDeviceIdTemp] = useState('');
+  const [refresh, setRefresh] = useState(false);
 
   const [isLoading, setIsLoading] = useState(false);
   const {getGraphData} = useSelector((state: any) => state);
@@ -198,7 +199,7 @@ export default function EnergyStats() {
   };
   useEffect(() => {
     if (isFocused) {
-      // fetchBoxTwoDashboardData(getUserID);
+      fetchBoxTwoDashboardData(getUserID);
       getSubscriptionStatus();
     }
   }, [isFocused]);
@@ -333,18 +334,29 @@ export default function EnergyStats() {
     axios
       .get(`${API}/currentplan/${userId}`)
       .then(res => {
+        console.log('CUREREAA',res.data)
+        const subCancelStatus = res.data?.data?.subscription_cancel_status;
         dispatch(setBoxTwoDataForDashboard(res?.data));
         dispatch(
           setSubcriptionCancelStatus(
-            res.data?.data?.subscription_cancel_status == 1
+            subCancelStatus == 1
               ? 1
-              : res.data?.data?.subscription_cancel_status == 2
+              : subCancelStatus == 2
               ? 2
+              : subCancelStatus == 3
+              ? 3
+              : subCancelStatus == 4
+              ? 4
               : 0,
           ),
         );
         setCancelled(
-          res.data?.data?.subscription_cancel_status == 1 ? true : false,
+          subCancelStatus == 1 ||
+            subCancelStatus == 2 ||
+            subCancelStatus == 3 ||
+            subCancelStatus == 4
+            ? true
+            : false,
         );
         setIsLoading(false);
       })
@@ -366,7 +378,17 @@ export default function EnergyStats() {
         setIsLoading(false);
       });
   };
-
+  const handleRefresh = () => {
+    setRefresh(true);
+    remainigUsuageData(getUserID);
+    dailyUsuagekwh(getUserID);
+    fetchGraphData(getUserID);
+    fetchStatusdata(getUserID);
+    fetchBoxTwoDashboardData(getUserID);
+    setTimeout(() => {
+      setRefresh(false);
+    }, 3000);
+  };
   return (
     <>
       <SafeAreaView style={{backgroundColor: COLORS.CREAM, flex: 1}}>
@@ -597,20 +619,40 @@ export default function EnergyStats() {
             }}></View>
         ) : (
           <Tab.Navigator
-            swipeEnabled={false}
             screenOptions={{
               tabBarLabelStyle: {
                 fontSize: 16,
                 fontWeight: 'bold',
               },
+              swipeEnabled: false,
               tabBarScrollEnabled: true,
             }}
             tabBar={props => <MyTabBar {...props} />}>
-            <Tab.Screen name="Day" component={Day} />
-            <Tab.Screen name="Week" component={Week} />
-            <Tab.Screen name="Month" component={Month} />
-            <Tab.Screen name="Quarter" component={Quarter} />
-            <Tab.Screen name="Year" component={Year} />
+            <Tab.Screen
+              name="Day"
+              component={Day}
+              initialParams={{handleRefresh, refresh}}
+            />
+            <Tab.Screen
+              name="Week"
+              component={Week}
+              initialParams={{handleRefresh, refresh}}
+            />
+            <Tab.Screen
+              name="Month"
+              component={Month}
+              initialParams={{handleRefresh, refresh}}
+            />
+            <Tab.Screen
+              name="Quarter"
+              component={Quarter}
+              initialParams={{handleRefresh, refresh}}
+            />
+            <Tab.Screen
+              name="Year"
+              component={Year}
+              initialParams={{handleRefresh, refresh}}
+            />
           </Tab.Navigator>
         )}
         {getDeviceID ==
@@ -627,19 +669,21 @@ export default function EnergyStats() {
                     ? -(DIMENSIONS.SCREEN_HEIGHT * 0.05)
                     : -10,
               }}>
-              <ButtonSlider2 />
+              {getSubscriptionCancelStatus != 2 ||
+                (getSubscriptionCancelStatus != 4 && <ButtonSlider2 />)}
             </View>
           </>
         )}
       </SafeAreaView>
       {isLoading && <ActivityLoader />}
-      {(paused || cancelled) && (
-        <PauseModal
-          paused={paused ? paused : cancelled}
-          setPaused={paused ? setPaused : setCancelled}
-          cancel={getSubscriptionCancelStatus}
-        />
-      )}
+      <PauseModal
+        paused={paused ? paused : cancelled}
+        setPaused={paused ? setPaused : setCancelled}
+        cancel1={getSubscriptionCancelStatus == 1}
+        cancel2={getSubscriptionCancelStatus == 2}
+        cancel1Stripe={getSubscriptionCancelStatus == 3}
+        cancel2Stripe={getSubscriptionCancelStatus == 4}
+      />
     </>
   );
 }

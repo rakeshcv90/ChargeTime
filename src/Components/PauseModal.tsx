@@ -1,4 +1,5 @@
 import {
+  Image,
   Modal,
   StyleSheet,
   Text,
@@ -23,8 +24,17 @@ type Props = {
   setPaused: Function;
   cancel1?: boolean;
   cancel2?: boolean;
+  cancel1Stripe?: boolean;
+  cancel2Stripe?: boolean;
 };
-const PauseModal: FC<Props> = ({paused, setPaused, cancel1, cancel2}) => {
+const PauseModal: FC<Props> = ({
+  paused,
+  setPaused,
+  cancel1,
+  cancel2,
+  cancel1Stripe,
+  cancel2Stripe,
+}) => {
   const dispatch = useDispatch();
   const {subscriptionStatus, getUserID} = useSelector((state: any) => state);
   const [isLoading, setIsLoading] = useState(false);
@@ -58,7 +68,7 @@ const PauseModal: FC<Props> = ({paused, setPaused, cancel1, cancel2}) => {
     }
   };
   const plan = () => {
-    navigationRef.current?.navigate('Home');
+    navigationRef?.navigate('HomeOne');
   };
   return (
     <Modal
@@ -72,28 +82,40 @@ const PauseModal: FC<Props> = ({paused, setPaused, cancel1, cancel2}) => {
       <View style={styles.centeredView}>
         <View style={styles.modalView}>
           <Text style={styles.modalText}>
-            Account is {cancel1 || cancel2? 'Cancelled' : 'Paused'}
+            Account{' '}
+            {cancel1 || cancel2 || cancel1Stripe || cancel2Stripe
+              ? 'is Cancelled'
+              : 'Paused'}
           </Text>
-          {/* <AnimatedLottieView
-          source={{
-            uri: 'https://assets6.lottiefiles.com/private_files/lf30_mf7q9oho.json',
-          }} // Replace with your animation file
-          autoPlay
-          loop
-          style={{width: 50, height: 50}}
-        /> */}
-          <Overusageimage width={130} height={130} viewBox="0 0 80 80" />
+          {
+            <Image
+              source={
+                cancel1 || cancel2
+                  ? require('../../assets/images/CancelModalImage.png')
+                  : require('../../assets/images/PauseModalImage.png')
+              }
+              resizeMode="contain"
+              style={{width: 70, height: 70}}
+            />
+          }
           <Text
             style={{
               fontSize: 14,
               fontWeight: '400',
               color: COLORS.BLACK,
+              marginTop: 10,
+              textAlign: 'center',
+              lineHeight: 20,
             }}>
             {cancel1
-              ? `You don't have a plan can use Remaining usage until its over`
+              ? `You don’t have a plan. You can use your remaining credits until its over.`
               : cancel2
-              ? `Purchase a plan to check again`
-              : 'Your Subscription has been paused. Please resume it'}
+              ? `You don't have a plan, Purchase a plan to conitnue using Charger`
+              : cancel1Stripe
+              ? `Your account has been cancelled due to a declined payment. Please update your payment information to reinstate your account. You can use the charger until your usage quota limit is reached.`
+              : cancel2Stripe
+              ? `Your account has been cancelled due to a declined payment. Please update your payment information to reinstate your account.`
+              : `You don’t have a plan. You can use your remaining credits until its over.`}
           </Text>
           <View style={styles.button_one}>
             <TouchableOpacity
@@ -108,9 +130,15 @@ const PauseModal: FC<Props> = ({paused, setPaused, cancel1, cancel2}) => {
             </TouchableOpacity>
             <TouchableOpacity
               style={[styles.button, styles.buttonClose, {padding: 5}]}
-              onPress={cancel1 || cancel2 ? postSubscriptionStatus : plan}>
+              onPress={() => {
+                if (cancel1 || cancel2 || cancel1Stripe || cancel2Stripe)
+                  plan();
+                else postSubscriptionStatus();
+              }}>
               <Text style={styles.textStyle}>
-                {cancel1 || cancel2 ? 'Purchase Plan' : 'Resume'}
+                {cancel1 || cancel2 || cancel1Stripe || cancel2Stripe
+                  ? 'Purchase Plan'
+                  : 'Resume'}
               </Text>
             </TouchableOpacity>
           </View>

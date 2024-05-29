@@ -236,14 +236,18 @@ export default function Login({navigation}) {
               setEmail('');
               setPassword('');
               await AsyncStorage.setItem('isAuthorized', res.data.user_id + '');
-
-              console.log('subCancelStatus', res.data);
+              const subCancelStatus = res.data?.subscription_cancel_status;
+              console.log('subCancelStatus', subCancelStatus);
               dispatch(
                 setSubcriptionCancelStatus(
-                  res.data?.subscription_cancel_status == 1
+                  subCancelStatus == 1
                     ? 1
-                    : res.data?.subscription_cancel_status == 2
+                    : subCancelStatus == 2
                     ? 2
+                    : subCancelStatus == 3
+                    ? 3
+                    : subCancelStatus == 4
+                    ? 4
                     : 0,
                 ),
               );
