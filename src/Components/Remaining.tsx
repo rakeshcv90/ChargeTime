@@ -161,7 +161,7 @@ const Remaining = ({...props}) => {
           elevation: 5,
           borderWidth: 0,
           borderRadius: 10,
-          overflow: PLATFORM_IOS ? 'visible' : 'hidden',
+          overflow: PLATFORM_IOS ? 'hidden' : 'hidden',
         }}>
         <Text
           style={{

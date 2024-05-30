@@ -54,6 +54,7 @@ import {
   setSubscriptionStatus,
   setOverModelView,
   setSubcriptionCancelStatus,
+  setPurchaseData,
 } from '../../redux/action';
 import ButtonSlider2 from '../../Components/ButtonSlider2';
 import Toast from 'react-native-toast-message';
@@ -334,22 +335,35 @@ export default function EnergyStats() {
     axios
       .get(`${API}/currentplan/${userId}`)
       .then(res => {
-        console.log('CUREREAA',res.data)
         const subCancelStatus = res.data?.data?.subscription_cancel_status;
-        dispatch(setBoxTwoDataForDashboard(res?.data));
-        dispatch(
-          setSubcriptionCancelStatus(
-            subCancelStatus == 1
-              ? 1
-              : subCancelStatus == 2
-              ? 2
-              : subCancelStatus == 3
-              ? 3
-              : subCancelStatus == 4
-              ? 4
-              : 0,
-          ),
-        );
+        if (res.data.data == 'Package not found') {
+          dispatch(setBoxTwoDataForDashboard(res?.data));
+          dispatch(setPurchaseData(res.data));
+        } else if (subCancelStatus == 4 || subCancelStatus == 2) {
+          dispatch(
+            setSubcriptionCancelStatus(
+              subCancelStatus == 2 ? 2 : subCancelStatus == 4 ? 4 : 0,
+            ),
+          );
+          dispatch(setBoxTwoDataForDashboard({data: 'Package not found'}));
+          dispatch(setPurchaseData({data: 'Package not found'}));
+        } else {
+          dispatch(setBoxTwoDataForDashboard(res?.data));
+          dispatch(
+            setSubcriptionCancelStatus(
+              subCancelStatus == 1
+                ? 1
+                : subCancelStatus == 2
+                ? 2
+                : subCancelStatus == 3
+                ? 3
+                : subCancelStatus == 4
+                ? 4
+                : 0,
+            ),
+          );
+          dispatch(setPurchaseData(res?.data));
+        }
         setCancelled(
           subCancelStatus == 1 ||
             subCancelStatus == 2 ||
@@ -669,8 +683,10 @@ export default function EnergyStats() {
                     ? -(DIMENSIONS.SCREEN_HEIGHT * 0.05)
                     : -10,
               }}>
-              {getSubscriptionCancelStatus != 2 ||
-                (getSubscriptionCancelStatus != 4 && <ButtonSlider2 />)}
+              {getSubscriptionCancelStatus ==
+              2 ? null : getSubscriptionCancelStatus == 4 ? null : (
+                <ButtonSlider2 />
+              )}
             </View>
           </>
         )}

@@ -51,6 +51,7 @@ import {
   setPlanStatus,
   setPuchaseAllPlans,
   setPurchaseData,
+  setSubcriptionCancelStatus,
 } from '../../redux/action';
 import {Toast} from 'react-native-toast-message/lib/src/Toast';
 import Carousel from 'react-native-snap-carousel';
@@ -435,9 +436,33 @@ export default function PaymentGateWay({navigation, route}) {
     axios
       .get(`${API}/currentplan/${getUserID}`)
       .then(res => {
-        if (res.data.data == 'Package details not found') {
+        const subCancelStatus = res.data?.data?.subscription_cancel_status;
+        if (res.data.data == 'Package not found') {
+          dispatch(setBoxTwoDataForDashboard(res?.data));
           dispatch(setPurchaseData(res.data));
+        } else if (subCancelStatus == 4 || subCancelStatus == 2) {
+          dispatch(
+            setSubcriptionCancelStatus(
+              subCancelStatus == 2 ? 2 : subCancelStatus == 4 ? 4 : 0,
+            ),
+          );
+          dispatch(setBoxTwoDataForDashboard({data: 'Package not found'}));
+          dispatch(setPurchaseData({data: 'Package not found'}));
         } else {
+          dispatch(setBoxTwoDataForDashboard(res?.data));
+          dispatch(
+            setSubcriptionCancelStatus(
+              subCancelStatus == 1
+                ? 1
+                : subCancelStatus == 2
+                ? 2
+                : subCancelStatus == 3
+                ? 3
+                : subCancelStatus == 4
+                ? 4
+                : 0,
+            ),
+          );
           dispatch(setPurchaseData(res?.data));
         }
         dispatch(setPackageStatus(true));

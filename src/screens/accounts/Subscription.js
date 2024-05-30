@@ -160,12 +160,20 @@ const Subscription = ({navigation, route}) => {
       .then(res => {
         setForLoading(false);
         setModalVisible(false);
+        const subCancelStatus = res.data?.data?.subscription_cancel_status;
+        console.log('ASDUBASDA', res.data);
         if (res.data.data == 'Package not found') {
           dispatch(setPurchaseData(res.data));
           setGetData(res.data);
           dispatch(setPackageStatus(false));
+        } else if (subCancelStatus == 4 || subCancelStatus == 2) {
+          dispatch(
+            setSubcriptionCancelStatus(
+              subCancelStatus == 2 ? 2 : subCancelStatus == 4 ? 4 : 0,
+            ),
+          );
+          dispatch(setPurchaseData({data: 'Package not found'}));
         } else {
-          const subCancelStatus = res.data?.data?.subscription_cancel_status;
           dispatch(
             setSubcriptionCancelStatus(
               subCancelStatus == 1
@@ -342,7 +350,7 @@ const Subscription = ({navigation, route}) => {
   return (
     <>
       <SafeAreaView style={{backgroundColor: COLORS.CREAM, flex: 1}}>
-        <Header headerName="Subscription" editShow={false} />
+        <Header headerName={'Subscription'} editShow={false} />
         {Platform.OS == 'android' ? (
           <HorizontalLine style={styles.line} />
         ) : (
@@ -355,7 +363,9 @@ const Subscription = ({navigation, route}) => {
           </View>
         )}
 
-        {getPurchaseData.data == 'Package not found' ? (
+        {getPurchaseData.data == 'Package not found' ||
+        getSubscriptionCancelStatus == 2 ||
+        getSubscriptionCancelStatus == 4 ? (
           <View
             style={{
               justifyContent: 'center',
@@ -411,7 +421,7 @@ const Subscription = ({navigation, route}) => {
               Please Purchase Package from Home.
             </Text> */}
             <TouchableOpacity
-              onPress={() => navigationRef.navigate('HomeStack')}
+              onPress={() => navigation.navigate('HomeOne')}
               style={{
                 width: mobileW * 0.45,
                 borderRadius: 10,

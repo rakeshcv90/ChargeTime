@@ -38,6 +38,7 @@ import {
   setPurchaseData,
   setPackageStatus,
   setPuchaseAllPlans,
+  setSubcriptionCancelStatus,
 } from '../../redux/action';
 import {Toast} from 'react-native-toast-message/lib/src/Toast';
 import {setBasePackage as setUpdateBasePackage} from '../../redux/action';
@@ -151,14 +152,33 @@ const Installation = () => {
       .then(res => {
         setForLoading(false);
         setModalVisible(false);
-
+        const subCancelStatus = res.data?.data?.subscription_cancel_status;
+        console.log('ASDUBASDA', res.data);
         if (res.data.data == 'Package not found') {
           dispatch(setPurchaseData(res.data));
-
           dispatch(setPackageStatus(false));
+        } else if (subCancelStatus == 4 || subCancelStatus == 2) {
+          dispatch(
+            setSubcriptionCancelStatus(
+              subCancelStatus == 2 ? 2 : subCancelStatus == 4 ? 4 : 0,
+            ),
+          );
+          dispatch(setPurchaseData({data: 'Package not found'}));
         } else {
+          dispatch(
+            setSubcriptionCancelStatus(
+              subCancelStatus == 1
+                ? 1
+                : subCancelStatus == 2
+                ? 2
+                : subCancelStatus == 3
+                ? 3
+                : subCancelStatus == 4
+                ? 4
+                : 0,
+            ),
+          );
           dispatch(setPurchaseData(res?.data));
-          // setGetData(res.data);
         }
       })
       .catch(err => {

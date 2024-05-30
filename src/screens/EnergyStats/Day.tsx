@@ -48,7 +48,7 @@ const Day = (props: any) => {
     getBoxTwoDataForDashboard,
     getUserID,
     getGraphData,
-    getChargerStatus,
+    getSubscriptionCancelStatus,
     getRemainingData,
     getkwhData,
     overusage,
@@ -203,7 +203,9 @@ const {handleRefresh, refresh} = props?.route?.params
             <BoxTwo data={getBoxTwoDataForDashboard.data} />
           </View>
           <View style={{marginBottom: 120}}>
-            <PriceValidity data={getBoxTwoDataForDashboard.data} />
+             {getSubscriptionCancelStatus ==
+              2 ? null : getSubscriptionCancelStatus == 4 ? null : (<PriceValidity data={getBoxTwoDataForDashboard.data} />
+              )}
           </View>
         </ScrollView>
         <Modal

@@ -494,8 +494,34 @@ export default function Login({navigation}) {
               text1: 'Login Successful',
             })
           : ToastAndroid.show('Login Successful', ToastAndroid.SHORT);
+        const subCancelStatus = res.data?.data?.subscription_cancel_status;
+        if (res.data.data == 'Package not found') {
+          dispatch(setPackageStatus(false));
+          dispatch(setPurchaseData(res.data?.data));
+        } else if (subCancelStatus == 4 || subCancelStatus == 2) {
+          dispatch(
+            setSubcriptionCancelStatus(
+              subCancelStatus == 2 ? 2 : subCancelStatus == 4 ? 4 : 0,
+            ),
+          );
+          dispatch(setPurchaseData({data: 'Package not found'}));
+        } else {
+          dispatch(
+            setSubcriptionCancelStatus(
+              subCancelStatus == 1
+                ? 1
+                : subCancelStatus == 2
+                ? 2
+                : subCancelStatus == 3
+                ? 3
+                : subCancelStatus == 4
+                ? 4
+                : 0,
+            ),
+          );
+          dispatch(setPurchaseData(res?.data));
+        }
         getSubscriptionStatus(userId);
-        dispatch(setPurchaseData(res?.data));
         navigation.navigate('DrawerStack');
         dispatch(setIsAuthorized(true));
       })

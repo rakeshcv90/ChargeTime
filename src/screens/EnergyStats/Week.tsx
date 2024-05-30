@@ -25,7 +25,7 @@ const Week = (props: any) => {
 
   }, []);
   const {handleRefresh, refresh} = props?.route?.params
-  const {getWeekGraphData, getBoxTwoDataForDashboard} = useSelector(
+  const {getWeekGraphData, getBoxTwoDataForDashboard, getSubscriptionCancelStatus} = useSelector(
     (state: any) => state,
   );
   const [toggleState, setToggleState] = useState(false);
@@ -92,7 +92,9 @@ const Week = (props: any) => {
             <BoxTwo data={getBoxTwoDataForDashboard.data} />
           </View>
           <View style={{marginBottom: 80}}>
-            <PriceValidity data={getBoxTwoDataForDashboard.data} />
+             {getSubscriptionCancelStatus ==
+              2 ? null : getSubscriptionCancelStatus == 4 ? null : (<PriceValidity data={getBoxTwoDataForDashboard.data} />
+              )}
           </View>
         </ScrollView>
       </View>
