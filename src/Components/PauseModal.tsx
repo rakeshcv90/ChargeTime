@@ -90,7 +90,7 @@ const PauseModal: FC<Props> = ({
           {
             <Image
               source={
-                cancel1 || cancel2
+                cancel1 || cancel2 || cancel1Stripe || cancel2Stripe
                   ? require('../../assets/images/CancelModalImage.png')
                   : require('../../assets/images/PauseModalImage.png')
               }
@@ -170,7 +170,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-between',
     flexDirection: 'row',
-    width: '80%',
+    width: '100%',
   },
   button: {
     borderRadius: 20,

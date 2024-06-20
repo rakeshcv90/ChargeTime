@@ -69,7 +69,6 @@ const Account = ({navigation}) => {
   const handleBackButton = () => {
     return true;
   };
-console.log("User Id",getUserID)
   const getSubscriptionStatus = () => {
 
     axios

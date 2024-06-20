@@ -336,6 +336,7 @@ export default function EnergyStats() {
       .get(`${API}/currentplan/${userId}`)
       .then(res => {
         const subCancelStatus = res.data?.data?.subscription_cancel_status;
+        console.log('subCancelStatus',subCancelStatus)
         if (res.data.data == 'Package not found') {
           dispatch(setBoxTwoDataForDashboard(res?.data));
           dispatch(setPurchaseData(res.data));
@@ -394,11 +395,11 @@ export default function EnergyStats() {
   };
   const handleRefresh = () => {
     setRefresh(true);
+    fetchBoxTwoDashboardData(getUserID);
     remainigUsuageData(getUserID);
     dailyUsuagekwh(getUserID);
     fetchGraphData(getUserID);
     fetchStatusdata(getUserID);
-    fetchBoxTwoDashboardData(getUserID);
     setTimeout(() => {
       setRefresh(false);
     }, 3000);
