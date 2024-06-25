@@ -173,7 +173,7 @@ const DrawerNavigation = () => {
         gestureEnabled: false,
       }}
       drawerContent={props => <CustomDrawerContent {...props} />}>
-      {getSubscriptionCancelStatus == 2 || getPackageStatus ? (
+      {getPackageStatus ? (
         <>
           <Drawer.Screen
             options={{

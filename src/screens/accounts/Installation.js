@@ -163,6 +163,7 @@ const Installation = () => {
               subCancelStatus == 2 ? 2 : subCancelStatus == 4 ? 4 : 0,
             ),
           );
+          dispatch(setPackageStatus(false))
           dispatch(setPurchaseData({data: 'Package not found'}));
         } else {
           dispatch(

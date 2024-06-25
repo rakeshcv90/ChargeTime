@@ -77,6 +77,7 @@ export default function SliderOne(props) {
               subCancelStatus == 2 ? 2 : subCancelStatus == 4 ? 4 : 0,
             ),
           );
+          dispatch(setPackageStatus(false))
           dispatch(setPurchaseData({data: 'Package not found'}));
         } else {
           dispatch(
@@ -162,7 +163,8 @@ export default function SliderOne(props) {
               disabled
             />
           )}
-        {getSubscriptionCancelStatus == 2 && (
+        {(getSubscriptionCancelStatus == 2 ||
+          getSubscriptionCancelStatus == 4) && (
           <PurchseButton data={getBasePackage[props?.route?.params.index]} />
         )}
         {/* {!forLoading &&

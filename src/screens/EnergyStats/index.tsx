@@ -55,6 +55,7 @@ import {
   setOverModelView,
   setSubcriptionCancelStatus,
   setPurchaseData,
+  setPackageStatus,
 } from '../../redux/action';
 import ButtonSlider2 from '../../Components/ButtonSlider2';
 import Toast from 'react-native-toast-message';
@@ -346,6 +347,7 @@ export default function EnergyStats() {
               subCancelStatus == 2 ? 2 : subCancelStatus == 4 ? 4 : 0,
             ),
           );
+          dispatch(setPackageStatus(false))
           dispatch(setBoxTwoDataForDashboard({data: 'Package not found'}));
           dispatch(setPurchaseData({data: 'Package not found'}));
         } else {
