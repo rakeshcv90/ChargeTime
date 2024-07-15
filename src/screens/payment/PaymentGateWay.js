@@ -45,6 +45,7 @@ import {
 
 import {
   setBasePackage,
+  setBoxTwoDataForDashboard,
   setCardDetails,
   setDeviceId,
   setPackageStatus,
@@ -327,7 +328,7 @@ export default function PaymentGateWay({navigation, route}) {
         },
       });
       console.log('My Test', response.data);
-      if (response.data.status == 'Same package allready purchased') {
+      if (response.data.status == 'The package has already been purchased') {
         PLATFORM_IOS
           ? Toast.show({
               type: 'error',
