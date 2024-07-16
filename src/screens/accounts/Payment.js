@@ -210,8 +210,28 @@ export default function PaymentGateWay({navigation, route}) {
           // card_exp_month: exp_month,
           // card_exp_year: exp_year,
         });
-  
-        if (response.data.message) {
+
+        if (
+          response.data.message == 'You need to first purchase a subscription'
+        ) {
+          PLATFORM_IOS
+            ? Toast.show({
+                type: 'success',
+                text1: 'You need to first purchase a subscription',
+              })
+            : ToastAndroid.show(
+                'You need to first purchase a subscription',
+                ToastAndroid.SHORT,
+              );
+              setLoader(false)
+              setCardDetails1({
+                cardHolderName: '',
+                card_number: '',
+                card_cvv: '',
+                validTill: '',
+                // card_exp_year:'',
+              });
+        } else if (response.data.message) {
           // cb();
           handleGetCard();
           //setFocusedIndex(focusIndex+1)
@@ -223,12 +243,6 @@ export default function PaymentGateWay({navigation, route}) {
             validTill: '',
             // card_exp_year:'',
           });
-          PLATFORM_IOS
-            ? Toast.show({
-                type: 'success',
-                text1: 'Card Details Saved.',
-              })
-            : ToastAndroid.show('Card Details Saved.', ToastAndroid.SHORT);
         } else if (response.data.error) {
           handleGetCard();
           setLoader(false);
@@ -255,7 +269,6 @@ export default function PaymentGateWay({navigation, route}) {
         console.error('Add Card Error', error);
       }
     }
-
   };
 
   const handleGetCard = async () => {

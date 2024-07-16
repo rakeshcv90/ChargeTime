@@ -68,6 +68,7 @@ const PauseModal: FC<Props> = ({
     }
   };
   const plan = () => {
+    setPaused(false)
     navigationRef?.navigate('EnergyOptions');
   };
   return (
