@@ -68,7 +68,7 @@ const PauseModal: FC<Props> = ({
     }
   };
   const plan = () => {
-    navigationRef?.navigate('HomeOne');
+    navigationRef?.navigate('EnergyOptions');
   };
   return (
     <Modal

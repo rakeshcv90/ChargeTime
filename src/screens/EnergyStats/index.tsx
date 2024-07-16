@@ -206,6 +206,7 @@ export default function EnergyStats() {
     }
   }, [isFocused]);
   const getSubscriptionStatus = async () => {
+    setIsLoading(true);
     try {
       const response = await fetch(`${API}/planstatuspauseresume/${getUserID}`);
       const res = await response.json();
@@ -214,6 +215,7 @@ export default function EnergyStats() {
     } catch (error) {
       console.log('Error-7', error);
     }
+    setIsLoading(false);
   };
   const getDeviceIDData = () => {
     setIsLoading(true);
@@ -333,11 +335,12 @@ export default function EnergyStats() {
   };
 
   const fetchBoxTwoDashboardData = (userId: string) => {
+    setIsLoading(true);
     axios
       .get(`${API}/currentplan/${userId}`)
       .then(res => {
         const subCancelStatus = res.data?.data?.subscription_cancel_status;
-        console.log('subCancelStatus',subCancelStatus)
+        console.log('subCancelStatus', subCancelStatus);
         if (res.data.data == 'Package not found') {
           dispatch(setBoxTwoDataForDashboard(res?.data));
           dispatch(setPurchaseData(res.data));
@@ -347,7 +350,7 @@ export default function EnergyStats() {
               subCancelStatus == 2 ? 2 : subCancelStatus == 4 ? 4 : 0,
             ),
           );
-          dispatch(setPackageStatus(false))
+          dispatch(setPackageStatus(false));
           dispatch(setBoxTwoDataForDashboard({data: 'Package not found'}));
           dispatch(setPurchaseData({data: 'Package not found'}));
         } else {
@@ -408,10 +411,10 @@ export default function EnergyStats() {
   };
   return (
     <>
+      <DrawerOpen top={PLATFORM_IOS ? DIMENSIONS.SCREEN_WIDTH * 0.19 : 30} />
       <SafeAreaView style={{backgroundColor: COLORS.CREAM, flex: 1}}>
         <StatusBar backgroundColor={COLORS.CREAM2} barStyle={'dark-content'} />
 
-        <DrawerOpen top={PLATFORM_IOS ? DIMENSIONS.SCREEN_WIDTH * 0.19 : 30} />
         {getDeviceID ==
         'Your Account is not currently linked with a TRO Charger. Please contact customer service if you believe this is an error.' ? (
           <View
