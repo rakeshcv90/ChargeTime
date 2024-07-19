@@ -277,10 +277,10 @@ export default function PaymentGateWay({navigation, route}) {
           PLATFORM_IOS
             ? Toast.show({
                 type: 'error',
-                text1: 'Strip id not found for this Package.',
+                text1: 'Your plan has been canceled in Stripe and the Stripe ID could not be found.',
               })
             : ToastAndroid.show(
-                'Strip id not found for this Package',
+                'Your plan has been canceled in Stripe and the Stripe ID could not be found.',
                 ToastAndroid.SHORT,
               );
           setModalVisible1(false);
@@ -437,7 +437,7 @@ export default function PaymentGateWay({navigation, route}) {
     axios
       .get(`${API}/currentplan/${getUserID}`)
       .then(res => {
-        const subCancelStatus = res.data?.data?.subscription_cancel_status;
+        const subCancelStatus = res.data?.message?.subscription_cancel_status;
         if (res.data.data == 'Package not found') {
           dispatch(setBoxTwoDataForDashboard(res?.data));
           dispatch(setPurchaseData(res.data));

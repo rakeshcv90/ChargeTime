@@ -217,10 +217,10 @@ export default function PaymentGateWay({navigation, route}) {
           PLATFORM_IOS
             ? Toast.show({
                 type: 'success',
-                text1: 'You need to first purchase a subscription',
+                text1: 'Card cannot be added until a plan is purchased.',
               })
             : ToastAndroid.show(
-                'You need to first purchase a subscription',
+                'Card cannot be added until a plan is purchased.',
                 ToastAndroid.SHORT,
               );
               setLoader(false)

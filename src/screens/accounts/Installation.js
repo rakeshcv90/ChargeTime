@@ -82,6 +82,7 @@ const Installation = () => {
   useEffect(() => {
     getPlanCurrent();
     getAllPurchasePlan();
+    setSelectedValue(userProfileData[0]?.location)
   }, []);
   const user_id = getUserID;
 
@@ -152,7 +153,7 @@ const Installation = () => {
       .then(res => {
         setForLoading(false);
         setModalVisible(false);
-        const subCancelStatus = res.data?.data?.subscription_cancel_status;
+        const subCancelStatus = res.data?.message?.subscription_cancel_status;
         console.log('ASDUBASDA', res.data);
         if (res.data.data == 'Package not found') {
           dispatch(setPurchaseData(res.data));
@@ -163,7 +164,7 @@ const Installation = () => {
               subCancelStatus == 2 ? 2 : subCancelStatus == 4 ? 4 : 0,
             ),
           );
-          dispatch(setPackageStatus(false))
+          dispatch(setPackageStatus(false));
           dispatch(setPurchaseData({data: 'Package not found'}));
         } else {
           dispatch(
@@ -366,8 +367,21 @@ const Installation = () => {
   };
 
   const handleOk = () => {
-    PlanCancel();
+    // PlanCancel();
 
+    // PLATFORM_IOS
+    // ? Toast.show({
+    //     type: 'success',
+    //     text1: 'The installation base cannot be changed with an active plan.',
+    //     props: {
+    //       numberLines: 2
+    //     }
+    //   })
+    // : ToastAndroid.show(
+    //     'The installation base cannot be changed with an active plan.',
+    //     ToastAndroid.SHORT,
+    //   );
+      
     setIsEditable(false);
     setModalVisible(false);
   };
@@ -382,19 +396,19 @@ const Installation = () => {
   const onPress = () => {
     if (getPurchaseData.data == 'Package not found') {
       InstalltionUpdate();
-      console.log("Test12")
+      console.log('Test12');
     } else if (selectedValue.length == 0) {
-     InstalltionUpdate();
-     console.log("Test13")
+      InstalltionUpdate();
+      console.log('Test13');
     } else if (selectedValue == userProfileData[0]?.location) {
-     InstalltionUpdate();
-     console.log("Test14")
+      InstalltionUpdate();
+      console.log('Test14');
     } else if (selectedValue != userProfileData[0]?.location) {
-    setModalVisible(true);
-      console.log("Test15")
+      setModalVisible(true);
+      console.log('Test15');
     } else {
-    setModalVisible(true);
-      console.log("Test16")
+      setModalVisible(true);
+      console.log('Test16');
     }
 
     // if (getPurchaseData.data !== 'Package not found') {
@@ -420,18 +434,21 @@ const Installation = () => {
         onRequestClose={() => setModalVisible(false)}>
         <View style={styles.modalContainer}>
           <View style={styles.modalContent}>
-            <Text style={styles.modalText}>Change Location Base?</Text>
+            {/* <Text style={styles.modalText}>Change Installation Base?</Text> */}
             <Text style={styles.selectedEmail}>
-              Changing your Installation will cancel your current subscription.
-              Contact your service representative for more information {'\n'}Are
-              you sure?
+              {/* Changing the installation base will cancel your current plan.
+              Contact the service provider for more information.{'\n'}{'\n'} */}
+            {/* </Text>
+            <Text style={styles.selectedEmail}> */}
+              {/* Are you sure you want to update the installation? */}
+              The installation base cannot be changed with an active plan.
             </Text>
             <View style={styles.modalButtonsContainer}>
-              <TouchableOpacity
+              {/* <TouchableOpacity
                 style={styles.cancelButton}
                 onPress={() => handleCancel()}>
                 <Text style={styles.buttonText}>Cancel</Text>
-              </TouchableOpacity>
+              </TouchableOpacity> */}
               <TouchableOpacity
                 style={styles.okButton}
                 onPress={() => {
@@ -779,6 +796,7 @@ const styles = StyleSheet.create({
   selectedEmail: {
     fontSize: 16,
     marginBottom: 20,
+    color: 'black'
   },
   modalButtonsContainer: {
     flexDirection: 'row',

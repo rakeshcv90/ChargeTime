@@ -67,7 +67,7 @@ export default function SliderOne(props) {
     axios
       .get(`${API}/currentplan/${getUserID}`)
       .then(res => {
-        const subCancelStatus = res.data?.data?.subscription_cancel_status;
+        const subCancelStatus = res.data?.message?.subscription_cancel_status;
         console.log('ASDUBASDA', res.data);
         if (res.data.data == 'Package not found') {
           dispatch(setPurchaseData(res.data));

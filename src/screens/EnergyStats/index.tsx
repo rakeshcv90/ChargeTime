@@ -234,14 +234,13 @@ export default function EnergyStats() {
           PLATFORM_IOS
             ? Toast.show({
                 type: 'success',
-                text1:
-                  'Device ID not found. Contact your service representative for more information.',
+                text1: 'Device not assigned. Contact service provider',
                 props: {
                   numberLines: 2,
                 },
               })
             : ToastAndroid.show(
-                'Device ID not found. Contact your service representative for more information.',
+                'Device not assigned. Contact service provider',
                 ToastAndroid.SHORT,
               );
           // getPlanCurrent(res.data?.user_id);
@@ -339,7 +338,7 @@ export default function EnergyStats() {
     axios
       .get(`${API}/currentplan/${userId}`)
       .then(res => {
-        const subCancelStatus = res.data?.data?.subscription_cancel_status;
+        const subCancelStatus = res.data?.message?.subscription_cancel_status;
         console.log('subCancelStatus', subCancelStatus);
         if (res.data.data == 'Package not found') {
           dispatch(setBoxTwoDataForDashboard(res?.data));

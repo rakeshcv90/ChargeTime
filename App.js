@@ -489,15 +489,15 @@ const App = ({navigation}) => {
     }
   }, []);
   useEffect(() => {
-    // codePush.sync(
-    //   {
-    //     updateDialog: true,
-    //     installMode: codePush.InstallMode.IMMEDIATE,
-    //    // installMode: codePush.InstallMode.MANUAL,
-    //   },
-    //   codePushStatusDidChange,
-    //   codePushDownloadDidProgress,
-    // );
+    codePush.sync(
+      {
+        updateDialog: true,
+        installMode: codePush.InstallMode.IMMEDIATE,
+       // installMode: codePush.InstallMode.MANUAL,
+      },
+      codePushStatusDidChange,
+      codePushDownloadDidProgress,
+    );
   }, []);
   const codePushStatusDidChange = syncStatus => {
     switch (syncStatus) {

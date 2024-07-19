@@ -459,7 +459,7 @@ export default function Login({navigation}) {
     axios
       .get(`${API}/currentplan/${userId}`)
       .then(res => {
-        if (res.data.data == 'Package details not found') {
+        if (res.data.data == 'Package not found') {
           dispatch(setBoxTwoDataForDashboard(res.data));
         } else {
           dispatch(setBoxTwoDataForDashboard(res?.data));
@@ -494,7 +494,7 @@ export default function Login({navigation}) {
               text1: 'Login Successful',
             })
           : ToastAndroid.show('Login Successful', ToastAndroid.SHORT);
-        const subCancelStatus = res.data?.data?.subscription_cancel_status;
+        const subCancelStatus = res.data?.message?.subscription_cancel_status;
         if (res.data.data == 'Package not found') {
           dispatch(setPackageStatus(false));
           dispatch(setPurchaseData(res.data?.data));

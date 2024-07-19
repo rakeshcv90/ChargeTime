@@ -29,6 +29,7 @@ const BoxFive = ({data, purchageData, disabled}) => {
   let payload = new FormData();
   const forDownUpgrade = async () => {
     payload.append('energy_price', data.totalSalexTax);
+    payload.append('select_energy_price', data.total_price);
     payload.append('selectedEnergyPlan', data.package_name);
     try {
       const response = await axios.post(

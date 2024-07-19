@@ -111,7 +111,7 @@ const PauseModal: FC<Props> = ({
             {cancel1
               ? `You don’t have a plan. You can use your remaining credits until its over.`
               : cancel2
-              ? `You don't have a plan, Purchase a plan to conitnue using Charger`
+              ? `You don't have a plan, Purchase a plan to continue using Charger`
               : cancel1Stripe
               ? `Your account has been cancelled due to a declined payment. Please update your payment information to reinstate your account. You can use the charger until your usage quota limit is reached.`
               : cancel2Stripe

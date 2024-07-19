@@ -1,7 +1,7 @@
 import React, {useEffect, useState, useRef} from 'react';
 import {View, Image, StyleSheet, Animated} from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import App, {navigationRef} from '../../App';
+import {navigationRef} from '../../App';
 import {DIMENSIONS} from '../constants/DIMENSIONS';
 import Introduction from './Introduction';
 import {BackHandler} from 'react-native';

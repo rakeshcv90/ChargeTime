@@ -138,12 +138,9 @@ const Subscription = ({navigation, route}) => {
         PLATFORM_IOS
           ? Toast.show({
               type: 'success',
-              text1: 'Plan Cancelled Successfully',
+              text1: response.data.message,
             })
-          : ToastAndroid.show(
-              'Plan Cancelled Successfully',
-              ToastAndroid.SHORT,
-            );
+          : ToastAndroid.show(response.data.message, ToastAndroid.SHORT);
         setModalVisible(false);
         setForLoading(false);
       }
@@ -160,7 +157,7 @@ const Subscription = ({navigation, route}) => {
       .then(res => {
         setForLoading(false);
         setModalVisible(false);
-        const subCancelStatus = res.data?.data?.subscription_cancel_status;
+        const subCancelStatus = res.data?.message?.subscription_cancel_status;
         console.log('ASDUBASDA', res.data);
         if (res.data.data == 'Package not found') {
           dispatch(setPurchaseData(res.data));
@@ -172,7 +169,7 @@ const Subscription = ({navigation, route}) => {
               subCancelStatus == 2 ? 2 : subCancelStatus == 4 ? 4 : 0,
             ),
           );
-          dispatch(setPackageStatus(false))
+          dispatch(setPackageStatus(false));
           dispatch(setPurchaseData({data: 'Package not found'}));
         } else {
           dispatch(
@@ -190,6 +187,7 @@ const Subscription = ({navigation, route}) => {
           );
           dispatch(setPurchaseData(res?.data));
           setGetData(res.data);
+          dispatch(setPackageStatus(true));
         }
       })
       .catch(err => {
@@ -422,7 +420,7 @@ const Subscription = ({navigation, route}) => {
               Please Purchase Package from Home.
             </Text> */}
             <TouchableOpacity
-              onPress={() => navigation.navigate('HomeOne')}
+              onPress={() => navigation.navigate('HomeStack')}
               style={{
                 width: mobileW * 0.45,
                 borderRadius: 10,
@@ -458,6 +456,21 @@ const Subscription = ({navigation, route}) => {
         ) : (
           <ScrollView showsVerticalScrollIndicator={false}>
             <View style={styles.managing_width}>
+              {/* <Text
+                style={{
+                  color: 'black',
+                  fontWeight: '400',
+                  fontSize: 14,
+                  marginVertical: 5,
+                  alignSelf: 'center',
+                  textAlign: 'justify'
+                }}>
+                {getSubscriptionCancelStatus == 1
+                  ? `You don’t have a plan. You can use your remaining credits until its over.`
+                  : getSubscriptionCancelStatus == 3
+                  ? `Your account has been cancelled due to a declined payment. Please update your payment information to reinstate your account. You can use the charger until your usage quota limit is reached.`
+                  : ''}
+              </Text> */}
               <SubBoxOne />
               <SubBoxTwo />
               <RemainingHorizontal data={'energy'} />
