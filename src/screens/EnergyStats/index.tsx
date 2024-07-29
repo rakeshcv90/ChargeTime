@@ -38,6 +38,7 @@ import ActivityLoader from '../../Components/ActivityLoader';
 import DrawerOpen from '../../Components/DrawerOpen';
 import {navigationRef} from '../../../App';
 import {DrawerActions, useIsFocused} from '@react-navigation/native';
+import {ActivityIndicator} from 'react-native';
 import AnimatedLottieView from 'lottie-react-native';
 import {
   setBoxTwoDataForDashboard,
@@ -212,16 +213,20 @@ export default function EnergyStats() {
       const res = await response.json();
       dispatch(setSubscriptionStatus(res.PlanStatus));
       setPaused(res.PlanStatus == '1' ? true : false);
+      setIsLoading(false);
+
     } catch (error) {
       console.log('Error-7', error);
+      setIsLoading(false);
     }
-    setIsLoading(false);
   };
   const getDeviceIDData = () => {
     setIsLoading(true);
     axios
       .get(`${API}/devicecheck/${getUserID}}`)
       .then(res => {
+     
+        setIsLoading(false);
         if (res.data.status == 'True') {
           setDeviceIdTemp(res.data.message);
           fetchGraphData(getUserID);
@@ -258,6 +263,7 @@ export default function EnergyStats() {
     axios
       .get(`${API}/dailyusagedeviceid/${userID}`)
       .then(res => {
+        setIsLoading(false);
         if (res.data.length > 0) {
           dispatch(setGraphData(res.data.Dayusagewithgraph));
           dispatch(setWeekGraphData(res.data.weeklyusagewithgraph));
@@ -292,6 +298,7 @@ export default function EnergyStats() {
     axios
       .get(`${API}/dailyusage/${userId}`)
       .then(res => {
+        setIsLoading(false);
         if (res?.data) {
           dispatch(setKwhData(res?.data));
         }
@@ -299,7 +306,9 @@ export default function EnergyStats() {
         remainigUsuageData(getUserID);
         setIsLoading(false);
       })
-      .catch(err => {});
+      .catch(err => {
+        setIsLoading(false);
+      });
   };
   const remainigUsuageData = (userId: string) => {
     let remaingData;
@@ -307,6 +316,7 @@ export default function EnergyStats() {
     axios
       .get(`${API}/remainingusage/${userId}`)
       .then(res => {
+        setIsLoading(false);
         if (parseInt(res.data?.kwh_unit_remaining) >= 0) {
           remaingData = res.data?.kwh_unit_remaining;
           dispatch(setRemainingData(res.data?.kwh_unit_remaining));
@@ -340,6 +350,8 @@ export default function EnergyStats() {
       .then(res => {
         const subCancelStatus = res.data?.message?.subscription_cancel_status;
         console.log('subCancelStatus', subCancelStatus);
+        setIsLoading(false);
+      
         if (res.data.data == 'Package not found') {
           dispatch(setBoxTwoDataForDashboard(res?.data));
           dispatch(setPurchaseData(res.data));
@@ -377,7 +389,6 @@ export default function EnergyStats() {
             ? true
             : false,
         );
-        setIsLoading(false);
       })
       .catch(err => {
         console.log('TRTRT444444444', err);
@@ -388,6 +399,7 @@ export default function EnergyStats() {
     axios
       .get(`${API}/chargerstatus/${userId}`)
       .then(res => {
+        setIsLoading(false);
         dispatch(setChargerStatus(res?.data));
         dispatch(setDeviceId(deviceIdTemp));
         setIsLoading(false);
@@ -695,16 +707,45 @@ export default function EnergyStats() {
             </View>
           </>
         )}
+
+        {paused ? (
+          <PauseModal
+            paused={paused}
+            setPaused={setPaused}
+            cancel1={getSubscriptionCancelStatus == 1}
+            cancel2={getSubscriptionCancelStatus == 2}
+            cancel1Stripe={getSubscriptionCancelStatus == 3}
+            cancel2Stripe={getSubscriptionCancelStatus == 4}
+          />
+        ) : (
+          <PauseModal
+            paused={cancelled}
+            setPaused={setCancelled}
+            cancel1={getSubscriptionCancelStatus == 1}
+            cancel2={getSubscriptionCancelStatus == 2}
+            cancel1Stripe={getSubscriptionCancelStatus == 3}
+            cancel2Stripe={getSubscriptionCancelStatus == 4}
+          />
+        )}
+        {isLoading && (
+          <View
+            style={{
+              height: DIMENSIONS.SCREEN_WIDTH / 5,
+              width: DIMENSIONS.SCREEN_WIDTH / 5,
+              backgroundColor: COLORS.LIGHT_GREY,
+              alignItems: 'center',
+              justifyContent: 'center',
+              alignSelf: 'center',
+              borderRadius: 15,
+              marginTop: 'auto',
+              marginBottom: 'auto',
+              top: DIMENSIONS.SCREEN_HEIGHT * 0.5,
+              position: 'absolute',
+            }}>
+            <ActivityIndicator size="large" color="#05bea5" />
+          </View>
+        )}
       </SafeAreaView>
-      {isLoading && <ActivityLoader />}
-      <PauseModal
-        paused={paused ? paused : cancelled}
-        setPaused={paused ? setPaused : setCancelled}
-        cancel1={getSubscriptionCancelStatus == 1}
-        cancel2={getSubscriptionCancelStatus == 2}
-        cancel1Stripe={getSubscriptionCancelStatus == 3}
-        cancel2Stripe={getSubscriptionCancelStatus == 4}
-      />
     </>
   );
 }

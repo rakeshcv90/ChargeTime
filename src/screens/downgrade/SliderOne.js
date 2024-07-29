@@ -44,6 +44,7 @@ export default function SliderOne(props) {
   const [forLoading, setForLoading] = useState(false);
   const [planStatus, setPlanStatuss] = useState(false);
   // const [schedulePackageName, setSchedulePackageName] = useState('');
+
   const dispatch = useDispatch();
   const {
     getUserID,
@@ -68,7 +69,7 @@ export default function SliderOne(props) {
       .get(`${API}/currentplan/${getUserID}`)
       .then(res => {
         const subCancelStatus = res.data?.message?.subscription_cancel_status;
-        console.log('ASDUBASDA', res.data);
+
         if (res.data.data == 'Package not found') {
           dispatch(setPurchaseData(res.data));
         } else if (subCancelStatus == 4 || subCancelStatus == 2) {
@@ -77,7 +78,7 @@ export default function SliderOne(props) {
               subCancelStatus == 2 ? 2 : subCancelStatus == 4 ? 4 : 0,
             ),
           );
-          dispatch(setPackageStatus(false))
+          dispatch(setPackageStatus(false));
           dispatch(setPurchaseData({data: 'Package not found'}));
         } else {
           dispatch(
@@ -100,6 +101,16 @@ export default function SliderOne(props) {
         console.log(err);
       });
   };
+  let purchageData =
+    getPurchaseData.data != 'Package not found'
+      ? getBasePackage[props?.route?.params.index]?.kwh >
+        getPurchaseData?.data?.kwh
+        ? 'UPGRADE'
+        : getBasePackage[props?.route?.params.index]?.kwh <
+          getPurchaseData?.data?.kwh
+        ? 'DOWNGRADE'
+        : `Renewal Date: \n${getPurchaseData?.data?.End_validity}`
+      : '';
 
   return (
     <ScrollView
@@ -109,35 +120,109 @@ export default function SliderOne(props) {
 
       <View style={styles.managing_width}>
         {/* <BoxTwo data={props.route.params.item} /> */}
-        <BoxTwo data={getBasePackage[props?.route?.params?.index]} />
-        {/* data={props?.item || getBasePackage[props?.route?.params.index]} */}
+
+        <BoxTwo
+          data={props?.item || getBasePackage[props?.route?.params.index]}
+        />
+
+        {getPurchaseData?.data != 'Package not found' &&
+        getPurchaseData?.data?.old_subscription_status != 'cancel'
+          ? getPurchaseData.data.energy_plan.toLowerCase() ===
+              props.route.params.item.package_name.toLowerCase() && (
+              <RemainingHorizontal
+                RemainingFill={50}
+                KWH={400}
+                data={'energy'}
+              />
+            )
+          : null}
+        {/*         
         {getPurchaseData.data != 'Package not found' &&
           getPurchaseData.data.energy_plan.toLowerCase() ===
             props.route.params.item.package_name.toLowerCase() && (
             <RemainingHorizontal RemainingFill={50} KWH={400} data={'energy'} />
-          )}
-        {getPurchaseData.data != 'Package not found' &&
+          )} */}
+
+        {/* {getPurchaseData.data != 'Package not found' &&
           getPurchaseData.data.energy_plan.toLowerCase() ===
             props.route.params.item.package_name.toLowerCase() && (
             <View style={{marginBottom: 5}}>
               <PriceBox data={getPurchaseData.data} />
             </View>
-          )}
+          )} */}
+
+        {getPurchaseData?.data != 'Package not found' &&
+        getPurchaseData?.data?.old_subscription_status != 'cancel'
+          ? getPurchaseData.data.energy_plan.toLowerCase() ===
+              props.route.params.item.package_name.toLowerCase() && (
+              <View style={{marginBottom: 5}}>
+                <PriceBox data={getPurchaseData.data} />
+              </View>
+            )
+          : null}
         <View
           style={{
             marginTop:
-              getPurchaseData.data != 'Package not found' &&
-              getPurchaseData.data.energy_plan.toLowerCase() ===
-                props.route.params.item.package_name.toLowerCase()
-                ? 0
-                : Platform.OS == 'android'
-                ? -15
+              getPurchaseData?.data != 'Package not found' &&
+              getPurchaseData?.data?.old_subscription_status != 'cancel'
+                ? getPurchaseData.data.energy_plan.toLowerCase() ===
+                  props.route.params.item.package_name.toLowerCase()
+                  ? 0
+                  : Platform.OS == 'android'
+                  ? -15
+                  : 0
                 : 0,
+            // getPurchaseData.data != 'Package not found' &&
+            // getPurchaseData.data.energy_plan.toLowerCase() ===
+            //   props.route.params.item.package_name.toLowerCase()
+            //   ? 0
+            //   : Platform.OS == 'android'
+            //   ? -15
+            //   : 0,
           }}>
-          <InstallationBase data={props.route.params.item} />
+          <InstallationBase
+            data={props?.item || getBasePackage[props?.route?.params.index]}
+          />
         </View>
 
         {getPurchaseData.data != 'Package not found' &&
+        getPurchaseData?.data?.old_subscription_status == 'cancel' ? (
+          <PurchseButton data={getBasePackage[props?.route?.params.index]} />
+        ) : (
+          <>
+            {getPurchaseData.data != 'Package not found' &&
+              getPurchaseData.data.energy_plan.toLowerCase() !==
+                props.route.params.item.package_name.toLowerCase() && (
+                <BoxFive
+                  data={
+                    props?.item || getBasePackage[props?.route?.params.index]
+                  }
+                  purchageData={purchageData}
+                  disabled={
+                    false
+                    // getPlanStatus.length != 0
+                    //   ? getPlanStatus.item_name.toLowerCase() ==
+                    //     props.route.params.item.package_name.toLowerCase()
+                    //     ? true
+                    //     : false
+                    //   : false
+                  }
+                />
+              )}
+            {getPurchaseData.data != 'Package not found' &&
+              getPurchaseData.data.energy_plan.toLowerCase() ===
+                props.route.params.item.package_name.toLowerCase() && (
+                <BoxFive
+                  data={
+                    props?.item || getBasePackage[props?.route?.params.index]
+                  }
+                  purchageData={purchageData}
+                  disabled
+                />
+              )}
+          </>
+        )}
+        {/* {getPurchaseData.data != 'Package not found' &&
           getPurchaseData.data.energy_plan.toLowerCase() !==
             props.route.params.item.package_name.toLowerCase() && (
             <BoxFive
@@ -154,19 +239,35 @@ export default function SliderOne(props) {
               }
             />
           )}
-        {getPurchaseData.data != 'Package not found' &&
-          getPurchaseData.data.energy_plan.toLowerCase() ===
+        {/* {getPurchaseData.data != 'Package not found' &&
+          getPurchaseData.data. item_name.toLowerCase() ===
             props.route.params.item.package_name.toLowerCase() && (
             <BoxFive
               data={props.route.params.item}
               purchageData={props.route.params.purchageData}
               disabled
             />
-          )}
-        {(getSubscriptionCancelStatus == 2 ||
-          getSubscriptionCancelStatus == 4) && (
-          <PurchseButton data={getBasePackage[props?.route?.params.index]} />
-        )}
+          )} */}
+        {/* {getPurchaseData?.data != 'Package not found' &&
+        getPurchaseData?.data?.old_subscription_status != 'cancel'
+          ? getPurchaseData.data.energy_plan.toLowerCase() ===
+              props.route.params.item.package_name.toLowerCase() && (
+              <BoxFive
+                data={props.route.params.item}
+                purchageData={props.route.params.purchageData}
+                disabled
+              />
+            )
+          : null}  */}
+        {/* {(getSubscriptionCancelStatus == 2 ||
+          getSubscriptionCancelStatus == 4) && ( */}
+
+        {/* {getPurchaseData?.data != 'Package not found' &&
+          getPurchaseData?.data?.old_subscription_status == 'cancel' && (
+            <PurchseButton data={getBasePackage[props?.route?.params.index]} />
+          )} */}
+
+        {/* )} */}
         {/* {!forLoading &&
           getPlanStatus.length !== 0 &&
           getPlanStatus.item_name.toLowerCase() ==

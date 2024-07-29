@@ -133,7 +133,7 @@ const Subscription = ({navigation, route}) => {
               : 0,
           ),
         );
-        // getPlanCurrent();
+        getPlanCurrent();
         // PlanStatus()
         PLATFORM_IOS
           ? Toast.show({
@@ -158,7 +158,7 @@ const Subscription = ({navigation, route}) => {
         setForLoading(false);
         setModalVisible(false);
         const subCancelStatus = res.data?.message?.subscription_cancel_status;
-        console.log('ASDUBASDA', res.data);
+
         if (res.data.data == 'Package not found') {
           dispatch(setPurchaseData(res.data));
           setGetData(res.data);
@@ -361,99 +361,8 @@ const Subscription = ({navigation, route}) => {
             />
           </View>
         )}
-
-        {getPurchaseData.data == 'Package not found' ||
-        getSubscriptionCancelStatus == 2 ||
-        getSubscriptionCancelStatus == 4 ? (
-          <View
-            style={{
-              justifyContent: 'center',
-              alignItems: 'center',
-              flex: 1,
-              marginBottom: DIMENSIONS.SCREEN_HEIGHT * 0.25,
-            }}>
-            <View
-              style={{
-                flexDirection: 'row',
-                justifyContent: 'center',
-
-                alignItems: 'center',
-              }}>
-              <AnimatedLottieView
-                source={{
-                  uri: 'https://assets5.lottiefiles.com/packages/lf20_v4UB4ch6dZ.json',
-                }} // Replace with your animation file
-                autoPlay
-                loop
-                style={{
-                  width: DIMENSIONS.SCREEN_WIDTH * 0.4,
-                  height: DIMENSIONS.SCREEN_HEIGHT * 0.25,
-                }}
-              />
-              <AnimatedLottieView
-                // source={{
-                //   uri: 'https://assets7.lottiefiles.com/packages/lf20_qgq2nqsy.json',
-                // }} // Replace with your animation file
-                source={require('../../../assets/question.json')}
-                autoPlay
-                loop
-                style={{width: 100, height: 100, marginVertical: -5}}
-              />
-            </View>
-            <Text
-              style={{
-                fontSize: 14,
-                lineHeight: 25,
-                textAlign: 'center',
-                paddingHorizontal: 30,
-                color: COLORS.BLACK,
-              }}>
-              No (Active/Scheduled) Package Available.
-            </Text>
-            {/* <Text
-              style={{
-                fontSize: 14,
-                // fontWeight: '500',
-                color: COLORS.BLACK,
-                marginVertical: 5,
-              }}>
-              Please Purchase Package from Home.
-            </Text> */}
-            <TouchableOpacity
-              onPress={() => navigation.navigate('HomeStack')}
-              style={{
-                width: mobileW * 0.45,
-                borderRadius: 10,
-                backgroundColor: COLORS.WHITE,
-                padding: 10,
-                alignItems: 'center',
-                justifyContent: 'center',
-                margin: 10,
-                ...Platform.select({
-                  ios: {
-                    shadowColor: '#000000',
-                    shadowOffset: {width: 0, height: 2},
-                    shadowOpacity: 0.3,
-                    shadowRadius: 4,
-                  },
-                  android: {
-                    elevation: 4,
-                  },
-                }),
-              }}>
-              <Text
-                style={{
-                  color: '#263238',
-                  fontWeight: '700',
-                  fontSize: 14,
-                  lineHeight: 17,
-                  textTransform: 'capitalize',
-                }}>
-                Purchase Plan
-              </Text>
-            </TouchableOpacity>
-          </View>
-        ) : (
+        {getPurchaseData.data != 'Package not found' &&
+        getPurchaseData?.data?.old_subscription_status != 'cancel' ? (
           <ScrollView showsVerticalScrollIndicator={false}>
             <View style={styles.managing_width}>
               {/* <Text
@@ -660,7 +569,304 @@ const Subscription = ({navigation, route}) => {
               </TouchableOpacity>
             </View>
           </ScrollView>
+        ) : (
+          <View
+            style={{
+              justifyContent: 'center',
+              alignItems: 'center',
+              flex: 1,
+              marginBottom: DIMENSIONS.SCREEN_HEIGHT * 0.25,
+            }}>
+            <View
+              style={{
+                flexDirection: 'row',
+                justifyContent: 'center',
+
+                alignItems: 'center',
+              }}>
+              <AnimatedLottieView
+                source={{
+                  uri: 'https://assets5.lottiefiles.com/packages/lf20_v4UB4ch6dZ.json',
+                }} // Replace with your animation file
+                autoPlay
+                loop
+                style={{
+                  width: DIMENSIONS.SCREEN_WIDTH * 0.4,
+                  height: DIMENSIONS.SCREEN_HEIGHT * 0.25,
+                }}
+              />
+              <AnimatedLottieView
+                // source={{
+                //   uri: 'https://assets7.lottiefiles.com/packages/lf20_qgq2nqsy.json',
+                // }} // Replace with your animation file
+                source={require('../../../assets/question.json')}
+                autoPlay
+                loop
+                style={{width: 100, height: 100, marginVertical: -5}}
+              />
+            </View>
+            <Text
+              style={{
+                fontSize: 14,
+                lineHeight: 25,
+                textAlign: 'center',
+                paddingHorizontal: 30,
+                color: COLORS.BLACK,
+              }}>
+              No (Active/Scheduled) Package Available.
+            </Text>
+            {/* <Text
+              style={{
+                fontSize: 14,
+                // fontWeight: '500',
+                color: COLORS.BLACK,
+                marginVertical: 5,
+              }}>
+              Please Purchase Package from Home.
+            </Text> */}
+            <TouchableOpacity
+              onPress={
+                () => {
+                  if (
+                    getPurchaseData?.data != 'Package not found' &&
+                    getPurchaseData?.data?.old_subscription_status == 'cancel'
+                  ) {
+                    navigation.navigate('DrawerStack', {
+                      screen: 'EnergyOptions',
+                    });
+                  } else {
+                    navigation.navigate('HomeStack');
+                  }
+                }
+
+                //
+              }
+              style={{
+                width: mobileW * 0.45,
+                borderRadius: 10,
+                backgroundColor: COLORS.WHITE,
+                padding: 10,
+                alignItems: 'center',
+                justifyContent: 'center',
+                margin: 10,
+                ...Platform.select({
+                  ios: {
+                    shadowColor: '#000000',
+                    shadowOffset: {width: 0, height: 2},
+                    shadowOpacity: 0.3,
+                    shadowRadius: 4,
+                  },
+                  android: {
+                    elevation: 4,
+                  },
+                }),
+              }}>
+              <Text
+                style={{
+                  color: '#263238',
+                  fontWeight: '700',
+                  fontSize: 14,
+                  lineHeight: 17,
+                  textTransform: 'capitalize',
+                }}>
+                Purchase Plan
+              </Text>
+            </TouchableOpacity>
+          </View>
         )}
+        {/* {getPurchaseData.data == 'Package not found' ||
+        getSubscriptionCancelStatus == 2 ||
+        getSubscriptionCancelStatus == 4 ? (
+          <View
+            style={{
+              justifyContent: 'center',
+              alignItems: 'center',
+              flex: 1,
+              marginBottom: DIMENSIONS.SCREEN_HEIGHT * 0.25,
+            }}>
+            <View
+              style={{
+                flexDirection: 'row',
+                justifyContent: 'center',
+
+                alignItems: 'center',
+              }}>
+              <AnimatedLottieView
+                source={{
+                  uri: 'https://assets5.lottiefiles.com/packages/lf20_v4UB4ch6dZ.json',
+                }} // Replace with your animation file
+                autoPlay
+                loop
+                style={{
+                  width: DIMENSIONS.SCREEN_WIDTH * 0.4,
+                  height: DIMENSIONS.SCREEN_HEIGHT * 0.25,
+                }}
+              />
+              <AnimatedLottieView
+                // source={{
+                //   uri: 'https://assets7.lottiefiles.com/packages/lf20_qgq2nqsy.json',
+                // }} // Replace with your animation file
+                source={require('../../../assets/question.json')}
+                autoPlay
+                loop
+                style={{width: 100, height: 100, marginVertical: -5}}
+              />
+            </View>
+            <Text
+              style={{
+                fontSize: 14,
+                lineHeight: 25,
+                textAlign: 'center',
+                paddingHorizontal: 30,
+                color: COLORS.BLACK,
+              }}>
+              No (Active/Scheduled) Package Available.
+            </Text>
+
+            <TouchableOpacity
+              onPress={() => navigation.navigate('HomeStack')}
+              style={{
+                width: mobileW * 0.45,
+                borderRadius: 10,
+                backgroundColor: COLORS.WHITE,
+                padding: 10,
+                alignItems: 'center',
+                justifyContent: 'center',
+                margin: 10,
+                ...Platform.select({
+                  ios: {
+                    shadowColor: '#000000',
+                    shadowOffset: {width: 0, height: 2},
+                    shadowOpacity: 0.3,
+                    shadowRadius: 4,
+                  },
+                  android: {
+                    elevation: 4,
+                  },
+                }),
+              }}>
+              <Text
+                style={{
+                  color: '#263238',
+                  fontWeight: '700',
+                  fontSize: 14,
+                  lineHeight: 17,
+                  textTransform: 'capitalize',
+                }}>
+                Purchase Plan
+              </Text>
+            </TouchableOpacity>
+          </View>
+        ) : (
+          <ScrollView showsVerticalScrollIndicator={false}>
+            <View style={styles.managing_width}>
+              <SubBoxOne />
+              <SubBoxTwo />
+              <RemainingHorizontal data={'energy'} />
+            </View>
+
+            <View
+              style={{
+                ...styles.managing_width,
+                marginTop: PLATFORM_IOS ? -12 : 0,
+              }}>
+              <PriceValiditySubs data={getPurchaseData.data} />
+            </View>
+
+            <View
+              style={{
+                flexDirection: 'row',
+                justifyContent: 'space-between',
+                width: DIMENSIONS.SCREEN_WIDTH * 0.9,
+                alignItems: 'center',
+                alignSelf: 'center',
+                marginVertical: 10,
+              }}>
+              <TouchableOpacity
+                disabled={
+                  subscriptionStatus == '1' || getSubscriptionCancelStatus != 0
+                }
+                onPress={() => {
+                  setModalVisible(true);
+                }}
+                style={{
+                  width: DIMENSIONS.SCREEN_WIDTH * 0.4,
+                  height: (DIMENSIONS.SCREEN_HEIGHT * 6) / 100,
+                  backgroundColor:
+                    subscriptionStatus == '1' ||
+                    getSubscriptionCancelStatus != 0
+                      ? 'lightgrey'
+                      : '#F84E4E',
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  borderRadius: 10,
+                  ...Platform.select({
+                    ios: {
+                      shadowColor: '#000000',
+                      shadowOffset: {width: 0, height: 2},
+                      shadowOpacity: 0.3,
+                      shadowRadius: 4,
+                    },
+                    android: {
+                      elevation: 4,
+                    },
+                  }),
+                }}>
+                <Text
+                  style={{
+                    color: COLORS.WHITE,
+                    fontSize: 14,
+                    fontWeight: '500',
+                  }}>
+                  Cancel Subscription
+                </Text>
+              </TouchableOpacity>
+
+              <TouchableOpacity
+                disabled={getSubscriptionCancelStatus != 0}
+                onPress={() => {
+                  getSubscriptionStatus();
+                }}
+                style={{
+                  width: DIMENSIONS.SCREEN_WIDTH * 0.4,
+                  height: (DIMENSIONS.SCREEN_HEIGHT * 6) / 100,
+                  // marginLeft: DIMENSIONS.SCREEN_WIDTH * 0.1,
+                  borderRadius: 10,
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  backgroundColor:
+                    getSubscriptionCancelStatus != 0
+                      ? 'lightgrey'
+                      : COLORS.GREEN,
+                  ...Platform.select({
+                    ios: {
+                      shadowColor: '#000000',
+                      shadowOffset: {width: 0, height: 2},
+                      shadowOpacity: 0.3,
+                      shadowRadius: 4,
+                    },
+                    android: {
+                      elevation: 4,
+                    },
+                  }),
+                }}>
+                <Text
+                  style={{
+                    color:
+                      getSubscriptionCancelStatus != 0
+                        ? COLORS.WHITE
+                        : COLORS.BLACK,
+                    fontSize: 14,
+                    fontWeight: '500',
+                  }}>
+                  {subscriptionStatus == '0' || subscriptionStatus == null
+                    ? 'Pause Subscription'
+                    : 'Resume Subscription'}
+                </Text>
+              </TouchableOpacity>
+            </View>
+          </ScrollView>
+        )} */}
         <Modal
           animationType="slide"
           transparent={true}
@@ -723,13 +929,14 @@ const Subscription = ({navigation, route}) => {
             </View>
           </View>
         </Modal>
+        <PauseModal
+          paused={paused}
+          setPaused={setPaused}
+          cancel1={getSubscriptionCancelStatus == 1}
+          cancel2={getSubscriptionCancelStatus == 2}
+        />
       </SafeAreaView>
-      <PauseModal
-        paused={paused}
-        setPaused={setPaused}
-        cancel1={getSubscriptionCancelStatus == 1}
-        cancel2={getSubscriptionCancelStatus == 2}
-      />
+
       {forLoading && <ActivityLoader />}
     </>
   );

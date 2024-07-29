@@ -26,7 +26,7 @@ import Line from '../../assets/svgs/Line';
 
 const mobileW = Math.round(Dimensions.get('screen').width);
 const InstallationBase = ({data}) => {
-  // const {navigation, route} = props;
+ 
 
   useEffect(() => {
     const backHandler = BackHandler.addEventListener(

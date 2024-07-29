@@ -173,7 +173,7 @@ const Account = ({navigation}) => {
       .get(`${API}/currentplan/${getUserID}`)
       .then(res => {
         const subCancelStatus = res.data?.message?.subscription_cancel_status;
-        console.log('ASDUBASDA', res.data);
+     
         if (res.data.data == 'Package not found') {
           dispatch(setPurchaseData(res.data));
         } else if (subCancelStatus == 4 || subCancelStatus == 2) {

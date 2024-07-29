@@ -46,7 +46,7 @@ export default function ForDownGrade({route, navigation}) {
     axios
       .get(`${API}/couponret/${data}`)
       .then(res => {
-        console.log('FFFFFFFFFFff', res.data);
+        
         setvoucherStatus(res.data.valid);
       })
       .catch(err => {

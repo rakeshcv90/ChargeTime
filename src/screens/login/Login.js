@@ -495,6 +495,7 @@ export default function Login({navigation}) {
             })
           : ToastAndroid.show('Login Successful', ToastAndroid.SHORT);
         const subCancelStatus = res.data?.message?.subscription_cancel_status;
+      
         if (res.data.data == 'Package not found') {
           dispatch(setPackageStatus(false));
           dispatch(setPurchaseData(res.data?.data));
