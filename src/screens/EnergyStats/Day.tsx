@@ -53,8 +53,9 @@ const Day = (props: any) => {
     getkwhData,
     overusage,
     overModelView,
+    getPurchaseData,
   } = useSelector((state: any) => state);
-const {handleRefresh, refresh} = props?.route?.params
+  const {handleRefresh, refresh} = props?.route?.params;
   const [toggleState, setToggleState] = useState(false);
 
   const handleToggle = (value: any) => setToggleState(value);
@@ -199,13 +200,19 @@ const {handleRefresh, refresh} = props?.route?.params
                 No Graph Data available
               </Text>
             )}
-
-            <BoxTwo data={getBoxTwoDataForDashboard.data} />
+            {getPurchaseData?.data != 'Package not found' &&
+            getPurchaseData?.data?.old_subscription_status != 'cancel' ? (
+              <BoxTwo data={getBoxTwoDataForDashboard.data} />
+            ) : null}
           </View>
           <View style={{marginBottom: 120}}>
-             {getSubscriptionCancelStatus ==
-              2 ? null : getSubscriptionCancelStatus == 4 ? null : (<PriceValidity data={getBoxTwoDataForDashboard.data} />
-              )}
+            {getPurchaseData?.data != 'Package not found' &&
+            getPurchaseData?.data?.old_subscription_status != 'cancel' ? (
+              getSubscriptionCancelStatus ==
+              2 ? null : getSubscriptionCancelStatus == 4 ? null : (
+                <PriceValidity data={getBoxTwoDataForDashboard.data} />
+              )
+            ) : null}
           </View>
         </ScrollView>
         <Modal

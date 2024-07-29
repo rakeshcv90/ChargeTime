@@ -273,6 +273,7 @@ export default function HomeOne(route) {
 
   return (
     <SafeAreaView style={{backgroundColor: COLORS.CREAM, flex: 1}}>
+
       {/* {getPurchaseData.data != 'Package not found'
         ? getPurchaseData.data.energy_plan.toLowerCase() ===
             myTest.toLowerCase() && (
@@ -334,7 +335,9 @@ export default function HomeOne(route) {
               <Text>No Package</Text>
             </View>
           )}
+          
         </View>
+
       ) : (
         <Tab.Navigator
           screenOptions={{
@@ -345,7 +348,9 @@ export default function HomeOne(route) {
               fontWeight: 'bold',
             },
           }}
+          
           tabBar={props => <MyTabBar {...props} />}>
+          
           {getBasePackage?.length >= 1 &&
             getBasePackage &&
             getBasePackage.map((item, ind) => {

@@ -19,12 +19,14 @@ const Year = (props: any) => {
   const ScrollRef = useRef(null);
   useEffect(() => {
     setShowSlider(true);
-
   }, []);
-  const {handleRefresh, refresh} = props?.route?.params
-  const {getYearData, getBoxTwoDataForDashboard, getSubscriptionCancelStatus} = useSelector(
-    (state: any) => state,
-  );
+  const {handleRefresh, refresh} = props?.route?.params;
+  const {
+    getYearData,
+    getBoxTwoDataForDashboard,
+    getSubscriptionCancelStatus,
+    getPurchaseData,
+  } = useSelector((state: any) => state);
 
   const [toggleState, setToggleState] = useState(false);
 
@@ -71,13 +73,24 @@ const Year = (props: any) => {
                 No Graph Data available
               </Text>
             )}
-            <BoxTwo data={getBoxTwoDataForDashboard.data} />
+            {/* <BoxTwo data={getBoxTwoDataForDashboard.data} /> */}
+            {getPurchaseData?.data != 'Package not found' &&
+            getPurchaseData?.data?.old_subscription_status != 'cancel' ? (
+              <BoxTwo data={getBoxTwoDataForDashboard.data} />
+            ) : null}
           </View>
 
           <View style={{marginBottom: 80}}>
-             {getSubscriptionCancelStatus ==
+            {/* {getSubscriptionCancelStatus ==
               2 ? null : getSubscriptionCancelStatus == 4 ? null : (<PriceValidity data={getBoxTwoDataForDashboard.data} />
-              )}
+              )} */}
+            {getPurchaseData?.data != 'Package not found' &&
+            getPurchaseData?.data?.old_subscription_status != 'cancel' ? (
+              getSubscriptionCancelStatus ==
+              2 ? null : getSubscriptionCancelStatus == 4 ? null : (
+                <PriceValidity data={getBoxTwoDataForDashboard.data} />
+              )
+            ) : null}
           </View>
         </ScrollView>
       </View>
@@ -85,6 +98,6 @@ const Year = (props: any) => {
       {/* <ButtonSlider onToggle={handleToggle}  /> */}
     </>
   );
-}
+};
 
-export default Year
+export default Year;

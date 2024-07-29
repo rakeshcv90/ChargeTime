@@ -116,7 +116,7 @@ const BoxFive = ({data, purchageData, disabled}) => {
               },
             ]}
             onPress={() => forDownUpgrade()}>
-            <Text
+            {/* <Text
               style={[
                 styles.purchage_text,
                 {color: disabled ? COLORS.WHITE : COLORS.WHITE},
@@ -124,6 +124,13 @@ const BoxFive = ({data, purchageData, disabled}) => {
               {getSubscriptionCancelStatus == 1
                 ? purchageData?.replace('Renewal', 'Cancelled')
                 : purchageData}
+            </Text> */}
+            <Text
+              style={[
+                styles.purchage_text,
+                {color: disabled ? COLORS.WHITE : COLORS.WHITE},
+              ]}>
+              {purchageData}
             </Text>
           </TouchableOpacity>
         </View>

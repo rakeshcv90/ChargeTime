@@ -173,6 +173,7 @@ const DrawerNavigation = () => {
         gestureEnabled: false,
       }}
       drawerContent={props => <CustomDrawerContent {...props} />}>
+
       {getPackageStatus ? (
         <>
           <Drawer.Screen
@@ -551,59 +552,10 @@ const HomeStack = () => {
     </Stack.Navigator>
   );
 };
-// const MainStack = () => {
-//   return (
-//     <Stack.Navigator screenOptions={screenOptions}>
-//       <Stack.Screen name="DrawerStack" component={DrawerNavigation} />
-//       <Stack.Screen name="LoginStack" component={LoginStack} />
-//       <Stack.Screen name="HomeStack" component={HomeStack} />
-//       <Stack.Screen name="AccountStack" component={AccountStack} />
-//       <Stack.Screen name="EnergyOptions" component={EnergyOptions} />
-//     </Stack.Navigator>
-//   );
-// };
 
-// const EnergyOptions = () => {
-//   return (
-//     <Stack.Navigator screenOptions={screenOptions}>
-//       <Stack.Screen name="HomeOne" component={HomeOne} />
-//       <Stack.Screen name="DownGradeData" component={ForDownGrade} />
-//       <Stack.Screen name="PaymentGateWay" component={PaymentGateWay} />
-//       {/* <Stack.Screen name="PlanSummary" component={PlanSummary} /> */}
-//     </Stack.Navigator>
-//   );
-// };
-// const AccountStack = () => {
-//   return (
-//     <Stack.Navigator screenOptions={screenOptions}>
-//       <Stack.Screen name="Account" component={Account} />
-//       <Stack.Screen name="PersonalDetails" component={PersonalDetails} />
-//       <Stack.Screen name="Security" component={Security} />
-//       <Stack.Screen name="Installation" component={Installation} />
-//       <Stack.Screen name="Payment" component={Payment} />
-//       <Stack.Screen name="Subscription" component={Subscription} />
-//       <Stack.Screen name="Theme" component={Theme} />
-//       <Stack.Screen name="Contact" component={Contact} />
-//       <Stack.Screen name="deleteAccount" component={deleteAccount} />
-//       <Stack.Screen name="Login" component={Login} />
-//       <Stack.Screen name="LoginStack" component={LoginStack} />
-
-//       {/* <Stack.Screen name="DrawerStack" component={DrawerNavigation} /> */}
-//       <Stack.Screen name="Home" component={HomeStack} />
-//       <Stack.Screen name="PaymentGateWay" component={PaymentGateWay} />
-
-//       <Stack.Screen name="PlanSummary" component={PlanSummary} />
-
-//       <Stack.Screen name="Privacy Policy" component={Privacy} />
-//     </Stack.Navigator>
-//   );
-// };
 
 export default function Router() {
-  // const [isAuthorized, setIsAuthorized] = useState(false);
-  // let loginDataString;
-  // const getLocationID = useSelector(state => state.getLocationID);
-  // const getPackageStatus = useSelector(state => state.getPackageStatus);
+
   const {isAuthorized} = useSelector(state => state);
 
   useEffect(() => {

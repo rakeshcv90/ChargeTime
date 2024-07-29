@@ -215,7 +215,10 @@ export default function PlanSummary({route, navigation}) {
           </View>
           <View style={styles.bottom_tab}>
             <TouchableOpacity
-              onPress={() => navigationRef.navigate('Home')}
+              onPress={() =>
+              //  navigationRef.navigate('Home')
+               navigationRef.goBack()
+               }
               style={{
                 padding: 20,
                 backgroundColor: COLORS.GRAY,

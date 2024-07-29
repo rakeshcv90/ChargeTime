@@ -38,10 +38,9 @@ import {
   setPurchaseData,
   setPackageStatus,
   setPuchaseAllPlans,
-  setSubcriptionCancelStatus,
 } from '../../redux/action';
 import {Toast} from 'react-native-toast-message/lib/src/Toast';
-import {setBasePackage as setUpdateBasePackage} from '../../redux/action';
+// import {setBasePackage as setUpdateBasePackage} from '../../redux/action';
 import ActivityLoader from '../../Components/ActivityLoader';
 const mobileW = Math.round(Dimensions.get('screen').width);
 const mobileH = Math.round(Dimensions.get('window').height);
@@ -82,7 +81,6 @@ const Installation = () => {
   useEffect(() => {
     getPlanCurrent();
     getAllPurchasePlan();
-    setSelectedValue(userProfileData[0]?.location)
   }, []);
   const user_id = getUserID;
 
@@ -133,12 +131,12 @@ const Installation = () => {
       const response = await axios.get(`${API}/packagePlan/${locationId}`);
 
       if (response?.data?.locations.length == 0) {
-        dispatch(setUpdateBasePackage([]));
+        dispatch(setBasePackage([]));
         // setIsLoading(true);
         // setShowPackage(true);
       } else {
         setApiData(response?.data?.locations);
-        dispatch(setUpdateBasePackage(response.data.locations));
+        dispatch(setBasePackage(response.data.locations));
         // setIsLoading(false);
       }
     } catch (error) {
@@ -153,34 +151,14 @@ const Installation = () => {
       .then(res => {
         setForLoading(false);
         setModalVisible(false);
-        const subCancelStatus = res.data?.message?.subscription_cancel_status;
-        console.log('ASDUBASDA', res.data);
+
         if (res.data.data == 'Package not found') {
           dispatch(setPurchaseData(res.data));
+
           dispatch(setPackageStatus(false));
-        } else if (subCancelStatus == 4 || subCancelStatus == 2) {
-          dispatch(
-            setSubcriptionCancelStatus(
-              subCancelStatus == 2 ? 2 : subCancelStatus == 4 ? 4 : 0,
-            ),
-          );
-          dispatch(setPackageStatus(false));
-          dispatch(setPurchaseData({data: 'Package not found'}));
         } else {
-          dispatch(
-            setSubcriptionCancelStatus(
-              subCancelStatus == 1
-                ? 1
-                : subCancelStatus == 2
-                ? 2
-                : subCancelStatus == 3
-                ? 3
-                : subCancelStatus == 4
-                ? 4
-                : 0,
-            ),
-          );
           dispatch(setPurchaseData(res?.data));
+          // setGetData(res.data);
         }
       })
       .catch(err => {
@@ -199,6 +177,8 @@ const Installation = () => {
       });
   };
   const PlanCancel = async () => {
+   // InstalltionUpdate();
+
     setIsFocus(true);
     setLoader(true);
     try {
@@ -209,6 +189,7 @@ const Installation = () => {
         },
       });
       const result = await response.json();
+     
 
       if (result.message == 'Plan Cancelled Successfully') {
         setIsFocus(false);
@@ -235,6 +216,7 @@ const Installation = () => {
     }
   };
   const InstalltionUpdate = async () => {
+    console.log('zxccxdc111');
     if (addlineone.trim().length <= 0) {
       PLATFORM_IOS
         ? Toast.show({
@@ -367,21 +349,9 @@ const Installation = () => {
   };
 
   const handleOk = () => {
-    // PlanCancel();
+    console.log("testbw");
+    PlanCancel();
 
-    // PLATFORM_IOS
-    // ? Toast.show({
-    //     type: 'success',
-    //     text1: 'The installation base cannot be changed with an active plan.',
-    //     props: {
-    //       numberLines: 2
-    //     }
-    //   })
-    // : ToastAndroid.show(
-    //     'The installation base cannot be changed with an active plan.',
-    //     ToastAndroid.SHORT,
-    //   );
-      
     setIsEditable(false);
     setModalVisible(false);
   };
@@ -394,6 +364,7 @@ const Installation = () => {
   };
 
   const onPress = () => {
+    console.log('Xzc', selectedValue, userProfileData[0]?.location);
     if (getPurchaseData.data == 'Package not found') {
       InstalltionUpdate();
       console.log('Test12');
@@ -411,16 +382,16 @@ const Installation = () => {
       console.log('Test16');
     }
 
-    // if (getPurchaseData.data !== 'Package not found') {
-    //   setModalVisible(true);
-    // } else if (selectedValue != ' ' && addlineone != ' ' && addlinetwo != ' ') {
-    //   setModalVisible(false);
-    //   setIsEditable(false);
-    //   InstalltionUpdate();
-    // } else {
-    //   setModalVisible(false);
-    //   setIsEditable(false);
-    // }
+    if (getPurchaseData.data !== 'Package not found') {
+      setModalVisible(true);
+    } else if (selectedValue != ' ' && addlineone != ' ' && addlinetwo != ' ') {
+      setModalVisible(false);
+      setIsEditable(false);
+      InstalltionUpdate();
+    } else {
+      setModalVisible(false);
+      setIsEditable(false);
+    }
   };
   const enableEdit = () => {
     setIsEditable(true);
@@ -434,21 +405,18 @@ const Installation = () => {
         onRequestClose={() => setModalVisible(false)}>
         <View style={styles.modalContainer}>
           <View style={styles.modalContent}>
-            {/* <Text style={styles.modalText}>Change Installation Base?</Text> */}
+            <Text style={styles.modalText}>Change Location Base?</Text>
             <Text style={styles.selectedEmail}>
-              {/* Changing the installation base will cancel your current plan.
-              Contact the service provider for more information.{'\n'}{'\n'} */}
-            {/* </Text>
-            <Text style={styles.selectedEmail}> */}
-              {/* Are you sure you want to update the installation? */}
-              The installation base cannot be changed with an active plan.
+              Changing your Installation will cancel your current subscription.
+              Contact your service representative for more information {'\n'}Are
+              you sure?
             </Text>
             <View style={styles.modalButtonsContainer}>
-              {/* <TouchableOpacity
+              <TouchableOpacity
                 style={styles.cancelButton}
                 onPress={() => handleCancel()}>
                 <Text style={styles.buttonText}>Cancel</Text>
-              </TouchableOpacity> */}
+              </TouchableOpacity>
               <TouchableOpacity
                 style={styles.okButton}
                 onPress={() => {
@@ -796,7 +764,6 @@ const styles = StyleSheet.create({
   selectedEmail: {
     fontSize: 16,
     marginBottom: 20,
-    color: 'black'
   },
   modalButtonsContainer: {
     flexDirection: 'row',

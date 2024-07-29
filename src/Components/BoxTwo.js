@@ -16,33 +16,50 @@ import {DIMENSIONS} from '../constants/DIMENSIONS';
 import {useSelector} from 'react-redux';
 
 const BoxTwo = ({data}) => {
+  const {getUserID, getPurchaseData, getPlanStatus, getPurchaseAllPlans} =
+    useSelector(state => state);
 
-  const {getUserID, getPurchaseData, getPlanStatus,getPurchaseAllPlans} = useSelector(
-    state => state,
-  );
   const getmessage = () => {
-    if (getPurchaseData.length == 0) {
+    if (getPurchaseData.length <= 0) {
       return <Text style={styles.installation_text}></Text>;
     } else if (getPurchaseData.length == undefined) {
-      if (getPurchaseData?.data?.energy_plan == data?.package_name) {
-        var datatex='( Current Plan )'
-        return <Text style={styles.installation_text}>{datatex}</Text>;
-      }else{
-      var datatest=''
-        getPurchaseAllPlans?.forEach(item => {
-        
-          if(item.energy_plan==data?.package_name&&item.subscription_status=="active"){
-            datatest='( Active )'
+      if (
+        getPurchaseData.data != 'Package not found' &&
+        getPurchaseData?.data?.old_subscription_status != 'cancel'
+      ) {
+        if (getPurchaseData?.data?.energy_plan == data?.package_name) {
+          var datatex = '( Current Plan )';
+          return <Text style={styles.installation_text}>{datatex}</Text>;
+        } else {
+          if (
+            getPurchaseData.data != 'Package not found' &&
+            getPurchaseData?.data?.old_subscription_status != 'cancel'
+          ) {
+            var datatest = '';
+            getPurchaseAllPlans?.forEach(item => {
+              if (
+                item.energy_plan == data?.package_name &&
+                item.subscription_status == 'active'
+              ) {
+                datatest = '( Active )';
+              } else if (
+                item.energy_plan == data?.package_name &&
+                item.subscription_status == 'scheduled'
+              ) {
+                datatest = '( Scheduled )';
+              } else if (
+                item.energy_plan == data?.package_name &&
+                item.subscription_status == 'notActive'
+              ) {
+                datatest = '( NotActive )';
+              } else datatest = '';
+            });
+            return <Text style={styles.installation_text}>{datatest}</Text>;
+          }else{
+            return <Text style={styles.installation_text}></Text>;
+          }
 
-          }else if(item.energy_plan==data?.package_name&&item.subscription_status=="scheduled"){
-            datatest= '( Scheduled )'
-          }else if(item.energy_plan==data?.package_name&&item.subscription_status=="notActive"){
-            datatest= '( NotActive )'
-          }else(
-            datatest=''
-          )
-        });
-        return <Text style={styles.installation_text}>{datatest}</Text>;
+        }
       }
     }
   };

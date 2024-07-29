@@ -401,15 +401,16 @@ export default function PaymentGateWay({navigation, route}) {
 
         if (res.data.status == 'True') {
           // dispatch(setDeviceId(res.data.message));
-          if (route.params.purchageData == 'DOWNGRADE') {
-            navigationRef.navigate('HomeOne');
-          }
-          if (route.params.purchageData == 'DOWNGRADE') {
-            dispatch(setDeviceId(res.data.message));
-            getPlanCurrent();
-            getAllPurchasePlan();
-            navigationRef.navigate('Home');
-          }
+          // if (route.params.purchageData == 'DOWNGRADE') {
+          //   navigationRef.navigate('HomeOne');
+          // }
+          // if (route.params.purchageData == 'DOWNGRADE') {
+          //   dispatch(setDeviceId(res.data.message));
+          //   getPlanCurrent();
+          //   getAllPurchasePlan();
+          //   navigationRef.navigate('Home');
+          // }
+          navigationRef.navigate('DrawerStack');
           dispatch(setDeviceId(res.data.message));
           getPlanCurrent();
           getAllPurchasePlan();
