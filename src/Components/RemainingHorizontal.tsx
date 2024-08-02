@@ -23,12 +23,7 @@ import {
 import AnimatedLottieView from 'lottie-react-native';
 import {useFocusEffect} from '@react-navigation/native';
 import {navigationRef} from '../../App';
-import {
-  accelerometer,
-  gyroscope,
-  setUpdateIntervalForType,
-  SensorTypes,
-} from 'react-native-sensors';
+
 
 const RemainingHorizontal = ({...props}) => {
   const dispatch = useDispatch();
