@@ -128,7 +128,9 @@ const Installation = () => {
     //  loginData = await AsyncStorage.getItem('loginDataOne');
 
     try {
-      const response = await axios.get(`${API}/packagePlan/${locationId}`);
+      const response = await axios.get(`${API}/packagePlan/${ locationId == undefined
+                  ? userProfileData[0]?.pwa_choice
+                  : locationId}`);
 
       if (response?.data?.locations.length == 0) {
         dispatch(setBasePackage([]));
@@ -177,7 +179,7 @@ const Installation = () => {
       });
   };
   const PlanCancel = async () => {
-   // InstalltionUpdate();
+    // InstalltionUpdate();
 
     setIsFocus(true);
     setLoader(true);
@@ -189,7 +191,6 @@ const Installation = () => {
         },
       });
       const result = await response.json();
-     
 
       if (result.message == 'Plan Cancelled Successfully') {
         setIsFocus(false);
@@ -216,7 +217,6 @@ const Installation = () => {
     }
   };
   const InstalltionUpdate = async () => {
-    console.log('zxccxdc111');
     if (addlineone.trim().length <= 0) {
       PLATFORM_IOS
         ? Toast.show({
@@ -270,10 +270,18 @@ const Installation = () => {
             }),
           });
           const response = await res.json();
+          console.log('zxccxdc111', response);
+          setLoader(false);
           if (response.msg == 'Your Profile Update') {
             setModalVisible(false);
             setIsEditable(false);
-            dispatch(updatedLocationId(locationId));
+            dispatch(
+              updatedLocationId(
+                locationId == undefined
+                  ? userProfileData[0]?.pwa_choice
+                  : locationId,
+              ),
+            );
 
             if (response) {
               const updatedData = [
@@ -302,7 +310,9 @@ const Installation = () => {
 
               dispatch(updatePersionalDetail(updatedData));
 
-              dispatch(updatedLocationId(locationId));
+              dispatch(updatedLocationId( locationId == undefined
+                ? userProfileData[0]?.pwa_choice
+                : locationId,));
 
               fetchData();
               setForLoading(false);
@@ -349,7 +359,7 @@ const Installation = () => {
   };
 
   const handleOk = () => {
-    console.log("testbw");
+    console.log('testbw');
     PlanCancel();
 
     setIsEditable(false);
@@ -383,7 +393,7 @@ const Installation = () => {
     }
 
     if (getPurchaseData.data !== 'Package not found') {
-      setModalVisible(true);
+      //setModalVisible(true);
     } else if (selectedValue != ' ' && addlineone != ' ' && addlinetwo != ' ') {
       setModalVisible(false);
       setIsEditable(false);

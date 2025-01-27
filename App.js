@@ -50,6 +50,9 @@ const App = ({navigation}) => {
 
   //For Android
   //appcenter codepush release-react -a rakeshrao/TRO-ChargeTimeAndroid -d Production
+
+// clear data from code push appcenter codepush deployment clear -a thefitnessandworkout-gmail.com/FitmeAndroid Production
+
   const publishableKey =
     'pk_live_51LCrEBJPfbfzje02kM4bLe9H6mEIVNkpZwxrcNSNOA8TO0WyfSAcZhjPsCgG7pYuwdE1QjFzmd3bew2A2ch3lqCE00NG2kiGDs';
 
