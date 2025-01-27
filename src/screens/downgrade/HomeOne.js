@@ -115,10 +115,9 @@ export default function HomeOne(route) {
   const [activeTab, setActiveTab] = useState('');
   const [apiData, setApiData] = useState([]);
   const [myTest, setMyTest] = useState('');
-  const {getLocationID, getPurchaseData, getBasePackage} = useSelector(
-    state => state,
-  );
- 
+  const {getLocationID, getPurchaseData, getBasePackage, subscriptionStatus} =
+    useSelector(state => state);
+
   const [showLottieView, setShowLottieView] = useState(false);
 
   useEffect(() => {
@@ -162,7 +161,6 @@ export default function HomeOne(route) {
   useEffect(() => {
     const updatedNumArray = populateNumArray();
     setNumArray(updatedNumArray);
-
   }, [getBasePackage, getPurchaseData]);
 
   const fetchData = async () => {
@@ -170,7 +168,7 @@ export default function HomeOne(route) {
 
     try {
       const response = await axios.get(`${API}/packagePlan/${getLocationID}`);
-
+console.log("VDCVFDSFdgdgdfgfd",getLocationID,response?.data)
       if (response?.data?.locations.length == 0) {
         setIsLoading(true);
         setShowPackage(true);
@@ -232,25 +230,23 @@ export default function HomeOne(route) {
               style={{
                 flex: 1,
                 backgroundColor: '#EEEEEE',
-                padding:5
-            
-              }}
-              >
+                padding: 5,
+              }}>
               <View
                 style={{
                   borderRadius: isFocused ? 10 : 10,
                   paddingVertical: 13,
-                   ...Platform.select({
-                  ios: {
-                    shadowColor: '#000000',
-                    shadowOffset: {width: 0, height: 6},
-                    shadowOpacity: 0.3,
-                    shadowRadius: 4,
-                  },
-                  android: {
-                    elevation: isFocused ? 4 : 0,
-                  },
-                }),
+                  ...Platform.select({
+                    ios: {
+                      shadowColor: '#000000',
+                      shadowOffset: {width: 0, height: 6},
+                      shadowOpacity: 0.3,
+                      shadowRadius: 4,
+                    },
+                    android: {
+                      elevation: isFocused ? 4 : 0,
+                    },
+                  }),
                   backgroundColor: isFocused ? '#B1D34F' : null,
                 }}>
                 <Text
@@ -273,7 +269,6 @@ export default function HomeOne(route) {
 
   return (
     <SafeAreaView style={{backgroundColor: COLORS.CREAM, flex: 1}}>
-
       {/* {getPurchaseData.data != 'Package not found'
         ? getPurchaseData.data.energy_plan.toLowerCase() ===
             myTest.toLowerCase() && (
@@ -335,9 +330,7 @@ export default function HomeOne(route) {
               <Text>No Package</Text>
             </View>
           )}
-          
         </View>
-
       ) : (
         <Tab.Navigator
           screenOptions={{
@@ -348,9 +341,7 @@ export default function HomeOne(route) {
               fontWeight: 'bold',
             },
           }}
-          
           tabBar={props => <MyTabBar {...props} />}>
-          
           {getBasePackage?.length >= 1 &&
             getBasePackage &&
             getBasePackage.map((item, ind) => {
@@ -360,8 +351,11 @@ export default function HomeOne(route) {
                     ? 'UPGRADE'
                     : item?.kwh < getPurchaseData?.data?.kwh
                     ? 'DOWNGRADE'
-                    : `Renewal Date: \n${getPurchaseData?.data?.End_validity}` // This will be displayed when item.kwh == getPurchaseData.data.kwh
-                  : '';
+                    : subscriptionStatus == 1
+                    ? 'PAUSED SUBSCRIPTION'
+                    : `Renewal Date: \n${getPurchaseData?.data?.End_validity}`
+                  : // :`Renewal Date: \n${getPurchaseData?.data?.End_validity}` // This will be displayed when item.kwh == getPurchaseData.data.kwh
+                    '';
               // let num =
               //   (item.package_name.toLowerCase() === getPurchaseData.length) !=
               //     0 && getPurchaseData.data.energy_plan.toLowerCase();
@@ -371,7 +365,11 @@ export default function HomeOne(route) {
                   key={ind}
                   name={item?.package_name}
                   component={SliderOne}
-                  initialParams={{item: item, purchageData: purchageData,index:ind}}
+                  initialParams={{
+                    item: item,
+                    purchageData: purchageData,
+                    index: ind,
+                  }}
                 />
               );
             })}

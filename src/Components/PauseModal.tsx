@@ -68,7 +68,7 @@ const PauseModal: FC<Props> = ({
     }
   };
   const plan = () => {
-    setPaused(false)
+    setPaused(false);
     navigationRef?.navigate('EnergyOptions');
   };
   return (
@@ -82,6 +82,23 @@ const PauseModal: FC<Props> = ({
       }}>
       <View style={styles.centeredView}>
         <View style={styles.modalView}>
+          <TouchableOpacity
+            onPress={() => {
+              setPaused(false);
+            }}
+            style={{
+              justifyContent: 'flex-end',
+              alignItems: 'flex-end',
+              alignSelf: 'flex-end',
+              marginTop: -10,
+            }}>
+            <Image
+              source={require('../../assets/images/close.png')}
+              style={{width: 12, height: 12}}
+              resizeMode="contain"
+            />
+          </TouchableOpacity>
+
           <Text style={styles.modalText}>
             Account{' '}
             {cancel1 || cancel2 || cancel1Stripe || cancel2Stripe
@@ -126,8 +143,11 @@ const PauseModal: FC<Props> = ({
               }}
               onPress={() => {
                 setPaused(false);
+                navigationRef.navigate('DrawerStack', {
+                  screen: 'EnergyStats',
+                });
               }}>
-              <Text style={styles.textStyle}>Cancel</Text>
+              <Text style={styles.textStyle}>Home</Text>
             </TouchableOpacity>
             <TouchableOpacity
               style={[styles.button, styles.buttonClose, {padding: 5}]}
@@ -139,7 +159,7 @@ const PauseModal: FC<Props> = ({
               <Text style={styles.textStyle}>
                 {cancel1 || cancel2 || cancel1Stripe || cancel2Stripe
                   ? 'Purchase Plan'
-                  : 'Resume'}
+                  : 'Resume Subscription'}
               </Text>
             </TouchableOpacity>
           </View>

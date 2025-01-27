@@ -51,6 +51,7 @@ export default function SliderOne(props) {
     getPurchaseData,
     getSubscriptionCancelStatus,
     getBasePackage,
+    subscriptionStatus
   } = useSelector(state => state);
 
   useEffect(() => {
@@ -109,7 +110,7 @@ export default function SliderOne(props) {
         : getBasePackage[props?.route?.params.index]?.kwh <
           getPurchaseData?.data?.kwh
         ? 'DOWNGRADE'
-        : `Renewal Date: \n${getPurchaseData?.data?.End_validity}`
+        :subscriptionStatus==1?'PAUSED SUBSCRIPTION': `Renewal Date: \n${getPurchaseData?.data?.End_validity}`
       : '';
 
   return (
