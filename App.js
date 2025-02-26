@@ -17,7 +17,7 @@ import {API} from './src/api/API';
 import {CommonActions} from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import codePush from 'react-native-code-push';
-import {View, Text, ActivityIndicator, } from 'react-native';
+import {View, Text, ActivityIndicator} from 'react-native';
 
 import {
   setBasePackage,
@@ -51,10 +51,18 @@ const App = ({navigation}) => {
   //For Android
   //appcenter codepush release-react -a rakeshrao/TRO-ChargeTimeAndroid -d Production
 
-// clear data from code push appcenter codepush deployment clear -a thefitnessandworkout-gmail.com/FitmeAndroid Production
+  // clear data from code push appcenter codepush deployment clear -a thefitnessandworkout-gmail.com/FitmeAndroid Production
+const [publishableKey, setPublishableKey] = useState('')
 
-  const publishableKey =
-    'pk_live_51LCrEBJPfbfzje02kM4bLe9H6mEIVNkpZwxrcNSNOA8TO0WyfSAcZhjPsCgG7pYuwdE1QjFzmd3bew2A2ch3lqCE00NG2kiGDs';
+  useEffect(() => {
+    getSTRIPPKEY();
+  }, []);
+
+  const getSTRIPPKEY = async () => {
+    const key = await apiCalls.getStripeKey();
+    setPublishableKey(key)
+  };
+  // console.log('STRI{ KEY', publishableKey);
 
   useEffect(() => {
     // setLoginMessage();
@@ -492,15 +500,15 @@ const App = ({navigation}) => {
     }
   }, []);
   useEffect(() => {
-    codePush.sync(
-      {
-        updateDialog: true,
-        installMode: codePush.InstallMode.IMMEDIATE,
-       // installMode: codePush.InstallMode.MANUAL,
-      },
-      codePushStatusDidChange,
-      codePushDownloadDidProgress,
-    );
+    // codePush.sync(
+    //   {
+    //     updateDialog: true,
+    //     installMode: codePush.InstallMode.IMMEDIATE,
+    //     // installMode: codePush.InstallMode.MANUAL,
+    //   },
+    //   codePushStatusDidChange,
+    //   codePushDownloadDidProgress,
+    // );
   }, []);
   const codePushStatusDidChange = syncStatus => {
     switch (syncStatus) {
@@ -553,16 +561,16 @@ const App = ({navigation}) => {
               borderRadius: 8,
               padding: 16,
             }}>
-            <Text style={{color:'black'}}>In Progress.......</Text>
+            <Text style={{color: 'black'}}>In Progress.......</Text>
 
             <View style={{alignItems: 'center'}}>
-              <Text style={{marginTop: 16,color:'black'}}>{`${(
+              <Text style={{marginTop: 16, color: 'black'}}>{`${(
                 Number(progress?.receivedBytes) / 1048576
               ).toFixed(2)}MB/${(
                 Number(progress?.totalBytes) / 1048576
               ).toFixed(2)}`}</Text>
               <ActivityIndicator style={{marginVertical: 8}} color={'blue'} />
-              <Text style={{color:'black'}}>
+              <Text style={{color: 'black'}}>
                 {(
                   (Number(progress?.receivedBytes) /
                     Number(progress?.totalBytes)) *
@@ -627,8 +635,9 @@ const App = ({navigation}) => {
         urlScheme="your-url-scheme" // required for 3D Secure and bank redirects
       ></StripeProvider>
       <Toast />
-      {!!progress ? showProgressView() : null}
+      {/* {!!progress ? showProgressView() : null} */}
     </>
   );
 };
-export default codePush(codePushOptions)(App);
+export default App;
+// export default codePush(codePushOptions)(App);
