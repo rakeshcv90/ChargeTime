@@ -191,6 +191,7 @@ export default function SliderOne(props) {
           <PurchseButton data={getBasePackage[props?.route?.params.index]} />
         ) : (
           <>
+         
             {getPurchaseData.data != 'Package not found' &&
               getPurchaseData.data.energy_plan.toLowerCase() !==
                 props.route.params.item.package_name.toLowerCase() && (

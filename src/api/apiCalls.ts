@@ -19,14 +19,14 @@ export const apiCalls = {
         .get(API_URL.getStripekey)
         .then(({data, status, statusText}) => {
           if (status == 200) {
-            console.log(status, data?.data?.STRIPE_KEY);
+            console.log('asdfdsfdsfgdgdf', data?.data?.STRIPE_KEY);
             resolve(data?.data?.STRIPE_KEY);
           }
         })
         .catch(err => {
           console.log('Stripe API err', err,API_URL.getStripekey);
           resolve('pk_test_51LCrEBJPfbfzje02cGGuiKfWFTikU4sHdU7XN13cr0EzRRHRThNfecBFmI9wIzZ3WRaLJbA5IACZ5tU1kO3dpCUw007mxAvgeb');
-          Message('Stripe API Error','error')
+          Message('Stripe API Error3','error')
         });
     });
   },

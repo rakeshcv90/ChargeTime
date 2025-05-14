@@ -391,33 +391,7 @@ export default function VerifyEmail(props) {
     }
   }, [remainingTime, timerActive]);
 
-  // const handleInputChange = (text, index) => {
-  //   if (text && index < 5) {
-  //     inputRefs.current[index + 1].focus();
-  //   }
 
-  //   setOtp(prevOtp => {
-  //     let newOtp = prevOtp.split('');
-  //     newOtp[index] = text;
-  //     return newOtp.join('');
-  //   });
-  // };
-
-  // const handleBackspace = index => {
-  //   if (index > 0) {
-  //     inputRefs.current[index - 1].focus();
-  //   }
-
-  //   setOtp(prevOtp => {
-  //     let newOtp = prevOtp.split('');
-  //     newOtp[index] = '';
-  //     return newOtp.join('');
-  //   });
-  // };
-  // const fetchCopiedText = async () => {
-  //   const text = await Clipboard.getString();
-  //   // setOtp(text);
-  // };
 
   return (
     <SafeAreaView style={{backgroundColor: COLORS.CREAM, flex: 1}}>
@@ -428,8 +402,7 @@ export default function VerifyEmail(props) {
         <KeyboardAvoidingView
           behavior={PLATFORM_IOS ? 'position' : undefined}
           contentContainerStyle={{flexGrow: 1}}
-          // behavior={'padding'}
-          // keyboardVerticalOffset={PLATFORM_IOS ? 200 : 0}
+  
         >
           {forLoading ? <ActivityLoader /> : ''}
           <View style={styles.mainDiv_container}>
@@ -921,6 +894,7 @@ const styles = StyleSheet.create({
     backgroundColor: COLORS.BROWN,
     textAlign: 'center',
     fontSize: 14,
+    color:'black'
     // paddingHorizontal: 20,
   },
   mainDiv_VErify_account: {

@@ -166,54 +166,14 @@ export default function CompleteProfile(props) {
 
           setForLoading(false);
         } else {
-          // PLATFORM_IOS
-          //   ? Toast.show({
-          //       type: 'error',
-          //       text1: 'Profile already in use',
-          //       // position: 'bottom',
-          //     })
-          //   : ToastAndroid.show('Profile already in use', ToastAndroid.SHORT);
+         
           setForLoading(false);
         }
       }
     } catch (err) {
       setForLoading(false);
     }
-    // if (addlineone.trim().length == 0) {
-    //   setForLoading(false);
 
-    //   PLATFORM_IOS
-    //     ? Toast.show({
-    //         type: 'success',
-    //         text1: 'Please fill the required fields.',
-    //       })
-    //     : ToastAndroid.show(
-    //         'Please fill the required fields.',
-    //         ToastAndroid.SHORT,
-    //       );
-    //   setForLoading(false);
-    // } else if (addlineone.length < 4) {
-    //   PLATFORM_IOS
-    //     ? Toast.show({
-    //         type: 'success',
-    //         text1: 'Please Enter Full Address,',
-    //       })
-    //     : ToastAndroid.show('Please Enter Full Address', ToastAndroid.SHORT);
-    //   setForLoading(false);
-    // } else if (locationId && addlineone && newZipcode && newState) {
-
-    // } else {
-    //   PLATFORM_IOS
-    //     ? Toast.show({
-    //         type: 'success',
-    //         text1: 'Please fill the required fields.',
-    //       })
-    //     : ToastAndroid.show(
-    //         'Please fill the required fields.',
-    //         ToastAndroid.SHORT,
-    //       );
-    //   setForLoading(false);
-    // }
   };
 
   const OverusageModal = () => {
@@ -420,27 +380,9 @@ export default function CompleteProfile(props) {
             </View>
           </View>
           <View></View>
-          {/* <View
-            style={{
-              flexDirection: 'row',
-              justifyContent: 'center',
-            }}>
-            <TouchableOpacity
-              onPress={CompleteProfileFunction}
-              // disabled={nameError}
-              style={styles.create_profile_Touchable}>
-              <Text
-                style={{
-                  color: COLORS.BLACK,
-                  fontSize: 14,
-                  fontWeight: '700',
-                }}>
-                Create Profile
-              </Text>
-            </TouchableOpacity>
-          </View> */}
+ 
         </View>
-        {/* </KeyboardAvoidingView> */}
+      
       </ScrollView>
       <OverusageModal />
     </SafeAreaView>

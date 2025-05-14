@@ -59,7 +59,7 @@ const Year = (props: any) => {
           </View>
 
           <View style={{marginHorizontal: 20}}>
-            {getYearData.message != 'No usage data available' ? (
+            {getYearData.message != 'No usage data available'&& getYearData.message != 'No yearly usage data available' ? (
               <Graph dataOne={getYearData} />
             ) : (
               <Text

@@ -19,12 +19,14 @@ const Month = (props: any) => {
   const ScrollRef = useRef(null);
   useEffect(() => {
     setShowSlider(true);
-
   }, []);
-  const {handleRefresh, refresh} = props?.route?.params
-  const {getMonthData, getBoxTwoDataForDashboard, getSubscriptionCancelStatus,getPurchaseData} = useSelector(
-    (state: any) => state,
-  );
+  const {handleRefresh, refresh} = props?.route?.params;
+  const {
+    getMonthData,
+    getBoxTwoDataForDashboard,
+    getSubscriptionCancelStatus,
+    getPurchaseData,
+  } = useSelector((state: any) => state);
   const [toggleState, setToggleState] = useState(false);
 
   const handleToggle = (value: any) => setToggleState(value);
@@ -60,7 +62,8 @@ const Month = (props: any) => {
           </View>
 
           <View style={{marginHorizontal: 20}}>
-            {getMonthData.message != 'No usage data available' ? (
+            {getMonthData.message != 'No usage data available' &&
+            getMonthData.message != 'No monthly usage data available' ? (
               <Graph dataOne={getMonthData} />
             ) : (
               <Text
@@ -74,17 +77,17 @@ const Month = (props: any) => {
                 No Graph Data available
               </Text>
             )}
-                 {getPurchaseData?.data != 'Package not found' &&
+            {getPurchaseData?.data != 'Package not found' &&
             getPurchaseData?.data?.old_subscription_status != 'cancel' ? (
               <BoxTwo data={getBoxTwoDataForDashboard.data} />
             ) : null}
             {/* <BoxTwo data={getBoxTwoDataForDashboard.data} /> */}
           </View>
           <View style={{marginBottom: 80}}>
-             {/* {getSubscriptionCancelStatus ==
+            {/* {getSubscriptionCancelStatus ==
               2 ? null : getSubscriptionCancelStatus == 4 ? null : (<PriceValidity data={getBoxTwoDataForDashboard.data} />
               )} */}
-              {getPurchaseData?.data != 'Package not found' &&
+            {getPurchaseData?.data != 'Package not found' &&
             getPurchaseData?.data?.old_subscription_status != 'cancel' ? (
               getSubscriptionCancelStatus ==
               2 ? null : getSubscriptionCancelStatus == 4 ? null : (
@@ -98,5 +101,5 @@ const Month = (props: any) => {
       {/* <ButtonSlider onToggle={handleToggle}  /> */}
     </>
   );
-}
-export default Month
+};
+export default Month;

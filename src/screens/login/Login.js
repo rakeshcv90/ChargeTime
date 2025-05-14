@@ -28,7 +28,7 @@ import {
 } from 'react-native';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import notifee, {EventType} from '@notifee/react-native';
-import React, {useState, useEffect, useCallback} from 'react';
+import React, {useState, useEffect, useCallback, version} from 'react';
 import COLORS from '../../constants/COLORS';
 import Toast from 'react-native-toast-message';
 import {API} from '../../api/API';
@@ -72,6 +72,7 @@ import {ms} from 'react-native-size-matters';
 import {Alert, PermissionsAndroid} from 'react-native';
 import Clipboard from '@react-native-clipboard/clipboard';
 import {useFocusEffect} from '@react-navigation/native';
+import VersionNumber from 'react-native-version-number';
 const mobileH = Math.round(Dimensions.get('window').height);
 const mobileW = Math.round(Dimensions.get('window').width);
 
@@ -212,15 +213,16 @@ export default function Login({navigation}) {
             device_token: token1,
             notification_status: 'true',
             login_status: 0,
+            version: VersionNumber.appVersion,
           },
         });
-
-        if (res.data) {
+     
+        if (res?.data) {
           // AsyncStorage.setItem('loginDataOne', JSON.stringify(data.locationid ));
-
+       
           if (
-            res.data.splash_notification == 0 ||
-            res.data.splash_notification == null
+            res?.data?.splash_notification == 0 ||
+            res?.data?.splash_notification == null
           ) {
             if (res.data.message == 'Login Successfull') {
               dispatch(setUserID(res.data?.user_id));
@@ -237,7 +239,7 @@ export default function Login({navigation}) {
               setPassword('');
               await AsyncStorage.setItem('isAuthorized', res.data.user_id + '');
               const subCancelStatus = res.data?.subscription_cancel_status;
-              console.log('subCancelStatus', subCancelStatus);
+
               dispatch(
                 setSubcriptionCancelStatus(
                   subCancelStatus == 1
@@ -338,6 +340,14 @@ export default function Login({navigation}) {
             dispatch(setMaintainence(true));
             setForLoading(false);
           }
+        } else {
+          PLATFORM_IOS
+            ? Toast.show({
+                type: 'error',
+                text1: res.data.message,
+              })
+            : ToastAndroid.show(res.data.message, ToastAndroid.SHORT);
+          setForLoading(false);
         }
       } catch (err) {
         PLATFORM_IOS
@@ -363,7 +373,7 @@ export default function Login({navigation}) {
     axios
       .get(`${API}/dailyusagedeviceid/${userID}`)
       .then(res => {
-        console.log('Dailay Use Data is', res.data.length);
+ 
         if (res?.data?.length > 0) {
           dispatch(setGraphData(res.data.Dayusagewithgraph));
           dispatch(setWeekGraphData(res.data.weeklyusagewithgraph));
@@ -389,6 +399,7 @@ export default function Login({navigation}) {
           getAllPurchasePlan(userID);
           getPlanCurrent(userID);
         } else {
+          console.log('Dailay Use Data is', message);
           dispatch(setGraphData({message}));
           dispatch(setWeekGraphData({message}));
           dispatch(setMonthGraphData({message}));
@@ -436,7 +447,7 @@ export default function Login({navigation}) {
     axios
       .get(`${API}/remainingusage/${userId}`)
       .then(res => {
-        if (parseInt(res.data?.kwh_unit_remaining) >= 0) {
+        if (parseInt(res.data?.kwh_unit_remaining) > 0) {
           remaingData = res.data?.kwh_unit_remaining;
           dispatch(setRemainingData(res.data?.kwh_unit_remaining));
           dispatch(setOverUsage(false));
@@ -495,7 +506,7 @@ export default function Login({navigation}) {
             })
           : ToastAndroid.show('Login Successful', ToastAndroid.SHORT);
         const subCancelStatus = res.data?.message?.subscription_cancel_status;
-      
+
         if (res.data.data == 'Package not found') {
           dispatch(setPackageStatus(false));
           dispatch(setPurchaseData(res.data?.data));
@@ -505,7 +516,7 @@ export default function Login({navigation}) {
               subCancelStatus == 2 ? 2 : subCancelStatus == 4 ? 4 : 0,
             ),
           );
-          dispatch(setPackageStatus(false))
+          dispatch(setPackageStatus(false));
           dispatch(setPurchaseData({data: 'Package not found'}));
         } else {
           dispatch(
@@ -767,6 +778,7 @@ const styles = StyleSheet.create({
   dont_have_text: {
     fontSize: Platform.OS === 'ios' ? 14 : 15,
     fontWeight: '500',
+    color:'black',
   },
   sign_up: {
     fontSize: Platform.OS === 'ios' ? 16 : 15,

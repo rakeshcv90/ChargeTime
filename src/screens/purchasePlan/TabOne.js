@@ -20,7 +20,7 @@ import {PLATFORM_IOS} from '../../constants/DIMENSIONS';
 import { useSelector } from 'react-redux';
 
 export default function TabOne(props) {
-  console.log("Rakesh Update",props?.route?.params.index)
+
 
   const {getLocationID, getBasePackage, getPackageStatus} = useSelector(
     state => state,

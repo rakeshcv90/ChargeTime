@@ -264,6 +264,7 @@ export default function EnergyStats() {
       .get(`${API}/dailyusagedeviceid/${userID}`)
       .then(res => {
         setIsLoading(false);
+        console.log('TRTRT22222222',res.data);
         if (res.data.length > 0) {
           dispatch(setGraphData(res.data.Dayusagewithgraph));
           dispatch(setWeekGraphData(res.data.weeklyusagewithgraph));
@@ -281,6 +282,7 @@ export default function EnergyStats() {
           dailyUsuagekwh(getUserID);
           setIsLoading(false);
         } else {
+        
           dispatch(setGraphData({message}));
           dispatch(setWeekGraphData({message}));
           dispatch(setMonthGraphData({message}));
@@ -291,7 +293,7 @@ export default function EnergyStats() {
       })
       .catch(err => {
         setIsLoading(false);
-        console.log('TRTRT', err);
+        // console.log('TRTRT', err);
       });
   };
   const dailyUsuagekwh = (userId: string) => {
@@ -317,7 +319,7 @@ export default function EnergyStats() {
       .get(`${API}/remainingusage/${userId}`)
       .then(res => {
         setIsLoading(false);
-        if (parseInt(res.data?.kwh_unit_remaining) >= 0) {
+        if (parseInt(res.data?.kwh_unit_remaining) > 0) {
           remaingData = res.data?.kwh_unit_remaining;
           dispatch(setRemainingData(res.data?.kwh_unit_remaining));
 
@@ -332,7 +334,7 @@ export default function EnergyStats() {
           dispatch(setOverModelView(true));
           setIsLoading(false);
         }
-        console.log('first', res.data);
+    
         // dispatch(setRemainingData(remaingData));
         setIsLoading(false);
         //fetchWeekGraphData(getUserID);
@@ -349,7 +351,7 @@ export default function EnergyStats() {
       .get(`${API}/currentplan/${userId}`)
       .then(res => {
         const subCancelStatus = res.data?.message?.subscription_cancel_status;
-        console.log('subCancelStatus', subCancelStatus);
+
         setIsLoading(false);
       
         if (res.data.data == 'Package not found') {
@@ -410,6 +412,7 @@ export default function EnergyStats() {
       });
   };
   const handleRefresh = () => {
+  
     setRefresh(true);
     fetchBoxTwoDashboardData(getUserID);
     remainigUsuageData(getUserID);
@@ -636,6 +639,7 @@ export default function EnergyStats() {
                 }}>
                 Energy Statistics
               </Text>
+             
             </View>
           </View>
         )}

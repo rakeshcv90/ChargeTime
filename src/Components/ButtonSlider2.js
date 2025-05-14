@@ -28,7 +28,6 @@ const ButtonSlider2 = () => {
   const {getUserID, getChargerStatus, subscriptionStatus, getRemainingData} =
     useSelector(state => state);
 
-
   const dispatch = useDispatch();
   const [isLoading, setIsLoading] = useState(false);
 
@@ -38,6 +37,7 @@ const ButtonSlider2 = () => {
       axios
         .post(`${API}/charger_ON/${getUserID}`)
         .then(res => {
+          console.log('CHharger Offline', res.data);
           if (res?.data.message === 'Device not connected with server') {
             PLATFORM_IOS
               ? Toast.show({
@@ -48,10 +48,22 @@ const ButtonSlider2 = () => {
                   duration: 500,
                 })
               : ToastAndroid.show(res?.data.message, ToastAndroid.SHORT);
-          }
+          } else if (res?.data.charger_activity == 1) {
+            PLATFORM_IOS
+              ? Toast.show({
+                  text1: res?.data.message,
 
-          dispatch(setChargerStatus(res?.data));
-          setIsLoading(false);
+                  position: 'top',
+                  type: 'success',
+                  duration: 500,
+                })
+              : ToastAndroid.show(res?.data.message, ToastAndroid.SHORT);
+
+            setIsLoading(false);
+          } else {
+            dispatch(setChargerStatus(res?.data));
+            setIsLoading(false);
+          }
         })
         .catch(err => {
           console.log(err);
@@ -61,6 +73,7 @@ const ButtonSlider2 = () => {
       axios
         .post(`${API}/charger_OFF/${getUserID}`)
         .then(res => {
+          console.log('CHharger Offline', res.data);
           if (res?.data.message === 'Device not connected with server') {
             PLATFORM_IOS
               ? Toast.show({
@@ -79,9 +92,25 @@ const ButtonSlider2 = () => {
                   // }
                 })
               : ToastAndroid.show(res?.data.message, ToastAndroid.SHORT);
+          } else if (res?.data.charger_activity == 1) {
+            PLATFORM_IOS
+              ? Toast.show({
+                  text1: res?.data.message,
+
+                  position: 'top',
+                  type: 'success',
+                  duration: 1000,
+                  textStyle: {
+                    textAlign: 'center',
+                  },
+                })
+              : ToastAndroid.show(res?.data.message, ToastAndroid.SHORT);
+            dispatch(setChargerStatus('Offline'));
+            setIsLoading(false);
+          } else {
+            dispatch(setChargerStatus(res?.data));
+            setIsLoading(false);
           }
-          dispatch(setChargerStatus(res?.data));
-          setIsLoading(false);
         })
         .catch(err => {
           console.log(err);
@@ -94,7 +123,6 @@ const ButtonSlider2 = () => {
     <TouchableOpacity
       // disabled={subscriptionStatus=='0'?false:true}
       onPress={() => {
-     
         if (subscriptionStatus == '1' && getRemainingData == '0.00') {
           PLATFORM_IOS
             ? Toast.show({
@@ -119,32 +147,31 @@ const ButtonSlider2 = () => {
       style={styles.container}>
       {isLoading && <ActivityLoader />}
 
-      <TouchableOpacity style={styles.button} 
-      // activeOpacity={1}
-      onPress={() => {
-       
-        if (subscriptionStatus == '1' && getRemainingData == '0.00') {
-          PLATFORM_IOS
-            ? Toast.show({
-                type: 'success',
-                text1: 'Your Subscription is Paused',
-              })
-            : ToastAndroid.show(
-                'Your Subscription is Paused',
-                ToastAndroid.SHORT,
-              );
-        } else {
-          if (
-            getChargerStatus.message == 'Online' ||
-            getChargerStatus.message == 'Charging'
-          ) {
-            handleComplete(1);
+      <TouchableOpacity
+        style={styles.button}
+        // activeOpacity={1}
+        onPress={() => {
+          if (subscriptionStatus == '1' && getRemainingData == '0.00') {
+            PLATFORM_IOS
+              ? Toast.show({
+                  type: 'success',
+                  text1: 'Your Subscription is Paused',
+                })
+              : ToastAndroid.show(
+                  'Your Subscription is Paused',
+                  ToastAndroid.SHORT,
+                );
           } else {
-            handleComplete(0);
+            if (
+              getChargerStatus.message == 'Online' ||
+              getChargerStatus.message == 'Charging'
+            ) {
+              handleComplete(1);
+            } else {
+              handleComplete(0);
+            }
           }
-        }
-      }}
-      >
+        }}>
         <Text style={[styles.swipeText]}>
           {getChargerStatus.message == 'Online' ||
           getChargerStatus.message == 'Charging'
@@ -234,7 +261,7 @@ const styles = StyleSheet.create({
     textAlignVertical: 'center',
     textAlign: 'center',
     marginRight: 10,
-    marginLeft:10,
+    marginLeft: 10,
     alignSelf: 'center',
     // left: DIMENSIONS.SCREEN_WIDTH * 0.41,
     //  zIndex: 2,

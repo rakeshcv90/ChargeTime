@@ -256,6 +256,7 @@ const DrawerNavigation = () => {
             }}
             name="EnergyOptions"
             component={HomeOne}
+            // component={EnergyOptions}
           />
         </>
       ) : (
@@ -552,7 +553,16 @@ const HomeStack = () => {
     </Stack.Navigator>
   );
 };
-
+// const EnergyOptions = () => {
+//   return (
+//     <Stack.Navigator screenOptions={screenOptions}>
+//       <Stack.Screen name="HomeOne" component={HomeOne} />
+//       <Stack.Screen name="DownGradeData" component={ForDownGrade} />
+//       <Stack.Screen name="PaymentGateWay" component={PaymentGateWay} />
+//       {/* <Stack.Screen name="PlanSummary" component={PlanSummary} /> */}
+//     </Stack.Navigator>
+//   );
+// };
 
 export default function Router() {
 

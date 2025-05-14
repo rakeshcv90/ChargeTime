@@ -50,14 +50,14 @@ const RemainingHorizontal = ({...props}) => {
       .get(`${API}/remainingusage/${getUserID}`)
       .then(res => {
         setTotalAllowed(res.data?.total_kwhunit);
-        if (parseInt(res.data?.kwh_unit_remaining) >= 0) {
+        if (parseInt(res.data?.kwh_unit_remaining) > 0) {
           remaingData = res.data?.kwh_unit_remaining;
           dispatch(setOverUsage(false));
           dispatch(setOverusageCount(0));
         } else {
           remaingData = res.data?.kwh_unit_overusage;
           dispatch(setOverUsage(true));
-          console.log(overusageCount, 'OVERUSAGECOUNT');
+   
           if (overusageCount < 1) {
             setModalVisible(true);
             dispatch(setOverusageCount(overusage + 1));

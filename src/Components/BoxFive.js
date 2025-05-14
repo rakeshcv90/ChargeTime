@@ -25,6 +25,7 @@ const BoxFive = ({data, purchageData, disabled}) => {
 
   const [message, setMessage] = useState('');
   const [modalVisible, setModalVisible] = useState(false);
+  const [modalVisible1, setModalVisible1] = useState(false);
 
   let payload = new FormData();
   const forDownUpgrade = async () => {
@@ -41,12 +42,10 @@ const BoxFive = ({data, purchageData, disabled}) => {
           },
         },
       );
+      console.log('response', response.data);
       if (response.data.status !== 'No') {
-        navigationRef.navigate('DownGradeData', {
-          dataOne: data,
-          purchageData: purchageData,
-          message: response.data.message,
-        });
+        setMessage(response.data.message);
+        setModalVisible1(true);
       } else {
         setMessage(response.data.message);
         setModalVisible(true);
@@ -81,6 +80,57 @@ const BoxFive = ({data, purchageData, disabled}) => {
                 style={[styles.button, styles.buttonClose]}
                 onPress={() => setModalVisible(!modalVisible)}>
                 <Text style={styles.textStyle}>OK</Text>
+              </Pressable>
+            </View>
+          </View>
+        </View>
+      </Modal>
+    );
+  };
+  const ShowModal1 = () => {
+    return (
+      <Modal
+        animationType="fade"
+        transparent={true}
+        visible={modalVisible1}
+        onRequestClose={() => {
+          setModalVisible(!modalVisible1);
+        }}>
+        <View style={styles.centeredView}>
+          <View style={styles.modalView}>
+            {/* <Text style={styles.modalText}>Error!!!</Text> */}
+            <Text
+              style={{
+                fontSize: 14,
+                fontWeight: '400',
+                color: COLORS.BLACK,
+              }}>
+              {message}
+            </Text>
+            <View
+              style={{
+                flexDirection: 'row',
+                justifyContent: 'space-betwee',
+                marginTop: 20,
+                alignItems: 'center',
+                justifyContent: 'flex-end',
+              }}>
+              <Pressable
+                style={[styles.button, styles.buttonClose]}
+                onPress={() => setModalVisible1(!modalVisible1)}>
+                <Text style={styles.textStyle}>Cancel</Text>
+              </Pressable>
+              <Pressable
+                style={[styles.button, styles.buttonClose, {marginLeft: 20}]}
+                onPress={() => {
+                  setModalVisible1(!modalVisible1)
+                  navigationRef.navigate('DownGradeData', {
+                    dataOne: data,
+                    purchageData: purchageData,
+                    message: message,
+                  });
+                }}>
+                <Text style={styles.textStyle}>Next</Text>
               </Pressable>
             </View>
           </View>
@@ -141,6 +191,7 @@ const BoxFive = ({data, purchageData, disabled}) => {
         </View>
       </View>
       <ShowModal />
+      <ShowModal1 />
     </>
   );
 };

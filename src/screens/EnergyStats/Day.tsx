@@ -150,9 +150,9 @@ const Day = (props: any) => {
       });
   };
   const nav = () => {
-    setModalVisible(!modalVisible);
+    dispatch(setOverModelView(false));
     // dispatch(setOverusageCount(overusage + 1));
-    navigationRef.navigate('HomeOne');
+    navigationRef.navigate('EnergyOptions');
   };
 
   return (
@@ -184,10 +184,25 @@ const Day = (props: any) => {
           </View>
 
           <View style={{marginHorizontal: 20}}>
-            {getGraphData.message != 'No usage data available' ? (
+            {/* {getGraphData.message != 'No usage data available' ? (
               <>
                 <Graph dataOne={getGraphData} />
               </>
+            ) : (
+              <Text
+                style={{
+                  color: COLORS.BLACK,
+                  fontWeight: 'bold',
+                  alignSelf: 'center',
+                  fontSize: 14,
+                  marginVertical: 10,
+                }}>
+                No Graph Data available
+              </Text>
+            )} */}
+            {getGraphData.message !== 'No usage data available' &&
+            getGraphData.message !== 'No daily usage data available' ? (
+              <Graph dataOne={getGraphData} />
             ) : (
               <Text
                 style={{
@@ -215,7 +230,7 @@ const Day = (props: any) => {
             ) : null}
           </View>
         </ScrollView>
-        <Modal
+        {/* <Modal
           animationType="fade"
           transparent={true}
           visible={overModelView}
@@ -226,14 +241,7 @@ const Day = (props: any) => {
           <View style={styles.centeredView}>
             <View style={styles.modalView}>
               <Text style={styles.modalText}>Overusage</Text>
-              {/* <AnimatedLottieView
-                source={{
-                  uri: 'https://assets6.lottiefiles.com/private_files/lf30_mf7q9oho.json',
-                }} // Replace with your animation file
-                autoPlay
-                loop
-                style={{width: 50, height: 50}}
-              /> */}
+        
               <Overusageimage width={130} height={130} viewBox="0 0 80 80" />
               <Text
                 style={{
@@ -264,7 +272,7 @@ const Day = (props: any) => {
               </View>
             </View>
           </View>
-        </Modal>
+        </Modal> */}
       </View>
       {/* {showSlider && <ButtonSlider dataTwo={getUserID}  />} */}
       {/* <ButtonSlider onToggle={handleToggle}  /> */}

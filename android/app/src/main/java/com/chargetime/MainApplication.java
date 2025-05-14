@@ -9,8 +9,17 @@ import com.facebook.react.defaults.DefaultNewArchitectureEntryPoint;
 import com.facebook.react.defaults.DefaultReactNativeHost;
 import com.facebook.soloader.SoLoader;
 import java.util.List;
-import android.os.Bundle; 
+
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.IntentFilter;
+import android.os.Build;
+import android.os.Bundle;
 import android.content.Intent;
+
+import androidx.annotation.Nullable;
+
+import com.apsl.versionnumber.RNVersionNumberPackage;
 
 public class MainApplication extends Application implements ReactApplication {
 
@@ -20,10 +29,11 @@ public class MainApplication extends Application implements ReactApplication {
         public boolean getUseDeveloperSupport() {
           return BuildConfig.DEBUG;
         }
-       @Override
-        protected String getJSBundleFile() {
-            return CodePush.getJSBundleFile();
-        }
+      @Override
+       protected String getJSBundleFile() {
+           return CodePush.getJSBundleFile();
+       }
+
         @Override
         protected List<ReactPackage> getPackages() {
           @SuppressWarnings("UnnecessaryLocalVariable")
@@ -67,4 +77,13 @@ public class MainApplication extends Application implements ReactApplication {
     }
     ReactNativeFlipper.initializeFlipper(this, getReactNativeHost().getReactInstanceManager());
   }
+
+    @Override
+    public Intent registerReceiver(@Nullable BroadcastReceiver receiver, IntentFilter filter) {
+        if (Build.VERSION.SDK_INT >= 34 && getApplicationInfo().targetSdkVersion >= 34) {
+            return super.registerReceiver(receiver, filter, Context.RECEIVER_EXPORTED);
+        } else {
+            return super.registerReceiver(receiver, filter);
+        }
+    }
 }

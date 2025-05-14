@@ -40,70 +40,7 @@ import {PLATFORM_IOS} from '../../constants/DIMENSIONS';
 const mobileW = Math.round(Dimensions.get('screen').width);
 const mobileH = Math.round(Dimensions.get('window').height);
 let loginData;
-// function MyTabBar({state, descriptors, navigation, position}) {
-//    loginData = state.routes[state.index].name;
 
-//   return (
-//     <View style={[styles.tabbar_part, styles.shadowProp]}>
-//       {state.routes.map((route, index) => {
-//         const {options} = descriptors[route.key];
-//         const label =
-//           options.tabBarLabel !== undefined
-//             ? options.tabBarLabel
-//             : options.title !== undefined
-//             ? options.title
-//             : route.name;
-
-//         const isFocused = state.index === index;
-
-//         const onPress = () => {
-//           const event = navigation.emit({
-//             type: 'tabPress',
-//             target: route.key,
-//             canPreventDefault: true,
-//           });
-
-//           if (!isFocused && !event.defaultPrevented) {
-//               navigation.navigate({name: route.name, merge: true});
-//           }
-
-//         };
-
-//         return (
-//           <TouchableOpacity
-//             key={index}
-//             onPress={onPress}
-//             style={{
-//               flex: 1,
-//               backgroundColor: isFocused ? '#B1D34F' : '#EEEEEE',
-//               paddingHorizontal: 12,
-//               paddingVertical: 13,
-//               // borderRadius:10,
-//               borderRadius: isFocused ? 10 : 0,
-//               shadowColor: 'rgba(0, 0, 0, 1)',
-//               shadowOffset: {
-//                 width: isFocused ? 6 : 0,
-//                 height: isFocused ? 4 : 0,
-//               },
-//               shadowOpacity: isFocused ? 1 : 0,
-//               shadowRadius: isFocused ? 4 : 0,
-//               elevation: Platform.OS === 'android' && isFocused ? 8 : 0,
-//             }}>
-//             <Text
-//               style={{
-//                 color: isFocused ? 'black' : 'black',
-//                 fontWeight: isFocused ? '600' : '400',
-//                 fontSize: 12,
-//                 textAlign: 'center',
-//               }}>
-//               {label}
-//             </Text>
-//           </TouchableOpacity>
-//         );
-//       })}
-//     </View>
-//   );
-// }
 
 export default function HomeOne(route) {
   const [isLoading, setIsLoading] = useState(true);
@@ -168,7 +105,7 @@ export default function HomeOne(route) {
 
     try {
       const response = await axios.get(`${API}/packagePlan/${getLocationID}`);
-console.log("VDCVFDSFdgdgdfgfd",getLocationID,response?.data)
+
       if (response?.data?.locations.length == 0) {
         setIsLoading(true);
         setShowPackage(true);
@@ -269,34 +206,7 @@ console.log("VDCVFDSFdgdgdfgfd",getLocationID,response?.data)
 
   return (
     <SafeAreaView style={{backgroundColor: COLORS.CREAM, flex: 1}}>
-      {/* {getPurchaseData.data != 'Package not found'
-        ? getPurchaseData.data.energy_plan.toLowerCase() ===
-            myTest.toLowerCase() && (
-            <View
-              style={{
-                position: 'absolute',
-                right: PLATFORM_IOS
-                  ? (mobileW * 25) / 100
-                  : (mobileW * 25) / 100,
-                alignSelf: 'flex-end',
-                top: PLATFORM_IOS ? (mobileH * -2) / 100 : (mobileH * -6) / 100,
-                // marginVertical:PLATFORM_IOS ? -20: -40,
-                zIndex: 5,
-              }}>
-              <AnimatedLottieView
-                source={{
-                  uri: 'https://assets3.lottiefiles.com/packages/lf20_OrMyddm62t.json',
-                }} // Replace with your animation file
-                autoPlay
-                loop
-                style={{
-                  width: (mobileW * 25) / 100,
-                  height: (mobileH * 25) / 100,
-                }}
-              />
-            </View>
-          )
-        : null} */}
+     
 
       <DrawerOpen top={PLATFORM_IOS ? 70 : 30} />
       <View style={[styles.charging_imag_style]}>

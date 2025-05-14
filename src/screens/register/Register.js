@@ -396,6 +396,7 @@ const styles = StyleSheet.create({
   dont_have_text: {
     fontSize: 14,
     fontWeight: '400',
+    color:'black',
   },
   sign_up: {
     fontSize: 15,

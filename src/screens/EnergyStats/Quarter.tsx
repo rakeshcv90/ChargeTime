@@ -62,7 +62,7 @@ const Quarter = (props: any) => {
           </View>
 
           <View style={{marginHorizontal: 20}}>
-            {getQuarterData.message != 'No usage data available' ? (
+            {getQuarterData.message != 'No usage data available'&& getQuarterData.message != 'No three-month usage data available'  ? (
               <Graph dataOne={getQuarterData} />
             ) : (
               <Text

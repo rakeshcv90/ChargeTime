@@ -770,10 +770,12 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: 'bold',
     marginBottom: 10,
+       color:'black'
   },
   selectedEmail: {
     fontSize: 16,
     marginBottom: 20,
+    color:'black'
   },
   modalButtonsContainer: {
     flexDirection: 'row',

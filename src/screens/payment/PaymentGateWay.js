@@ -153,7 +153,7 @@ export default function PaymentGateWay({navigation, route}) {
   const [modalVisible2, setModalVisible2] = useState(false);
   const [saveCardDetails, setSaveCardDetails] = useState();
   const [loader, setLoader] = useState(false);
-  const[desible,setDesible]=useState(false)
+  const [desible, setDesible] = useState(false);
 
   const dispatch = useDispatch();
 
@@ -176,9 +176,8 @@ export default function PaymentGateWay({navigation, route}) {
   };
 
   const handlePaymentSubmit = async () => {
-    setDesible(true)
+    setDesible(true);
     const id = await createToken({...cardtype, type: 'Card'});
-    console.log('TEST DATA', id);
 
     if (id?.error) {
       setModalVisible1(false);
@@ -189,15 +188,12 @@ export default function PaymentGateWay({navigation, route}) {
           })
         : ToastAndroid.show('Invalid Card!', ToastAndroid.SHORT);
     } else {
+      setModalVisible1(false);
       setLoader(true);
       let payload = new FormData();
-      // let exp_month = cardData?.validTill?.split('/')[0];
-      // let exp_year = cardData?.validTill?.split('/')[1];
+
       payload.append('kwh_unit', route.params.data.kwh);
-      // payload.append('card_number', cardData.cardNumber.replace(/\s/g, ''));
-      // payload.append('card_cvc', cardData.cvv);
-      // payload.append('card_exp_month', exp_month);
-      // payload.append('card_exp_year', exp_year);
+
       payload.append('item_details', getDataForPayment.package_name);
       payload.append('price', getDataForPayment.total_price);
       payload.append('price_stripe_id', getDataForPayment.price_stripe_id);
@@ -213,8 +209,8 @@ export default function PaymentGateWay({navigation, route}) {
             'Content-Type': 'multipart/form-data',
           },
         });
-        console.log('My Test123', response.data.status);
-        if (response.data.status == 'Same package already purchased') {
+
+        if (response?.data?.status == 'Same package already purchased') {
           PLATFORM_IOS
             ? Toast.show({
                 type: 'error',
@@ -224,14 +220,14 @@ export default function PaymentGateWay({navigation, route}) {
           setModalVisible1(false);
           setLoader(false);
           getDeviceIDData();
-          setDesible(false)
-        } else if (response.data.status == 'success') {
+          setDesible(false);
+        } else if (response?.data?.status == 'success') {
           setModalVisible(true);
           setModalVisible1(false);
           setLoader(false);
           setshow(false);
           setshow1(true);
-          setDesible(false)
+          setDesible(false);
         } else {
           PLATFORM_IOS
             ? Toast.show({
@@ -241,7 +237,7 @@ export default function PaymentGateWay({navigation, route}) {
             : ToastAndroid.show('Invalid Card Details !', ToastAndroid.SHORT);
           setModalVisible1(false);
           setLoader(false);
-          setDesible(false)
+          setDesible(false);
         }
         // if ((response.data.status = 'success')) {
         //   // handleAddCard(values)
@@ -272,12 +268,13 @@ export default function PaymentGateWay({navigation, route}) {
       } catch (err) {
         setLoader(false);
         console.log('test111111', err);
-        setDesible(false)
+        setDesible(false);
         if (err.response) {
           PLATFORM_IOS
             ? Toast.show({
                 type: 'error',
-                text1: 'Your plan has been canceled in Stripe and the Stripe ID could not be found.',
+                text1:
+                  'Your plan has been canceled in Stripe and the Stripe ID could not be found.',
               })
             : ToastAndroid.show(
                 'Your plan has been canceled in Stripe and the Stripe ID could not be found.',
@@ -305,14 +302,11 @@ export default function PaymentGateWay({navigation, route}) {
   };
   const handleCardSubmit = async () => {
     setLoader(true);
+    setModalVisible2(false);
     let payload = new FormData();
-    // let exp_month = cardData?.validTill?.split('/')[0];
-    // let exp_year = cardData?.validTill?.split('/')[1];
+
     payload.append('kwh_unit', route.params.data.kwh);
-    // payload.append('card_number', cardData.cardNumber.replace(/\s/g, ''));
-    // payload.append('card_cvc', cardData.cvv);
-    // payload.append('card_exp_month', exp_month);
-    // payload.append('card_exp_year', exp_year);
+
     payload.append('item_details', getDataForPayment.package_name);
     payload.append('price', getDataForPayment.total_price);
     payload.append('price_stripe_id', getDataForPayment.price_stripe_id);
@@ -345,7 +339,7 @@ export default function PaymentGateWay({navigation, route}) {
         setshow(false);
         setshow1(true);
       } else {
-        console.log('sdfdsfdsfsdfsdfsdfsdfds',response.data);
+        console.log('sdfdsfdsfsdfsdfsdfsdfds', response.data);
         PLATFORM_IOS
           ? Toast.show({
               type: 'success',
@@ -355,22 +349,6 @@ export default function PaymentGateWay({navigation, route}) {
         setModalVisible2(false);
         setLoader(false);
       }
-      // if ((response.data.status = 'success')) {
-      //   // handleAddCard(values)
-      //   setModalVisible(true);
-      //   setModalVisible2(false);
-      //   setLoader(false);
-      //   setshow(false);
-      //   setshow1(true);
-      // } else if ((response.data.status=='Same package allready purchased')) {
-      //   PLATFORM_IOS
-      //     ? Toast.show({
-      //         type: 'success',
-      //         text1: response.data.message,
-      //       })
-      //     : ToastAndroid.show(response.data.message, ToastAndroid.SHORT);
-      //   setModalVisible2(false);
-      //   setLoader(false);
     } catch (err) {
       console.log('TEsting Data', err);
       setLoader(false);
@@ -387,7 +365,6 @@ export default function PaymentGateWay({navigation, route}) {
         setModalVisible1(false);
         setLoader(false);
       } else {
-        console.log('test111111', err.response.data);
         setModalVisible2(false);
         setLoader(false);
       }
@@ -400,16 +377,6 @@ export default function PaymentGateWay({navigation, route}) {
         setModalVisible(false);
 
         if (res.data.status == 'True') {
-          // dispatch(setDeviceId(res.data.message));
-          // if (route.params.purchageData == 'DOWNGRADE') {
-          //   navigationRef.navigate('HomeOne');
-          // }
-          // if (route.params.purchageData == 'DOWNGRADE') {
-          //   dispatch(setDeviceId(res.data.message));
-          //   getPlanCurrent();
-          //   getAllPurchasePlan();
-          //   navigationRef.navigate('Home');
-          // }
           navigationRef.navigate('DrawerStack');
           dispatch(setDeviceId(res.data.message));
           getPlanCurrent();
@@ -419,15 +386,6 @@ export default function PaymentGateWay({navigation, route}) {
           getAllPurchasePlan();
           dispatch(setDeviceId(res.data.message));
           navigationRef.navigate('DrawerStack');
-
-          // fetchGraphData(res.data?.user_id);
-          // fetchWeekGraphData(res.data?.user_id);
-          // fetchMonthGraphData(res.data?.user_id);
-          // fetchQuarterGraphData(res.data.user_id);
-          // fetchYearGraphData(res.data?.user_id);
-          // fetchBoxTwoDashboardData(res.data?.user_id);
-          // fetchStatusdata(res.data?.user_id);
-          // getPlanCurrent(res.data?.user_id);
         }
       })
       .catch(err => {
@@ -448,7 +406,7 @@ export default function PaymentGateWay({navigation, route}) {
               subCancelStatus == 2 ? 2 : subCancelStatus == 4 ? 4 : 0,
             ),
           );
-          dispatch(setPackageStatus(false))
+          dispatch(setPackageStatus(false));
           dispatch(setBoxTwoDataForDashboard({data: 'Package not found'}));
           dispatch(setPurchaseData({data: 'Package not found'}));
         } else {
@@ -533,7 +491,7 @@ export default function PaymentGateWay({navigation, route}) {
     }
   };
   const coupenDetail = data => {
-   // console.log("DSDSD444444",route.params.details.locations[0])
+    // console.log("DSDSD444444",route.params.details.locations[0])
     if (data == null) {
       setCoupenError('Enter Coupon Code');
       setCoupenStates(true);
@@ -554,7 +512,6 @@ export default function PaymentGateWay({navigation, route}) {
           if (res.data.couponstatus == 'true') {
             getVoucherDetails(res.data.coupon_id);
             setCoupencode(res.data.coupon_id);
-            
           } else {
             setCoupenError('Coupon Expired/Invalid!');
             setCoupenStates(true);
@@ -637,58 +594,25 @@ export default function PaymentGateWay({navigation, route}) {
       setModalVisible2(true);
     }
   };
-  // const updatePacakgeData = async () => {
-  //   try {
-  //     const response = await axios.get(
-  //       `${API}/packagePlan/${route.params.data.id}`,
-  //     );
 
-  //     if (response?.data?.locations.length == 0) {
-  //       dispatch(setBasePackage([]));
-  //     } else {
-  //       dispatch(setBasePackage(response.data.locations));
-  //       const datafilter = response.data.locations.filter(item => {
-  //         return item.package_name == route.params.data.package_name;
-  //       });
-  //       console.log('Location Details', datafilter);
-  //       if (datafilter[0].coupon_id != undefined) {
-  //         // getVoucherDetails(datafilter[0].coupon_id);
-  //         // setCoupencode(datafilter[0].coupon_id);
-  //         setshow(true);
-  //         setshow1(false);
-  //       } else {
-  //         PLATFORM_IOS
-  //           ? Toast.show({
-  //               type: 'error',
-  //               text1: 'Coupon Not Available',
-  //             })
-  //           : ToastAndroid.show('Coupon Not Available', ToastAndroid.SHORT);
-  //       }
-  //     }
-  //   } catch (error) {
-  //     console.error('Error fetching data:', error);
-  //   }
-  // };
   const getVoucherDetails = data => {
     axios
       .get(`${API}/couponret/${data}`)
       .then(res => {
-       console.log("FSDFSFSFSFSFS",res?.data)
-        if(res?.data?.valid==true){
+        console.log('FSDFSFSFSFSFS', res?.data);
+        if (res?.data?.valid == true) {
           setCoupenError('Coupon Applied!');
           setCoupenStates(true);
           setColor(true);
           setvoucherStatus(res.data.valid);
-        }else{
+        } else {
           setCoupenError('Coupon Expired/Invalid!');
           setCoupenStates(true);
           setColor(false);
           setvoucherStatus(res.data.valid);
         }
-        
-        //
 
-       
+        //
       })
       .catch(err => {
         console.log('ffffffffff', err);
@@ -699,6 +623,7 @@ export default function PaymentGateWay({navigation, route}) {
       <View style={{marginHorizontal: 20, paddingTop: 20}}>
         <Text style={styles.complete_profile}>Payment Details</Text>
       </View>
+
       <ScrollView
         keyboardDismissMode="interactive"
         showsVerticalScrollIndicator={false}
@@ -706,7 +631,6 @@ export default function PaymentGateWay({navigation, route}) {
         <KeyboardAvoidingView
           behavior={PLATFORM_IOS ? 'position' : undefined}
           contentContainerStyle={{flexGrow: 1}}>
-          {/* {loader && <ActivityLoader />} */}
           {loader ? <ActivityLoader /> : ''}
 
           <View style={styles.centeredView}>
@@ -1193,7 +1117,6 @@ export default function PaymentGateWay({navigation, route}) {
 
                     <CardField
                       postalCodeEnabled={false}
-                    
                       placeholders={{
                         number: '4242 4242 4242 4242',
                         cvc: 'CVC',
@@ -1204,7 +1127,7 @@ export default function PaymentGateWay({navigation, route}) {
                         borderColor: COLORS.HALFBLACK,
                         borderWidth: 1,
                         borderRadius: 10,
-                        placeholderColor:COLORS.HALFBLACK          
+                        placeholderColor: COLORS.HALFBLACK,
                       }}
                       style={{
                         width: '100%',
@@ -1387,7 +1310,7 @@ export default function PaymentGateWay({navigation, route}) {
           <View style={styles.centeredView}>
             <View style={styles.modalView}>
               <Text style={styles.modalText}>Confirm Payment</Text>
-         
+
               <ImageBackground
                 source={require('../../../assets/images/visaCard.png')}
                 resizeMode="contain"
@@ -1474,8 +1397,7 @@ export default function PaymentGateWay({navigation, route}) {
                     {marginHorizontal: 15},
                   ]}
                   disabled={desible}
-                 onPress={handlePaymentSubmit}
-                  >
+                  onPress={handlePaymentSubmit}>
                   <Text style={styles.textStyle}>Submit</Text>
                 </TouchableOpacity>
                 {/* </View> */}

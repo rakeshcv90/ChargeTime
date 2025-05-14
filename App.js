@@ -16,7 +16,7 @@ import axios from 'axios';
 import {API} from './src/api/API';
 import {CommonActions} from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import codePush from 'react-native-code-push';
+// import codePush from 'react-native-code-push';
 import {View, Text, ActivityIndicator} from 'react-native';
 
 import {
@@ -35,9 +35,12 @@ import {
 import {Modal, PermissionsAndroid} from 'react-native';
 import {StripeProvider} from '@stripe/stripe-react-native';
 import {persistor} from './src/redux/store';
+import {apiCalls} from './src/api/apiCalls';
+
+import { NativeModules, Platform } from 'react-native';
 export const navigationRef = createNavigationContainerRef();
 
-let codePushOptions = {checkFrequency: codePush.CheckFrequency.MANUAL};
+// let codePushOptions = {checkFrequency: codePush.CheckFrequency.MANUAL};
 
 const App = ({navigation}) => {
   const {maintainence} = useSelector(state => state);
@@ -52,7 +55,7 @@ const App = ({navigation}) => {
   //appcenter codepush release-react -a rakeshrao/TRO-ChargeTimeAndroid -d Production
 
   // clear data from code push appcenter codepush deployment clear -a thefitnessandworkout-gmail.com/FitmeAndroid Production
-const [publishableKey, setPublishableKey] = useState('')
+  const [publishableKey, setPublishableKey] = useState('');
 
   useEffect(() => {
     getSTRIPPKEY();
@@ -60,7 +63,7 @@ const [publishableKey, setPublishableKey] = useState('')
 
   const getSTRIPPKEY = async () => {
     const key = await apiCalls.getStripeKey();
-    setPublishableKey(key)
+    setPublishableKey(key);
   };
   // console.log('STRI{ KEY', publishableKey);
 
@@ -78,19 +81,20 @@ const [publishableKey, setPublishableKey] = useState('')
         token = await messaging().getToken();
       } else {
         const authStatus = await messaging().requestPermission();
+        
         const enabled =
           authStatus === messaging.AuthorizationStatus.AUTHORIZED ||
           authStatus === messaging.AuthorizationStatus.PROVISIONAL;
 
         if (enabled) {
-          // await messaging().registerDeviceForRemoteMessages();
+          await messaging().registerDeviceForRemoteMessages();
           token = await messaging().getToken();
         }
         await notifee.requestPermission();
       }
 
       if (token?.length > 0) {
-        console.log('FCM....aaaaa', token);
+        console.log(' ', token);
         setToken(token);
         messaging().setBackgroundMessageHandler(async remoteMessage => {
           onDisplayNotification(remoteMessage);
@@ -271,7 +275,7 @@ const [publishableKey, setPublishableKey] = useState('')
         axios
           .get(`${API}/remainingusage/${getUserID}`)
           .then(res => {
-            if (parseInt(res.data?.kwh_unit_remaining) >= 0) {
+            if (parseInt(res.data?.kwh_unit_remaining) > 0) {
               remaingData = res.data?.kwh_unit_remaining;
               dispatch(setRemainingData(res.data?.kwh_unit_remaining));
               dispatch(setOverUsage(false));
@@ -280,7 +284,7 @@ const [publishableKey, setPublishableKey] = useState('')
               dispatch(setRemainingData(res.data?.kwh_unit_overusage));
               dispatch(setOverUsage(true));
             }
-            console.log('first', res.data);
+         
           })
           .catch(err => {
             console.log(err);
@@ -499,91 +503,91 @@ const [publishableKey, setPublishableKey] = useState('')
       return unsubscribe;
     }
   }, []);
-  useEffect(() => {
-    // codePush.sync(
-    //   {
-    //     updateDialog: true,
-    //     installMode: codePush.InstallMode.IMMEDIATE,
-    //     // installMode: codePush.InstallMode.MANUAL,
-    //   },
-    //   codePushStatusDidChange,
-    //   codePushDownloadDidProgress,
-    // );
-  }, []);
-  const codePushStatusDidChange = syncStatus => {
-    switch (syncStatus) {
-      case codePush.SyncStatus.CHECKING_FOR_UPDATE:
-        console.log('Checking for update.');
-        break;
-      case codePush.SyncStatus.DOWNLOADING_PACKAGE:
-        console.log('Download packaging....');
-        break;
-      case codePush.SyncStatus.AWAITING_USER_ACTION:
-        console.log('Awaiting user action....');
-        break;
-      case codePush.SyncStatus.INSTALLING_UPDATE:
-        console.log('Installing update');
-        setProgress(false);
-        break;
-      case codePush.SyncStatus.UP_TO_DATE:
-        console.log('codepush status up to date');
-        break;
-      case codePush.SyncStatus.UPDATE_IGNORED:
-        console.log('update cancel by user');
-        setProgress(false);
-        break;
-      case codePush.SyncStatus.UPDATE_INSTALLED:
-        console.log('Update installed and will be applied on restart.');
-        setProgress(false);
-        break;
-      case codePush.SyncStatus.UNKNOWN_ERROR:
-        console.log('An unknown error occurred');
-        setProgress(false);
-        break;
-    }
-  };
-  const codePushDownloadDidProgress = progress => {
-    setProgress(progress);
-  };
-  const showProgressView = () => {
-    return (
-      <Modal visible={true} transparent>
-        <View
-          style={{
-            flex: 1,
-            backgroundColor: 'rgba(0,0,0,0.8)',
-            justifyContent: 'center',
-            alignItems: 'center',
-          }}>
-          <View
-            style={{
-              backgroundColor: 'white',
-              borderRadius: 8,
-              padding: 16,
-            }}>
-            <Text style={{color: 'black'}}>In Progress.......</Text>
+  // useEffect(() => {
+  //   codePush.sync(
+  //     {
+  //       updateDialog: true,
+  //       installMode: codePush.InstallMode.IMMEDIATE,
+  //       // installMode: codePush.InstallMode.MANUAL,
+  //     },
+  //     codePushStatusDidChange,
+  //     codePushDownloadDidProgress,
+  //   );
+  // }, []);
+  // const codePushStatusDidChange = syncStatus => {
+  //   switch (syncStatus) {
+  //     case codePush.SyncStatus.CHECKING_FOR_UPDATE:
+  //       console.log('Checking for update.');
+  //       break;
+  //     case codePush.SyncStatus.DOWNLOADING_PACKAGE:
+  //       console.log('Download packaging....');
+  //       break;
+  //     case codePush.SyncStatus.AWAITING_USER_ACTION:
+  //       console.log('Awaiting user action....');
+  //       break;
+  //     case codePush.SyncStatus.INSTALLING_UPDATE:
+  //       console.log('Installing update');
+  //       setProgress(false);
+  //       break;
+  //     case codePush.SyncStatus.UP_TO_DATE:
+  //       console.log('codepush status up to date');
+  //       break;
+  //     case codePush.SyncStatus.UPDATE_IGNORED:
+  //       console.log('update cancel by user');
+  //       setProgress(false);
+  //       break;
+  //     case codePush.SyncStatus.UPDATE_INSTALLED:
+  //       console.log('Update installed and will be applied on restart.');
+  //       setProgress(false);
+  //       break;
+  //     case codePush.SyncStatus.UNKNOWN_ERROR:
+  //       console.log('An unknown error occurred');
+  //       setProgress(false);
+  //       break;
+  //   }
+  // };
+  // const codePushDownloadDidProgress = progress => {
+  //   setProgress(progress);
+  // };
+  // const showProgressView = () => {
+  //   return (
+  //     <Modal visible={true} transparent>
+  //       <View
+  //         style={{
+  //           flex: 1,
+  //           backgroundColor: 'rgba(0,0,0,0.8)',
+  //           justifyContent: 'center',
+  //           alignItems: 'center',
+  //         }}>
+  //         <View
+  //           style={{
+  //             backgroundColor: 'white',
+  //             borderRadius: 8,
+  //             padding: 16,
+  //           }}>
+  //           <Text style={{color: 'black'}}>In Progress.......</Text>
 
-            <View style={{alignItems: 'center'}}>
-              <Text style={{marginTop: 16, color: 'black'}}>{`${(
-                Number(progress?.receivedBytes) / 1048576
-              ).toFixed(2)}MB/${(
-                Number(progress?.totalBytes) / 1048576
-              ).toFixed(2)}`}</Text>
-              <ActivityIndicator style={{marginVertical: 8}} color={'blue'} />
-              <Text style={{color: 'black'}}>
-                {(
-                  (Number(progress?.receivedBytes) /
-                    Number(progress?.totalBytes)) *
-                  100
-                ).toFixed(0)}
-                %
-              </Text>
-            </View>
-          </View>
-        </View>
-      </Modal>
-    );
-  };
+  //           <View style={{alignItems: 'center'}}>
+  //             <Text style={{marginTop: 16, color: 'black'}}>{`${(
+  //               Number(progress?.receivedBytes) / 1048576
+  //             ).toFixed(2)}MB/${(
+  //               Number(progress?.totalBytes) / 1048576
+  //             ).toFixed(2)}`}</Text>
+  //             <ActivityIndicator style={{marginVertical: 8}} color={'blue'} />
+  //             <Text style={{color: 'black'}}>
+  //               {(
+  //                 (Number(progress?.receivedBytes) /
+  //                   Number(progress?.totalBytes)) *
+  //                 100
+  //               ).toFixed(0)}
+  //               %
+  //             </Text>
+  //           </View>
+  //         </View>
+  //       </View>
+  //     </Modal>
+  //   );
+  // };
   // const setLoginMessage = async () => {
   //   AsyncStorage.setItem('LoginMessage', 'null');
   // };
@@ -629,6 +633,7 @@ const [publishableKey, setPublishableKey] = useState('')
         <Router />
       </NavigationContainer>
       <Maintainence isVisible={maintainence} />
+   
       <StripeProvider
         publishableKey={publishableKey}
         merchantIdentifier="merchant.identifier" // required for Apple Pay

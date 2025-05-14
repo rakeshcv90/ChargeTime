@@ -77,7 +77,8 @@ const Week = (props: any) => {
           </View>
 
           <View style={{marginHorizontal: 20}}>
-            {getWeekGraphData.message != 'No usage data available' ? (
+            {getWeekGraphData.message != 'No usage data available' &&
+            getWeekGraphData.message !== 'No weekly usage data available' ? (
               <Graph dataOne={getWeekGraphData} />
             ) : (
               <Text
@@ -91,7 +92,7 @@ const Week = (props: any) => {
                 No Graph Data available
               </Text>
             )}
-                 {getPurchaseData?.data != 'Package not found' &&
+            {getPurchaseData?.data != 'Package not found' &&
             getPurchaseData?.data?.old_subscription_status != 'cancel' ? (
               <BoxTwo data={getBoxTwoDataForDashboard.data} />
             ) : null}

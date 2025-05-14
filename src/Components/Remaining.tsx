@@ -30,7 +30,6 @@ import AnimatedLottieView from 'lottie-react-native';
 import {useFocusEffect} from '@react-navigation/native';
 import {navigationRef} from '../../App';
 
-
 const Remaining = ({...props}) => {
   const dispatch = useDispatch();
   const [totalAllowed, setTotalAllowed] = useState(0);
@@ -53,27 +52,26 @@ const Remaining = ({...props}) => {
     axios
       .get(`${API}/remainingusage/${getUserID}`)
       .then(res => {
+ 
         setTotalAllowed(res.data?.total_kwhunit);
-        if (parseInt(res.data?.kwh_unit_remaining) >=0) {
+        if (parseInt(res.data?.kwh_unit_remaining) > 0) {
           remaingData = res.data?.kwh_unit_remaining;
           dispatch(setRemainingData(res.data?.kwh_unit_remaining));
-          //dispatch(setOverUsage(false));
-          // dispatch(setOverusageCount(0));
-          // dispatch(setOverModelView(false));
+          dispatch(setOverUsage(false));
+          dispatch(setOverusageCount(0));
+          dispatch(setOverModelView(false));
         } else {
           remaingData = res.data?.kwh_unit_overusage;
           dispatch(setRemainingData(res.data?.kwh_unit_overusage));
-         // dispatch(setOverUsage(true));
-          // setModalVisible(true)
-          // dispatch(setOverModelView(true));
-    
+          dispatch(setOverUsage(true));
+          setModalVisible(true);
+          dispatch(setOverModelView(true));
+
           if (overusageCount < 1) {
             setModalVisible(true);
             dispatch(setOverusageCount(overusage + 1));
           }
         }
-
-      
       })
       .catch(err => {
         console.log(err);
@@ -160,12 +158,12 @@ const Remaining = ({...props}) => {
         }}>
         <Text
           style={{
-            padding: 5,
+            padding: 0,
             fontWeight: '600',
             fontSize: 12,
             lineHeight: 14,
             textTransform: 'capitalize',
-            color: overusage ? COLORS.BLACK  : COLORS.BLACK,
+            color: overusage ? COLORS.BLACK : COLORS.BLACK,
             position: 'absolute',
             top: 10,
             left: 10,
@@ -180,16 +178,14 @@ const Remaining = ({...props}) => {
             alignSelf: 'center',
             zIndex: 1,
           }}>
-
           <Text
             style={{
               fontWeight: '800',
               fontSize: 16,
               lineHeight: 20,
-              color: overusage ? COLORS.BLACK  : COLORS.BLACK,
+              color: overusage ? COLORS.BLACK : COLORS.BLACK,
             }}>
             {' '}
-
             {getRemainingData ? getRemainingData : 0}
             {' kWh'}
           </Text>
@@ -203,24 +199,27 @@ const Remaining = ({...props}) => {
             {overusage ? 'Units Used' : 'Units Left To Be Used'}
           </Text>
         </View>
+
         {overusage ? (
           <>
-          <View
-            // colors={['#AFD35E', '#AFD35E']}
-            // start={{x: 0, y: 0}}
-            // end={{x: 0, y: 1}}
-            style={{
-              width: '100%',
-              backgroundColor: PLATFORM_IOS ? 'rgba(248, 84, 84, 1)' : 'rgba(248, 98, 98, 1)',
-              // borderRadius: 10,
-            // height: `${(getRemainingData / totalAllowed) * 100 - 20}%`,'
-            height: `${100 - 20}%`,
-       
-              // height: `${30 - 20}%`,
-             // zIndex: -1,
-              // flexDirection: 'column-reverse',
-            }}
-          />
+            <View
+              // colors={['#AFD35E', '#AFD35E']}
+              // start={{x: 0, y: 0}}
+              // end={{x: 0, y: 1}}
+              style={{
+                width: '100%',
+                backgroundColor: PLATFORM_IOS
+                  ? 'rgba(248, 84, 84, 1)'
+                  : 'rgba(248, 98, 98, 1)',
+                // borderRadius: 10,
+                // height: `${(getRemainingData / totalAllowed) * 100 - 20}%`,'
+                height: `${100 - 20}%`,
+
+                // height: `${30 - 20}%`,
+                // zIndex: -1,
+                // flexDirection: 'column-reverse',
+              }}
+            />
             <AnimatedLottieView
               source={require('../../assets/red_wave.json')} // Replace with your animation file
               autoPlay
@@ -241,20 +240,20 @@ const Remaining = ({...props}) => {
           </>
         ) : (
           <>
-          <View
-            // colors={['#AFD35E', '#AFD35E']}
-            // start={{x: 0, y: 0}}
-            // end={{x: 0, y: 1}}
-            style={{
-              width: '100%',
-              backgroundColor: '#AFD35E',
-              // borderRadius: 10,
-              height: `${(getRemainingData / totalAllowed) * 100 - 20}%`,
-              // height: `${30 - 20}%`,
-              zIndex: -1,
-              // flexDirection: 'column-reverse',
-            }}
-          />
+            <View
+              // colors={['#AFD35E', '#AFD35E']}
+              // start={{x: 0, y: 0}}
+              // end={{x: 0, y: 1}}
+              style={{
+                width: '100%',
+                backgroundColor: '#AFD35E',
+                // borderRadius: 10,
+                height: `${(getRemainingData / totalAllowed) * 100 - 20}%`,
+                // height: `${30 - 20}%`,
+                zIndex: -1,
+                // flexDirection: 'column-reverse',
+              }}
+            />
             <AnimatedLottieView
               source={require('../../assets/wave.json')} // Replace with your animation file
               autoPlay

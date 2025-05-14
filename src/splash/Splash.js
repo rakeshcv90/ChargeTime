@@ -2,15 +2,19 @@ import React, {useEffect, useState, useRef} from 'react';
 import {View, Image, StyleSheet, Animated} from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {navigationRef} from '../../App';
-import {DIMENSIONS} from '../constants/DIMENSIONS';
+import {DIMENSIONS, PLATFORM_IOS} from '../constants/DIMENSIONS';
 import Introduction from './Introduction';
 import {BackHandler} from 'react-native';
 import COLORS from '../constants/COLORS';
 import {useSelector} from 'react-redux';
-
+import VersionNumber from 'react-native-version-number';
+import {API} from '../api/API';
+import axios from 'axios';
+import ActivityLoader from '../Components/ActivityLoader';
 const Splash = () => {
   const backHandler = useRef(null);
   const {isAuthorized} = useSelector(state => state);
+   const [forLoading, setForLoading] = useState(false);
   const [imageSource, setImageSource] = useState(
     require('../../assets/unnamed.png'),
   );
@@ -30,6 +34,7 @@ const Splash = () => {
   const checkFirstTime = async () => {
     try {
       const isFirstTime = await AsyncStorage.getItem('isFirstTime');
+      const userId = await AsyncStorage.getItem('userId');
       if (isFirstTime === null || isFirstTime == undefined) {
         setTimeout(async () => {
           await AsyncStorage.setItem('isFirstTime', 'true');
@@ -42,7 +47,7 @@ const Splash = () => {
             ? setTimeout(async () => {
                 navigationRef.navigate('Login');
               }, 2000)
-            : navigationRef.navigate('DrawerStack');
+            : sendVersionCOde(userId); //navigationRef.navigate('DrawerStack');console.log('fdfdfdfdfd', isAuthorized,userId);
         }
       }
     } catch (error) {
@@ -57,7 +62,29 @@ const Splash = () => {
   ];
 
   const scaleValue = useRef(new Animated.Value(0)).current;
-
+  const sendVersionCOde = async data => {
+    setForLoading(true);
+    try {
+      const res = await axios(`${API}/version/insert`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        data: {
+          id: data,
+          version: VersionNumber.appVersion,
+        },
+      });
+      setForLoading(false);
+       console.log("ZXcxzcxzczxczx",VersionNumber.appVersion,)
+      navigationRef.navigate('DrawerStack')
+     
+    } catch (err) {
+      setForLoading(false);
+      console.log('Error-1345', err);
+    }
+    // navigationRef.navigate('DrawerStack')
+  };
   return (
     <>
       <View style={styles.container}>
@@ -71,6 +98,7 @@ const Splash = () => {
           ]}
           source={imageSource}
         />
+            {forLoading ? <ActivityLoader /> : ''}
         <Image
           source={require('../../assets/images/splash_screen_bottom.png')}
           style={styles.splash_botm_image}
