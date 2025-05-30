@@ -11,7 +11,7 @@ import VersionNumber from 'react-native-version-number';
 import {API} from '../api/API';
 import axios from 'axios';
 import ActivityLoader from '../Components/ActivityLoader';
-const Splash = () => {
+const Splash = ({navigation}) => {
   const backHandler = useRef(null);
   const {isAuthorized} = useSelector(state => state);
    const [forLoading, setForLoading] = useState(false);
@@ -36,19 +36,20 @@ const Splash = () => {
       const isFirstTime = await AsyncStorage.getItem('isFirstTime');
       const userId = await AsyncStorage.getItem('userId');
       if (isFirstTime === null || isFirstTime == undefined) {
+        console.log("DSdssddsddds")
         setTimeout(async () => {
-          await AsyncStorage.setItem('isFirstTime', 'true');
-          navigationRef.navigate('Introduction');
+          // await AsyncStorage.setItem('isFirstTime', 'true');
+          navigation.navigate('Introduction');
         }, 3000);
       } else {
         //navigationRef.navigate('Login');
-        {
+        console.log("eeeeeeeeeeeeee")
           !isAuthorized
             ? setTimeout(async () => {
                 navigationRef.navigate('Login');
               }, 2000)
             : sendVersionCOde(userId); //navigationRef.navigate('DrawerStack');console.log('fdfdfdfdfd', isAuthorized,userId);
-        }
+        
       }
     } catch (error) {
       console.log('Error checking first time:', error);
@@ -76,7 +77,7 @@ const Splash = () => {
         },
       });
       setForLoading(false);
-       console.log("ZXcxzcxzczxczx",VersionNumber.appVersion,)
+      //  console.log("ZXcxzcxzczxczx",VersionNumber.appVersion,)
       navigationRef.navigate('DrawerStack')
      
     } catch (err) {
