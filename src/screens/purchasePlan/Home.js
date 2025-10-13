@@ -50,8 +50,13 @@ export default function Home(route) {
   const [changePage, setChangePage] = useState('');
   const Tab = createMaterialTopTabNavigator();
 
-  const {getLocationID, getBasePackage, getPackageStatus, getMyLocation} =
-    useSelector(state => state);
+  // const {getLocationID, getBasePackage, getPackageStatus, getMyLocation} =
+  //   useSelector(state => state);
+
+    const getLocationID = useSelector(state => state.getLocationID);
+const getBasePackage = useSelector(state => state.getBasePackage);
+const getPackageStatus = useSelector(state => state.getPackageStatus);
+const getMyLocation = useSelector(state => state.getMyLocation);
 
   const [apiData, setApiData] = useState(getBasePackage || []);
 

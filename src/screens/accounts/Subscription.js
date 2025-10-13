@@ -3,7 +3,6 @@ import {
   Text,
   StyleSheet,
   TouchableOpacity,
-  SafeAreaView,
   ScrollView,
   ToastAndroid,
   Image,
@@ -12,21 +11,21 @@ import {
   Modal,
   Pressable,
 } from 'react-native';
-import React, {useEffect, useState} from 'react';
-import {useDispatch, useSelector} from 'react-redux';
+import React, { useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import HorizontalLine from '../../Components/HorizontalLine';
 import Header from '../../Components/Header';
 
 import COLORS from '../../constants/COLORS';
 import SubBoxOne from '../../Components/SubBoxOne';
 import SubBoxTwo from '../../Components/SubBoxTwo';
-import {PLATFORM_IOS} from '../../constants/DIMENSIONS';
+import { PLATFORM_IOS } from '../../constants/DIMENSIONS';
 import WaveAnimation from '../../Components/WaveAnimation';
-import {DIMENSIONS} from '../../constants/DIMENSIONS';
+import { DIMENSIONS } from '../../constants/DIMENSIONS';
 import PriceValiditySubs from '../../Components/PriceValiditySubs';
-import {Toast} from 'react-native-toast-message/lib/src/Toast';
-
-import {API} from '../../api/API';
+import { Toast } from 'react-native-toast-message/lib/src/Toast';
+import { CommonActions } from '@react-navigation/native';
+import { API } from '../../api/API';
 import {
   getCurrentPlan as UpdatedCurrentPlan,
   setPackageStatus,
@@ -35,23 +34,25 @@ import {
   setSubcriptionCancelStatus,
   setSubscriptionStatus,
 } from '../../redux/action';
-import {userSubsData} from '../../redux/action';
+import { userSubsData } from '../../redux/action';
 
 import AnimatedLottieView from 'lottie-react-native';
-import {navigationRef} from '../../../App';
+import { navigationRef } from '../../../App';
 import axios from 'axios';
 import Remaining from '../../Components/Remaining';
 import ActivityLoader from '../../Components/ActivityLoader';
 import RemainingHorizontal from '../../Components/RemainingHorizontal';
 import PauseModal from '../../Components/PauseModal';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 const mobileW = Math.round(Dimensions.get('screen').width);
-const Subscription = ({navigation, route}) => {
+const Subscription = ({ navigation, route }) => {
   const getUserID = useSelector(state => state.getUserID);
   const getPurchaseData = useSelector(state => state.getPurchaseData);
-  const {getChargerStatus, getDeviceID, subscriptionStatus} = useSelector(
-    state => state,
-  );
+const getChargerStatus = useSelector(state => state.getChargerStatus);
+const getDeviceID = useSelector(state => state.getDeviceID);
+const subscriptionStatus = useSelector(state => state.subscriptionStatus);
+const getPackageStatus = useSelector(state => state.getPackageStatus);
   const getSubscriptionCancelStatus = useSelector(
     state => state.getSubscriptionCancelStatus,
   );
@@ -70,25 +71,10 @@ const Subscription = ({navigation, route}) => {
   const dispatch = useDispatch();
   useEffect(() => {
     getPlanCurrent();
-    getSubscriptionStatus1();
-    // getSubscription()
+    // getSubscriptionStatus1();
+   
   }, []);
 
-  // const getSubscription = () => {
-  //   axios
-  //     .get(`${API}/planstatuspauseresume/${getUserID}`)
-  //     .then(res => {
-  //       dispatch(setSubscriptionStatus(res.data.PlanStatus));
-  //       if (res.data.PlanStatus == '0' || res.data.PlanStatus == null) {
-  //         setText('Pause Subscription');
-  //       } else {
-  //         setText('Resume Subscription');
-  //       }
-  //     })
-  //     .catch(err => {
-  //       console.log('1111144444', err);
-  //     });
-  // };
 
   const user_id = getUserID;
 
@@ -170,7 +156,7 @@ const Subscription = ({navigation, route}) => {
             ),
           );
           dispatch(setPackageStatus(false));
-          dispatch(setPurchaseData({data: 'Package not found'}));
+          dispatch(setPurchaseData({ data: 'Package not found' }));
         } else {
           dispatch(
             setSubcriptionCancelStatus(
@@ -187,6 +173,7 @@ const Subscription = ({navigation, route}) => {
           );
           dispatch(setPurchaseData(res?.data));
           setGetData(res.data);
+    
           dispatch(setPackageStatus(true));
         }
       })
@@ -204,7 +191,8 @@ const Subscription = ({navigation, route}) => {
         visible={modalVisible}
         onRequestClose={() => {
           setModalVisible(!modalVisible);
-        }}>
+        }}
+      >
         <View style={styles.centeredView}>
           <View style={styles.modalView}>
             <Text style={styles.modalText}>Cancel Subscription</Text>
@@ -214,14 +202,15 @@ const Subscription = ({navigation, route}) => {
               }} // Replace with your animation file
               autoPlay
               loop
-              style={{width: 50, height: 50}}
+              style={{ width: 50, height: 50 }}
             />
             <Text
               style={{
                 fontSize: 14,
                 fontWeight: '400',
                 color: COLORS.BLACK,
-              }}>
+              }}
+            >
               Do you really want to cancel your Subscription
             </Text>
             <Text
@@ -230,7 +219,8 @@ const Subscription = ({navigation, route}) => {
                 fontWeight: '400',
                 color: COLORS.RED,
                 marginVertical: 5,
-              }}>
+              }}
+            >
               All your (Active / Scheduled ) Subscriptions will be Cancelled
             </Text>
             <View
@@ -238,21 +228,24 @@ const Subscription = ({navigation, route}) => {
                 flexDirection: 'row',
                 justifyContent: 'flex-end',
                 alignItems: 'center',
-              }}>
+              }}
+            >
               <View style={styles.button_one}>
                 <Pressable
                   style={{
                     borderRadius: 20,
                     padding: 10,
                   }}
-                  onPress={() => setModalVisible(false)}>
+                  onPress={() => setModalVisible(false)}
+                >
                   <Text style={styles.textStyle}>Cancel</Text>
                 </Pressable>
               </View>
               <View style={styles.button_one}>
                 <Pressable
                   style={[styles.button, styles.buttonClose]}
-                  onPress={PlanCancel}>
+                  onPress={PlanCancel}
+                >
                   <Text style={styles.textStyle}>OK</Text>
                 </Pressable>
               </View>
@@ -331,7 +324,6 @@ const Subscription = ({navigation, route}) => {
         method: 'get',
       });
       if (res.data) {
-        console.log('My Plan Status', res.data, getUserID);
         // res.data.PlanStatus == '1'
         //   ? setPaused(
         //       getSubscriptionCancelStatus == 1 ||
@@ -348,7 +340,7 @@ const Subscription = ({navigation, route}) => {
 
   return (
     <>
-      <SafeAreaView style={{backgroundColor: COLORS.CREAM, flex: 1}}>
+      <SafeAreaView style={{ backgroundColor: COLORS.CREAM, flex: 1 }}>
         <Header headerName={'Subscription'} editShow={false} />
         {Platform.OS == 'android' ? (
           <HorizontalLine style={styles.line} />
@@ -356,7 +348,7 @@ const Subscription = ({navigation, route}) => {
           <View>
             <Image
               source={require('../../../assets/images/dotted.png')}
-              style={{width: mobileW * 0.99}}
+              style={{ width: mobileW * 0.99 }}
               resizeMode="stretch"
             />
           </View>
@@ -365,21 +357,20 @@ const Subscription = ({navigation, route}) => {
         getPurchaseData?.data?.old_subscription_status != 'cancel' ? (
           <ScrollView showsVerticalScrollIndicator={false}>
             <View style={styles.managing_width}>
-             
               <SubBoxOne />
               <SubBoxTwo />
               <RemainingHorizontal data={'energy'} />
             </View>
-          
+
             <View
               style={{
                 ...styles.managing_width,
                 marginTop: PLATFORM_IOS ? -12 : 0,
-              }}>
+              }}
+            >
               <PriceValiditySubs data={getPurchaseData.data} />
             </View>
 
-           
             <View
               style={{
                 flexDirection: 'row',
@@ -388,7 +379,8 @@ const Subscription = ({navigation, route}) => {
                 alignItems: 'center',
                 alignSelf: 'center',
                 marginVertical: 10,
-              }}>
+              }}
+            >
               <TouchableOpacity
                 disabled={
                   subscriptionStatus == '1' || getSubscriptionCancelStatus != 0
@@ -410,7 +402,7 @@ const Subscription = ({navigation, route}) => {
                   ...Platform.select({
                     ios: {
                       shadowColor: '#000000',
-                      shadowOffset: {width: 0, height: 2},
+                      shadowOffset: { width: 0, height: 2 },
                       shadowOpacity: 0.3,
                       shadowRadius: 4,
                     },
@@ -418,13 +410,15 @@ const Subscription = ({navigation, route}) => {
                       elevation: 4,
                     },
                   }),
-                }}>
+                }}
+              >
                 <Text
                   style={{
                     color: COLORS.WHITE,
                     fontSize: 14,
                     fontWeight: '500',
-                  }}>
+                  }}
+                >
                   Cancel Subscription
                 </Text>
               </TouchableOpacity>
@@ -448,7 +442,7 @@ const Subscription = ({navigation, route}) => {
                   ...Platform.select({
                     ios: {
                       shadowColor: '#000000',
-                      shadowOffset: {width: 0, height: 2},
+                      shadowOffset: { width: 0, height: 2 },
                       shadowOpacity: 0.3,
                       shadowRadius: 4,
                     },
@@ -456,7 +450,8 @@ const Subscription = ({navigation, route}) => {
                       elevation: 4,
                     },
                   }),
-                }}>
+                }}
+              >
                 <Text
                   style={{
                     color:
@@ -465,7 +460,8 @@ const Subscription = ({navigation, route}) => {
                         : COLORS.BLACK,
                     fontSize: 14,
                     fontWeight: '500',
-                  }}>
+                  }}
+                >
                   {subscriptionStatus == '0' || subscriptionStatus == null
                     ? 'Pause Subscription'
                     : 'Resume Subscription'}
@@ -480,14 +476,16 @@ const Subscription = ({navigation, route}) => {
               alignItems: 'center',
               flex: 1,
               marginBottom: DIMENSIONS.SCREEN_HEIGHT * 0.25,
-            }}>
+            }}
+          >
             <View
               style={{
                 flexDirection: 'row',
                 justifyContent: 'center',
 
                 alignItems: 'center',
-              }}>
+              }}
+            >
               <AnimatedLottieView
                 source={{
                   uri: 'https://assets5.lottiefiles.com/packages/lf20_v4UB4ch6dZ.json',
@@ -506,7 +504,7 @@ const Subscription = ({navigation, route}) => {
                 source={require('../../../assets/question.json')}
                 autoPlay
                 loop
-                style={{width: 100, height: 100, marginVertical: -5}}
+                style={{ width: 100, height: 100, marginVertical: -5 }}
               />
             </View>
             <Text
@@ -516,10 +514,11 @@ const Subscription = ({navigation, route}) => {
                 textAlign: 'center',
                 paddingHorizontal: 30,
                 color: COLORS.BLACK,
-              }}>
+              }}
+            >
               No (Active/Scheduled) Package Available.
             </Text>
-          
+
             <TouchableOpacity
               onPress={
                 () => {
@@ -527,11 +526,27 @@ const Subscription = ({navigation, route}) => {
                     getPurchaseData?.data != 'Package not found' &&
                     getPurchaseData?.data?.old_subscription_status == 'cancel'
                   ) {
-                    navigation.navigate('DrawerStack', {
-                      screen: 'EnergyOptions',
+                    // navigation.navigate('DrawerStack', {
+                    //   screen: 'EnergyOptions',
+                    // });
+                    navigation.navigate('LoginStack', {
+                      screen: 'DrawerStack',
+                      params: {
+                        screen: 'EnergyOptions',
+                      },
                     });
                   } else {
-                    navigation.navigate('HomeStack');
+                    // navigation.navigate('HomeStack');
+
+                    //     navigation.navigate('DrawerStack', {
+                    //   screen: 'HomeStack',
+                    // });
+                    navigation.navigate('LoginStack', {
+                      screen: 'DrawerStack',
+                      params: {
+                        screen: 'HomeStack',
+                      },
+                    });
                   }
                 }
 
@@ -548,7 +563,7 @@ const Subscription = ({navigation, route}) => {
                 ...Platform.select({
                   ios: {
                     shadowColor: '#000000',
-                    shadowOffset: {width: 0, height: 2},
+                    shadowOffset: { width: 0, height: 2 },
                     shadowOpacity: 0.3,
                     shadowRadius: 4,
                   },
@@ -556,7 +571,8 @@ const Subscription = ({navigation, route}) => {
                     elevation: 4,
                   },
                 }),
-              }}>
+              }}
+            >
               <Text
                 style={{
                   color: '#263238',
@@ -564,212 +580,22 @@ const Subscription = ({navigation, route}) => {
                   fontSize: 14,
                   lineHeight: 17,
                   textTransform: 'capitalize',
-                }}>
+                }}
+              >
                 Purchase Plan
               </Text>
             </TouchableOpacity>
           </View>
         )}
-        {/* {getPurchaseData.data == 'Package not found' ||
-        getSubscriptionCancelStatus == 2 ||
-        getSubscriptionCancelStatus == 4 ? (
-          <View
-            style={{
-              justifyContent: 'center',
-              alignItems: 'center',
-              flex: 1,
-              marginBottom: DIMENSIONS.SCREEN_HEIGHT * 0.25,
-            }}>
-            <View
-              style={{
-                flexDirection: 'row',
-                justifyContent: 'center',
 
-                alignItems: 'center',
-              }}>
-              <AnimatedLottieView
-                source={{
-                  uri: 'https://assets5.lottiefiles.com/packages/lf20_v4UB4ch6dZ.json',
-                }} // Replace with your animation file
-                autoPlay
-                loop
-                style={{
-                  width: DIMENSIONS.SCREEN_WIDTH * 0.4,
-                  height: DIMENSIONS.SCREEN_HEIGHT * 0.25,
-                }}
-              />
-              <AnimatedLottieView
-                // source={{
-                //   uri: 'https://assets7.lottiefiles.com/packages/lf20_qgq2nqsy.json',
-                // }} // Replace with your animation file
-                source={require('../../../assets/question.json')}
-                autoPlay
-                loop
-                style={{width: 100, height: 100, marginVertical: -5}}
-              />
-            </View>
-            <Text
-              style={{
-                fontSize: 14,
-                lineHeight: 25,
-                textAlign: 'center',
-                paddingHorizontal: 30,
-                color: COLORS.BLACK,
-              }}>
-              No (Active/Scheduled) Package Available.
-            </Text>
-
-            <TouchableOpacity
-              onPress={() => navigation.navigate('HomeStack')}
-              style={{
-                width: mobileW * 0.45,
-                borderRadius: 10,
-                backgroundColor: COLORS.WHITE,
-                padding: 10,
-                alignItems: 'center',
-                justifyContent: 'center',
-                margin: 10,
-                ...Platform.select({
-                  ios: {
-                    shadowColor: '#000000',
-                    shadowOffset: {width: 0, height: 2},
-                    shadowOpacity: 0.3,
-                    shadowRadius: 4,
-                  },
-                  android: {
-                    elevation: 4,
-                  },
-                }),
-              }}>
-              <Text
-                style={{
-                  color: '#263238',
-                  fontWeight: '700',
-                  fontSize: 14,
-                  lineHeight: 17,
-                  textTransform: 'capitalize',
-                }}>
-                Purchase Plan
-              </Text>
-            </TouchableOpacity>
-          </View>
-        ) : (
-          <ScrollView showsVerticalScrollIndicator={false}>
-            <View style={styles.managing_width}>
-              <SubBoxOne />
-              <SubBoxTwo />
-              <RemainingHorizontal data={'energy'} />
-            </View>
-
-            <View
-              style={{
-                ...styles.managing_width,
-                marginTop: PLATFORM_IOS ? -12 : 0,
-              }}>
-              <PriceValiditySubs data={getPurchaseData.data} />
-            </View>
-
-            <View
-              style={{
-                flexDirection: 'row',
-                justifyContent: 'space-between',
-                width: DIMENSIONS.SCREEN_WIDTH * 0.9,
-                alignItems: 'center',
-                alignSelf: 'center',
-                marginVertical: 10,
-              }}>
-              <TouchableOpacity
-                disabled={
-                  subscriptionStatus == '1' || getSubscriptionCancelStatus != 0
-                }
-                onPress={() => {
-                  setModalVisible(true);
-                }}
-                style={{
-                  width: DIMENSIONS.SCREEN_WIDTH * 0.4,
-                  height: (DIMENSIONS.SCREEN_HEIGHT * 6) / 100,
-                  backgroundColor:
-                    subscriptionStatus == '1' ||
-                    getSubscriptionCancelStatus != 0
-                      ? 'lightgrey'
-                      : '#F84E4E',
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                  borderRadius: 10,
-                  ...Platform.select({
-                    ios: {
-                      shadowColor: '#000000',
-                      shadowOffset: {width: 0, height: 2},
-                      shadowOpacity: 0.3,
-                      shadowRadius: 4,
-                    },
-                    android: {
-                      elevation: 4,
-                    },
-                  }),
-                }}>
-                <Text
-                  style={{
-                    color: COLORS.WHITE,
-                    fontSize: 14,
-                    fontWeight: '500',
-                  }}>
-                  Cancel Subscription
-                </Text>
-              </TouchableOpacity>
-
-              <TouchableOpacity
-                disabled={getSubscriptionCancelStatus != 0}
-                onPress={() => {
-                  getSubscriptionStatus();
-                }}
-                style={{
-                  width: DIMENSIONS.SCREEN_WIDTH * 0.4,
-                  height: (DIMENSIONS.SCREEN_HEIGHT * 6) / 100,
-                  // marginLeft: DIMENSIONS.SCREEN_WIDTH * 0.1,
-                  borderRadius: 10,
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                  backgroundColor:
-                    getSubscriptionCancelStatus != 0
-                      ? 'lightgrey'
-                      : COLORS.GREEN,
-                  ...Platform.select({
-                    ios: {
-                      shadowColor: '#000000',
-                      shadowOffset: {width: 0, height: 2},
-                      shadowOpacity: 0.3,
-                      shadowRadius: 4,
-                    },
-                    android: {
-                      elevation: 4,
-                    },
-                  }),
-                }}>
-                <Text
-                  style={{
-                    color:
-                      getSubscriptionCancelStatus != 0
-                        ? COLORS.WHITE
-                        : COLORS.BLACK,
-                    fontSize: 14,
-                    fontWeight: '500',
-                  }}>
-                  {subscriptionStatus == '0' || subscriptionStatus == null
-                    ? 'Pause Subscription'
-                    : 'Resume Subscription'}
-                </Text>
-              </TouchableOpacity>
-            </View>
-          </ScrollView>
-        )} */}
         <Modal
           animationType="slide"
           transparent={true}
           visible={modalVisible}
           onRequestClose={() => {
             setModalVisible(!modalVisible);
-          }}>
+          }}
+        >
           <View style={styles.centeredView}>
             <View style={styles.modalView}>
               <Text style={styles.modalText}>Cancel Subscription</Text>
@@ -779,14 +605,15 @@ const Subscription = ({navigation, route}) => {
                 }} // Replace with your animation file
                 autoPlay
                 loop
-                style={{width: 50, height: 50}}
+                style={{ width: 50, height: 50 }}
               />
               <Text
                 style={{
                   fontSize: 14,
                   fontWeight: '400',
                   color: COLORS.BLACK,
-                }}>
+                }}
+              >
                 Do you really want to cancel your Subscription
               </Text>
               <Text
@@ -795,7 +622,8 @@ const Subscription = ({navigation, route}) => {
                   fontWeight: '400',
                   color: COLORS.RED,
                   marginVertical: 5,
-                }}>
+                }}
+              >
                 All your (Active / Scheduled ) Subscriptions will be Cancelled
               </Text>
               <View
@@ -803,21 +631,24 @@ const Subscription = ({navigation, route}) => {
                   flexDirection: 'row',
                   justifyContent: 'flex-end',
                   alignItems: 'center',
-                }}>
+                }}
+              >
                 <View style={styles.button_one}>
                   <Pressable
                     style={{
                       borderRadius: 20,
                       padding: 10,
                     }}
-                    onPress={() => setModalVisible(false)}>
+                    onPress={() => setModalVisible(false)}
+                  >
                     <Text style={styles.textStyle}>Cancel</Text>
                   </Pressable>
                 </View>
                 <View style={styles.button_one}>
                   <Pressable
                     style={[styles.button, styles.buttonClose]}
-                    onPress={PlanCancel}>
+                    onPress={PlanCancel}
+                  >
                     <Text style={styles.textStyle}>OK</Text>
                   </Pressable>
                 </View>

@@ -25,9 +25,12 @@ import Toast from 'react-native-toast-message';
 import {PLATFORM_IOS} from '../constants/DIMENSIONS';
 
 const ButtonSlider2 = () => {
-  const {getUserID, getChargerStatus, subscriptionStatus, getRemainingData} =
-    useSelector(state => state);
-
+  // const {getUserID, getChargerStatus, subscriptionStatus, getRemainingData} =
+  //   useSelector(state => state);
+const getUserID = useSelector(state => state.getUserID);
+const getChargerStatus = useSelector(state => state.getChargerStatus);
+const subscriptionStatus = useSelector(state => state.subscriptionStatus);
+const getRemainingData = useSelector(state => state.getRemainingData);
 
   const dispatch = useDispatch();
   const [isLoading, setIsLoading] = useState(false);

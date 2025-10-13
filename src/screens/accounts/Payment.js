@@ -116,7 +116,8 @@ const validationSchema = Yup.object().shape({
 export default function PaymentGateWay({navigation, route}) {
   const [modalVisible, setModalVisible] = useState(false);
   const {allSavedCard} = route.params;
-  const {getUserID} = useSelector(state => state);
+
+  const getUserID = useSelector(state => state.getUserID);
 
   const [pagingEnabled, setPagingEnabled] = useState(true);
   const [getCard_Number, setGetCard_Number] = useState('');
@@ -277,7 +278,7 @@ export default function PaymentGateWay({navigation, route}) {
       const result = await response.json();
 
       if (result[0]?.length > 0) {
-        console.log(result);
+   
         // setSavedCard(result[0].sort((b, a) => a.status - b.status));
         setSavedCard(result[0]);
 
@@ -364,7 +365,7 @@ export default function PaymentGateWay({navigation, route}) {
 
   const handleMakeDefaultCard = async values => {
     setLoader(true);
-    console.log(values, user_ID);
+ 
     const payload = new FormData();
     payload.append('card_id', values);
     payload.append('user_id', user_ID);
@@ -843,7 +844,7 @@ export default function PaymentGateWay({navigation, route}) {
                     setcardtype(cardDetails);
                   }}
                   onFocus={focusedField => {
-                    console.log('focusField', focusedField);
+                  
                   }}
                 />
                 {/* <Input

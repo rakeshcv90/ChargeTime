@@ -24,12 +24,20 @@ const Week = (props: any) => {
     setShowSlider(true);
   }, []);
   const {handleRefresh, refresh} = props?.route?.params;
-  const {
-    getWeekGraphData,
-    getBoxTwoDataForDashboard,
-    getSubscriptionCancelStatus,
-    getPurchaseData,
-  } = useSelector((state: any) => state);
+  // const {
+  //   getWeekGraphData,
+  //   getBoxTwoDataForDashboard,
+  //   getSubscriptionCancelStatus,
+  //   getPurchaseData,
+  // } = useSelector((state: any) => state);
+
+  const getWeekGraphData = useSelector((state: any) => state.getWeekGraphData);
+const getBoxTwoDataForDashboard = useSelector((state: any) => state.getBoxTwoDataForDashboard);
+const getSubscriptionCancelStatus = useSelector((state: any) => state.getSubscriptionCancelStatus);
+const getPurchaseData = useSelector((state: any) => state.getPurchaseData);
+
+
+  
   const [toggleState, setToggleState] = useState(false);
 
   const handleToggle = (value: any) => setToggleState(value);
@@ -77,7 +85,7 @@ const Week = (props: any) => {
           </View>
 
           <View style={{marginHorizontal: 20}}>
-            {getWeekGraphData.message != 'No usage data available' ? (
+            {getWeekGraphData?.message != 'No usage data available' ? (
               <Graph dataOne={getWeekGraphData} />
             ) : (
               <Text
@@ -93,7 +101,7 @@ const Week = (props: any) => {
             )}
                  {getPurchaseData?.data != 'Package not found' &&
             getPurchaseData?.data?.old_subscription_status != 'cancel' ? (
-              <BoxTwo data={getBoxTwoDataForDashboard.data} />
+              <BoxTwo data={getBoxTwoDataForDashboard?.data} />
             ) : null}
             {/* <BoxTwo data={getBoxTwoDataForDashboard.data} /> */}
           </View>
@@ -105,7 +113,7 @@ const Week = (props: any) => {
             getPurchaseData?.data?.old_subscription_status != 'cancel' ? (
               getSubscriptionCancelStatus ==
               2 ? null : getSubscriptionCancelStatus == 4 ? null : (
-                <PriceValidity data={getBoxTwoDataForDashboard.data} />
+                <PriceValidity data={getBoxTwoDataForDashboard?.data} />
               )
             ) : null}
           </View>

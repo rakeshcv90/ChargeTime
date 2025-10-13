@@ -26,19 +26,19 @@ import {
   BackHandler,
   Keyboard,
 } from 'react-native';
-import {SafeAreaView} from 'react-native-safe-area-context';
-import notifee, {EventType} from '@notifee/react-native';
-import React, {useState, useEffect, useCallback} from 'react';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import notifee, { EventType } from '@notifee/react-native';
+import React, { useState, useEffect, useCallback } from 'react';
 import COLORS from '../../constants/COLORS';
 import Toast from 'react-native-toast-message';
-import {API} from '../../api/API';
+import { API } from '../../api/API';
 import Input from '../../Components/Input';
-import {DIMENSIONS, PLATFORM_IOS} from '../../constants/DIMENSIONS';
+import { DIMENSIONS, PLATFORM_IOS } from '../../constants/DIMENSIONS';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import {Message} from '../../../assets/images/Message';
-import {Eye} from '../../../assets/images/Eye';
+import { Message } from '../../../assets/images/Message';
+import { Eye } from '../../../assets/images/Eye';
 import ActivityLoader from '../../Components/ActivityLoader';
-import {useDispatch, useSelector} from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import {
   setGraphData,
   getLocationID,
@@ -66,16 +66,16 @@ import {
   setSubcriptionCancelStatus,
 } from '../../redux/action';
 import axios from 'axios';
-import {navigationRef} from '../../../App';
+import { navigationRef } from '../../../App';
 import messaging from '@react-native-firebase/messaging';
-import {ms} from 'react-native-size-matters';
-import {Alert, PermissionsAndroid} from 'react-native';
+import { ms } from 'react-native-size-matters';
+import { Alert, PermissionsAndroid } from 'react-native';
 import Clipboard from '@react-native-clipboard/clipboard';
-import {useFocusEffect} from '@react-navigation/native';
+import { useFocusEffect } from '@react-navigation/native';
 const mobileH = Math.round(Dimensions.get('window').height);
 const mobileW = Math.round(Dimensions.get('window').width);
 
-export default function Login({navigation}) {
+export default function Login({ navigation }) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(true);
@@ -85,7 +85,11 @@ export default function Login({navigation}) {
   const [message1, setmessage] = useState('null');
 
   const dispatch = useDispatch();
-  const {getDeviceID, getGraphData, getUserID} = useSelector(state => state);
+
+  const getDeviceID = useSelector(state => state.getDeviceID);
+  const getGraphData = useSelector(state => state.getGraphData);
+  const getUserID = useSelector(state => state.getUserID);
+
   useFocusEffect(
     useCallback(() => {
       let unsubscribe = null;
@@ -237,7 +241,7 @@ export default function Login({navigation}) {
               setPassword('');
               await AsyncStorage.setItem('isAuthorized', res.data.user_id + '');
               const subCancelStatus = res.data?.subscription_cancel_status;
-              console.log('subCancelStatus', subCancelStatus);
+         
               dispatch(
                 setSubcriptionCancelStatus(
                   subCancelStatus == 1
@@ -274,13 +278,16 @@ export default function Login({navigation}) {
                   ),
                 );
               } else {
+                 console.log('subCancelStatus',res.data?.user_id);
                 dispatch(setDeviceId(res.data.message));
                 dispatch(setIsAuthorized(true));
                 dispatch(setEmailData(res.data?.email));
                 dispatch(setUserID(res.data?.user_id));
                 dispatch(getLocationID(res.data?.locationid));
                 packagePlans(res.data?.locationid);
+                getPlanCurrent(res.data?.user_id);
               }
+             
             } else if (res.data.message == 'Email Id does not exist!') {
               PLATFORM_IOS
                 ? Toast.show({
@@ -389,11 +396,11 @@ export default function Login({navigation}) {
           getAllPurchasePlan(userID);
           getPlanCurrent(userID);
         } else {
-          dispatch(setGraphData({message}));
-          dispatch(setWeekGraphData({message}));
-          dispatch(setMonthGraphData({message}));
-          dispatch(setQuarterGraphData({message}));
-          dispatch(setYearGraphData({message}));
+          dispatch(setGraphData({ message }));
+          dispatch(setWeekGraphData({ message }));
+          dispatch(setMonthGraphData({ message }));
+          dispatch(setQuarterGraphData({ message }));
+          dispatch(setYearGraphData({ message }));
 
           dailyUsuagekwh(userID);
           fetchBoxTwoDashboardData(userID);
@@ -405,11 +412,11 @@ export default function Login({navigation}) {
         // navigation.navigate('DrawerStack');
       })
       .catch(err => {
-        dispatch(setGraphData({message}));
-        dispatch(setWeekGraphData({message}));
-        dispatch(setMonthGraphData({message}));
-        dispatch(setQuarterGraphData({message}));
-        dispatch(setYearGraphData({message}));
+        dispatch(setGraphData({ message }));
+        dispatch(setWeekGraphData({ message }));
+        dispatch(setMonthGraphData({ message }));
+        dispatch(setQuarterGraphData({ message }));
+        dispatch(setYearGraphData({ message }));
 
         getPlanCurrent(userID);
         getAllPurchasePlan(userID);
@@ -430,28 +437,34 @@ export default function Login({navigation}) {
         console.log('Error-2', err);
       });
   };
+
   const remainigUsuageData = userId => {
     let remaingData;
 
     axios
       .get(`${API}/remainingusage/${userId}`)
       .then(res => {
-        if (parseInt(res.data?.kwh_unit_remaining) >= 0) {
-          remaingData = res.data?.kwh_unit_remaining;
-          dispatch(setRemainingData(res.data?.kwh_unit_remaining));
+        const remaining = parseFloat(res.data?.kwh_unit_remaining || '0');
+        const overUsage = parseFloat(res.data?.kwh_unit_overusage || '0');
+
+        if (remaining > 0.01) {
+          // treat anything <= 0.01 as overusage
+          remaingData = remaining;
+          dispatch(setRemainingData(remaining));
           dispatch(setOverUsage(false));
           dispatch(setOverModelView(false));
         } else {
-          remaingData = res.data?.kwh_unit_overusage;
-          dispatch(setRemainingData(res.data?.kwh_unit_overusage));
+          remaingData = overUsage;
+          dispatch(setRemainingData(overUsage));
           dispatch(setOverUsage(true));
           dispatch(setOverModelView(true));
         }
-        // dispatch(setRemainingData(remaingData));
+
         setForLoading(false);
       })
       .catch(err => {
         console.log('Error-3', err);
+        setForLoading(false);
       });
   };
 
@@ -486,7 +499,6 @@ export default function Login({navigation}) {
     axios
       .get(`${API}/currentplan/${userId}`)
       .then(res => {
-        console.log('CURENT PLAN', res.data);
         setForLoading(false);
         PLATFORM_IOS
           ? Toast.show({
@@ -495,8 +507,9 @@ export default function Login({navigation}) {
             })
           : ToastAndroid.show('Login Successful', ToastAndroid.SHORT);
         const subCancelStatus = res.data?.message?.subscription_cancel_status;
-      
+
         if (res.data.data == 'Package not found') {
+          console.log('Test1');
           dispatch(setPackageStatus(false));
           dispatch(setPurchaseData(res.data?.data));
         } else if (subCancelStatus == 4 || subCancelStatus == 2) {
@@ -505,8 +518,9 @@ export default function Login({navigation}) {
               subCancelStatus == 2 ? 2 : subCancelStatus == 4 ? 4 : 0,
             ),
           );
-          dispatch(setPackageStatus(false))
-          dispatch(setPurchaseData({data: 'Package not found'}));
+          console.log('Test2');
+          dispatch(setPackageStatus(false));
+          dispatch(setPurchaseData({ data: 'Package not found' }));
         } else {
           dispatch(
             setSubcriptionCancelStatus(
@@ -522,6 +536,8 @@ export default function Login({navigation}) {
             ),
           );
           dispatch(setPurchaseData(res?.data));
+          dispatch(setPackageStatus(true));
+          console.log('Test3');
         }
         getSubscriptionStatus(userId);
         navigation.navigate('DrawerStack');
@@ -544,25 +560,13 @@ export default function Login({navigation}) {
     try {
       const response = await fetch(`${API}/planstatuspauseresume/${nameid}`);
       const res = await response.json();
-      // console.log("CJKBBHJVCVHJCC H",res.PlanStatus)
+
       dispatch(setSubscriptionStatus(res.PlanStatus));
       setForLoading(false);
     } catch (error) {
       console.log('Error-7', error);
       setForLoading(false);
     }
-
-    // axios
-    //   .get(`${API}/planstatuspauseresume/${nameid}/`)
-    //   .then(res => {
-    //     console.log("CJKBBHJVCVHJCC H",res.data)
-    //     dispatch(setSubscriptionStatus(res.data.PlanStatus));
-    //     setForLoading(false);
-    //   })
-    //   .catch(err => {
-    //     console.log('Error-7', err);
-    //     setForLoading(false);
-    //   });
   };
   const sendToForgetpassword = () => {
     Clipboard.setString('');
@@ -570,14 +574,7 @@ export default function Login({navigation}) {
   };
   const getAllPurchasePlan = async userId => {
     console.log('Fffffff', userId);
-    // axios
-    //   .get(`${API}/allpurchaseplans/${userId}`)
-    //   .then(res => {
-    //     dispatch(setPuchaseAllPlans(res?.data));
-    //   })
-    //   .catch(err => {
-    //     console.log('Error-10', err);
-    //   });
+
     try {
       const response = await fetch(`${API}/allpurchaseplans/${userId}`);
       const res = await response.json();
@@ -587,13 +584,13 @@ export default function Login({navigation}) {
     }
   };
   return (
-    <SafeAreaView style={{backgroundColor: COLORS.CREAM, flex: 1}}>
-      <KeyboardAvoidingView behavior="position" style={{marginTop: 10}}>
+    <SafeAreaView style={{ backgroundColor: COLORS.CREAM, flex: 1 }}>
+      <KeyboardAvoidingView behavior="position" style={{ marginTop: 10 }}>
         {forLoading ? <ActivityLoader /> : ''}
         <Image
           source={require('../../../assets/images/log.png')}
           resizeMode="contain"
-          style={{width: mobileW, height: mobileW * 0.7}}
+          style={{ width: mobileW, height: mobileW * 0.7 }}
         />
         <View style={styles.login_css}>
           <Text style={styles.login}>Login</Text>
@@ -636,7 +633,7 @@ export default function Login({navigation}) {
             <Image
               source={require('../../../assets/images/lock_two.png')}
               resizeMode="contain"
-              style={{width: 18, height: 18}}
+              style={{ width: 18, height: 18 }}
             />
             <TouchableOpacity onPress={() => sendToForgetpassword()}>
               <Text style={styles.forgot_password}>Forgot my password?</Text>
@@ -650,7 +647,8 @@ export default function Login({navigation}) {
               justifyContent: 'center',
 
               marginHorizontal: 20,
-            }}>
+            }}
+          >
             <TouchableOpacity
               onPress={loginFunction}
               style={{
@@ -663,7 +661,7 @@ export default function Login({navigation}) {
                 ...Platform.select({
                   ios: {
                     shadowColor: '#000000',
-                    shadowOffset: {width: 0, height: 2},
+                    shadowOffset: { width: 0, height: 2 },
                     shadowOpacity: 0.3,
                     shadowRadius: 4,
                   },
@@ -671,7 +669,8 @@ export default function Login({navigation}) {
                     elevation: 4,
                   },
                 }),
-              }}>
+              }}
+            >
               <Text style={styles.log_In_btn}>Log In</Text>
             </TouchableOpacity>
           </View>
@@ -684,7 +683,8 @@ export default function Login({navigation}) {
                   email: 'email',
                   user_id: 'user_id',
                 })
-              }>
+              }
+            >
               <Text style={styles.sign_up}>Sign Up</Text>
             </TouchableOpacity>
           </View>

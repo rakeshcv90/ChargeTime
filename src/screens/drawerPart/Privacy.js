@@ -1,7 +1,7 @@
 import {
   View,
   Text,
-  SafeAreaView,
+
   StyleSheet,
   Platform,
   Image,
@@ -11,6 +11,7 @@ import React from 'react';
 import Header from '../../Components/Header';
 import {WebView} from 'react-native-webview';
 import HorizontalLine from '../../Components/HorizontalLine';
+import { SafeAreaView } from 'react-native-safe-area-context';
 const mobileW = Math.round(Dimensions.get('screen').width);
 const mobileH = Math.round(Dimensions.get('screen').height);
 

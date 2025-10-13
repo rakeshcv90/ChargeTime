@@ -46,13 +46,19 @@ export default function SliderOne(props) {
   // const [schedulePackageName, setSchedulePackageName] = useState('');
 
   const dispatch = useDispatch();
-  const {
-    getUserID,
-    getPurchaseData,
-    getSubscriptionCancelStatus,
-    getBasePackage,
-    subscriptionStatus
-  } = useSelector(state => state);
+  // const {
+  //   getUserID,
+  //   getPurchaseData,
+  //   getSubscriptionCancelStatus,
+  //   getBasePackage,
+  //   subscriptionStatus
+  // } = useSelector(state => state);
+
+  const getUserID = useSelector(state => state.getUserID);
+const getPurchaseData = useSelector(state => state.getPurchaseData);
+const getSubscriptionCancelStatus = useSelector(state => state.getSubscriptionCancelStatus);
+const getBasePackage = useSelector(state => state.getBasePackage);
+const subscriptionStatus = useSelector(state => state.subscriptionStatus);
 
   useEffect(() => {
     getPlanCurrent();

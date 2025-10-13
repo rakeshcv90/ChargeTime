@@ -61,7 +61,8 @@ export default function CompleteProfile(props) {
   const [locationId, setLocationId] = useState('');
   const [isFocus, setIsFocus] = useState(false);
   const [forLoading, setForLoading] = useState(false);
-  const {userRegisterData} = useSelector(state => state);
+  // const {userRegisterData} = useSelector(state => state);
+  const userRegisterData = useSelector(state => state.userRegisterData);
   const [modalVisible, setModalVisible] = useState(false);
   // const [nameError, setNameError] = useState(false);
 
@@ -92,7 +93,7 @@ export default function CompleteProfile(props) {
   };
 
   const handleSelect = (id, item) => {
-    console.log();
+
     setIsFocus(false);
     setSelectedValue(item.location);
     setLocationId(id);

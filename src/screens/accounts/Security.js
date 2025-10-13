@@ -1,7 +1,7 @@
 import {
   View,
   Text,
-  SafeAreaView,
+
   StyleSheet,
   TextInput,
   TouchableOpacity,
@@ -29,6 +29,7 @@ import {navigationRef} from '../../../App';
 import {ms} from 'react-native-size-matters';
 import * as yup from 'yup';
 import ActivityLoader from '../../Components/ActivityLoader';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 const passwordRegex =
   /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%&*()-_+='":;,.?/~`[{}<>€£¥÷×])[A-Za-z\d!@#$%&*()-_+='":;,.?/~`[{}<>€£¥÷×]{8,}$/;

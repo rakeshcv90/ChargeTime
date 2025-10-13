@@ -9,7 +9,7 @@
 import {
   View,
   Text,
-  SafeAreaView,
+
   ToastAndroid,
   StyleSheet,
   Modal,
@@ -42,6 +42,7 @@ import {
 import {Toast} from 'react-native-toast-message/lib/src/Toast';
 // import {setBasePackage as setUpdateBasePackage} from '../../redux/action';
 import ActivityLoader from '../../Components/ActivityLoader';
+import { SafeAreaView } from 'react-native-safe-area-context';
 const mobileW = Math.round(Dimensions.get('screen').width);
 const mobileH = Math.round(Dimensions.get('window').height);
 
@@ -270,7 +271,7 @@ const Installation = () => {
             }),
           });
           const response = await res.json();
-          console.log('zxccxdc111', response);
+       
           setLoader(false);
           if (response.msg == 'Your Profile Update') {
             setModalVisible(false);
@@ -350,16 +351,13 @@ const Installation = () => {
           setShowButton(false);
         }
       } else {
-        console.log('Test1', locationId);
-        console.log('Test2', addlineone);
-        console.log('Test3', newZipcode);
-        console.log('Test4', newState);
+     
       }
     }
   };
 
   const handleOk = () => {
-    console.log('testbw');
+
     PlanCancel();
 
     setIsEditable(false);
@@ -374,22 +372,22 @@ const Installation = () => {
   };
 
   const onPress = () => {
-    console.log('Xzc', selectedValue, userProfileData[0]?.location);
+  
     if (getPurchaseData.data == 'Package not found') {
       InstalltionUpdate();
-      console.log('Test12');
+   
     } else if (selectedValue.length == 0) {
       InstalltionUpdate();
-      console.log('Test13');
+    
     } else if (selectedValue == userProfileData[0]?.location) {
       InstalltionUpdate();
-      console.log('Test14');
+   
     } else if (selectedValue != userProfileData[0]?.location) {
       setModalVisible(true);
-      console.log('Test15');
+    
     } else {
       setModalVisible(true);
-      console.log('Test16');
+
     }
 
     if (getPurchaseData.data !== 'Package not found') {

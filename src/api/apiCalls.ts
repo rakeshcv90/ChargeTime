@@ -25,7 +25,7 @@ export const apiCalls = {
         })
         .catch(err => {
           console.log('Stripe API err', err,API_URL.getStripekey);
-          resolve('pk_test_51LCrEBJPfbfzje02cGGuiKfWFTikU4sHdU7XN13cr0EzRRHRThNfecBFmI9wIzZ3WRaLJbA5IACZ5tU1kO3dpCUw007mxAvgeb');
+          // resolve('pk_test_51LCrEBJPfbfzje02cGGuiKfWFTikU4sHdU7XN13cr0EzRRHRThNfecBFmI9wIzZ3WRaLJbA5IACZ5tU1kO3dpCUw007mxAvgeb');
           Message('Stripe API Error','error')
         });
     });

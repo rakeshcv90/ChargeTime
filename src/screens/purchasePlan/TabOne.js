@@ -22,10 +22,12 @@ import { useSelector } from 'react-redux';
 export default function TabOne(props) {
  
 
-  const {getLocationID, getBasePackage, getPackageStatus} = useSelector(
-    state => state,
-  );
-
+  // const {getLocationID, getBasePackage, getPackageStatus} = useSelector(
+  //   state => state,
+  // );
+const getLocationID = useSelector(state => state.getLocationID);
+const getBasePackage = useSelector(state => state.getBasePackage);
+const getPackageStatus = useSelector(state => state.getPackageStatus);
   return (
     <ScrollView
     showsVerticalScrollIndicator={false}

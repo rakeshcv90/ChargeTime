@@ -10,7 +10,9 @@ import {useSelector} from 'react-redux';
 
 const Splash = () => {
   const backHandler = useRef(null);
-  const {isAuthorized} = useSelector(state => state);
+  // const {isAuthorized} = useSelector(state => state);
+  const isAuthorized = useSelector(state => state.isAuthorized);
+
   const [imageSource, setImageSource] = useState(
     require('../../assets/unnamed.png'),
   );

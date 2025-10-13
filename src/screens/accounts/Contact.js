@@ -6,7 +6,7 @@ import {
   TextInput,
   StyleSheet,
   Button,
-  SafeAreaView,
+
   TouchableOpacity,
   Text,
   ToastAndroid,
@@ -30,6 +30,7 @@ import {PLATFORM_IOS} from '../../constants/DIMENSIONS';
 import axios from 'axios';
 import {Toast} from 'react-native-toast-message/lib/src/Toast';
 import ActivityLoader from '../../Components/ActivityLoader';
+import { SafeAreaView } from 'react-native-safe-area-context';
 const mobileW = Math.round(Dimensions.get('screen').width);
 
 const Contact = () => {
@@ -65,7 +66,7 @@ const Contact = () => {
       })
         .then(res => res.json())
         .then(async data => {
-          console.log("fffffffffffff",data)
+       
           setForLoading(false);
                if (data.message === 'Message sent successfully') {
           setMessage('');

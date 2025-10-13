@@ -20,7 +20,7 @@ const Graph = ({dataOne}) => {
   };
 
   return (
-    <>
+    <View>
       <Text
         style={{
           color: COLORS.BLACK,
@@ -56,7 +56,7 @@ const Graph = ({dataOne}) => {
           )}
         </ScrollView>
       </View>
-    </>
+   </View>
   );
 };
 

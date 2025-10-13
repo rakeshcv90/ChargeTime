@@ -2,8 +2,8 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable react-native/no-inline-styles */
-import {View, Text, ScrollView, RefreshControl} from 'react-native';
-import React, {useEffect, useRef, useState} from 'react';
+import { View, Text, ScrollView, RefreshControl } from 'react-native';
+import React, { useEffect, useRef, useState } from 'react';
 
 import COLORS from '../../constants/COLORS';
 import Remaining from '../../Components/Remaining';
@@ -12,7 +12,7 @@ import Graph from '../../Components/Graph';
 import BoxTwo from '../../Components/BoxTwo';
 import PriceValidity from '../../Components/PriceValidity';
 import ButtonSlider from '../../Components/ButtonSlider';
-import {useSelector} from 'react-redux';
+import { useSelector } from 'react-redux';
 
 const Quarter = (props: any) => {
   const [showSlider, setShowSlider] = useState(true);
@@ -20,20 +20,29 @@ const Quarter = (props: any) => {
   useEffect(() => {
     setShowSlider(true);
   }, []);
-  const {handleRefresh, refresh} = props?.route?.params;
-  const {
-    getQuarterData,
-    getBoxTwoDataForDashboard,
-    getSubscriptionCancelStatus,
-    getPurchaseData,
-  } = useSelector((state: any) => state);
+  const { handleRefresh, refresh } = props?.route?.params;
+  // const {
+  //   getQuarterData,
+  //   getBoxTwoDataForDashboard,
+  //   getSubscriptionCancelStatus,
+  //   getPurchaseData,
+  // } = useSelector((state: any) => state);
+  const getQuarterData = useSelector((state: any) => state.getQuarterData);
+  const getBoxTwoDataForDashboard = useSelector(
+    (state: any) => state.getBoxTwoDataForDashboard,
+  );
+  const getSubscriptionCancelStatus = useSelector(
+    (state: any) => state.getSubscriptionCancelStatus,
+  );
+  const getPurchaseData = useSelector((state: any) => state.getPurchaseData);
+
   const [toggleState, setToggleState] = useState(false);
 
   const handleToggle = (value: any) => setToggleState(value);
 
   return (
     <>
-      <View style={{flex: 1, backgroundColor: COLORS.CREAM}}>
+      <View style={{ flex: 1, backgroundColor: COLORS.CREAM }}>
         <ScrollView
           ref={ScrollRef}
           showsVerticalScrollIndicator={false}
@@ -46,14 +55,16 @@ const Quarter = (props: any) => {
               onRefresh={handleRefresh}
             />
           }
-          onScrollEndDrag={() => setShowSlider(true)}>
+          onScrollEndDrag={() => setShowSlider(true)}
+        >
           <View
             style={{
               flexDirection: 'row',
               justifyContent: 'space-between',
               marginHorizontal: 30,
               marginTop: 10,
-            }}>
+            }}
+          >
             <Remaining RemainingFill={50} KWH={400} />
             <TotalUsage
               data={getQuarterData?.Totalusedkwhs}
@@ -61,8 +72,8 @@ const Quarter = (props: any) => {
             />
           </View>
 
-          <View style={{marginHorizontal: 20}}>
-            {getQuarterData.message != 'No usage data available' ? (
+          <View style={{ marginHorizontal: 20 }}>
+            {getQuarterData?.message != 'No usage data available' ? (
               <Graph dataOne={getQuarterData} />
             ) : (
               <Text
@@ -72,7 +83,8 @@ const Quarter = (props: any) => {
                   alignSelf: 'center',
                   fontSize: 14,
                   marginVertical: 10,
-                }}>
+                }}
+              >
                 No Graph Data available
               </Text>
             )}
@@ -82,7 +94,7 @@ const Quarter = (props: any) => {
             ) : null}
             {/* <BoxTwo data={getBoxTwoDataForDashboard.data} /> */}
           </View>
-          <View style={{marginBottom: 80}}>
+          <View style={{ marginBottom: 80 }}>
             {/* {getSubscriptionCancelStatus ==
               2 ? null : getSubscriptionCancelStatus == 4 ? null : (<PriceValidity data={getBoxTwoDataForDashboard.data} />
               )} */}

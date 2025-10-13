@@ -1,8 +1,9 @@
-import { View, Text, SafeAreaView, TouchableOpacity, StyleSheet, Platform, Image, Dimensions } from 'react-native'
+import { View, Text, TouchableOpacity, StyleSheet, Platform, Image, Dimensions } from 'react-native'
 import React from 'react'
 import Header from '../../Components/Header';
 import HorizontalLine from '../../Components/HorizontalLine';
 import {WebView} from 'react-native-webview';
+import { SafeAreaView } from 'react-native-safe-area-context';
 const mobileW = Math.round(Dimensions.get('screen').width);
 const mobileH = Math.round(Dimensions.get('screen').height);
 

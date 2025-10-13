@@ -18,7 +18,8 @@ import AnimatedLottieView from 'lottie-react-native';
 import {useSelector} from 'react-redux';
 
 const Maintainence = ({isVisible}: any) => {
-  const {getMyLocation} = useSelector((state: any) => state);
+  // const {getMyLocation} = useSelector((state: any) => state);
+  const getMyLocation = useSelector((state: any) => state.getMyLocation);
   return (
     <Modal animationType={'slide'} visible={isVisible}>
       <View style={styles.container}>

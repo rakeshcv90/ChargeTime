@@ -63,7 +63,8 @@ export default function VerifyEmail(props) {
   const otp4 = useRef();
   const otp5 = useRef();
   const otp6 = useRef();
-  const {userRegisterData} = useSelector(state => state);
+  // const {userRegisterData} = useSelector(state => state);
+  const userRegisterData = useSelector(state => state.userRegisterData);
 
   const verifyOTP = async () => {
     const date1 = new Date(currentTIme);
@@ -110,7 +111,7 @@ export default function VerifyEmail(props) {
           let payload = new FormData();
           payload.append('email', email);
           payload.append('otp', otp);
-          console.log('Payload', payload);
+        
           const res = await axios({
             url: `${API}/verifyotp`,
             method: 'POST',

@@ -17,25 +17,25 @@ import {
   Dimensions,
   BackHandler,
 } from 'react-native';
-import {useNavigationState} from '@react-navigation/native';
-import {SafeAreaView} from 'react-native-safe-area-context';
+import { useNavigationState } from '@react-navigation/native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
-import {createMaterialTopTabNavigator} from '@react-navigation/material-top-tabs';
+import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 
 import COLORS from '../../constants/COLORS';
 import DrawerOpen from '../../Components/DrawerOpen';
-import {useState, useEffect} from 'react';
-import {API} from '../../api/API';
+import { useState, useEffect } from 'react';
+import { API } from '../../api/API';
 import axios from 'axios';
 import ActivityLoader from '../../Components/ActivityLoader';
 
-import {useDispatch} from 'react-redux';
-import {setBasePackage} from '../../redux/action';
+import { useDispatch } from 'react-redux';
+import { setBasePackage } from '../../redux/action';
 
-import {useSelector} from 'react-redux';
+import { useSelector } from 'react-redux';
 import SliderOne from './SliderOne';
 import AnimatedLottieView from 'lottie-react-native';
-import {PLATFORM_IOS} from '../../constants/DIMENSIONS';
+import { PLATFORM_IOS } from '../../constants/DIMENSIONS';
 
 const mobileW = Math.round(Dimensions.get('screen').width);
 const mobileH = Math.round(Dimensions.get('window').height);
@@ -115,8 +115,12 @@ export default function HomeOne(route) {
   const [activeTab, setActiveTab] = useState('');
   const [apiData, setApiData] = useState([]);
   const [myTest, setMyTest] = useState('');
-  const {getLocationID, getPurchaseData, getBasePackage, subscriptionStatus} =
-    useSelector(state => state);
+  // const {getLocationID, getPurchaseData, getBasePackage, subscriptionStatus} =
+  //   useSelector(state => state);
+  const getLocationID = useSelector(state => state.getLocationID);
+  const getPurchaseData = useSelector(state => state.getPurchaseData);
+  const getBasePackage = useSelector(state => state.getBasePackage);
+  const subscriptionStatus = useSelector(state => state.subscriptionStatus);
 
   const [showLottieView, setShowLottieView] = useState(false);
 
@@ -168,7 +172,7 @@ export default function HomeOne(route) {
 
     try {
       const response = await axios.get(`${API}/packagePlan/${getLocationID}`);
-console.log("VDCVFDSFdgdgdfgfd",getLocationID,response?.data)
+
       if (response?.data?.locations.length == 0) {
         setIsLoading(true);
         setShowPackage(true);
@@ -184,20 +188,109 @@ console.log("VDCVFDSFdgdgdfgfd",getLocationID,response?.data)
     }
   };
 
-  function MyTabBar({state, descriptors, navigation, position}) {
-    useEffect(() => {
-      setChangePage(state.index);
-    }, []);
-    let activeTabIndex = state.routes.map(item => item.name);
+  // function MyTabBar({state, descriptors, navigation, position}) {
+  //   useEffect(() => {
+  //     setChangePage(state.index);
+  //   }, []);
+  //   let activeTabIndex = state.routes.map(item => item.name);
+
+  //   useEffect(() => {
+  //     // Do something with the activeTabIndex
+  //   }, [activeTabIndex]);
+
+  //   return (
+  //     <View style={[styles.tabbar_part, styles.shadowProp]}>
+  //       {state.routes.map((route, index) => {
+  //         const {options} = descriptors[route.key];
+  //         const label =
+  //           options.tabBarLabel !== undefined
+  //             ? options.tabBarLabel
+  //             : options.title !== undefined
+  //             ? options.title
+  //             : route.name;
+
+  //         const isFocused = state.index === index;
+
+  //         if (isFocused) {
+  //           setMyTest(label);
+  //         }
+
+  //         const onPress = () => {
+  //           const event = navigation.emit({
+  //             type: 'tabPress',
+  //             target: route.key,
+  //             canPreventDefault: true,
+  //           });
+
+  //           if (!isFocused && !event.defaultPrevented) {
+  //             navigation.navigate({name: route.name, merge: true});
+  //           }
+  //         };
+
+  //         return (
+  //           <TouchableOpacity
+  //             key={index}
+  //             onPress={onPress}
+  //             style={{
+  //               flex: 1,
+  //               backgroundColor: '#EEEEEE',
+  //               padding: 5,
+  //             }}>
+  //             <View
+  //               style={{
+  //                 borderRadius: isFocused ? 10 : 10,
+  //                 paddingVertical: 13,
+  //                 ...Platform.select({
+  //                   ios: {
+  //                     shadowColor: '#000000',
+  //                     shadowOffset: {width: 0, height: 6},
+  //                     shadowOpacity: 0.3,
+  //                     shadowRadius: 4,
+  //                   },
+  //                   android: {
+  //                     elevation: isFocused ? 4 : 0,
+  //                   },
+  //                 }),
+  //                 backgroundColor: isFocused ? '#B1D34F' : null,
+  //               }}>
+  //               <Text
+  //                 style={{
+  //                   color: isFocused ? 'black' : 'black',
+  //                   fontWeight: isFocused ? '600' : '400',
+  //                   fontSize: 12,
+  //                   textAlign: 'center',
+  //                 }}>
+  //                 {label}
+  //               </Text>
+  //             </View>
+  //           </TouchableOpacity>
+  //         );
+  //       })}
+  //     </View>
+  //   );
+  // }
+  //end
+
+  function MyTabBar({ state, descriptors, navigation }) {
+    const [currentLabel, setCurrentLabel] = useState('');
 
     useEffect(() => {
-      // Do something with the activeTabIndex
-    }, [activeTabIndex]);
+      const label =
+        descriptors[state.routes[state.index].key]?.options?.tabBarLabel ||
+        descriptors[state.routes[state.index].key]?.options?.title ||
+        state.routes[state.index].name;
+
+      if (label !== currentLabel) {
+        setCurrentLabel(label);
+        setChangePage(state.index);
+        setMyTest(label);
+      }
+    }, [state.index, currentLabel, descriptors, state.routes]);
 
     return (
       <View style={[styles.tabbar_part, styles.shadowProp]}>
         {state.routes.map((route, index) => {
-          const {options} = descriptors[route.key];
+          const { options } = descriptors[route.key];
           const label =
             options.tabBarLabel !== undefined
               ? options.tabBarLabel
@@ -207,10 +300,6 @@ console.log("VDCVFDSFdgdgdfgfd",getLocationID,response?.data)
 
           const isFocused = state.index === index;
 
-          if (isFocused) {
-            setMyTest(label);
-          }
-
           const onPress = () => {
             const event = navigation.emit({
               type: 'tabPress',
@@ -219,7 +308,7 @@ console.log("VDCVFDSFdgdgdfgfd",getLocationID,response?.data)
             });
 
             if (!isFocused && !event.defaultPrevented) {
-              navigation.navigate({name: route.name, merge: true});
+              navigation.navigate({ name: route.name, merge: true });
             }
           };
 
@@ -227,19 +316,16 @@ console.log("VDCVFDSFdgdgdfgfd",getLocationID,response?.data)
             <TouchableOpacity
               key={index}
               onPress={onPress}
-              style={{
-                flex: 1,
-                backgroundColor: '#EEEEEE',
-                padding: 5,
-              }}>
+              style={{ flex: 1, backgroundColor: '#EEEEEE', padding: 5 }}
+            >
               <View
                 style={{
-                  borderRadius: isFocused ? 10 : 10,
+                  borderRadius: 10,
                   paddingVertical: 13,
                   ...Platform.select({
                     ios: {
                       shadowColor: '#000000',
-                      shadowOffset: {width: 0, height: 6},
+                      shadowOffset: { width: 0, height: 6 },
                       shadowOpacity: 0.3,
                       shadowRadius: 4,
                     },
@@ -248,14 +334,16 @@ console.log("VDCVFDSFdgdgdfgfd",getLocationID,response?.data)
                     },
                   }),
                   backgroundColor: isFocused ? '#B1D34F' : null,
-                }}>
+                }}
+              >
                 <Text
                   style={{
-                    color: isFocused ? 'black' : 'black',
+                    color: 'black',
                     fontWeight: isFocused ? '600' : '400',
                     fontSize: 12,
                     textAlign: 'center',
-                  }}>
+                  }}
+                >
                   {label}
                 </Text>
               </View>
@@ -265,58 +353,28 @@ console.log("VDCVFDSFdgdgdfgfd",getLocationID,response?.data)
       </View>
     );
   }
-  //end
 
   return (
-    <SafeAreaView style={{backgroundColor: COLORS.CREAM, flex: 1}}>
-      {/* {getPurchaseData.data != 'Package not found'
-        ? getPurchaseData.data.energy_plan.toLowerCase() ===
-            myTest.toLowerCase() && (
-            <View
-              style={{
-                position: 'absolute',
-                right: PLATFORM_IOS
-                  ? (mobileW * 25) / 100
-                  : (mobileW * 25) / 100,
-                alignSelf: 'flex-end',
-                top: PLATFORM_IOS ? (mobileH * -2) / 100 : (mobileH * -6) / 100,
-                // marginVertical:PLATFORM_IOS ? -20: -40,
-                zIndex: 5,
-              }}>
-              <AnimatedLottieView
-                source={{
-                  uri: 'https://assets3.lottiefiles.com/packages/lf20_OrMyddm62t.json',
-                }} // Replace with your animation file
-                autoPlay
-                loop
-                style={{
-                  width: (mobileW * 25) / 100,
-                  height: (mobileH * 25) / 100,
-                }}
-              />
-            </View>
-          )
-        : null} */}
-
+    <SafeAreaView style={{ backgroundColor: COLORS.CREAM, flex: 1 }}>
       <DrawerOpen top={PLATFORM_IOS ? 70 : 30} />
       <View style={[styles.charging_imag_style]}>
         {changePage == 0 ? (
           <Image
             source={require('../../../assets/images/bp_one.png')}
             resizeMode="cover"
-            style={{width: mobileW, height: mobileH / 4}}
+            style={{ width: mobileW, height: mobileH / 4 }}
           />
         ) : changePage == 1 ? (
           <Image
             source={require('../../../assets/images/bp_two.png')}
             resizeMode="cover"
-            style={{width: mobileW, height: mobileH / 4}}
+            style={{ width: mobileW, height: mobileH / 4 }}
           />
         ) : (
           <Image
             source={require('../../../assets/images/bp_three.png')}
             resizeMode="cover"
-            style={{width: mobileW, height: mobileH / 4}}
+            style={{ width: mobileW, height: mobileH / 4 }}
           />
         )}
       </View>
@@ -341,7 +399,8 @@ console.log("VDCVFDSFdgdgdfgfd",getLocationID,response?.data)
               fontWeight: 'bold',
             },
           }}
-          tabBar={props => <MyTabBar {...props} />}>
+          tabBar={props => <MyTabBar {...props} />}
+        >
           {getBasePackage?.length >= 1 &&
             getBasePackage &&
             getBasePackage.map((item, ind) => {

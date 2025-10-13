@@ -2,7 +2,7 @@
 /* eslint-disable react/no-unstable-nested-components */
 /* eslint-disable no-undef */
 /* eslint-disable react-native/no-inline-styles */
-import React, {useEffect, useState} from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   DrawerActions,
   NavigationContainer,
@@ -24,13 +24,13 @@ import {
 } from 'react-native';
 import CompleteProfile from '../screens/register/CompleteProfile';
 import Home from '../screens/purchasePlan/Home';
-import {createDrawerNavigator} from '@react-navigation/drawer';
+import { createDrawerNavigator } from '@react-navigation/drawer';
 import ForgetPassword from '../screens/register/ForgetPassword';
 import Account from '../screens/accounts/Account';
 import ResetPassword from '../screens/register/ResetPassword';
 import Toast from 'react-native-toast-message';
 import CustomDrawerContent from './CustomDrawer';
-import {createNativeStackNavigator} from '@react-navigation/native-stack';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import PlanSummary from '../screens/purchasePlan/PlanSummary';
 import Testing from '../screens/testing/Testing';
@@ -42,7 +42,7 @@ import Theme from '../screens/accounts/Theme';
 import Subscription from '../screens/accounts/Subscription';
 import deleteAccount from '../screens/accounts/deleteAccount';
 import EnergyStats from '../screens/EnergyStats';
-import {useDispatch, useSelector} from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import PaymentGateWay from '../screens/payment/PaymentGateWay';
 import Splash from '../splash/Splash';
 import Introduction from '../splash/Introduction';
@@ -53,18 +53,18 @@ import ContactUs from '../screens/drawerPart/ContactUs';
 import Privacy from '../screens/drawerPart/Privacy';
 import Terms from '../screens/drawerPart/Terms';
 import Charging from '../Components/Charging';
-import {OnlineCharge} from '../../assets/images/OnlineCharge';
-import {NoCharge} from '../../assets/images/NoCharge';
+import { OnlineCharge } from '../../assets/images/OnlineCharge';
+import { NoCharge } from '../../assets/images/NoCharge';
 import COLORS from '../constants/COLORS';
-import {DIMENSIONS, PLATFORM_IOS} from '../constants/DIMENSIONS';
+import { DIMENSIONS, PLATFORM_IOS } from '../constants/DIMENSIONS';
 import Contact from '../screens/accounts/Contact';
 import ForDownGrade from '../Components/ForDownGrade';
 import PersonalDetails from '../screens/accounts/PersonalDetails';
-import {CommonActions} from '@react-navigation/native';
-import {persistor} from '../redux/store';
+import { CommonActions } from '@react-navigation/native';
+import { persistor } from '../redux/store';
 import axios from 'axios';
-import {API} from '../api/API';
-import {setLogout} from '../redux/action';
+import { API } from '../api/API';
+import { setLogout } from '../redux/action';
 
 const Drawer = createDrawerNavigator();
 const Stack = createNativeStackNavigator();
@@ -72,7 +72,7 @@ const screenOptions = {
   headerShown: false,
   gestureEnabled: false, // Hide the header for all screens
 };
-export const DrawerScreenPart = ({navigation}) => {
+export const DrawerScreenPart = ({ navigation }) => {
   const getEmailData = useSelector(state => state.getEmailData);
   useEffect(() => {
     handleLinkPress();
@@ -96,7 +96,7 @@ export const DrawerScreenPart = ({navigation}) => {
     </View>
   );
 };
-export const ChargerStatus = ({navigation}) => {
+export const ChargerStatus = ({ navigation }) => {
   const user_ID = useSelector(state => state.getUserID);
   const dispatch = useDispatch();
 
@@ -157,12 +157,13 @@ const DrawerNavigation = () => {
   const [focus, setFocus] = useState();
   const [focusOne, setFocusOne] = useState();
   const [focusTwo, setFocusTwo] = useState();
-  const {
-    getPackageStatus,
-    getChargerStatus,
-    getDeviceID,
-    getSubscriptionCancelStatus,
-  } = useSelector(state => state);
+
+  const getPackageStatus = useSelector(state => state.getPackageStatus);
+  const getChargerStatus = useSelector(state => state.getChargerStatus);
+  const getDeviceID = useSelector(state => state.getDeviceID);
+  const getSubscriptionCancelStatus = useSelector(
+    state => state.getSubscriptionCancelStatus,
+  );
   return (
     <Drawer.Navigator
       screenOptions={{
@@ -172,14 +173,16 @@ const DrawerNavigation = () => {
         },
         gestureEnabled: false,
       }}
-      drawerContent={props => <CustomDrawerContent {...props} />}>
-
+      drawerContent={props => <CustomDrawerContent {...props} />}
+    >
       {getPackageStatus ? (
         <>
           <Drawer.Screen
+            name="EnergyStats"
+            component={EnergyStats}
             options={{
               drawerActiveBackgroundColor: '#fff',
-              drawerIcon: ({focused, color, size}) => {
+              drawerIcon: ({ focused, color, size }) => {
                 setFocus(focused);
                 return (
                   <Image
@@ -189,7 +192,7 @@ const DrawerNavigation = () => {
                         ? require('../../assets/images/NewHome1.png')
                         : require('../../assets/images/NewHome.png')
                     }
-                    style={{width: 35, height: 25}}
+                    style={{ width: 35, height: 25 }}
                   />
                 );
               },
@@ -214,8 +217,7 @@ const DrawerNavigation = () => {
               drawerActiveTintColor: 'black',
               title: 'Home',
             }}
-            name="EnergyStats"
-            component={EnergyStats}
+          
           />
           <Drawer.Screen
             options={{
@@ -223,7 +225,7 @@ const DrawerNavigation = () => {
                 marginHorizontal: -7,
               },
               drawerActiveBackgroundColor: '#fff',
-              drawerIcon: ({focused, color, size}) => {
+              drawerIcon: ({ focused, color, size }) => {
                 setFocusOne(focused);
                 return (
                   <Image
@@ -232,7 +234,7 @@ const DrawerNavigation = () => {
                         ? require('../../assets/images/NewEnergy1.png')
                         : require('../../assets/images/NewEnergy.png')
                     }
-                    style={{width: 35, height: 25}}
+                    style={{ width: 35, height: 25 }}
                   />
                 );
               },
@@ -245,7 +247,7 @@ const DrawerNavigation = () => {
                 width: '200%',
                 color: 'black',
                 fontWeight: '700',
-                  marginLeft: -10,
+                marginLeft: -10,
 
                 borderRadius: 5,
 
@@ -262,7 +264,7 @@ const DrawerNavigation = () => {
         <Drawer.Screen
           options={{
             drawerActiveBackgroundColor: '#fff',
-            drawerIcon: ({focused, color, size}) => {
+            drawerIcon: ({ focused, color, size }) => {
               setFocus(focused);
               return (
                 <Image
@@ -272,7 +274,7 @@ const DrawerNavigation = () => {
                       ? require('../../assets/images/NewHome1.png')
                       : require('../../assets/images/NewHome.png')
                   }
-                  style={{width: 35, height: 25}}
+                  style={{ width: 35, height: 25 }}
                 />
               );
             },
@@ -309,7 +311,7 @@ const DrawerNavigation = () => {
             marginTop: -5,
             marginHorizontal: -9,
           },
-          drawerIcon: ({focused, color, size}) => {
+          drawerIcon: ({ focused, color, size }) => {
             setFocusTwo(focused);
             return (
               <Image
@@ -318,7 +320,7 @@ const DrawerNavigation = () => {
                     ? require('../../assets/images/NewAccount1.png')
                     : require('../../assets/images/NewAccount.png')
                 }
-                style={{width: 40, height: 25}}
+                style={{ width: 40, height: 25 }}
               />
             );
           },
@@ -331,7 +333,7 @@ const DrawerNavigation = () => {
             width: '190%',
             color: 'black',
             fontWeight: '700',
-              marginLeft: -10,
+            marginLeft: -10,
             borderRadius: 5,
 
             overflow: 'hidden',
@@ -347,12 +349,12 @@ const DrawerNavigation = () => {
         options={{
           drawerActiveBackgroundColor: '#fff',
 
-          drawerIcon: ({focused, color, size}) => {
+          drawerIcon: ({ focused, color, size }) => {
             return (
               <Image
                 source={require('../../assets/images/contact_us.png')}
                 resizeMode="contain"
-                style={{width: 28, height: 28, margin:-10}}
+                style={{ width: 28, height: 28, margin: -10 }}
               />
             );
           },
@@ -377,12 +379,12 @@ const DrawerNavigation = () => {
         options={{
           drawerActiveBackgroundColor: '#fff',
 
-          drawerIcon: ({focused, color, size}) => {
+          drawerIcon: ({ focused, color, size }) => {
             return (
               <Image
                 source={require('../../assets/images/privacy.png')}
                 resizeMode="contain"
-                style={{width: 22, height: 22,}}
+                style={{ width: 22, height: 22 }}
               />
             );
           },
@@ -400,12 +402,12 @@ const DrawerNavigation = () => {
       <Drawer.Screen
         options={{
           drawerActiveBackgroundColor: '#fff',
-          drawerIcon: ({focused, color, size}) => {
+          drawerIcon: ({ focused, color, size }) => {
             return (
               <Image
                 source={require('../../assets/images/terms.png')}
                 resizeMode="stretch"
-                style={{width: 22, height: 22,}}
+                style={{ width: 22, height: 22 }}
               />
             );
           },
@@ -423,12 +425,12 @@ const DrawerNavigation = () => {
       <Drawer.Screen
         options={{
           drawerActiveBackgroundColor: '#fff',
-          drawerIcon: ({focused, color, size}) => {
+          drawerIcon: ({ focused, color, size }) => {
             return (
               <Image
                 source={require('../../assets/images/logout.png')}
                 resizeMode="stretch"
-                 style={{width: 22, height: 22,}}
+                style={{ width: 22, height: 22 }}
               />
             );
           },
@@ -455,18 +457,18 @@ const DrawerNavigation = () => {
                 marginLeft: (DIMENSIONS.SCREEN_HEIGHT * 3) / 100,
               },
               headerInteractionEnabled: false,
-              drawerIcon: ({focused, color, size}) => {
+              drawerIcon: ({ focused, color, size }) => {
                 let iconComponent = null;
 
                 if (getChargerStatus?.message === 'Charging') {
                   iconComponent = <Charging />;
                 } else if (getChargerStatus?.message === 'Online') {
                   iconComponent = (
-                    <OnlineCharge style={{marginTop: 10, marginLeft: 5}} />
+                    <OnlineCharge style={{ marginTop: 10, marginLeft: 5 }} />
                   );
                 } else if (getChargerStatus?.message === 'Offline') {
                   iconComponent = (
-                    <NoCharge style={{marginTop: 10, marginLeft: 5}} />
+                    <NoCharge style={{ marginTop: 10, marginLeft: 5 }} />
                   );
                 }
 
@@ -491,7 +493,8 @@ const DrawerNavigation = () => {
                       shadowOpacity: 0.29,
                       shadowRadius: 4.65,
                       elevation: 7,
-                    }}>
+                    }}
+                  >
                     {iconComponent}
                   </View>
                 ) : (
@@ -506,7 +509,8 @@ const DrawerNavigation = () => {
                       // shadowOpacity: 0.29,
                       // shadowRadius: 4.65,
                       // elevation: 7,
-                    }}>
+                    }}
+                  >
                     {iconComponent}
                   </View>
                 );
@@ -531,7 +535,7 @@ const LoginStack = () => {
       <Stack.Screen
         name="Login"
         component={Login}
-        options={{gestureEnabled: false}}
+        options={{ gestureEnabled: false }}
       />
       <Stack.Screen name="Register" component={Register} />
       <Stack.Screen name="VerifyEmail" component={VerifyEmail} />
@@ -553,10 +557,9 @@ const HomeStack = () => {
   );
 };
 
-
 export default function Router() {
-
-  const {isAuthorized} = useSelector(state => state);
+  // const isAuthorized = useSelector(state => state);
+   const isAuthorized = useSelector(state => state.isAuthorized);
 
   useEffect(() => {
     checkLogin();
@@ -612,7 +615,6 @@ export default function Router() {
       {/* <Stack.Screen name="Login" component={Login} /> */}
 
       <Stack.Screen name="Privacy Policy" component={Privacy} />
-     
     </Stack.Navigator>
   );
 }

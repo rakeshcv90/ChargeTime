@@ -27,7 +27,7 @@ const Graph = ({dataOne}) => {
   const [forLoading, setForLoading] = useState(false);
 
   const data = {
-    labels: dataOne.Date,
+    labels: dataOne?.Date,
     datasets: [
       {
         // data: convertedData,
@@ -54,7 +54,7 @@ const Graph = ({dataOne}) => {
   };
   return (
     <TouchableWithoutFeedback onPress={() => console.log('first')}>
-      <>
+  <View>
         {forLoading ? <ActivityLoader /> : ''}
         {data.labels != undefined && (
           <Text
@@ -128,7 +128,7 @@ const Graph = ({dataOne}) => {
               )}
           </ScrollView>
         </View>
-      </>
+      </View>
     </TouchableWithoutFeedback>
   );
 };

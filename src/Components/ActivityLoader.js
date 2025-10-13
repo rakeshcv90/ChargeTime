@@ -43,7 +43,7 @@ const ActivityLoader = props => {
               resizeMode: 'contain',
             }}
           /> */}
-           <AnimatedLottieView
+           {/* <AnimatedLottieView
                 // source={{
                 //   uri: 'https://assets7.lottiefiles.com/packages/lf20_qgq2nqsy.json',
                 // }} // Replace with your animation file
@@ -52,7 +52,8 @@ const ActivityLoader = props => {
                 autoPlay
                 loop
                 style={{width: 150, height: 50,}}
-              />
+              /> */}
+             <ActivityIndicator size="large" color="white" />
       </View>
     </Modal>
   );

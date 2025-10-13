@@ -7,7 +7,7 @@ import {
   StyleSheet,
   Dimensions,
   TouchableOpacity,
-  SafeAreaView,
+ 
   BackHandler,
   Platform,
   ToastAndroid,
@@ -38,13 +38,16 @@ import axios from 'axios';
 import {setCardDetails} from '../../redux/action';
 import {ScrollView} from 'react-native-gesture-handler';
 import {CommonActions} from '@react-navigation/native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 const mobileW = Math.round(Dimensions.get('screen').width);
 const mobileH = Math.round(Dimensions.get('screen').height);
 
 const Account = ({navigation}) => {
   const [allSavedCard, setSavedCard] = useState([]);
-  const {getUserID, getPackageStatus} = useSelector(state => state);
+  // const {getUserID, getPackageStatus} = useSelector(state => state);
+  const getUserID = useSelector(state => state.getUserID);
+const getPackageStatus = useSelector(state => state.getPackageStatus);
 
   // const [getData, setGetData] = useState([]);
   // const [apiResponse, setApiResponse] = useState(null);
@@ -203,7 +206,7 @@ const Account = ({navigation}) => {
       })
       .catch(err => {
         // setForLoading(false);
-        console.log('xcvvcxvcxv33333', err);
+       
       });
   };
   const getAllPurchasePlan=(userId)=>{

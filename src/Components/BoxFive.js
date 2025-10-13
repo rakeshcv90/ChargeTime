@@ -21,7 +21,9 @@ import {useSelector} from 'react-redux';
 import {DIMENSIONS} from '../constants/DIMENSIONS';
 
 const BoxFive = ({data, purchageData, disabled}) => {
-  const {getUserID, getSubscriptionCancelStatus} = useSelector(state => state);
+
+const getUserID = useSelector(state => state.getUserID);
+const getSubscriptionCancelStatus = useSelector(state => state.getSubscriptionCancelStatus);
 
   const [message, setMessage] = useState('');
   const [modalVisible, setModalVisible] = useState(false);
@@ -90,7 +92,7 @@ const BoxFive = ({data, purchageData, disabled}) => {
   };
 
   return (
-    <>
+    <View>
       <View
         style={[
           styles.mainDiv_purchage_dollar,
@@ -141,7 +143,7 @@ const BoxFive = ({data, purchageData, disabled}) => {
         </View>
       </View>
       <ShowModal />
-    </>
+    </View>
   );
 };
 

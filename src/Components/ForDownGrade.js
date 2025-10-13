@@ -22,10 +22,12 @@ import {setDataForPayment} from '../redux/action';
 export default function ForDownGrade({route, navigation}) {
   const {dataOne, purchageData, message} = route.params;
 
-  const {getPurchaseData, getUserID, getLocationID} = useSelector(
-    state => state,
-  );
-
+  // const {getPurchaseData, getUserID, getLocationID} = useSelector(
+  //   state => state,
+  // );
+const getPurchaseData = useSelector(state => state.getPurchaseData);
+const getUserID = useSelector(state => state.getUserID);
+const getLocationID = useSelector(state => state.getLocationID);
   const [tax, setTax] = useState('');
   const [totalSalexTax, setTotalSalextax] = useState('');
   const [voucherStatus, setvoucherStatus] = useState(false);
@@ -65,7 +67,7 @@ export default function ForDownGrade({route, navigation}) {
         });
       })
       .catch(err => {
-        console.log(err.response.data.message);
+      
       });
   };
 

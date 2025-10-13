@@ -7,16 +7,16 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import React, {FC, useState} from 'react';
+import React, { FC, useState } from 'react';
 import COLORS from '../constants/COLORS';
-import {DIMENSIONS, PLATFORM_IOS} from '../constants/DIMENSIONS';
-import {useDispatch, useSelector} from 'react-redux';
+import { DIMENSIONS, PLATFORM_IOS } from '../constants/DIMENSIONS';
+import { useDispatch, useSelector } from 'react-redux';
 import Overusageimage from '../../assets/svgs/Overusageimage';
-import {navigationRef} from '../../App';
+import { navigationRef } from '../../App';
 import axios from 'axios';
-import {API} from '../api/API';
+import { API } from '../api/API';
 import Toast from 'react-native-toast-message';
-import {setSubscriptionStatus} from '../redux/action';
+import { setSubscriptionStatus } from '../redux/action';
 import ActivityLoader from './ActivityLoader';
 
 type Props = {
@@ -36,7 +36,11 @@ const PauseModal: FC<Props> = ({
   cancel2Stripe,
 }) => {
   const dispatch = useDispatch();
-  const {subscriptionStatus, getUserID} = useSelector((state: any) => state);
+  // const {subscriptionStatus, getUserID} = useSelector((state: any) => state);
+  const subscriptionStatus = useSelector(
+    (state: any) => state.subscriptionStatus,
+  );
+  const getUserID = useSelector((state: any) => state.getUserID);
   const [isLoading, setIsLoading] = useState(false);
 
   const postSubscriptionStatus = async () => {
@@ -79,7 +83,8 @@ const PauseModal: FC<Props> = ({
       onRequestClose={() => {
         // dispatch(setOverModelView(false));
         //  setModalVisible(!modalVisible);
-      }}>
+      }}
+    >
       <View style={styles.centeredView}>
         <View style={styles.modalView}>
           <TouchableOpacity
@@ -91,10 +96,11 @@ const PauseModal: FC<Props> = ({
               alignItems: 'flex-end',
               alignSelf: 'flex-end',
               marginTop: -10,
-            }}>
+            }}
+          >
             <Image
               source={require('../../assets/images/close.png')}
-              style={{width: 12, height: 12}}
+              style={{ width: 12, height: 12 }}
               resizeMode="contain"
             />
           </TouchableOpacity>
@@ -113,7 +119,7 @@ const PauseModal: FC<Props> = ({
                   : require('../../assets/images/PauseModalImage.png')
               }
               resizeMode="contain"
-              style={{width: 70, height: 70}}
+              style={{ width: 70, height: 70 }}
             />
           }
           <Text
@@ -124,7 +130,8 @@ const PauseModal: FC<Props> = ({
               marginTop: 10,
               textAlign: 'center',
               lineHeight: 20,
-            }}>
+            }}
+          >
             {cancel1
               ? `You don’t have a plan. You can use your remaining credits until its over.`
               : cancel2
@@ -146,16 +153,18 @@ const PauseModal: FC<Props> = ({
                 navigationRef.navigate('DrawerStack', {
                   screen: 'EnergyStats',
                 });
-              }}>
+              }}
+            >
               <Text style={styles.textStyle}>Home</Text>
             </TouchableOpacity>
             <TouchableOpacity
-              style={[styles.button, styles.buttonClose, {padding: 5}]}
+              style={[styles.button, styles.buttonClose, { padding: 5 }]}
               onPress={() => {
                 if (cancel1 || cancel2 || cancel1Stripe || cancel2Stripe)
                   plan();
                 else postSubscriptionStatus();
-              }}>
+              }}
+            >
               <Text style={styles.textStyle}>
                 {cancel1 || cancel2 || cancel1Stripe || cancel2Stripe
                   ? 'Purchase Plan'

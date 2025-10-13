@@ -5,7 +5,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 
 /* eslint-disable react-native/no-inline-styles */
-import React, {useEffect, useState} from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   View,
   Text,
@@ -18,27 +18,27 @@ import {
   Platform,
   ToastAndroid,
 } from 'react-native';
-import {useDispatch, useSelector} from 'react-redux';
-import {SafeAreaView} from 'react-native-safe-area-context';
-import {createMaterialTopTabNavigator} from '@react-navigation/material-top-tabs';
+import { useDispatch, useSelector } from 'react-redux';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 import COLORS from '../../constants/COLORS';
 import Day from './Day';
 import Month from './Month';
 import Week from './Week';
 import Quarter from './Quarter';
 import Year from './Year';
-import {DIMENSIONS, PLATFORM_IOS} from '../../constants/DIMENSIONS';
+import { DIMENSIONS, PLATFORM_IOS } from '../../constants/DIMENSIONS';
 
-import {NoCharge} from '../../../assets/images/NoCharge';
-import {OnlineCharge} from '../../../assets/images/OnlineCharge';
+import { NoCharge } from '../../../assets/images/NoCharge';
+import { OnlineCharge } from '../../../assets/images/OnlineCharge';
 import Charging from '../../Components/Charging';
 import axios from 'axios';
-import {API} from '../../api/API';
+import { API } from '../../api/API';
 import ActivityLoader from '../../Components/ActivityLoader';
 import DrawerOpen from '../../Components/DrawerOpen';
-import {navigationRef} from '../../../App';
-import {DrawerActions, useIsFocused} from '@react-navigation/native';
-import {ActivityIndicator} from 'react-native';
+import { navigationRef } from '../../../App';
+import { DrawerActions, useIsFocused } from '@react-navigation/native';
+import { ActivityIndicator } from 'react-native';
 import AnimatedLottieView from 'lottie-react-native';
 import {
   setBoxTwoDataForDashboard,
@@ -65,7 +65,7 @@ import PauseModal from '../../Components/PauseModal';
 
 const mobileW = Math.round(Dimensions.get('screen').width);
 
-function MyTabBar({state, descriptors, navigation}) {
+function MyTabBar({ state, descriptors, navigation }) {
   return (
     <View
       style={{
@@ -76,7 +76,7 @@ function MyTabBar({state, descriptors, navigation}) {
         ...Platform.select({
           ios: {
             shadowColor: '#000000',
-            shadowOffset: {width: 0, height: 2},
+            shadowOffset: { width: 0, height: 2 },
             shadowOpacity: 0.3,
             shadowRadius: 4,
           },
@@ -88,9 +88,10 @@ function MyTabBar({state, descriptors, navigation}) {
         borderWidth: 1,
         borderColor: '#EEEEEE',
         zIndex: 1,
-      }}>
+      }}
+    >
       {state.routes.map((route, index) => {
-        const {options} = descriptors[route.key];
+        const { options } = descriptors[route.key];
         const label =
           options.tabBarLabel !== undefined
             ? options.tabBarLabel
@@ -129,7 +130,7 @@ function MyTabBar({state, descriptors, navigation}) {
 
           if (!isFocused && !event.defaultPrevented) {
             // The `merge: true` option makes sure that the params inside the tab screen are preserved
-            navigation.navigate({name: route.name, merge: true});
+            navigation.navigate({ name: route.name, merge: true });
           }
         };
 
@@ -147,7 +148,8 @@ function MyTabBar({state, descriptors, navigation}) {
               justifyContent: 'center',
               //   elevation: isFocused ? 10 : 0,
               overflow: 'hidden',
-            }}>
+            }}
+          >
             <Text
               style={{
                 textTransform: 'uppercase',
@@ -155,7 +157,8 @@ function MyTabBar({state, descriptors, navigation}) {
                 fontWeight: isFocused ? 'bold' : '400',
                 fontSize: 12,
                 textAlign: 'center',
-              }}>
+              }}
+            >
               {label}
             </Text>
           </TouchableOpacity>
@@ -173,14 +176,22 @@ export default function EnergyStats() {
   const [refresh, setRefresh] = useState(false);
 
   const [isLoading, setIsLoading] = useState(false);
-  const {getGraphData} = useSelector((state: any) => state);
+
   const isFocused = useIsFocused();
-  const {
-    getChargerStatus,
-    getDeviceID,
-    getUserID,
-    getSubscriptionCancelStatus,
-  } = useSelector((state: any) => state);
+  //  const {getGraphData} = useSelector((state: any) => state);
+  // const {
+  //   getChargerStatus,
+  //   getDeviceID,
+  //   getUserID,
+  //   getSubscriptionCancelStatus,
+  // } = useSelector((state: any) => state);
+  const getGraphData = useSelector((state: any) => state.getGraphData);
+  const getChargerStatus = useSelector((state: any) => state.getChargerStatus);
+  const getDeviceID = useSelector((state: any) => state.getDeviceID);
+  const getUserID = useSelector((state: any) => state.getUserID);
+  const getSubscriptionCancelStatus = useSelector(
+    (state: any) => state.getSubscriptionCancelStatus,
+  );
 
   const [toggleState, setToggleState] = useState(false);
   const dispatch = useDispatch();
@@ -214,7 +225,6 @@ export default function EnergyStats() {
       dispatch(setSubscriptionStatus(res.PlanStatus));
       setPaused(res.PlanStatus == '1' ? true : false);
       setIsLoading(false);
-
     } catch (error) {
       console.log('Error-7', error);
       setIsLoading(false);
@@ -225,7 +235,6 @@ export default function EnergyStats() {
     axios
       .get(`${API}/devicecheck/${getUserID}}`)
       .then(res => {
-     
         setIsLoading(false);
         if (res.data.status == 'True') {
           setDeviceIdTemp(res.data.message);
@@ -281,11 +290,11 @@ export default function EnergyStats() {
           dailyUsuagekwh(getUserID);
           setIsLoading(false);
         } else {
-          dispatch(setGraphData({message}));
-          dispatch(setWeekGraphData({message}));
-          dispatch(setMonthGraphData({message}));
-          dispatch(setQuarterGraphData({message}));
-          dispatch(setYearGraphData({message}));
+          dispatch(setGraphData({ message }));
+          dispatch(setWeekGraphData({ message }));
+          dispatch(setMonthGraphData({ message }));
+          dispatch(setQuarterGraphData({ message }));
+          dispatch(setYearGraphData({ message }));
           setIsLoading(false);
         }
       })
@@ -310,6 +319,38 @@ export default function EnergyStats() {
         setIsLoading(false);
       });
   };
+  // const remainigUsuageData = (userId: string) => {
+  //   let remaingData;
+
+  //   axios
+  //     .get(`${API}/remainingusage/${userId}`)
+  //     .then(res => {
+  //       setIsLoading(false);
+  //       if (parseInt(res.data?.kwh_unit_remaining) >= 0) {
+  //         remaingData = res.data?.kwh_unit_remaining;
+  //         dispatch(setRemainingData(res.data?.kwh_unit_remaining));
+
+  //         dispatch(setOverUsage(false));
+  //         dispatch(setOverModelView(false));
+  //         setIsLoading(false);
+  //       } else {
+  //         remaingData = res.data?.kwh_unit_overusage;
+  //         dispatch(setRemainingData(res.data?.kwh_unit_overusage));
+
+  //         dispatch(setOverUsage(true));
+  //         dispatch(setOverModelView(true));
+  //         setIsLoading(false);
+  //       }
+  //       console.log('first', res.data);
+  //       // dispatch(setRemainingData(remaingData));
+  //       setIsLoading(false);
+  //       //fetchWeekGraphData(getUserID);
+  //     })
+  //     .catch(err => {
+  //       setIsLoading(false);
+  //       console.log('TRTRT333333333', err);
+  //     });
+  // };
   const remainigUsuageData = (userId: string) => {
     let remaingData;
 
@@ -317,29 +358,28 @@ export default function EnergyStats() {
       .get(`${API}/remainingusage/${userId}`)
       .then(res => {
         setIsLoading(false);
-        if (parseInt(res.data?.kwh_unit_remaining) >= 0) {
-          remaingData = res.data?.kwh_unit_remaining;
-          dispatch(setRemainingData(res.data?.kwh_unit_remaining));
 
+        const remaining = parseFloat(res.data?.kwh_unit_remaining || '0');
+        const overUsage = parseFloat(res.data?.kwh_unit_overusage || '0');
+
+        if (remaining > 0.01) {
+          // treat anything below 0.01 as overusage
+          remaingData = remaining;
+          dispatch(setRemainingData(remaining));
           dispatch(setOverUsage(false));
           dispatch(setOverModelView(false));
-          setIsLoading(false);
         } else {
-          remaingData = res.data?.kwh_unit_overusage;
-          dispatch(setRemainingData(res.data?.kwh_unit_overusage));
-
+          remaingData = overUsage;
+          dispatch(setRemainingData(overUsage));
           dispatch(setOverUsage(true));
           dispatch(setOverModelView(true));
-          setIsLoading(false);
         }
-        console.log('first', res.data);
-        // dispatch(setRemainingData(remaingData));
+
         setIsLoading(false);
-        //fetchWeekGraphData(getUserID);
       })
       .catch(err => {
         setIsLoading(false);
-        console.log('TRTRT333333333', err);
+        console.log('remainigUsuageData error:', err);
       });
   };
 
@@ -349,9 +389,9 @@ export default function EnergyStats() {
       .get(`${API}/currentplan/${userId}`)
       .then(res => {
         const subCancelStatus = res.data?.message?.subscription_cancel_status;
-        console.log('subCancelStatus', subCancelStatus);
+
         setIsLoading(false);
-      
+
         if (res.data.data == 'Package not found') {
           dispatch(setBoxTwoDataForDashboard(res?.data));
           dispatch(setPurchaseData(res.data));
@@ -362,8 +402,8 @@ export default function EnergyStats() {
             ),
           );
           dispatch(setPackageStatus(false));
-          dispatch(setBoxTwoDataForDashboard({data: 'Package not found'}));
-          dispatch(setPurchaseData({data: 'Package not found'}));
+          dispatch(setBoxTwoDataForDashboard({ data: 'Package not found' }));
+          dispatch(setPurchaseData({ data: 'Package not found' }));
         } else {
           dispatch(setBoxTwoDataForDashboard(res?.data));
           dispatch(
@@ -423,7 +463,7 @@ export default function EnergyStats() {
   return (
     <>
       <DrawerOpen top={PLATFORM_IOS ? DIMENSIONS.SCREEN_WIDTH * 0.19 : 30} />
-      <SafeAreaView style={{backgroundColor: COLORS.CREAM, flex: 1}}>
+      <SafeAreaView style={{ backgroundColor: COLORS.CREAM, flex: 1 }}>
         <StatusBar backgroundColor={COLORS.CREAM2} barStyle={'dark-content'} />
 
         {getDeviceID ==
@@ -433,20 +473,22 @@ export default function EnergyStats() {
               justifyContent: 'center',
               alignItems: 'center',
               flex: 1,
-            }}>
+            }}
+          >
             <View
               style={{
                 flexDirection: 'row',
                 justifyContent: 'center',
                 alignItems: 'center',
-              }}>
+              }}
+            >
               <AnimatedLottieView
                 source={{
                   uri: 'https://lottie.host/a18631fc-3895-4d33-8395-8a338608b16a/BIk5hlIWG8.json',
                 }} // Replace with your animation file
                 autoPlay
                 loop
-                style={{width: 150, height: 150}}
+                style={{ width: 150, height: 150 }}
               />
               <AnimatedLottieView
                 // source={{
@@ -470,7 +512,8 @@ export default function EnergyStats() {
                 textAlign: 'center',
                 paddingHorizontal: 30,
                 color: COLORS.BLACK,
-              }}>
+              }}
+            >
               {getDeviceID}
             </Text>
             <View
@@ -478,7 +521,8 @@ export default function EnergyStats() {
                 flexDirection: 'row',
                 justifyContent: 'center',
                 alignItems: 'center',
-              }}>
+              }}
+            >
               <TouchableOpacity
                 onPress={getDeviceIDData}
                 style={{
@@ -492,7 +536,7 @@ export default function EnergyStats() {
                   ...Platform.select({
                     ios: {
                       shadowColor: '#000000',
-                      shadowOffset: {width: 0, height: 2},
+                      shadowOffset: { width: 0, height: 2 },
                       shadowOpacity: 0.3,
                       shadowRadius: 4,
                     },
@@ -500,7 +544,8 @@ export default function EnergyStats() {
                       elevation: 4,
                     },
                   }),
-                }}>
+                }}
+              >
                 <Text
                   style={{
                     color: '#263238',
@@ -508,7 +553,8 @@ export default function EnergyStats() {
                     fontSize: 14,
                     lineHeight: 17,
                     textTransform: 'capitalize',
-                  }}>
+                  }}
+                >
                   Refresh
                 </Text>
               </TouchableOpacity>
@@ -525,7 +571,7 @@ export default function EnergyStats() {
                   ...Platform.select({
                     ios: {
                       shadowColor: '#000000',
-                      shadowOffset: {width: 0, height: 2},
+                      shadowOffset: { width: 0, height: 2 },
                       shadowOpacity: 0.3,
                       shadowRadius: 4,
                     },
@@ -533,7 +579,8 @@ export default function EnergyStats() {
                       elevation: 4,
                     },
                   }),
-                }}>
+                }}
+              >
                 <Text
                   style={{
                     color: '#263238',
@@ -541,7 +588,8 @@ export default function EnergyStats() {
                     fontSize: 14,
                     lineHeight: 17,
                     textTransform: 'capitalize',
-                  }}>
+                  }}
+                >
                   Contact Us
                 </Text>
               </TouchableOpacity>
@@ -549,8 +597,8 @@ export default function EnergyStats() {
           </View>
         ) : (
           <View>
-            <View style={{backgroundColor: COLORS.CREAM2}}>
-              <View style={{flexDirection: 'row', alignItems: 'center'}}>
+            <View style={{ backgroundColor: COLORS.CREAM2 }}>
+              <View style={{ flexDirection: 'row', alignItems: 'center' }}>
                 {getChargerStatus?.message == 'Charging' ? (
                   <Charging />
                 ) : (
@@ -572,11 +620,12 @@ export default function EnergyStats() {
                         shadowOpacity: 0.29,
                         shadowRadius: 4.65,
                         elevation: 7,
-                      }}>
+                      }}
+                    >
                       {getChargerStatus?.message == 'Online' ? (
-                        <OnlineCharge style={{marginTop: 8, marginLeft: 5}} />
+                        <OnlineCharge style={{ marginTop: 8, marginLeft: 5 }} />
                       ) : (
-                        <NoCharge style={{marginTop: 8, marginLeft: 5}} />
+                        <NoCharge style={{ marginTop: 8, marginLeft: 5 }} />
                       )}
                     </View>
                     <View>
@@ -586,7 +635,8 @@ export default function EnergyStats() {
                           fontSize: 10,
                           lineHeight: 17,
                           color: COLORS.BLACK,
-                        }}>
+                        }}
+                      >
                         Current Status
                       </Text>
                       <Text
@@ -595,7 +645,8 @@ export default function EnergyStats() {
                           fontSize: 16,
                           lineHeight: 17,
                           color: COLORS.BLACK,
-                        }}>
+                        }}
+                      >
                         {getChargerStatus?.message == 'Online'
                           ? 'Online'
                           : 'Offline'}
@@ -633,7 +684,8 @@ export default function EnergyStats() {
                   color: '#000000',
                   marginBottom: 15,
                   marginTop: 15,
-                }}>
+                }}
+              >
                 Energy Statistics
               </Text>
             </View>
@@ -647,7 +699,8 @@ export default function EnergyStats() {
               justifyContent: 'center',
               alignItems: 'center',
               paddingHorizontal: 20,
-            }}></View>
+            }}
+          ></View>
         ) : (
           <Tab.Navigator
             screenOptions={{
@@ -658,31 +711,32 @@ export default function EnergyStats() {
               swipeEnabled: false,
               tabBarScrollEnabled: true,
             }}
-            tabBar={props => <MyTabBar {...props} />}>
+            tabBar={props => <MyTabBar {...props} />}
+          >
             <Tab.Screen
               name="Day"
               component={Day}
-              initialParams={{handleRefresh, refresh}}
+              initialParams={{ handleRefresh, refresh }}
             />
             <Tab.Screen
               name="Week"
               component={Week}
-              initialParams={{handleRefresh, refresh}}
+              initialParams={{ handleRefresh, refresh }}
             />
             <Tab.Screen
               name="Month"
               component={Month}
-              initialParams={{handleRefresh, refresh}}
+              initialParams={{ handleRefresh, refresh }}
             />
             <Tab.Screen
               name="Quarter"
               component={Quarter}
-              initialParams={{handleRefresh, refresh}}
+              initialParams={{ handleRefresh, refresh }}
             />
             <Tab.Screen
               name="Year"
               component={Year}
-              initialParams={{handleRefresh, refresh}}
+              initialParams={{ handleRefresh, refresh }}
             />
           </Tab.Navigator>
         )}
@@ -699,7 +753,8 @@ export default function EnergyStats() {
                   Platform.OS == 'ios'
                     ? -(DIMENSIONS.SCREEN_HEIGHT * 0.05)
                     : -10,
-              }}>
+              }}
+            >
               {getSubscriptionCancelStatus ==
               2 ? null : getSubscriptionCancelStatus == 4 ? null : (
                 <ButtonSlider2 />
@@ -741,7 +796,8 @@ export default function EnergyStats() {
               marginBottom: 'auto',
               top: DIMENSIONS.SCREEN_HEIGHT * 0.5,
               position: 'absolute',
-            }}>
+            }}
+          >
             <ActivityIndicator size="large" color="#05bea5" />
           </View>
         )}

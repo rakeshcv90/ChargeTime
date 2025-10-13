@@ -15,26 +15,26 @@ import {
   ImageBackground,
 } from 'react-native';
 import AnimatedLottieView from 'lottie-react-native';
-import React, {useState, useRef, useEffect} from 'react';
-import {SafeAreaView} from 'react-native-safe-area-context';
+import React, { useState, useRef, useEffect } from 'react';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import Input from '../../Components/Input';
 import COLORS from '../../constants/COLORS';
-import {Card} from '../../../assets/svgs/Card';
-import {Name} from '../../../assets/svgs/Name';
-import {DIMENSIONS, PLATFORM_IOS} from '../../constants/DIMENSIONS';
-import {LeftIcon} from '../../../assets/images/LeftIcon';
-import {Formik} from 'formik';
+import { Card } from '../../../assets/svgs/Card';
+import { Name } from '../../../assets/svgs/Name';
+import { DIMENSIONS, PLATFORM_IOS } from '../../constants/DIMENSIONS';
+import { LeftIcon } from '../../../assets/images/LeftIcon';
+import { Formik } from 'formik';
 import * as Yup from 'yup';
-import {Admin} from '../../../assets/images/Admin';
-import {Message} from '../../../assets/images/Message';
-import {useDispatch, useSelector} from 'react-redux';
+import { Admin } from '../../../assets/images/Admin';
+import { Message } from '../../../assets/images/Message';
+import { useDispatch, useSelector } from 'react-redux';
 import axios from 'axios';
-import {API} from '../../api/API';
-import {navigationRef} from '../../../App';
+import { API } from '../../api/API';
+import { navigationRef } from '../../../App';
 import ActivityLoader from '../../Components/ActivityLoader';
 import HorizontalLine from '../../Components/HorizontalLine';
-import {mvs, ms} from 'react-native-size-matters';
-import creditCardType, {types as CardType} from 'credit-card-type';
+import { mvs, ms } from 'react-native-size-matters';
+import creditCardType, { types as CardType } from 'credit-card-type';
 import {
   createToken,
   CardForm,
@@ -54,9 +54,9 @@ import {
   setPurchaseData,
   setSubcriptionCancelStatus,
 } from '../../redux/action';
-import {Toast} from 'react-native-toast-message/lib/src/Toast';
-// import Carousel from 'react-native-snap-carousel';
-import {CardNumber} from '../../../assets/svgs/CardNumber';
+import { Toast } from 'react-native-toast-message/lib/src/Toast';
+import Carousel from 'react-native-snap-carousel';
+import { CardNumber } from '../../../assets/svgs/CardNumber';
 
 const mobileW = Math.round(Dimensions.get('screen').width);
 const mobileH = Math.round(Dimensions.get('window').height);
@@ -122,7 +122,7 @@ const validationSchema = Yup.object().shape({
     .required('CVV is Required')
     .matches(/^[0-9]{3}$/, 'CVV must be 3 digits'),
 });
-export default function PaymentGateWay({navigation, route}) {
+export default function PaymentGateWay({ navigation, route }) {
   const [allSavedCard, setSavedCard] = useState([]);
   const [currentCard, setCurrentCard] = useState('');
   const [focusIndex, setFocusedIndex] = useState(0);
@@ -140,9 +140,12 @@ export default function PaymentGateWay({navigation, route}) {
   const [show1, setshow1] = useState(true);
   const [couponcode, setCoupencode] = useState(null);
 
-  const {getDataForPayment, getUserID, getEmailDAta} = useSelector(
-    state => state,
-  );
+  // const { getDataForPayment, getUserID, getEmailDAta } = useSelector(
+  //   state => state,
+  // );
+const getDataForPayment = useSelector(state => state.getDataForPayment);
+const getUserID = useSelector(state => state.getUserID);
+const getEmailDAta = useSelector(state => state.getEmailDAta);
 
   useEffect(() => {
     handleGetCard();
@@ -153,7 +156,7 @@ export default function PaymentGateWay({navigation, route}) {
   const [modalVisible2, setModalVisible2] = useState(false);
   const [saveCardDetails, setSaveCardDetails] = useState();
   const [loader, setLoader] = useState(false);
-  const[desible,setDesible]=useState(false)
+  const [desible, setDesible] = useState(false);
 
   const dispatch = useDispatch();
 
@@ -176,9 +179,8 @@ export default function PaymentGateWay({navigation, route}) {
   };
 
   const handlePaymentSubmit = async () => {
-    setDesible(true)
-    const id = await createToken({...cardtype, type: 'Card'});
-    console.log('TEST DATA', id);
+    setDesible(true);
+    const id = await createToken({ ...cardtype, type: 'Card' });
 
     if (id?.error) {
       setModalVisible1(false);
@@ -191,13 +193,9 @@ export default function PaymentGateWay({navigation, route}) {
     } else {
       setLoader(true);
       let payload = new FormData();
-      // let exp_month = cardData?.validTill?.split('/')[0];
-      // let exp_year = cardData?.validTill?.split('/')[1];
+
       payload.append('kwh_unit', route.params.data.kwh);
-      // payload.append('card_number', cardData.cardNumber.replace(/\s/g, ''));
-      // payload.append('card_cvc', cardData.cvv);
-      // payload.append('card_exp_month', exp_month);
-      // payload.append('card_exp_year', exp_year);
+
       payload.append('item_details', getDataForPayment.package_name);
       payload.append('price', getDataForPayment.total_price);
       payload.append('price_stripe_id', getDataForPayment.price_stripe_id);
@@ -205,7 +203,6 @@ export default function PaymentGateWay({navigation, route}) {
       payload.append('stripeToken', id.token.id);
       payload.append('voucherCode', coupon == null ? '' : coupon);
       payload.append('coupon_id', couponcode == null ? '' : couponcode);
-      console.log('PAYLOAD DATA', payload);
 
       try {
         const response = await axios.post(`${API}/checkout`, payload, {
@@ -213,54 +210,65 @@ export default function PaymentGateWay({navigation, route}) {
             'Content-Type': 'multipart/form-data',
           },
         });
-        console.log('My Test123', response.data.status);
-        // if (response.data.status == 'Same package already purchased') {
-        //   PLATFORM_IOS
-        //     ? Toast.show({
-        //         type: 'error',
-        //         text1: response.data.status,
-        //       })
-        //     : ToastAndroid.show(response.data.status, ToastAndroid.SHORT);
-        //   setModalVisible1(false);
-        //   setLoader(false);
-        //   getDeviceIDData();
-        //   setDesible(false)
-        // } else if (response.data.status == 'success') {
-        //   setModalVisible(true);
-        //   setModalVisible1(false);
-        //   setLoader(false);
-        //   setshow(false);
-        //   setshow1(true);
-        //   setDesible(false)
-        // } else {
-        //   PLATFORM_IOS
-        //     ? Toast.show({
-        //         type: 'success',
-        //         text1: 'Invalid Card Details !',
-        //       })
-        //     : ToastAndroid.show('Invalid Card Details !', ToastAndroid.SHORT);
-        //   setModalVisible1(false);
-        //   setLoader(false);
-        //   setDesible(false)
-        // }
+        console.log('Response Purchasde', response?.data);
+        if (response.data.status == 'Same package already purchased') {
+          PLATFORM_IOS
+            ? Toast.show({
+                type: 'error',
+                text1: response.data.status,
+              })
+            : ToastAndroid.show(response.data.status, ToastAndroid.SHORT);
+          setModalVisible1(false);
+          setLoader(false);
+          getDeviceIDData();
+          setDesible(false);
+        } else if (response.data.status == 'success') {
+          setModalVisible(true);
+          setModalVisible1(false);
+          setLoader(false);
+          setshow(false);
+          setshow1(true);
+          setDesible(false);
+        } else if (response.data.status == 'blocked') {
+          setModalVisible1(false);
+          setLoader(false);
+          setshow(false);
+          setshow1(true);
+          setDesible(false);
+          Alert.alert(
+            ' Payment Blocked',
+            response?.data?.message,
+            [{ text: 'OK', onPress: () => console.log('OK Pressed') }],
+            { cancelable: false },
+          );
+        } else {
+          PLATFORM_IOS
+            ? Toast.show({
+                type: 'success',
+                text1: 'Invalid Card Details !',
+              })
+            : ToastAndroid.show('Invalid Card Details !', ToastAndroid.SHORT);
+          setModalVisible1(false);
+          setLoader(false);
+          setDesible(false);
+        }
       } catch (err) {
         setLoader(false);
-        console.log('test111111', err);
-        setDesible(false)
+        console.log('test111111', err?.response?.data?.message);
+        setDesible(false);
         if (err.response) {
           PLATFORM_IOS
             ? Toast.show({
                 type: 'error',
-                text1: 'Your plan has been canceled in Stripe and the Stripe ID could not be found.',
+                text1: err?.response?.data?.message,
               })
             : ToastAndroid.show(
-                'Your plan has been canceled in Stripe and the Stripe ID could not be found.',
-                ToastAndroid.SHORT,
+                err?.response?.data?.message,
+                ToastAndroid.CENTER,
               );
           setModalVisible1(false);
           setLoader(false);
         } else {
-          console.log('test111111', err.response.data);
           setModalVisible1(false);
           setLoader(false);
         }
@@ -271,7 +279,6 @@ export default function PaymentGateWay({navigation, route}) {
     if (value.complete) {
       setComplete(value.complete);
       setcardtype(value);
-      console.log('My Card Deatils', value);
     } else {
       setComplete(value.complete);
       setcardtype(null);
@@ -280,13 +287,9 @@ export default function PaymentGateWay({navigation, route}) {
   const handleCardSubmit = async () => {
     setLoader(true);
     let payload = new FormData();
-    // let exp_month = cardData?.validTill?.split('/')[0];
-    // let exp_year = cardData?.validTill?.split('/')[1];
+
     payload.append('kwh_unit', route.params.data.kwh);
-    // payload.append('card_number', cardData.cardNumber.replace(/\s/g, ''));
-    // payload.append('card_cvc', cardData.cvv);
-    // payload.append('card_exp_month', exp_month);
-    // payload.append('card_exp_year', exp_year);
+
     payload.append('item_details', getDataForPayment.package_name);
     payload.append('price', getDataForPayment.total_price);
     payload.append('price_stripe_id', getDataForPayment.price_stripe_id);
@@ -301,7 +304,7 @@ export default function PaymentGateWay({navigation, route}) {
           'Content-Type': 'multipart/form-data',
         },
       });
-      console.log('My Test', response.data);
+
       if (response.data.status == 'The package has already been purchased') {
         PLATFORM_IOS
           ? Toast.show({
@@ -319,7 +322,6 @@ export default function PaymentGateWay({navigation, route}) {
         setshow(false);
         setshow1(true);
       } else {
-        console.log('sdfdsfdsfsdfsdfsdfsdfds',response.data);
         PLATFORM_IOS
           ? Toast.show({
               type: 'success',
@@ -329,7 +331,6 @@ export default function PaymentGateWay({navigation, route}) {
         setModalVisible2(false);
         setLoader(false);
       }
-
     } catch (err) {
       console.log('TEsting Data', err);
       setLoader(false);
@@ -346,7 +347,6 @@ export default function PaymentGateWay({navigation, route}) {
         setModalVisible1(false);
         setLoader(false);
       } else {
-        console.log('test111111', err.response.data);
         setModalVisible2(false);
         setLoader(false);
       }
@@ -369,7 +369,8 @@ export default function PaymentGateWay({navigation, route}) {
           //   getAllPurchasePlan();
           //   navigationRef.navigate('Home');
           // }
-          navigationRef.navigate('DrawerStack');
+          // navigationRef.navigate('DrawerStack');
+          navigation.navigate('LoginStack', { screen: 'DrawerStack' });
           dispatch(setDeviceId(res.data.message));
           getPlanCurrent();
           getAllPurchasePlan();
@@ -377,7 +378,8 @@ export default function PaymentGateWay({navigation, route}) {
           getPlanCurrent();
           getAllPurchasePlan();
           dispatch(setDeviceId(res.data.message));
-          navigationRef.navigate('DrawerStack');
+          navigation.navigate('LoginStack', { screen: 'DrawerStack' });
+          // navigationRef.navigate('DrawerStack');
 
           // fetchGraphData(res.data?.user_id);
           // fetchWeekGraphData(res.data?.user_id);
@@ -407,9 +409,9 @@ export default function PaymentGateWay({navigation, route}) {
               subCancelStatus == 2 ? 2 : subCancelStatus == 4 ? 4 : 0,
             ),
           );
-          dispatch(setPackageStatus(false))
-          dispatch(setBoxTwoDataForDashboard({data: 'Package not found'}));
-          dispatch(setPurchaseData({data: 'Package not found'}));
+          dispatch(setPackageStatus(false));
+          dispatch(setBoxTwoDataForDashboard({ data: 'Package not found' }));
+          dispatch(setPurchaseData({ data: 'Package not found' }));
         } else {
           dispatch(setBoxTwoDataForDashboard(res?.data));
           dispatch(
@@ -492,7 +494,6 @@ export default function PaymentGateWay({navigation, route}) {
     }
   };
   const coupenDetail = data => {
-   // console.log("DSDSD444444",route.params.details.locations[0])
     if (data == null) {
       setCoupenError('Enter Coupon Code');
       setCoupenStates(true);
@@ -509,11 +510,10 @@ export default function PaymentGateWay({navigation, route}) {
         )
         .then(res => {
           setLoader(false);
-          console.log('Responser Coupan', res.data);
+
           if (res.data.couponstatus == 'true') {
             getVoucherDetails(res.data.coupon_id);
             setCoupencode(res.data.coupon_id);
-            
           } else {
             setCoupenError('Coupon Expired/Invalid!');
             setCoupenStates(true);
@@ -632,39 +632,38 @@ export default function PaymentGateWay({navigation, route}) {
     axios
       .get(`${API}/couponret/${data}`)
       .then(res => {
-       console.log("FSDFSFSFSFSFS",res?.data)
-        if(res?.data?.valid==true){
+        if (res?.data?.valid == true) {
           setCoupenError('Coupon Applied!');
           setCoupenStates(true);
           setColor(true);
           setvoucherStatus(res.data.valid);
-        }else{
+        } else {
           setCoupenError('Coupon Expired/Invalid!');
           setCoupenStates(true);
           setColor(false);
           setvoucherStatus(res.data.valid);
         }
-        
-        //
 
-       
+        //
       })
       .catch(err => {
         console.log('ffffffffff', err);
       });
   };
   return (
-    <SafeAreaView style={{backgroundColor: COLORS.CREAM, flex: 1}}>
-      <View style={{marginHorizontal: 20, paddingTop: 20}}>
+    <SafeAreaView style={{ backgroundColor: COLORS.CREAM, flex: 1 }}>
+      <View style={{ marginHorizontal: 20, paddingTop: 20 }}>
         <Text style={styles.complete_profile}>Payment Details</Text>
       </View>
       <ScrollView
         keyboardDismissMode="interactive"
         showsVerticalScrollIndicator={false}
-        keyboardShouldPersistTaps="handled">
+        keyboardShouldPersistTaps="handled"
+      >
         <KeyboardAvoidingView
           behavior={PLATFORM_IOS ? 'position' : undefined}
-          contentContainerStyle={{flexGrow: 1}}>
+          contentContainerStyle={{ flexGrow: 1 }}
+        >
           {/* {loader && <ActivityLoader />} */}
           {loader ? <ActivityLoader /> : ''}
 
@@ -676,7 +675,8 @@ export default function PaymentGateWay({navigation, route}) {
               onRequestClose={() => {
                 // Alert.alert('Modal has been closed.');
                 setModalVisible(!modalVisible);
-              }}>
+              }}
+            >
               <View style={styles.centeredView}>
                 <View style={styles.modalView}>
                   <Text style={styles.modalText}>Plan Purchased</Text>
@@ -686,14 +686,15 @@ export default function PaymentGateWay({navigation, route}) {
                     }} // Replace with your animation file
                     autoPlay
                     loop
-                    style={{width: 50, height: 50}}
+                    style={{ width: 50, height: 50 }}
                   />
                   <Text
                     style={{
                       fontSize: 14,
                       fontWeight: '400',
                       color: COLORS.BLACK,
-                    }}>
+                    }}
+                  >
                     Thank you for subscribing!
                   </Text>
                   <TouchableOpacity
@@ -703,7 +704,8 @@ export default function PaymentGateWay({navigation, route}) {
                       styles.button_one,
                     ]}
                     // style={[styles.button, styles.buttonClose]}
-                    onPress={getDeviceIDData}>
+                    onPress={getDeviceIDData}
+                  >
                     {/* <Pressable */}
 
                     {/* > */}
@@ -728,7 +730,8 @@ export default function PaymentGateWay({navigation, route}) {
                   setCardData(values);
                   checkCoupeonDetails();
                 }}
-                validationSchema={validationSchema}>
+                validationSchema={validationSchema}
+              >
                 {({
                   values,
                   handleChange,
@@ -742,13 +745,11 @@ export default function PaymentGateWay({navigation, route}) {
                     {allSavedCard.length > 0 ? (
                       <>
                         <Carousel
-                    
                           itemWidth={400}
                           sliderWidth={400}
                           enableSnap
                           data={allSavedCard}
-                    
-                          renderItem={({item, index}) => {
+                          renderItem={({ item, index }) => {
                             return (
                               <View>
                                 <ImageBackground
@@ -758,7 +759,8 @@ export default function PaymentGateWay({navigation, route}) {
                                     width: DIMENSIONS.SCREEN_WIDTH * 0.9,
 
                                     height: mvs(190),
-                                  }}>
+                                  }}
+                                >
                                   {item.default_card == 'yes' && (
                                     <View
                                       style={{
@@ -766,8 +768,9 @@ export default function PaymentGateWay({navigation, route}) {
                                         top: DIMENSIONS.SCREEN_HEIGHT * 0.02,
                                         left: DIMENSIONS.SCREEN_HEIGHT * 0.05,
                                         //alignSelf: 'center',
-                                      }}>
-                                      <Text style={{color: 'white'}}>
+                                      }}
+                                    >
+                                      <Text style={{ color: 'white' }}>
                                         Default Card
                                       </Text>
                                     </View>
@@ -779,18 +782,19 @@ export default function PaymentGateWay({navigation, route}) {
                                         color: '#fff',
                                         fontWeight: '600',
                                         fontSize: ms(20),
-                                      }}>
+                                      }}
+                                    >
                                       {`xxxx xxxx xxxx ${item.card_number}`}
                                     </Text>
                                     <View style={styles.text_div}>
-                                   
-                                      <View style={{gap: ms(5), top: -10}}>
+                                      <View style={{ gap: ms(5), top: -10 }}>
                                         <Text
                                           style={{
                                             fontWeight: '600',
                                             fontSize: 8,
                                             color: 'gray',
-                                          }}>
+                                          }}
+                                        >
                                           Expires
                                         </Text>
                                         <Text
@@ -798,7 +802,8 @@ export default function PaymentGateWay({navigation, route}) {
                                             color: '#fff',
                                             fontWeight: '600',
                                             fontSize: 13,
-                                          }}>
+                                          }}
+                                        >
                                           {String(
                                             `${item.exp_month > 9 ? '' : '0'}${
                                               item.exp_month
@@ -808,13 +813,14 @@ export default function PaymentGateWay({navigation, route}) {
                                           )}
                                         </Text>
                                       </View>
-                                      <View style={{gap: ms(5), top: -10}}>
+                                      <View style={{ gap: ms(5), top: -10 }}>
                                         <Text
                                           style={{
                                             fontWeight: '600',
                                             fontSize: 8,
                                             color: 'gray',
-                                          }}>
+                                          }}
+                                        >
                                           CVC
                                         </Text>
                                         <Text
@@ -822,7 +828,8 @@ export default function PaymentGateWay({navigation, route}) {
                                             color: '#fff',
                                             fontWeight: '600',
                                             fontSize: 13,
-                                          }}>
+                                          }}
+                                        >
                                           ***
                                         </Text>
                                       </View>
@@ -845,7 +852,7 @@ export default function PaymentGateWay({navigation, route}) {
                                     ...Platform.select({
                                       ios: {
                                         shadowColor: '#000000',
-                                        shadowOffset: {width: 0, height: 2},
+                                        shadowOffset: { width: 0, height: 2 },
                                         shadowOpacity: 0.3,
                                         shadowRadius: 4,
                                       },
@@ -853,18 +860,21 @@ export default function PaymentGateWay({navigation, route}) {
                                         elevation: 4,
                                       },
                                     }),
-                                  }}>
+                                  }}
+                                >
                                   <TouchableOpacity
                                     onPress={() => {
                                       setSaveCardDetails(item);
                                       checkCoupeonDetails1();
-                                    }}>
+                                    }}
+                                  >
                                     <Text
                                       style={{
                                         fontSize: 14,
                                         fontWeight: '700',
                                         color: COLORS.BLACK,
-                                      }}>
+                                      }}
+                                    >
                                       {item.default_card == 'yes'
                                         ? `Make Payment By Default Card`
                                         : 'Make Payment by Saved Card'}
@@ -881,7 +891,7 @@ export default function PaymentGateWay({navigation, route}) {
                             setCurrentCard(allSavedCard[index]);
                             setFocusedIndex(index);
                           }}
-                        /> 
+                        />
 
                         <View style={styles.dotsContainer}>
                           {allSavedCard &&
@@ -914,7 +924,8 @@ export default function PaymentGateWay({navigation, route}) {
                           width: DIMENSIONS.SCREEN_WIDTH * 0.9,
                           height: 210,
                           marginBottom: 10,
-                        }}>
+                        }}
+                      >
                         {allSavedCard.length > 0 ? (
                           <View style={styles.cardNumber_position}>
                             <Text
@@ -922,17 +933,19 @@ export default function PaymentGateWay({navigation, route}) {
                                 color: '#fff',
                                 fontWeight: '600',
                                 fontSize: 20,
-                              }}>
+                              }}
+                            >
                               {values.cardNumber}
                             </Text>
                             <View style={styles.text_div}>
-                              <View style={{gap: 5, width: 100}}>
+                              <View style={{ gap: 5, width: 100 }}>
                                 <Text
                                   style={{
                                     color: 'gray',
                                     fontWeight: '600',
                                     fontSize: 8,
-                                  }}>
+                                  }}
+                                >
                                   Card Holder
                                 </Text>
 
@@ -941,17 +954,19 @@ export default function PaymentGateWay({navigation, route}) {
                                     color: '#fff',
                                     fontWeight: '600',
                                     fontSize: 13,
-                                  }}>
+                                  }}
+                                >
                                   {values.cardHolderName}
                                 </Text>
                               </View>
-                              <View style={{gap: 5}}>
+                              <View style={{ gap: 5 }}>
                                 <Text
                                   style={{
                                     fontWeight: '600',
                                     fontSize: 8,
                                     color: 'gray',
-                                  }}>
+                                  }}
+                                >
                                   Expires
                                 </Text>
 
@@ -960,17 +975,19 @@ export default function PaymentGateWay({navigation, route}) {
                                     color: '#fff',
                                     fontWeight: '600',
                                     fontSize: 13,
-                                  }}>
+                                  }}
+                                >
                                   {values.validTill}
                                 </Text>
                               </View>
-                              <View style={{gap: 5}}>
+                              <View style={{ gap: 5 }}>
                                 <Text
                                   style={{
                                     fontWeight: '600',
                                     fontSize: 8,
                                     color: 'gray',
-                                  }}>
+                                  }}
+                                >
                                   CVC
                                 </Text>
                                 <Text
@@ -978,7 +995,8 @@ export default function PaymentGateWay({navigation, route}) {
                                     color: '#fff',
                                     fontWeight: '600',
                                     fontSize: 13,
-                                  }}>
+                                  }}
+                                >
                                   {values.cvv
                                     ? '*'.repeat(String(values.cvv).length)
                                     : null}
@@ -992,8 +1010,9 @@ export default function PaymentGateWay({navigation, route}) {
                               position: 'absolute',
                               top: DIMENSIONS.SCREEN_HEIGHT * 0.12,
                               alignSelf: 'center',
-                            }}>
-                            <Text style={{color: 'white'}}>
+                            }}
+                          >
+                            <Text style={{ color: 'white' }}>
                               No Default/Saved Card Added
                             </Text>
                           </View>
@@ -1008,24 +1027,22 @@ export default function PaymentGateWay({navigation, route}) {
                             allSavedCard.length > 0
                               ? DIMENSIONS.SCREEN_HEIGHT * 0.2
                               : DIMENSIONS.SCREEN_HEIGHT * 0.05,
-                        }}>
+                        }}
+                      >
                         <HorizontalLine style={styles.line} />
                       </View>
                     ) : (
-                      <View style={{marginVertical: 10}}>
+                      <View style={{ marginVertical: 10 }}>
                         <Image
                           source={require('../../../assets/images/dotted.png')}
-                          style={{width: mobileW * 0.9}}
+                          style={{ width: mobileW * 0.9 }}
                           resizeMode="stretch"
                         />
                       </View>
                     )}
 
-                   
-
                     <CardField
                       postalCodeEnabled={false}
-                    
                       placeholders={{
                         number: '4242 4242 4242 4242',
                         cvc: 'CVC',
@@ -1036,23 +1053,27 @@ export default function PaymentGateWay({navigation, route}) {
                         borderColor: COLORS.HALFBLACK,
                         borderWidth: 1,
                         borderRadius: 10,
-                        placeholderColor:COLORS.HALFBLACK          
+                        placeholderColor: COLORS.HALFBLACK,
                       }}
                       style={{
                         width: '100%',
                         height: 50,
                         marginVertical: 30,
                       }}
-                     
+                      onCardChange={cardDetails => {
+                        fetchcarddetails(cardDetails);
+                      }}
+                      onFocus={focusedField => {}}
                     />
-              
+
                     <View
                       style={{
                         flexDirection: 'row',
                         justifyContent: 'space-between',
                         alignContent: 'center',
                         marginLeft: 6,
-                      }}>
+                      }}
+                    >
                       <Input
                         errors={couponerror}
                         onChangeText={text => {
@@ -1085,7 +1106,7 @@ export default function PaymentGateWay({navigation, route}) {
                           ...Platform.select({
                             ios: {
                               shadowColor: '#000000',
-                              shadowOffset: {width: 0, height: 2},
+                              shadowOffset: { width: 0, height: 2 },
                               shadowOpacity: 0.3,
                               shadowRadius: 4,
                             },
@@ -1093,7 +1114,8 @@ export default function PaymentGateWay({navigation, route}) {
                               elevation: 4,
                             },
                           }),
-                        }}>
+                        }}
+                      >
                         <TouchableOpacity
                           onPress={() => {
                             coupenDetail(coupon);
@@ -1104,20 +1126,22 @@ export default function PaymentGateWay({navigation, route}) {
                             backgroundColor: COLORS.GREEN,
 
                             borderRadius: 10,
-                          }}>
+                          }}
+                        >
                           <Text
                             style={{
                               fontSize: 14,
                               fontWeight: '700',
                               textAlign: 'center',
                               color: COLORS.BLACK,
-                            }}>
+                            }}
+                          >
                             Validate
                           </Text>
                         </TouchableOpacity>
                       </View>
                     </View>
-          
+
                     <View style={styles.bottom_tab}>
                       <TouchableOpacity
                         onPress={() => navigation.goBack()}
@@ -1128,7 +1152,7 @@ export default function PaymentGateWay({navigation, route}) {
                           ...Platform.select({
                             ios: {
                               shadowColor: '#000000',
-                              shadowOffset: {width: 0, height: 2},
+                              shadowOffset: { width: 0, height: 2 },
                               shadowOpacity: 0.3,
                               shadowRadius: 4,
                             },
@@ -1136,7 +1160,8 @@ export default function PaymentGateWay({navigation, route}) {
                               elevation: 4,
                             },
                           }),
-                        }}>
+                        }}
+                      >
                         <LeftIcon />
                       </TouchableOpacity>
 
@@ -1149,7 +1174,7 @@ export default function PaymentGateWay({navigation, route}) {
                           ...Platform.select({
                             ios: {
                               shadowColor: '#000000',
-                              shadowOffset: {width: 0, height: 2},
+                              shadowOffset: { width: 0, height: 2 },
                               shadowOpacity: 0.3,
                               shadowRadius: 4,
                             },
@@ -1157,7 +1182,8 @@ export default function PaymentGateWay({navigation, route}) {
                               elevation: 4,
                             },
                           }),
-                        }}>
+                        }}
+                      >
                         <TouchableOpacity
                           onPress={() => {
                             !complete
@@ -1171,13 +1197,15 @@ export default function PaymentGateWay({navigation, route}) {
                                     ToastAndroid.SHORT,
                                   )
                               : checkCoupeonDetails();
-                          }}>
+                          }}
+                        >
                           <Text
                             style={{
                               fontSize: 14,
                               fontWeight: '700',
                               color: COLORS.BLACK,
-                            }}>
+                            }}
+                          >
                             Make Payment
                           </Text>
                         </TouchableOpacity>
@@ -1196,12 +1224,13 @@ export default function PaymentGateWay({navigation, route}) {
         visible={modalVisible1}
         onRequestClose={() => {
           setModalVisible1(!modalVisible1);
-        }}>
+        }}
+      >
         <>
           <View style={styles.centeredView}>
             <View style={styles.modalView}>
               <Text style={styles.modalText}>Confirm Payment</Text>
-         
+
               <ImageBackground
                 source={require('../../../assets/images/visaCard.png')}
                 resizeMode="contain"
@@ -1212,24 +1241,27 @@ export default function PaymentGateWay({navigation, route}) {
                   width: DIMENSIONS.SCREEN_WIDTH * 0.7,
 
                   height: mvs(150),
-                }}>
+                }}
+              >
                 <View style={styles.cardNumber_position1}>
                   <Text
                     style={{
                       color: '#fff',
                       fontWeight: '600',
                       fontSize: ms(15),
-                    }}>
+                    }}
+                  >
                     {`xxxx xxxx xxxx ${cardtype?.last4}`}
                   </Text>
                   <View style={styles.text_div}>
-                    <View style={{gap: ms(5)}}>
+                    <View style={{ gap: ms(5) }}>
                       <Text
                         style={{
                           fontWeight: '600',
                           fontSize: 8,
                           color: '#fff',
-                        }}>
+                        }}
+                      >
                         Expires
                       </Text>
                       <Text
@@ -1237,7 +1269,8 @@ export default function PaymentGateWay({navigation, route}) {
                           color: '#fff',
                           fontWeight: '600',
                           fontSize: 13,
-                        }}>
+                        }}
+                      >
                         {String(
                           `${cardtype?.expiryMonth > 9 ? '' : '0'}${
                             cardtype?.expiryMonth
@@ -1247,13 +1280,14 @@ export default function PaymentGateWay({navigation, route}) {
                         )}
                       </Text>
                     </View>
-                    <View style={{gap: 5}}>
+                    <View style={{ gap: 5 }}>
                       <Text
                         style={{
                           fontWeight: '600',
                           fontSize: 8,
                           color: '#fff',
-                        }}>
+                        }}
+                      >
                         CVC
                       </Text>
                       <Text
@@ -1261,7 +1295,8 @@ export default function PaymentGateWay({navigation, route}) {
                           color: '#fff',
                           fontWeight: '600',
                           fontSize: 13,
-                        }}>
+                        }}
+                      >
                         ***
                       </Text>
                     </View>
@@ -1269,13 +1304,14 @@ export default function PaymentGateWay({navigation, route}) {
                 </View>
               </ImageBackground>
 
-              <View style={{flexDirection: 'row'}}>
+              <View style={{ flexDirection: 'row' }}>
                 {/* <View style={styles.button_one}> */}
                 <TouchableOpacity
                   style={[styles.button, styles.buttonClose, styles.button_one]}
                   onPress={() => {
                     setModalVisible1(false);
-                  }}>
+                  }}
+                >
                   <Text style={styles.textStyle}>Cancel</Text>
                 </TouchableOpacity>
                 {/* </View> */}
@@ -1285,11 +1321,11 @@ export default function PaymentGateWay({navigation, route}) {
                     styles.button,
                     styles.buttonClose,
                     styles.button_one,
-                    {marginHorizontal: 15},
+                    { marginHorizontal: 15 },
                   ]}
                   disabled={desible}
-                 onPress={handlePaymentSubmit}
-                  >
+                  onPress={handlePaymentSubmit}
+                >
                   <Text style={styles.textStyle}>Submit</Text>
                 </TouchableOpacity>
                 {/* </View> */}
@@ -1304,7 +1340,8 @@ export default function PaymentGateWay({navigation, route}) {
         visible={modalVisible2}
         onRequestClose={() => {
           setModalVisible2(!modalVisible2);
-        }}>
+        }}
+      >
         <>
           <View style={styles.centeredView}>
             <View style={styles.modalView}>
@@ -1319,24 +1356,27 @@ export default function PaymentGateWay({navigation, route}) {
                   width: DIMENSIONS.SCREEN_WIDTH * 0.7,
 
                   height: mvs(150),
-                }}>
+                }}
+              >
                 <View style={styles.cardNumber_position1}>
                   <Text
                     style={{
                       color: '#fff',
                       fontWeight: '600',
                       fontSize: ms(15),
-                    }}>
+                    }}
+                  >
                     {`xxxx xxxx xxxx ${saveCardDetails?.card_number}`}
                   </Text>
                   <View style={styles.text_div}>
-                    <View style={{gap: ms(5)}}>
+                    <View style={{ gap: ms(5) }}>
                       <Text
                         style={{
                           fontWeight: '600',
                           fontSize: 8,
                           color: '#fff',
-                        }}>
+                        }}
+                      >
                         Expires
                       </Text>
                       <Text
@@ -1344,7 +1384,8 @@ export default function PaymentGateWay({navigation, route}) {
                           color: '#fff',
                           fontWeight: '600',
                           fontSize: 13,
-                        }}>
+                        }}
+                      >
                         {String(
                           `${saveCardDetails?.exp_month > 9 ? '' : '0'}${
                             saveCardDetails?.exp_month
@@ -1354,13 +1395,14 @@ export default function PaymentGateWay({navigation, route}) {
                         )}
                       </Text>
                     </View>
-                    <View style={{gap: 5}}>
+                    <View style={{ gap: 5 }}>
                       <Text
                         style={{
                           fontWeight: '600',
                           fontSize: 8,
                           color: '#fff',
-                        }}>
+                        }}
+                      >
                         CVC
                       </Text>
                       <Text
@@ -1368,7 +1410,8 @@ export default function PaymentGateWay({navigation, route}) {
                           color: '#fff',
                           fontWeight: '600',
                           fontSize: 13,
-                        }}>
+                        }}
+                      >
                         ***
                       </Text>
                     </View>
@@ -1376,13 +1419,14 @@ export default function PaymentGateWay({navigation, route}) {
                 </View>
               </ImageBackground>
 
-              <View style={{flexDirection: 'row'}}>
+              <View style={{ flexDirection: 'row' }}>
                 {/* <View style={styles.button_one}> */}
                 <TouchableOpacity
                   style={[styles.button, styles.buttonClose, styles.button_one]}
                   onPress={() => {
                     setModalVisible2(false);
-                  }}>
+                  }}
+                >
                   <Text style={styles.textStyle}>Cancel</Text>
                 </TouchableOpacity>
                 {/* </View> */}
@@ -1392,9 +1436,10 @@ export default function PaymentGateWay({navigation, route}) {
                     styles.button,
                     styles.buttonClose,
                     styles.button_one,
-                    {marginHorizontal: 15},
+                    { marginHorizontal: 15 },
                   ]}
-                  onPress={handleCardSubmit}>
+                  onPress={handleCardSubmit}
+                >
                   <Text style={styles.textStyle}>Submit</Text>
                 </TouchableOpacity>
                 {/* </View> */}
@@ -1435,7 +1480,7 @@ const styles = StyleSheet.create({
     ...Platform.select({
       ios: {
         shadowColor: '#000000',
-        shadowOffset: {width: 0, height: 2},
+        shadowOffset: { width: 0, height: 2 },
         shadowOpacity: 0.3,
         shadowRadius: 4,
       },
@@ -1487,7 +1532,7 @@ const styles = StyleSheet.create({
     ...Platform.select({
       ios: {
         shadowColor: '#000000',
-        shadowOffset: {width: 0, height: 2},
+        shadowOffset: { width: 0, height: 2 },
         shadowOpacity: 0.3,
         shadowRadius: 4,
       },

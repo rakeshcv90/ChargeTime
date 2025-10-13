@@ -80,7 +80,8 @@ export default function Register({navigation}) {
   const [showPassword, setShowPassword] = useState(true);
   const [showPassword1, setShowPassword1] = useState(true);
   const dispatch = useDispatch();
-  const {userRegisterData} = useSelector(state => state);
+  // const {userRegisterData} = useSelector(state => state);
+  const userRegisterData = useSelector(state => state.userRegisterData);
 
   const handleFormSubmit = async values => {
     setForLoading(true);
@@ -120,7 +121,7 @@ export default function Register({navigation}) {
                 'Please verify your email with code.',
                 ToastAndroid.SHORT,
               );
-              // console.log("My DATa is",response.data?.time)
+           
           navigation.navigate('VerifyEmail', {
             email: values?.email,
             user_id: response.data?.user_id,

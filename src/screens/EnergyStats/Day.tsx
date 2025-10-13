@@ -10,7 +10,7 @@ import {
   Modal,
   TouchableOpacity,
 } from 'react-native';
-import React, {useEffect, useRef, useState} from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import COLORS from '../../constants/COLORS';
 import Remaining from '../../Components/Remaining';
 import TotalUsage from '../../Components/TotalUsuage';
@@ -18,7 +18,7 @@ import Graph from '../../Components/Graph';
 import BoxTwo from '../../Components/BoxTwo';
 import ButtonSlider from '../../Components/ButtonSlider';
 import PriceValidity from '../../Components/PriceValidity';
-import {useDispatch, useSelector} from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import Overusageimage from '../../../assets/svgs/Overusageimage';
 
 import axios from 'axios';
@@ -38,31 +38,34 @@ import {
   setPurchaseData,
   setPackageStatus,
 } from '../../redux/action';
-import {API} from '../../api/API';
+import { API } from '../../api/API';
 import AnimatedLottieView from 'lottie-react-native';
-import {navigationRef} from '../../../App';
-import {DIMENSIONS} from '../../constants/DIMENSIONS';
+import { navigationRef } from '../../../App';
+import { DIMENSIONS } from '../../constants/DIMENSIONS';
 
 const Day = (props: any) => {
-  const {
-    getBoxTwoDataForDashboard,
-    getUserID,
-    getGraphData,
-    getSubscriptionCancelStatus,
-    getRemainingData,
-    getkwhData,
-    overusage,
-    overModelView,
-    getPurchaseData,
-  } = useSelector((state: any) => state);
-  const {handleRefresh, refresh} = props?.route?.params;
+  const dispatch = useDispatch();
+  const ScrollRef = useRef(null);
+  const getBoxTwoDataForDashboard = useSelector(
+    (state: any) => state.getBoxTwoDataForDashboard,
+  );
+  const getUserID = useSelector((state: any) => state.getUserID);
+  const getGraphData = useSelector((state: any) => state.getGraphData);
+  const getSubscriptionCancelStatus = useSelector(
+    (state: any) => state.getSubscriptionCancelStatus,
+  );
+  const getRemainingData = useSelector((state: any) => state.getRemainingData);
+  const getkwhData = useSelector((state: any) => state.getkwhData);
+  const overusage = useSelector((state: any) => state.overusage);
+  const overModelView = useSelector((state: any) => state.overModelView);
+  const getPurchaseData = useSelector((state: any) => state.getPurchaseData);
   const [toggleState, setToggleState] = useState(false);
+  const [showSlider, setShowSlider] = useState(true);
+  const [modalVisible, setModalVisible] = useState(false);
+
+  const { handleRefresh, refresh } = props?.route?.params;
 
   const handleToggle = (value: any) => setToggleState(value);
-  const dispatch = useDispatch();
-  const [showSlider, setShowSlider] = useState(true);
-  const ScrollRef = useRef(null);
-  const [modalVisible, setModalVisible] = useState(false);
 
   useEffect(() => {
     setShowSlider(true);
@@ -85,11 +88,11 @@ const Day = (props: any) => {
           dispatch(setQuarterGraphData(res?.data.threemonthusagewithgraph));
           dispatch(setYearGraphData(res?.data.yearlyusagewithgraph));
         } else {
-          dispatch(setGraphData({message}));
-          dispatch(setWeekGraphData({message}));
-          dispatch(setMonthGraphData({message}));
-          dispatch(setQuarterGraphData({message}));
-          dispatch(setYearGraphData({message}));
+          dispatch(setGraphData({ message }));
+          dispatch(setWeekGraphData({ message }));
+          dispatch(setMonthGraphData({ message }));
+          dispatch(setQuarterGraphData({ message }));
+          dispatch(setYearGraphData({ message }));
         }
       })
       .catch(err => {
@@ -103,18 +106,18 @@ const Day = (props: any) => {
     axios
       .get(`${API}/remainingusage/${getUserID}`)
       .then(res => {
-        console.log('Over Use Data is', res.data);
-        if (parseInt(res.data?.kwh_unit_remaining) >= 0) {
-          remaingData = res.data?.kwh_unit_remaining;
-          dispatch(setRemainingData(res.data?.kwh_unit_remaining));
+        const remaining = parseFloat(res.data?.kwh_unit_remaining || 0);
 
+        if (remaining >= 0) {
+          remaingData = remaining;
+          dispatch(setRemainingData(remaining));
           dispatch(setOverUsage(false));
           dispatch(setOverModelView(false));
           setRefresh(false);
         } else {
-          remaingData = res.data?.kwh_unit_overusage;
-          dispatch(setRemainingData(res.data?.kwh_unit_overusage));
-
+          const overUsage = parseFloat(res.data?.kwh_unit_overusage || 0);
+          remaingData = overUsage;
+          dispatch(setRemainingData(overUsage));
           dispatch(setOverUsage(true));
           dispatch(setOverModelView(true));
           setRefresh(false);
@@ -157,7 +160,7 @@ const Day = (props: any) => {
 
   return (
     <>
-      <View style={{flex: 1, backgroundColor: COLORS.CREAM}}>
+      <View style={{ flex: 1, backgroundColor: COLORS.CREAM }}>
         <ScrollView
           ref={ScrollRef}
           showsVerticalScrollIndicator={false}
@@ -171,19 +174,21 @@ const Day = (props: any) => {
               onRefresh={handleRefresh}
             />
           }
-          onScrollEndDrag={() => setShowSlider(true)}>
+          onScrollEndDrag={() => setShowSlider(true)}
+        >
           <View
             style={{
               flexDirection: 'row',
               justifyContent: 'space-between',
               marginHorizontal: 30,
               marginTop: 10,
-            }}>
+            }}
+          >
             <Remaining RemainingFill={10} KWH={400} data={'home'} />
             <TotalUsage data={getkwhData.Totalusedkwhs} location={'Daily'} />
           </View>
 
-          <View style={{marginHorizontal: 20}}>
+          <View style={{ marginHorizontal: 20 }}>
             {getGraphData?.message != 'No usage data available' ? (
               <>
                 <Graph dataOne={getGraphData} />
@@ -196,7 +201,8 @@ const Day = (props: any) => {
                   alignSelf: 'center',
                   fontSize: 14,
                   marginVertical: 10,
-                }}>
+                }}
+              >
                 No Graph Data available
               </Text>
             )}
@@ -205,7 +211,7 @@ const Day = (props: any) => {
               <BoxTwo data={getBoxTwoDataForDashboard.data} />
             ) : null}
           </View>
-          <View style={{marginBottom: 120}}>
+          <View style={{ marginBottom: 120 }}>
             {getPurchaseData?.data != 'Package not found' &&
             getPurchaseData?.data?.old_subscription_status != 'cancel' ? (
               getSubscriptionCancelStatus ==
@@ -221,26 +227,20 @@ const Day = (props: any) => {
           visible={overModelView}
           onRequestClose={() => {
             dispatch(setOverModelView(false));
-            //  setModalVisible(!modalVisible);
-          }}>
+          }}
+        >
           <View style={styles.centeredView}>
             <View style={styles.modalView}>
               <Text style={styles.modalText}>Overusage</Text>
-              {/* <AnimatedLottieView
-                source={{
-                  uri: 'https://assets6.lottiefiles.com/private_files/lf30_mf7q9oho.json',
-                }} // Replace with your animation file
-                autoPlay
-                loop
-                style={{width: 50, height: 50}}
-              /> */}
+
               <Overusageimage width={130} height={130} viewBox="0 0 80 80" />
               <Text
                 style={{
                   fontSize: 14,
                   fontWeight: '400',
                   color: COLORS.BLACK,
-                }}>
+                }}
+              >
                 You have utilized your package, please purchase a new package.
               </Text>
               <View style={styles.button_one}>
@@ -250,15 +250,15 @@ const Day = (props: any) => {
                     padding: 10,
                   }}
                   onPress={() => {
-                    //dispatch(setOverusageCount(overusage + 1));
-                    //   setModalVisible(false);
                     dispatch(setOverModelView(false));
-                  }}>
+                  }}
+                >
                   <Text style={styles.textStyle}>Cancel</Text>
                 </TouchableOpacity>
                 <TouchableOpacity
                   style={[styles.button, styles.buttonClose]}
-                  onPress={nav}>
+                  onPress={nav}
+                >
                   <Text style={styles.textStyle}>Purchase Plan</Text>
                 </TouchableOpacity>
               </View>
@@ -266,8 +266,6 @@ const Day = (props: any) => {
           </View>
         </Modal>
       </View>
-      {/* {showSlider && <ButtonSlider dataTwo={getUserID}  />} */}
-      {/* <ButtonSlider onToggle={handleToggle}  /> */}
     </>
   );
 };
@@ -279,18 +277,13 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     padding: 35,
     alignItems: 'center',
-    // shadowColor: '#000',
-    // shadowOffset: {
-    //   width: 0,
-    //   height: 2,
-    // },
+
     shadowOpacity: 0.25,
     shadowRadius: 4,
     elevation: 5,
     width: DIMENSIONS.SCREEN_WIDTH * 0.8,
   },
   button_one: {
-    // marginLeft: 80,
     marginTop: 20,
     alignItems: 'center',
     justifyContent: 'space-between',
@@ -325,8 +318,6 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-
-    // backgroundColor: 'rgba(0, 0, 0, 0.5)',
   },
 });
 

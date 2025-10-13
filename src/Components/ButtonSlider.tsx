@@ -318,7 +318,9 @@ const AnimatedLinearGradient = Animated.createAnimatedComponent(LinearGradient);
 
 const ButtonSlider = ({ onToggle }) => {
   const dispatch = useDispatch();
-  const { getUserID, getChargerStatus } = useSelector((state: any) => state);
+//  const { getUserID, getChargerStatus } = useSelector((state: any) => state); 
+const getUserID = useSelector(state => state.getUserID);
+const getChargerStatus = useSelector(state => state.getChargerStatus);
   const [isLoading, setIsLoading] = useState(false);
   const [showText, setShowText] = useState(false);
 

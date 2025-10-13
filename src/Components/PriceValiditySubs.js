@@ -51,7 +51,7 @@ const PriceValiditySubs = ({data}) => {
         <Text style={styles.installation_text}>Current Package Details</Text>
       </TouchableOpacity>
 
-      <>
+    <View>
         <View style={styles.location_div}>
           <Text style={styles.installation_text2}>Package Name:</Text>
           <Text style={styles.force_base}>{data?.energy_plan}</Text>
@@ -96,7 +96,7 @@ const PriceValiditySubs = ({data}) => {
             {isPassed ? '--' : data?.End_validity}
           </Text>
         </View>
-      </>
+      </View>
     </View>
   );
 };

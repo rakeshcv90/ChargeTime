@@ -10,14 +10,19 @@ import {
 } from 'react-native';
 import React from 'react';
 import COLORS from '../constants/COLORS';
-import {Unit} from '../../assets/images/Unit';
-import {Mieq} from '../../assets/images/Mieq';
-import {DIMENSIONS} from '../constants/DIMENSIONS';
-import {useSelector} from 'react-redux';
+import { Unit } from '../../assets/images/Unit';
+import { Mieq } from '../../assets/images/Mieq';
+import { DIMENSIONS } from '../constants/DIMENSIONS';
+import { useSelector } from 'react-redux';
 
-const BoxTwo = ({data}) => {
-  const {getUserID, getPurchaseData, getPlanStatus, getPurchaseAllPlans} =
-    useSelector(state => state);
+const BoxTwo = ({ data }) => {
+  // const {getUserID, getPurchaseData, getPlanStatus, getPurchaseAllPlans} =
+  //   useSelector(state => state);
+
+  const getUserID = useSelector(state => state.getUserID);
+  const getPurchaseData = useSelector(state => state.getPurchaseData);
+  const getPlanStatus = useSelector(state => state.getPlanStatus);
+  const getPurchaseAllPlans = useSelector(state => state.getPurchaseAllPlans);
 
   const getmessage = () => {
     if (getPurchaseData.length <= 0) {
@@ -55,10 +60,9 @@ const BoxTwo = ({data}) => {
               } else datatest = '';
             });
             return <Text style={styles.installation_text}>{datatest}</Text>;
-          }else{
+          } else {
             return <Text style={styles.installation_text}></Text>;
           }
-
         }
       }
     }
@@ -69,7 +73,8 @@ const BoxTwo = ({data}) => {
         Platform.OS === 'android'
           ? styles.mainDiv_installation1
           : styles.mainDiv_installation
-      }>
+      }
+    >
       <View style={styles.install_touchable}>
         <Image
           style={styles.img_width}
@@ -85,7 +90,7 @@ const BoxTwo = ({data}) => {
           <Image
             source={require('../../assets/images/kwh.png')}
             resizeMode="contain"
-            style={{width: 30, height: 30}}
+            style={{ width: 30, height: 30 }}
           />
           {/* <Unit /> */}
           <Text style={styles.kwh_mieq_text}>
@@ -97,7 +102,7 @@ const BoxTwo = ({data}) => {
           <Image
             source={require('../../assets/images/kwh_icon_one.png')}
             resizeMode="contain"
-            style={{width: 30, height: 30}}
+            style={{ width: 30, height: 30 }}
           />
           {/* <Mieq /> */}
           <Text style={styles.kwh_mieq_text}>
@@ -109,7 +114,7 @@ const BoxTwo = ({data}) => {
           <Image
             source={require('../../assets/images/kwh_dollar.png')}
             resizeMode="contain"
-            style={{width: 30, height: 30}}
+            style={{ width: 30, height: 30 }}
           />
 
           <Text style={styles.kwh_mieq_text}>
@@ -131,7 +136,7 @@ const styles = StyleSheet.create({
     marginTop: DIMENSIONS.SCREEN_HEIGHT * 0.02,
     marginBottom: DIMENSIONS.SCREEN_HEIGHT * 0.02,
     shadowColor: '#000000',
-    shadowOffset: {width: 0, height: 6},
+    shadowOffset: { width: 0, height: 6 },
     shadowOpacity: 0.35,
     shadowRadius: 5.62,
     elevation: 8,
