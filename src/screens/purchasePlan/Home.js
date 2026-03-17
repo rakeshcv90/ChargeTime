@@ -17,27 +17,27 @@ import {
   Dimensions,
   Platform,
 } from 'react-native';
-import {useNavigationState} from '@react-navigation/native';
-import {SafeAreaView} from 'react-native-safe-area-context';
+import { useNavigationState } from '@react-navigation/native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
-import {createMaterialTopTabNavigator} from '@react-navigation/material-top-tabs';
+import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 import TabOne from './TabOne';
 import AnimatedLottieView from 'lottie-react-native';
 
 import COLORS from '../../constants/COLORS';
 import DrawerOpen from '../../Components/DrawerOpen';
-import {useState, useEffect} from 'react';
-import {API} from '../../api/API';
+import { useState, useEffect } from 'react';
+import { API } from '../../api/API';
 import axios from 'axios';
 import ActivityLoader from '../../Components/ActivityLoader';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import TabFour from './TabFour';
 
-import {useDispatch} from 'react-redux';
-import {setBasePackage} from '../../redux/action';
+import { useDispatch } from 'react-redux';
+import { setBasePackage } from '../../redux/action';
 
-import {useSelector} from 'react-redux';
-import {PLATFORM_IOS} from '../../constants/DIMENSIONS';
+import { useSelector } from 'react-redux';
+import { PLATFORM_IOS } from '../../constants/DIMENSIONS';
 
 const mobileW = Math.round(Dimensions.get('screen').width);
 const mobileH = Math.round(Dimensions.get('window').height);
@@ -53,10 +53,10 @@ export default function Home(route) {
   // const {getLocationID, getBasePackage, getPackageStatus, getMyLocation} =
   //   useSelector(state => state);
 
-    const getLocationID = useSelector(state => state.getLocationID);
-const getBasePackage = useSelector(state => state.getBasePackage);
-const getPackageStatus = useSelector(state => state.getPackageStatus);
-const getMyLocation = useSelector(state => state.getMyLocation);
+  const getLocationID = useSelector(state => state.getLocationID);
+  const getBasePackage = useSelector(state => state.getBasePackage);
+  const getPackageStatus = useSelector(state => state.getPackageStatus);
+  const getMyLocation = useSelector(state => state.getMyLocation);
 
   const [apiData, setApiData] = useState(getBasePackage || []);
 
@@ -88,15 +88,15 @@ const getMyLocation = useSelector(state => state.getMyLocation);
     }
   };
 
-  function MyTabBar({state, descriptors, navigation, position}) {
+  function MyTabBar({ state, descriptors, navigation, position }) {
     useEffect(() => {
       setChangePage(state.index);
-    }, []);
+    }, [state]);
 
     return (
       <View style={[styles.tabbar_part]}>
         {state.routes.map((route, index) => {
-          const {options} = descriptors[route.key];
+          const { options } = descriptors[route.key];
           const label =
             options.tabBarLabel !== undefined
               ? options.tabBarLabel
@@ -114,7 +114,7 @@ const getMyLocation = useSelector(state => state.getMyLocation);
             });
 
             if (!isFocused && !event.defaultPrevented) {
-              navigation.navigate({name: route.name, merge: true});
+              navigation.navigate({ name: route.name, merge: true });
             }
           };
 
@@ -126,7 +126,8 @@ const getMyLocation = useSelector(state => state.getMyLocation);
                 flex: 1,
                 backgroundColor: '#EEEEEE',
                 padding: 5,
-              }}>
+              }}
+            >
               <View
                 style={{
                   borderRadius: isFocused ? 10 : 10,
@@ -134,7 +135,7 @@ const getMyLocation = useSelector(state => state.getMyLocation);
                   ...Platform.select({
                     ios: {
                       shadowColor: '#000000',
-                      shadowOffset: {width: 0, height: 2},
+                      shadowOffset: { width: 0, height: 2 },
                       shadowOpacity: 0.3,
                       shadowRadius: 4,
                     },
@@ -143,14 +144,16 @@ const getMyLocation = useSelector(state => state.getMyLocation);
                     },
                   }),
                   backgroundColor: isFocused ? '#B1D34F' : null,
-                }}>
+                }}
+              >
                 <Text
                   style={{
                     fontWeight: isFocused ? '600' : '400',
                     fontSize: 12,
                     textAlign: 'center',
                     color: 'black',
-                  }}>
+                  }}
+                >
                   {label}
                 </Text>
               </View>
@@ -163,27 +166,28 @@ const getMyLocation = useSelector(state => state.getMyLocation);
   //end
 
   return (
-    <SafeAreaView style={{backgroundColor: COLORS.CREAM, flex: 1}}>
+    <SafeAreaView style={{ backgroundColor: COLORS.CREAM, flex: 1 }}>
       <DrawerOpen top={PLATFORM_IOS ? 70 : 30} />
+   
       {getBasePackage.length != 0 && (
         <View style={styles.charging_imag_style}>
-          {changePage == 0 ? (
+          {changePage === 0 ? (
             <Image
               source={require('../../../assets/images/bp_one.png')}
               resizeMode="cover"
-              style={{width: mobileW, height: mobileH / 4}}
+              style={{ width: mobileW, height: mobileH / 4 }}
             />
           ) : changePage == 1 ? (
             <Image
               source={require('../../../assets/images/bp_two.png')}
               resizeMode="cover"
-              style={{width: mobileW, height: mobileH / 4}}
+              style={{ width: mobileW, height: mobileH / 4 }}
             />
           ) : (
             <Image
               source={require('../../../assets/images/bp_three.png')}
               resizeMode="cover"
-              style={{width: mobileW, height: mobileH / 4}}
+              style={{ width: mobileW, height: mobileH / 4 }}
             />
           )}
         </View>
@@ -199,41 +203,43 @@ const getMyLocation = useSelector(state => state.getMyLocation);
               fontWeight: 'bold',
             },
           }}
-          tabBar={props => <MyTabBar {...props} />}>
+          tabBar={props => <MyTabBar {...props} />}
+        >
           {getBasePackage.map((item, ind) => {
             return (
               <Tab.Screen
                 key={ind}
                 name={item?.package_name}
                 component={TabOne}
-                initialParams={{index: ind}}
+                initialParams={{ index: ind }}
               />
             );
           })}
         </Tab.Navigator>
       ) : getBasePackage.length == 1 ? (
         <>
-              <Tab.Navigator
-          screenOptions={{
-            activeTintColor: 'blue',
-            inactiveTintColor: 'gray',
-            labelStyle: {
-              fontSize: 16,
-              fontWeight: 'bold',
-            },
-          }}
-          tabBar={props => <MyTabBar {...props} />}>
-          {getBasePackage.map((item, ind) => {
-            return (
-              <Tab.Screen
-                key={ind}
-                name={item?.package_name}
-                component={TabOne}
-                initialParams={{index: ind}}
-              />
-            );
-          })}
-        </Tab.Navigator>
+          <Tab.Navigator
+            screenOptions={{
+              activeTintColor: 'blue',
+              inactiveTintColor: 'gray',
+              labelStyle: {
+                fontSize: 16,
+                fontWeight: 'bold',
+              },
+            }}
+            tabBar={props => <MyTabBar {...props} />}
+          >
+            {getBasePackage.map((item, ind) => {
+              return (
+                <Tab.Screen
+                  key={ind}
+                  name={item?.package_name}
+                  component={TabOne}
+                  initialParams={{ index: ind }}
+                />
+              );
+            })}
+          </Tab.Navigator>
           {/* <TabOne item={getBasePackage[0]} /> */}
         </>
       ) : (
@@ -242,20 +248,22 @@ const getMyLocation = useSelector(state => state.getMyLocation);
             justifyContent: 'center',
             alignItems: 'center',
             flex: 1,
-          }}>
+          }}
+        >
           <View
             style={{
               flexDirection: 'row',
               justifyContent: 'center',
               alignItems: 'center',
-            }}>
+            }}
+          >
             <AnimatedLottieView
               source={{
                 uri: 'https://assets5.lottiefiles.com/packages/lf20_v4UB4ch6dZ.json',
               }} // Replace with your animation file
               autoPlay
               loop
-              style={{width: 150, height: 150}}
+              style={{ width: 150, height: 150 }}
             />
             <AnimatedLottieView
               source={{
@@ -263,7 +271,7 @@ const getMyLocation = useSelector(state => state.getMyLocation);
               }} // Replace with your animation file
               autoPlay
               loop
-              style={{width: 50, height: 50}}
+              style={{ width: 50, height: 50 }}
             />
           </View>
           <Text
@@ -273,7 +281,8 @@ const getMyLocation = useSelector(state => state.getMyLocation);
               textAlign: 'center',
               paddingHorizontal: 30,
               color: COLORS.BLACK,
-            }}>
+            }}
+          >
             No Package Available for this Location
           </Text>
         </View>

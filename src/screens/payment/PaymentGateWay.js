@@ -143,9 +143,9 @@ export default function PaymentGateWay({ navigation, route }) {
   // const { getDataForPayment, getUserID, getEmailDAta } = useSelector(
   //   state => state,
   // );
-const getDataForPayment = useSelector(state => state.getDataForPayment);
-const getUserID = useSelector(state => state.getUserID);
-const getEmailDAta = useSelector(state => state.getEmailDAta);
+  const getDataForPayment = useSelector(state => state.getDataForPayment);
+  const getUserID = useSelector(state => state.getUserID);
+  const getEmailDAta = useSelector(state => state.getEmailDAta);
 
   useEffect(() => {
     handleGetCard();
@@ -179,7 +179,7 @@ const getEmailDAta = useSelector(state => state.getEmailDAta);
   };
 
   const handlePaymentSubmit = async () => {
-    setDesible(true);
+    // setDesible(true);
     const id = await createToken({ ...cardtype, type: 'Card' });
 
     if (id?.error) {
@@ -254,7 +254,7 @@ const getEmailDAta = useSelector(state => state.getEmailDAta);
         }
       } catch (err) {
         setLoader(false);
-        console.log('test111111', err?.response?.data?.message);
+        console.log('test111111', err?.response);
         setDesible(false);
         if (err.response) {
           PLATFORM_IOS
@@ -285,6 +285,8 @@ const getEmailDAta = useSelector(state => state.getEmailDAta);
     }
   };
   const handleCardSubmit = async () => {
+    const id = await createToken({ ...cardtype, type: 'Card' });
+
     setLoader(true);
     let payload = new FormData();
 
@@ -295,6 +297,7 @@ const getEmailDAta = useSelector(state => state.getEmailDAta);
     payload.append('price_stripe_id', getDataForPayment.price_stripe_id);
     payload.append('user_id', getUserID);
     payload.append('stripeToken', saveCardDetails.card_id);
+    // payload.append('stripeToken', id.token.id);
     payload.append('voucherCode', coupon == null ? '' : coupon);
     payload.append('coupon_id', couponcode == null ? '' : couponcode);
 
@@ -304,8 +307,8 @@ const getEmailDAta = useSelector(state => state.getEmailDAta);
           'Content-Type': 'multipart/form-data',
         },
       });
-
-      if (response.data.status == 'The package has already been purchased') {
+      console.log('Response Purchased', response?.data);
+      if (response.data.status == 'Same package already purchased') {
         PLATFORM_IOS
           ? Toast.show({
               type: 'error',
@@ -321,6 +324,18 @@ const getEmailDAta = useSelector(state => state.getEmailDAta);
         setLoader(false);
         setshow(false);
         setshow1(true);
+      } else if (response.data.status == 'blocked') {
+        //  setModalVisible(true);
+        setModalVisible2(false);
+        setLoader(false);
+        setshow(false);
+        setshow1(true);
+        Alert.alert(
+          ' Payment Blocked',
+          response?.data?.message,
+          [{ text: 'OK', onPress: () => console.log('OK Pressed') }],
+          { cancelable: false },
+        );
       } else {
         PLATFORM_IOS
           ? Toast.show({
@@ -332,7 +347,7 @@ const getEmailDAta = useSelector(state => state.getEmailDAta);
         setLoader(false);
       }
     } catch (err) {
-      console.log('TEsting Data', err);
+      console.log('TEsting Dataeeeeeee', err);
       setLoader(false);
       if (err.response) {
         PLATFORM_IOS
@@ -351,6 +366,7 @@ const getEmailDAta = useSelector(state => state.getEmailDAta);
         setLoader(false);
       }
     }
+    // }
   };
   const getDeviceIDData = () => {
     axios
@@ -661,10 +677,10 @@ const getEmailDAta = useSelector(state => state.getEmailDAta);
         keyboardShouldPersistTaps="handled"
       >
         <KeyboardAvoidingView
-          behavior={PLATFORM_IOS ? 'position' : undefined}
+          behavior={PLATFORM_IOS ? 'position' : 'position'}
           contentContainerStyle={{ flexGrow: 1 }}
         >
-          {/* {loader && <ActivityLoader />} */}
+
           {loader ? <ActivityLoader /> : ''}
 
           <View style={styles.centeredView}>
@@ -839,12 +855,12 @@ const getEmailDAta = useSelector(state => state.getEmailDAta);
                                 <View
                                   style={{
                                     backgroundColor: COLORS.GREEN,
-                                    marginLeft: -30,
+                                    marginLeft: -50,
 
                                     alignItems: 'center',
                                     marginTop: DIMENSIONS.SCREEN_HEIGHT * 0.03,
-                                    marginBottom:
-                                      DIMENSIONS.SCREEN_HEIGHT * 0.005,
+                                    // marginBottom:
+                                    //   DIMENSIONS.SCREEN_HEIGHT * 0.005,
                                     justifyContent: 'center',
                                     alignSelf: 'center',
                                     padding: 15,
@@ -1506,7 +1522,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    marginTop: 22,
+    // marginTop: 22,
   },
   modalView: {
     margin: 20,

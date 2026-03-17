@@ -34,12 +34,12 @@ const SubBoxTwo = () => {
         />
         <Text style={styles.installation_text}>Plan Details</Text>
       </View>
-      {getPurchaseData.length != 0 && (
+      {getPurchaseData?.length != 0 && (
         <View style={[styles.mainDiv_plan_details, styles.shadowProp]}>
           <View style={styles.second_main_div_kwh}>
             <Unit />
             <Text style={styles.kwh_mieq_text}>
-              {getPurchaseData.data.kwh} kWh
+              {getPurchaseData?.data?.kwh} kWh
             </Text>
             <Text style={styles.unit_allowed}>Units Alloted</Text>
           </View>
@@ -50,7 +50,7 @@ const SubBoxTwo = () => {
               style={{width: 30, height: 30}}
             />
             <Text style={styles.kwh_mieq_text}>
-              ~ {getPurchaseData.data.mi_eq}
+              ~ {getPurchaseData?.data?.mi_eq}
             </Text>
             <Text style={styles.unit_allowed}>Mi Eq</Text>
           </View>
@@ -61,7 +61,7 @@ const SubBoxTwo = () => {
               style={{width: 30, height: 30}}
             />
             <Text style={styles.kwh_mieq_text}>
-              {getPurchaseData.data.dollar_mi}
+              {getPurchaseData?.data?.dollar_mi}
             </Text>
             <Text style={styles.unit_allowed}>$ / Mile</Text>
           </View>

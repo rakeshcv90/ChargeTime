@@ -71,8 +71,8 @@ const Month = (props: any) => {
           </View>
 
           <View style={{ marginHorizontal: 20 }}>
-            {getMonthData?.message != 'No usage data available' ? (
-              <Graph dataOne={getMonthData} />
+            {getMonthData?.message != 'No monthly usage data available' ? (
+              <Graph dataOne={getMonthData}  graphType={'Month'}/>
             ) : (
               <Text
                 style={{

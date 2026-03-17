@@ -21,12 +21,7 @@ const Year = (props: any) => {
     setShowSlider(true);
   }, []);
   const { handleRefresh, refresh } = props?.route?.params;
-  // const {
-  //   getYearData,
-  //   getBoxTwoDataForDashboard,
-  //   getSubscriptionCancelStatus,
-  //   getPurchaseData,
-  // } = useSelector((state: any) => state);
+
   const getYearData = useSelector((state: any) => state.getYearData);
   const getBoxTwoDataForDashboard = useSelector(
     (state: any) => state.getBoxTwoDataForDashboard,
@@ -47,6 +42,7 @@ const Year = (props: any) => {
           showsVerticalScrollIndicator={false}
           keyboardShouldPersistTaps="handled"
           onScrollBeginDrag={() => setShowSlider(false)}
+            nestedScrollEnabled={true} 
           refreshControl={
             <RefreshControl
               refreshing={refresh}
@@ -70,7 +66,7 @@ const Year = (props: any) => {
 
           <View style={{ marginHorizontal: 20 }}>
             {getYearData?.message != 'No usage data available' ? (
-              <Graph dataOne={getYearData} />
+              <Graph dataOne={getYearData}  graphType={'Year'}/>
             ) : (
               <Text
                 style={{
@@ -84,7 +80,7 @@ const Year = (props: any) => {
                 No Graph Data available
               </Text>
             )}
-            {/* <BoxTwo data={getBoxTwoDataForDashboard.data} /> */}
+        
             {getPurchaseData?.data != 'Package not found' &&
             getPurchaseData?.data?.old_subscription_status != 'cancel' ? (
               <BoxTwo data={getBoxTwoDataForDashboard?.data} />
@@ -92,9 +88,7 @@ const Year = (props: any) => {
           </View>
 
           <View style={{ marginBottom: 80 }}>
-            {/* {getSubscriptionCancelStatus ==
-              2 ? null : getSubscriptionCancelStatus == 4 ? null : (<PriceValidity data={getBoxTwoDataForDashboard.data} />
-              )} */}
+      
             {getPurchaseData?.data != 'Package not found' &&
             getPurchaseData?.data?.old_subscription_status != 'cancel' ? (
               getSubscriptionCancelStatus ==
@@ -105,8 +99,7 @@ const Year = (props: any) => {
           </View>
         </ScrollView>
       </View>
-      {/* {showSlider && <ButtonSlider />} */}
-      {/* <ButtonSlider onToggle={handleToggle}  /> */}
+ 
     </>
   );
 };

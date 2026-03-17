@@ -12,6 +12,7 @@ import {
   Text,
   TouchableOpacity,
   View,
+  Image,
 } from 'react-native';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import COLORS from '../constants/COLORS';
@@ -31,20 +32,19 @@ import LottieView from 'lottie-react-native';
 import { useFocusEffect } from '@react-navigation/native';
 import { navigationRef } from '../../App';
 import redWave from '../../assets/red_wave.json';
+import Tooltip from 'react-native-walkthrough-tooltip';
 
 const Remaining = ({ ...props }) => {
   const dispatch = useDispatch();
   const [totalAllowed, setTotalAllowed] = useState(0);
-  // const { getRemainingData, getUserID, overusage, overusageCount } =
-  //   useSelector((state: any) => state);
-
+  const [toolTipVisible, setToolTipVisible] = useState(false);
   const getRemainingData = useSelector((state: any) => state.getRemainingData);
   const getUserID = useSelector((state: any) => state.getUserID);
   const overusage = useSelector((state: any) => state.overusage);
   const overusageCount = useSelector((state: any) => state.overusageCount);
   const [modalVisible, setModalVisible] = useState(false);
   const [x, setX] = useState<number>(0);
-  // setUpdateIntervalForType(SensorTypes.gyroscope, 200); // defaults to 100ms
+
   useFocusEffect(
     useCallback(() => {
       remainigUsuageData();
@@ -56,41 +56,8 @@ const Remaining = ({ ...props }) => {
   useEffect(() => {
     animationRef.current?.play();
 
-    // Or set a specific startFrame and endFrame with:
     animationRef.current?.play(30, 120);
   }, []);
-
-  // const remainigUsuageData = () => {
-  //   let remaingData;
-
-  //   axios
-  //     .get(`${API}/remainingusage/${getUserID}`)
-  //     .then(res => {
-  //       setTotalAllowed(res.data?.total_kwhunit);
-  //       if (parseInt(res.data?.kwh_unit_remaining) >=0) {
-  //         remaingData = res.data?.kwh_unit_remaining;
-  //         dispatch(setRemainingData(res.data?.kwh_unit_remaining));
-  //         //dispatch(setOverUsage(false));
-  //         // dispatch(setOverusageCount(0));
-  //         // dispatch(setOverModelView(false));
-  //       } else {
-  //         remaingData = res.data?.kwh_unit_overusage;
-  //         dispatch(setRemainingData(res.data?.kwh_unit_overusage));
-  //        // dispatch(setOverUsage(true));
-  //         // setModalVisible(true)
-  //         // dispatch(setOverModelView(true));
-
-  //         if (overusageCount < 1) {
-  //           setModalVisible(true);
-  //           dispatch(setOverusageCount(overusage + 1));
-  //         }
-  //       }
-
-  //     })
-  //     .catch(err => {
-  //       console.log(err);
-  //     });
-  // };
 
   const remainigUsuageData = () => {
     let remaingData;
@@ -172,6 +139,56 @@ const Remaining = ({ ...props }) => {
         >
           {overusage ? 'Overusage' : 'Remaining Usage'}
         </Text>
+        {/* <TouchableOpacity
+          style={{
+            position: 'absolute',
+            top: 5,
+            right: 10,
+            zIndex: 10,
+            elevation: 10,
+          }}
+          onPress={() => setToolTipVisible(true)}
+        >
+        
+          <Image
+            source={require('../../assets/images/information.png')}
+            style={{ height: 15, width: 15 }}
+            resizeMode="contain"
+          />
+        </TouchableOpacity> */}
+        <Tooltip
+          isVisible={toolTipVisible}
+          content={
+            <View style={{ padding: 5 }}>
+              <Text
+                style={{
+                  fontSize: 14,
+                  color: '#555',
+
+                  maxWidth: 150,
+                }}
+              >
+                This indicates the remaining energy (in kWh) available for the
+                current billing cycle.
+              </Text>
+            </View>
+          }
+          placement="left"
+          arrowSize={{ width: 16, height: 8 }}
+          backgroundColor="rgba(0,0,0,0.3)"
+          contentStyle={{
+            backgroundColor: '#fff',
+            borderRadius: 8,
+            padding: 10,
+            shadowColor: '#000',
+            shadowOpacity: 0.2,
+            shadowOffset: { width: 0, height: 2 },
+            shadowRadius: 4,
+            elevation: 5,
+          }}
+          onClose={() => setToolTipVisible(false)}
+        ></Tooltip>
+
         <View
           style={{
             top: '45%',
@@ -189,10 +206,10 @@ const Remaining = ({ ...props }) => {
               color: overusage ? COLORS.BLACK : COLORS.BLACK,
             }}
           >
-            {' '}
             {getRemainingData ? getRemainingData : 0}
             {' kWh'}
           </Text>
+
           <Text
             style={{
               fontWeight: '700',
@@ -208,125 +225,55 @@ const Remaining = ({ ...props }) => {
         {overusage ? (
           <>
             <View
-              // colors={['#AFD35E', '#AFD35E']}
-              // start={{x: 0, y: 0}}
-              // end={{x: 0, y: 1}}
               style={{
                 width: '100%',
                 backgroundColor: PLATFORM_IOS
                   ? 'rgba(248, 84, 84, 1)'
                   : 'rgba(248, 98, 98, 1)',
-                // borderRadius: 10,
-                // height: `${(getRemainingData / totalAllowed) * 100 - 20}%`,'
-                height: `${100 - 20}%`,
 
-                // height: `${30 - 20}%`,
-                // zIndex: -1,
-                // flexDirection: 'column-reverse',
+                height: `${100 - 20}%`,
               }}
             />
             <AnimatedLottieView
-              // source={require('../../assets/red_wave.json')} // Replace with your animation file
               source={redWave}
               autoPlay
               loop
               style={{
-                // marginBottom:
-                //   ((getRemainingData / totalAllowed) * 100) <= 30 ? 0 : -10,
-
                 zIndex: -1,
                 width: `100%`,
-                // marginBottom: -10,
+
                 marginBottom:
                   (getRemainingData / totalAllowed) * 100 <= 30 ? -10 : -10,
-                // height: `80.4%`,
               }}
             />
-            {/* <Text>`{((getRemainingData / totalAllowed) * 100) <= 10 ? 0 : -10}`</Text> */}
           </>
         ) : (
           <>
             <View
-              // colors={['#AFD35E', '#AFD35E']}
-              // start={{x: 0, y: 0}}
-              // end={{x: 0, y: 1}}
               style={{
                 width: '100%',
                 backgroundColor: '#AFD35E',
-                // borderRadius: 10,
+
                 height: `${(getRemainingData / totalAllowed) * 100 - 20}%`,
-                // height: `${30 - 20}%`,
+
                 zIndex: -1,
-                // flexDirection: 'column-reverse',
               }}
             />
             <AnimatedLottieView
               source={require('../../assets/wave.json')} // Replace with your animation file
               autoPlay
               loop
-              
               renderMode={'SOFTWARE'}
               style={{
                 marginBottom:
                   (getRemainingData / totalAllowed) * 100 <= 30 ? -1 : -10,
                 zIndex: -1,
                 width: `100%`,
-                // height: `80.4%`,
               }}
             />
-            {/* <Text>`{((getRemainingData / totalAllowed) * 100) <= 10 ? 0 : -10}`</Text> */}
           </>
         )}
       </View>
-      {/* <Modal
-        animationType="fade"
-        transparent={true}
-        visible={modalVisible}
-        onRequestClose={() => {
-          // dispatch(setOverModelView(false));
-          setModalVisible(!modalVisible);
-        }}>
-        <View style={styles.centeredView}>
-          <View style={styles.modalView}>
-            <Text style={styles.modalText}>Overusage</Text>
-            <AnimatedLottieView
-              source={{
-                uri: 'https://assets6.lottiefiles.com/private_files/lf30_mf7q9oho.json',
-              }} // Replace with your animation file
-              autoPlay
-              loop
-              style={{width: 50, height: 50}}
-            />
-            <Text
-              style={{
-                fontSize: 14,
-                fontWeight: '400',
-                color: COLORS.BLACK,
-              }}>
-              You have utilized your package, please purchase a new package.
-            </Text>
-            <View style={styles.button_one}>
-              <TouchableOpacity
-                style={{
-                  borderRadius: 20,
-                  padding: 10,
-                }}
-                onPress={() => {
-                  dispatch(setOverusageCount(overusage + 1));
-                  setModalVisible(false);
-                }}>
-                <Text style={styles.textStyle}>Cancel</Text>
-              </TouchableOpacity>
-              <TouchableOpacity
-                style={[styles.button, styles.buttonClose]}
-                onPress={nav}>
-                <Text style={styles.textStyle}>Purchase Plan</Text>
-              </TouchableOpacity>
-            </View>
-          </View>
-        </View>
-      </Modal> */}
-      {/* <OverusageModal /> */}
     </View>
   );
 };
@@ -338,8 +285,6 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-
-    // backgroundColor: 'rgba(0, 0, 0, 0.5)',
   },
   modalView: {
     margin: 20,
@@ -347,18 +292,13 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     padding: 35,
     alignItems: 'center',
-    // shadowColor: '#000',
-    // shadowOffset: {
-    //   width: 0,
-    //   height: 2,
-    // },
+
     shadowOpacity: 0.25,
     shadowRadius: 4,
     elevation: 5,
     width: DIMENSIONS.SCREEN_WIDTH * 0.8,
   },
   button_one: {
-    // marginLeft: 80,
     marginTop: 20,
     alignItems: 'center',
     justifyContent: 'space-between',

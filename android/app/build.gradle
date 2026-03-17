@@ -24,8 +24,8 @@ android {
         applicationId "com.chargetime"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 8
-        versionName "2.0"
+        versionCode 10
+        versionName "2.2"
     }
     signingConfigs {
         // debug {

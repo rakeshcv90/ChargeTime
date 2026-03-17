@@ -154,7 +154,7 @@ const Day = (props: any) => {
   };
   const nav = () => {
     setModalVisible(!modalVisible);
-    // dispatch(setOverusageCount(overusage + 1));
+
     navigationRef.navigate('HomeOne');
   };
 
@@ -166,7 +166,6 @@ const Day = (props: any) => {
           showsVerticalScrollIndicator={false}
           keyboardShouldPersistTaps="handled"
           onScrollBeginDrag={() => setShowSlider(false)}
-          //   onScrollToTop={() => setShowSlider(true)}
           refreshControl={
             <RefreshControl
               refreshing={refresh}
@@ -187,11 +186,11 @@ const Day = (props: any) => {
             <Remaining RemainingFill={10} KWH={400} data={'home'} />
             <TotalUsage data={getkwhData.Totalusedkwhs} location={'Daily'} />
           </View>
-
+          
           <View style={{ marginHorizontal: 20 }}>
-            {getGraphData?.message != 'No usage data available' ? (
+            {getGraphData?.message != 'No daily usage data available' ? (
               <>
-                <Graph dataOne={getGraphData} />
+                <Graph dataOne={getGraphData}  graphType={'Daily'}/>
               </>
             ) : (
               <Text

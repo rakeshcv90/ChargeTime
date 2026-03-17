@@ -39,13 +39,13 @@ const SubBoxOne = () => {
         <InstallBase style={styles.img_width} />
         <Text style={styles.installation_text}>Installation Base</Text>
       </View>
-      {getPurchaseData.length !== 0 && (
+      {getPurchaseData?.length !== 0 && (
         <>
           <View style={styles.location_div}>
             <Vanderberg style={styles.img_width} />
             <Text style={styles.force_base}>
               {' '}
-              {getPurchaseData.data.location}
+              {getPurchaseData?.data?.location}
             </Text>
           </View>
           <View style={{backgroundColor: COLORS.WHITE}}>
@@ -71,7 +71,7 @@ const SubBoxOne = () => {
                 style={{width: 20, height: 20, marginLeft: 20}}
               />
               <Text style={styles.force_base}>
-              {getPurchaseData.data.pwa_state}
+              {getPurchaseData?.data?.pwa_state}
               </Text>
             </View>
 
@@ -82,7 +82,7 @@ const SubBoxOne = () => {
                 style={{width: 25, height: 25}}
               />
               <Text style={styles.force_base}>
-                {getPurchaseData.data.pwa_zip}
+                {getPurchaseData?.data?.pwa_zip}
               </Text>
             </View>
           </View>

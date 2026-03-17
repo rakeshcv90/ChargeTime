@@ -49,10 +49,10 @@ const mobileW = Math.round(Dimensions.get('screen').width);
 const Subscription = ({ navigation, route }) => {
   const getUserID = useSelector(state => state.getUserID);
   const getPurchaseData = useSelector(state => state.getPurchaseData);
-const getChargerStatus = useSelector(state => state.getChargerStatus);
-const getDeviceID = useSelector(state => state.getDeviceID);
-const subscriptionStatus = useSelector(state => state.subscriptionStatus);
-const getPackageStatus = useSelector(state => state.getPackageStatus);
+  const getChargerStatus = useSelector(state => state.getChargerStatus);
+  const getDeviceID = useSelector(state => state.getDeviceID);
+  const subscriptionStatus = useSelector(state => state.subscriptionStatus);
+  const getPackageStatus = useSelector(state => state.getPackageStatus);
   const getSubscriptionCancelStatus = useSelector(
     state => state.getSubscriptionCancelStatus,
   );
@@ -72,9 +72,7 @@ const getPackageStatus = useSelector(state => state.getPackageStatus);
   useEffect(() => {
     getPlanCurrent();
     // getSubscriptionStatus1();
-   
   }, []);
-
 
   const user_id = getUserID;
 
@@ -173,7 +171,7 @@ const getPackageStatus = useSelector(state => state.getPackageStatus);
           );
           dispatch(setPurchaseData(res?.data));
           setGetData(res.data);
-    
+
           dispatch(setPackageStatus(true));
         }
       })
@@ -258,22 +256,68 @@ const getPackageStatus = useSelector(state => state.getPackageStatus);
   const getSubscriptionStatus = async () => {
     setForLoading(true);
     try {
-      const res = await axios({
-        url:
-          subscriptionStatus == '0' || subscriptionStatus == null
-            ? `${API}/subscription_pause/${getUserID}`
-            : `${API}/subscription_resume/${getUserID}`,
+      const response = await axios({
+        url: `${API}/subscription_pause/${getUserID}`,
+        // subscriptionStatus == '0' || subscriptionStatus == null
+        //? `${API}/subscription_pause/${getUserID}`
+        // : `${API}/subscription_resume/${getUserID}`,
       });
-      if (res.data) {
-        setForLoading(false);
-        getSubscriptionStatus1();
+      // if (res.data) {
+      //   setForLoading(false);
+      //   getSubscriptionStatus1();
 
+      //   PLATFORM_IOS
+      //     ? Toast.show({
+      //         type: 'success',
+      //         text1: res.data.subscription,
+      //       })
+      //     : ToastAndroid.show(res.data.subscription, ToastAndroid.SHORT);
+      // }
+
+      if (
+        response?.data?.message ==
+        'Subscription paused successfully. Billing completed.'
+      ) {
+        const updatedData = [
+          {
+            ...getPurchaseData[0],
+            End_validity: null,
+            dollar_mi: null,
+            energy_plan: null,
+            energy_price: null,
+            kwh: null,
+            mi_eq: null,
+            remaining_package: null,
+            total_package: null,
+          },
+        ];
+        dispatch(UpdatedCurrentPlan(updatedData));
+        const subCancelStatus = response?.data?.subscription_cancel_status;
+        dispatch(
+          setSubcriptionCancelStatus(
+            subCancelStatus == 1
+              ? 1
+              : subCancelStatus == 2
+              ? 2
+              : subCancelStatus == 3
+              ? 3
+              : subCancelStatus == 4
+              ? 4
+              : subCancelStatus == 5
+              ? 5
+              : 0,
+          ),
+        );
+        getPlanCurrent();
+        // PlanStatus()
         PLATFORM_IOS
           ? Toast.show({
               type: 'success',
-              text1: res.data.subscription,
+              text1: response.data.message,
             })
-          : ToastAndroid.show(res.data.subscription, ToastAndroid.SHORT);
+          : ToastAndroid.show(response.data.message, ToastAndroid.SHORT);
+        // setModalVisible(false);
+        setForLoading(false);
       }
     } catch (error) {
       setForLoading(false);

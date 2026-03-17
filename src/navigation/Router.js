@@ -161,6 +161,7 @@ const DrawerNavigation = () => {
   const getPackageStatus = useSelector(state => state.getPackageStatus);
   const getChargerStatus = useSelector(state => state.getChargerStatus);
   const getDeviceID = useSelector(state => state.getDeviceID);
+ 
   const getSubscriptionCancelStatus = useSelector(
     state => state.getSubscriptionCancelStatus,
   );

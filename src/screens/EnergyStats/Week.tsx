@@ -85,8 +85,8 @@ const getPurchaseData = useSelector((state: any) => state.getPurchaseData);
           </View>
 
           <View style={{marginHorizontal: 20}}>
-            {getWeekGraphData?.message != 'No usage data available' ? (
-              <Graph dataOne={getWeekGraphData} />
+            {getWeekGraphData?.message != 'No weekly usage data available' ? (
+              <Graph dataOne={getWeekGraphData}  graphType={'Week'}/>
             ) : (
               <Text
                 style={{

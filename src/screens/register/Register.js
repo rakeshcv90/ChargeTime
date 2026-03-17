@@ -15,23 +15,24 @@ import {
   ToastAndroid,
   KeyboardAvoidingView,
   Platform,
+  Keyboard,
 } from 'react-native';
-import {SafeAreaView} from 'react-native-safe-area-context';
-import {Formik} from 'formik';
-import React, {useEffect, useState} from 'react';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import { Formik } from 'formik';
+import React, { useEffect, useState } from 'react';
 import COLORS from '../../constants/COLORS';
 import axios from 'axios';
 import * as Yup from 'yup';
-import {API} from '../../api/API';
+import { API } from '../../api/API';
 import Input from '../../Components/Input';
 import Toast from 'react-native-toast-message';
-import {PLATFORM_IOS} from '../../constants/DIMENSIONS';
-import {Admin} from '../../../assets/images/Admin';
-import {Message} from '../../../assets/images/Message';
-import {Call} from '../../../assets/images/Call';
-import {StrongPass} from '../../../assets/images/StrongPass';
-import {useDispatch, useSelector} from 'react-redux';
-import {setUserRegisterData} from '../../redux/action';
+import { PLATFORM_IOS } from '../../constants/DIMENSIONS';
+import { Admin } from '../../../assets/images/Admin';
+import { Message } from '../../../assets/images/Message';
+import { Call } from '../../../assets/images/Call';
+import { StrongPass } from '../../../assets/images/StrongPass';
+import { useDispatch, useSelector } from 'react-redux';
+import { setUserRegisterData } from '../../redux/action';
 import ActivityLoader from '../../Components/ActivityLoader';
 const mobileH = Math.round(Dimensions.get('window').height);
 const mobileW = Math.round(Dimensions.get('screen').width);
@@ -75,7 +76,7 @@ const validationSchema = Yup.object().shape({
     .required('Confirm Password is Required')
     .oneOf([Yup.ref('password')], 'Passwords must match'),
 });
-export default function Register({navigation}) {
+export default function Register({ navigation }) {
   const [forLoading, setForLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(true);
   const [showPassword1, setShowPassword1] = useState(true);
@@ -83,12 +84,24 @@ export default function Register({navigation}) {
   // const {userRegisterData} = useSelector(state => state);
   const userRegisterData = useSelector(state => state.userRegisterData);
 
+
+    const [keyboardVisible, setKeyboardVisible] = useState(false);
+
+  useEffect(() => {
+    const showSub = Keyboard.addListener('keyboardDidShow', () => setKeyboardVisible(true));
+    const hideSub = Keyboard.addListener('keyboardDidHide', () => setKeyboardVisible(false));
+    return () => {
+      showSub.remove();
+      hideSub.remove();
+    };
+  }, []);
+
   const handleFormSubmit = async values => {
     setForLoading(true);
 
     try {
       const response = await axios.post(`${API}/createuser`, {
-        name: values.name ,
+        name: values.name,
         email: values.email,
       });
 
@@ -105,7 +118,7 @@ export default function Register({navigation}) {
 
         setForLoading(false);
 
-       dispatch(setUserRegisterData(values));
+        dispatch(setUserRegisterData(values));
         navigation.navigate('CompleteProfile', {
           email: values?.email,
           user_id: response.data?.user_id,
@@ -121,11 +134,11 @@ export default function Register({navigation}) {
                 'Please verify your email with code.',
                 ToastAndroid.SHORT,
               );
-           
+
           navigation.navigate('VerifyEmail', {
             email: values?.email,
             user_id: response.data?.user_id,
-             time:response.data?.time,
+            time: response.data?.time,
           });
 
           setForLoading(false);
@@ -150,23 +163,28 @@ export default function Register({navigation}) {
     }
   };
   return (
-    <SafeAreaView style={{backgroundColor: COLORS.CREAM, flex: 1}}>
+    <SafeAreaView style={{ backgroundColor: COLORS.CREAM, flex: 1 }}>
       <ScrollView
-        // scrollEnabled={false}
+      
         keyboardDismissMode="interactive"
         showsVerticalScrollIndicator={false}
-        keyboardShouldPersistTaps="handled">
+         contentContainerStyle={{
+        flexGrow: 1,
+        paddingBottom: keyboardVisible ? 250 : 20, // 👈 dynamic padding
+      }}
+        keyboardShouldPersistTaps="handled"
+        contentInsetAdjustmentBehavior="automatic"
+      >
         <KeyboardAvoidingView
           behavior={PLATFORM_IOS ? 'position' : undefined}
-          contentContainerStyle={{flexGrow: 1}}
-          // behavior={'padding'}
-          // keyboardVerticalOffset={PLATFORM_IOS ? 200 : 0}
+          contentContainerStyle={{ flexGrow: 1 }}
+         
         >
           {forLoading ? <ActivityLoader /> : ''}
           <Image
             source={require('../../../assets/images/res.png')}
             resizeMode="contain"
-            style={{width: mobileW, height: mobileH / 5, marginTop: 10}}
+            style={{ width: mobileW, height: mobileH / 5, marginTop: 10 }}
           />
           <Formik
             initialValues={{
@@ -178,7 +196,8 @@ export default function Register({navigation}) {
               repeat_password: '',
             }}
             onSubmit={values => handleFormSubmit(values)}
-            validationSchema={validationSchema}>
+            validationSchema={validationSchema}
+          >
             {({
               values,
               handleChange,
@@ -302,7 +321,8 @@ export default function Register({navigation}) {
                     justifyContent: 'center',
                     // width: '100%',
                     marginHorizontal: 20,
-                  }}>
+                  }}
+                >
                   <TouchableOpacity
                     onPress={handleSubmit}
                     style={{
@@ -315,7 +335,7 @@ export default function Register({navigation}) {
                       ...Platform.select({
                         ios: {
                           shadowColor: '#000000',
-                          shadowOffset: {width: 0, height: 2},
+                          shadowOffset: { width: 0, height: 2 },
                           shadowOpacity: 0.3,
                           shadowRadius: 4,
                         },
@@ -323,13 +343,15 @@ export default function Register({navigation}) {
                           elevation: 4,
                         },
                       }),
-                    }}>
+                    }}
+                  >
                     <Text
                       style={{
                         color: COLORS.BLACK,
                         fontSize: 14,
                         fontWeight: '700',
-                      }}>
+                      }}
+                    >
                       Sign Up
                     </Text>
                   </TouchableOpacity>

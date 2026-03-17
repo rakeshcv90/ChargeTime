@@ -186,6 +186,7 @@ export default function EnergyStats() {
   //   getSubscriptionCancelStatus,
   // } = useSelector((state: any) => state);
   const getGraphData = useSelector((state: any) => state.getGraphData);
+  const paymentMessage = useSelector((state: any) => state.paymentMessage);
   const getChargerStatus = useSelector((state: any) => state.getChargerStatus);
   const getDeviceID = useSelector((state: any) => state.getDeviceID);
   const getUserID = useSelector((state: any) => state.getUserID);
@@ -674,6 +675,7 @@ export default function EnergyStats() {
                   }}
                 />
               )}
+
               <Text
                 style={{
                   textAlign: 'center',
@@ -682,12 +684,37 @@ export default function EnergyStats() {
                   lineHeight: 19,
                   textTransform: 'capitalize',
                   color: '#000000',
-                  marginBottom: 15,
-                  marginTop: 15,
+                  marginBottom: 5,
+                  marginTop: 10,
                 }}
               >
                 Energy Statistics
               </Text>
+              {/* {paymentMessage != null && (
+                <View
+                  style={{
+                    width: '90%',
+                    alignSelf: 'center',
+                    backgroundColor: 'rgba(248, 84, 84, 1)',
+                    borderRadius: 10,
+                    marginBottom: 5,
+                    padding: 5,
+                  }}
+                >
+                  <Text
+                    style={{
+                      textAlign: 'center',
+                      fontWeight: '500',
+                      fontSize: 12,
+                      lineHeight: 19,
+                      textTransform: 'capitalize',
+                      color: 'white',
+                    }}
+                  >
+                    {paymentMessage?.message}
+                  </Text>
+                </View>
+              )} */}
             </View>
           </View>
         )}

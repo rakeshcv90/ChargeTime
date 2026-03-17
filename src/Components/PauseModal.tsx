@@ -44,18 +44,20 @@ const PauseModal: FC<Props> = ({
   const [isLoading, setIsLoading] = useState(false);
 
   const postSubscriptionStatus = async () => {
+      setPaused(false);
+  
     try {
       const res = await axios({
         url: `${API}/subscription_resume/${getUserID}`,
       });
       if (res.data) {
-        PLATFORM_IOS
-          ? Toast.show({
-              type: 'success',
-              text1: res.data.subscription,
-            })
-          : ToastAndroid.show(res.data.subscription, ToastAndroid.SHORT);
-        getSubscriptionStatus();
+        // PLATFORM_IOS
+        //   ? Toast.show({
+        //       type: 'success',
+        //       text1: res.data.subscription,
+        //     })
+        //   : ToastAndroid.show(res.data.subscription, ToastAndroid.SHORT);
+       navigationRef?.navigate('EnergyOptions');
       }
     } catch (error) {
       console.log('dddd1111', error);
@@ -65,7 +67,7 @@ const PauseModal: FC<Props> = ({
     try {
       const response = await fetch(`${API}/planstatuspauseresume/${getUserID}`);
       const res = await response.json();
-      dispatch(setSubscriptionStatus(res.PlanStatus));
+      // dispatch(setSubscriptionStatus(res.PlanStatus));
       setPaused(res.PlanStatus == '1' ? true : false);
     } catch (error) {
       console.log('Error-7', error);
@@ -92,15 +94,18 @@ const PauseModal: FC<Props> = ({
               setPaused(false);
             }}
             style={{
-              justifyContent: 'flex-end',
-              alignItems: 'flex-end',
+              alignItems: 'center',
               alignSelf: 'flex-end',
-              marginTop: -10,
+
+              width: 20,
+              height: 20,
+
+              zIndex: 1,
             }}
           >
             <Image
               source={require('../../assets/images/close.png')}
-              style={{ width: 12, height: 12 }}
+              style={{ width: 15, height: 15, alignSelf: 'center' }}
               resizeMode="contain"
             />
           </TouchableOpacity>

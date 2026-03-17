@@ -64,6 +64,7 @@ import {
   setMaintainence,
   setPuchaseAllPlans,
   setSubcriptionCancelStatus,
+  setPaymentMessage,
 } from '../../redux/action';
 import axios from 'axios';
 import { navigationRef } from '../../../App';
@@ -72,6 +73,7 @@ import { ms } from 'react-native-size-matters';
 import { Alert, PermissionsAndroid } from 'react-native';
 import Clipboard from '@react-native-clipboard/clipboard';
 import { useFocusEffect } from '@react-navigation/native';
+import VersionNumber from 'react-native-version-number';
 const mobileH = Math.round(Dimensions.get('window').height);
 const mobileW = Math.round(Dimensions.get('window').width);
 
@@ -241,7 +243,7 @@ export default function Login({ navigation }) {
               setPassword('');
               await AsyncStorage.setItem('isAuthorized', res.data.user_id + '');
               const subCancelStatus = res.data?.subscription_cancel_status;
-         
+
               dispatch(
                 setSubcriptionCancelStatus(
                   subCancelStatus == 1
@@ -260,6 +262,7 @@ export default function Login({ navigation }) {
                 dispatch(setPackageStatus(true));
                 dispatch(getLocationID(res.data?.locationid));
                 fetchGraphData(res.data?.user_id);
+                sendVersionCOde(res.data?.user_id);
                 dispatch(setDeviceId(''));
               } else if (
                 res.data.status ==
@@ -268,6 +271,7 @@ export default function Login({ navigation }) {
                 dispatch(setEmailData(res.data?.email));
                 dispatch(setPackageStatus(true));
                 dispatch(setUserID(res.data?.user_id));
+                sendVersionCOde(res.data?.user_id);
                 dispatch(getLocationID(res.data?.locationid));
                 dispatch(setIsAuthorized(true));
                 getPlanCurrent(res.data?.user_id);
@@ -278,16 +282,16 @@ export default function Login({ navigation }) {
                   ),
                 );
               } else {
-                 console.log('subCancelStatus',res.data?.user_id);
+                console.log('subCancelStatus', res.data?.user_id);
                 dispatch(setDeviceId(res.data.message));
                 dispatch(setIsAuthorized(true));
                 dispatch(setEmailData(res.data?.email));
                 dispatch(setUserID(res.data?.user_id));
+                sendVersionCOde(res.data?.user_id);
                 dispatch(getLocationID(res.data?.locationid));
                 packagePlans(res.data?.locationid);
                 getPlanCurrent(res.data?.user_id);
               }
-             
             } else if (res.data.message == 'Email Id does not exist!') {
               PLATFORM_IOS
                 ? Toast.show({
@@ -370,7 +374,7 @@ export default function Login({ navigation }) {
     axios
       .get(`${API}/dailyusagedeviceid/${userID}`)
       .then(res => {
-        console.log('Dailay Use Data is', res.data.length);
+        console.log('Dailay Use Data is', res.data);
         if (res?.data?.length > 0) {
           dispatch(setGraphData(res.data.Dayusagewithgraph));
           dispatch(setWeekGraphData(res.data.weeklyusagewithgraph));
@@ -582,6 +586,39 @@ export default function Login({ navigation }) {
     } catch (error) {
       console.log('Error-10', err);
     }
+  };
+  const sendVersionCOde = async data => {
+    try {
+      const res = await axios(`${API}/version/insert`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        data: {
+          id: data,
+          version: VersionNumber.appVersion,
+        },
+      });
+    } catch (err) {
+      console.log('Error-13455', err);
+    }
+    try {
+      const res = await axios(`${API}/payment_failed_status/${data}`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+   
+      if (res?.data?.status == 'failed') {
+        dispatch(setPaymentMessage(res?.data));
+      } else {
+        dispatch(setPaymentMessage(null));
+      }
+    } catch (error) {
+      console.log('Error-1346', err);
+    }
+    // navigationRef.navigate('DrawerStack')
   };
   return (
     <SafeAreaView style={{ backgroundColor: COLORS.CREAM, flex: 1 }}>

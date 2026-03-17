@@ -115,8 +115,7 @@ export default function HomeOne(route) {
   const [activeTab, setActiveTab] = useState('');
   const [apiData, setApiData] = useState([]);
   const [myTest, setMyTest] = useState('');
-  // const {getLocationID, getPurchaseData, getBasePackage, subscriptionStatus} =
-  //   useSelector(state => state);
+  const paymentMessage = useSelector(state => state.paymentMessage);
   const getLocationID = useSelector(state => state.getLocationID);
   const getPurchaseData = useSelector(state => state.getPurchaseData);
   const getBasePackage = useSelector(state => state.getBasePackage);
@@ -378,7 +377,31 @@ export default function HomeOne(route) {
           />
         )}
       </View>
-
+      {/* {paymentMessage != null && (
+        <View
+          style={{
+            width: '90%',
+            alignSelf: 'center',
+            backgroundColor: 'rgba(248, 84, 84, 1)',
+            borderRadius: 10,
+            marginBottom: 5,
+            padding: 5,
+          }}
+        >
+          <Text
+            style={{
+              textAlign: 'center',
+              fontWeight: '500',
+              fontSize: 12,
+              lineHeight: 19,
+              textTransform: 'capitalize',
+              color: 'white',
+            }}
+          >
+            {paymentMessage?.message}
+          </Text>
+        </View>
+      )} */}
       {isLoading || showPackage ? (
         <View>
           {!showPackage ? (

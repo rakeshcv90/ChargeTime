@@ -126,7 +126,7 @@ const subscriptionStatus = useSelector(state => state.subscriptionStatus);
       {forLoading ? <ActivityLoader /> : ''}
 
       <View style={styles.managing_width}>
-        {/* <BoxTwo data={props.route.params.item} /> */}
+      
 
         <BoxTwo
           data={props?.item || getBasePackage[props?.route?.params.index]}
@@ -143,20 +143,7 @@ const subscriptionStatus = useSelector(state => state.subscriptionStatus);
               />
             )
           : null}
-        {/*         
-        {getPurchaseData.data != 'Package not found' &&
-          getPurchaseData.data.energy_plan.toLowerCase() ===
-            props.route.params.item.package_name.toLowerCase() && (
-            <RemainingHorizontal RemainingFill={50} KWH={400} data={'energy'} />
-          )} */}
-
-        {/* {getPurchaseData.data != 'Package not found' &&
-          getPurchaseData.data.energy_plan.toLowerCase() ===
-            props.route.params.item.package_name.toLowerCase() && (
-            <View style={{marginBottom: 5}}>
-              <PriceBox data={getPurchaseData.data} />
-            </View>
-          )} */}
+      
 
         {getPurchaseData?.data != 'Package not found' &&
         getPurchaseData?.data?.old_subscription_status != 'cancel'
@@ -179,13 +166,7 @@ const subscriptionStatus = useSelector(state => state.subscriptionStatus);
                   ? -15
                   : 0
                 : 0,
-            // getPurchaseData.data != 'Package not found' &&
-            // getPurchaseData.data.energy_plan.toLowerCase() ===
-            //   props.route.params.item.package_name.toLowerCase()
-            //   ? 0
-            //   : Platform.OS == 'android'
-            //   ? -15
-            //   : 0,
+       
           }}>
           <InstallationBase
             data={props?.item || getBasePackage[props?.route?.params.index]}
@@ -207,12 +188,7 @@ const subscriptionStatus = useSelector(state => state.subscriptionStatus);
                   purchageData={purchageData}
                   disabled={
                     false
-                    // getPlanStatus.length != 0
-                    //   ? getPlanStatus.item_name.toLowerCase() ==
-                    //     props.route.params.item.package_name.toLowerCase()
-                    //     ? true
-                    //     : false
-                    //   : false
+                 
                   }
                 />
               )}
@@ -229,67 +205,7 @@ const subscriptionStatus = useSelector(state => state.subscriptionStatus);
               )}
           </>
         )}
-        {/* {getPurchaseData.data != 'Package not found' &&
-          getPurchaseData.data.energy_plan.toLowerCase() !==
-            props.route.params.item.package_name.toLowerCase() && (
-            <BoxFive
-              data={getBasePackage[props?.route?.params.index]}
-              purchageData={props.route.params.purchageData}
-              disabled={
-                false
-                // getPlanStatus.length != 0
-                //   ? getPlanStatus.item_name.toLowerCase() ==
-                //     props.route.params.item.package_name.toLowerCase()
-                //     ? true
-                //     : false
-                //   : false
-              }
-            />
-          )}
-        {/* {getPurchaseData.data != 'Package not found' &&
-          getPurchaseData.data. item_name.toLowerCase() ===
-            props.route.params.item.package_name.toLowerCase() && (
-            <BoxFive
-              data={props.route.params.item}
-              purchageData={props.route.params.purchageData}
-              disabled
-            />
-          )} */}
-        {/* {getPurchaseData?.data != 'Package not found' &&
-        getPurchaseData?.data?.old_subscription_status != 'cancel'
-          ? getPurchaseData.data.energy_plan.toLowerCase() ===
-              props.route.params.item.package_name.toLowerCase() && (
-              <BoxFive
-                data={props.route.params.item}
-                purchageData={props.route.params.purchageData}
-                disabled
-              />
-            )
-          : null}  */}
-        {/* {(getSubscriptionCancelStatus == 2 ||
-          getSubscriptionCancelStatus == 4) && ( */}
-
-        {/* {getPurchaseData?.data != 'Package not found' &&
-          getPurchaseData?.data?.old_subscription_status == 'cancel' && (
-            <PurchseButton data={getBasePackage[props?.route?.params.index]} />
-          )} */}
-
-        {/* )} */}
-        {/* {!forLoading &&
-          getPlanStatus.length !== 0 &&
-          getPlanStatus.item_name.toLowerCase() ==
-            props.route.params.item.package_name.toLowerCase() && (
-            <Text
-              style={{
-                fontSize: 13,
-                fontWeight: '500',
-                marginTop: 15,
-                color: COLORS.RED,
-                lineHeight: 20,
-              }}>
-              This package is already purchased, and it will be activated at the end of your billing cycle.
-            </Text>
-          )} */}
+ 
       </View>
     </ScrollView>
   );
@@ -297,11 +213,8 @@ const subscriptionStatus = useSelector(state => state.subscriptionStatus);
 const styles = StyleSheet.create({
   managing_width: {
     paddingHorizontal: 20,
-    // backgroundColor: COLORS.CREAM, flex: 1,
+  
     marginBottom: DIMENSIONS.SCREEN_HEIGHT * 0.02,
-    // backgroundColor:"red"
-    // marginVertical: 10,
-    //   paddingTop:20
-    // marginBottom:20
+  
   },
 });
