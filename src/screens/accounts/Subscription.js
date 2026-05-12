@@ -318,6 +318,7 @@ const Subscription = ({ navigation, route }) => {
           : ToastAndroid.show(response.data.message, ToastAndroid.SHORT);
         // setModalVisible(false);
         setForLoading(false);
+        getSubscriptionStatus1();
       }
     } catch (error) {
       setForLoading(false);

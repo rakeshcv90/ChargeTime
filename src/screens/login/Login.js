@@ -609,7 +609,7 @@ export default function Login({ navigation }) {
           'Content-Type': 'application/json',
         },
       });
-   
+
       if (res?.data?.status == 'failed') {
         dispatch(setPaymentMessage(res?.data));
       } else {

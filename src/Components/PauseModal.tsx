@@ -44,8 +44,8 @@ const PauseModal: FC<Props> = ({
   const [isLoading, setIsLoading] = useState(false);
 
   const postSubscriptionStatus = async () => {
-      setPaused(false);
-  
+    setPaused(false);
+
     try {
       const res = await axios({
         url: `${API}/subscription_resume/${getUserID}`,
@@ -57,7 +57,7 @@ const PauseModal: FC<Props> = ({
         //       text1: res.data.subscription,
         //     })
         //   : ToastAndroid.show(res.data.subscription, ToastAndroid.SHORT);
-       navigationRef?.navigate('EnergyOptions');
+        navigationRef?.navigate('EnergyOptions');
       }
     } catch (error) {
       console.log('dddd1111', error);
@@ -162,6 +162,13 @@ const PauseModal: FC<Props> = ({
             >
               <Text style={styles.textStyle}>Home</Text>
             </TouchableOpacity>
+            {console.log(
+              'XCvcxvxcvcxvcxv',
+              cancel1,
+              cancel2,
+              cancel1Stripe,
+              cancel2Stripe,
+            )}
             <TouchableOpacity
               style={[styles.button, styles.buttonClose, { padding: 5 }]}
               onPress={() => {

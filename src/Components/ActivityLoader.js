@@ -1,64 +1,46 @@
 import {
   StyleSheet,
-  Text,
   View,
-  Modal,
   ActivityIndicator,
-  Image,
 } from 'react-native';
-import React, {useEffect, useState} from 'react';
+import React from 'react';
 import COLORS from '../constants/COLORS';
-import {DIMENSIONS} from '../constants/DIMENSIONS';
-import AnimatedLottieView from 'lottie-react-native';
+import { DIMENSIONS } from '../constants/DIMENSIONS';
 
 const ActivityLoader = props => {
-  const [icon, showIcon] = useState(false);
-  useEffect(() => {
-    setTimeout(() => {
-      showIcon(!icon);
-    }, 100);
-  }, [icon]);
-  const {visible} = props;
+  const { visible = true } = props;
+  if (!visible) return null;
+
   return (
-    <Modal visible={visible} transparent={true} animationType="fade">
+    <View
+      style={{
+        position: 'absolute',
+        top: 0,
+        left: 0,
+        right: 0,
+        bottom: 0,
+        backgroundColor: 'rgba(0,0,0,0.15)', // Lighter backdrop for better visibility
+        alignItems: 'center',
+        justifyContent: 'center',
+        zIndex: 9999,
+        borderRadius: 15, // Match modalView if used inside it
+      }}
+    >
       <View
         style={{
-          height: DIMENSIONS.SCREEN_WIDTH / 5,
-          width: DIMENSIONS.SCREEN_WIDTH / 5,
-          backgroundColor: COLORS.LIGHT_GREY,
+          height: 80,
+          width: 80,
+          backgroundColor: COLORS.LIGHT_GREY, // Match the grey loader theme
           alignItems: 'center',
           justifyContent: 'center',
-          alignSelf: 'center',
           borderRadius: 15,
-          marginTop: 'auto',
-          marginBottom: 'auto',
-          // elevation: 10,
-        }}>
-        {/* <ActivityIndicator size="large" /> */}
-        {/* <Image
-            source={require('../../assets/images/logo_one.png')}
-            style={{
-              height: DIMENSIONS.SCREEN_WIDTH / 6,
-              width: DIMENSIONS.SCREEN_WIDTH / 6,
-              resizeMode: 'contain',
-            }}
-          /> */}
-           {/* <AnimatedLottieView
-                // source={{
-                //   uri: 'https://assets7.lottiefiles.com/packages/lf20_qgq2nqsy.json',
-                // }} // Replace with your animation file
-                source={require('../../assets/activityindicater.json')} 
-                speed={2}
-                autoPlay
-                loop
-                style={{width: 150, height: 50,}}
-              /> */}
-             <ActivityIndicator size="large" color="white" />
+          // elevation: 5,
+        }}
+      >
+        <ActivityIndicator size="large" color="white" />
       </View>
-    </Modal>
+    </View>
   );
 };
 
 export default ActivityLoader;
-
-const styles = StyleSheet.create({});

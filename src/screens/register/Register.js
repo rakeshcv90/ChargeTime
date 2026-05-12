@@ -84,12 +84,15 @@ export default function Register({ navigation }) {
   // const {userRegisterData} = useSelector(state => state);
   const userRegisterData = useSelector(state => state.userRegisterData);
 
-
-    const [keyboardVisible, setKeyboardVisible] = useState(false);
+  const [keyboardVisible, setKeyboardVisible] = useState(false);
 
   useEffect(() => {
-    const showSub = Keyboard.addListener('keyboardDidShow', () => setKeyboardVisible(true));
-    const hideSub = Keyboard.addListener('keyboardDidHide', () => setKeyboardVisible(false));
+    const showSub = Keyboard.addListener('keyboardDidShow', () =>
+      setKeyboardVisible(true),
+    );
+    const hideSub = Keyboard.addListener('keyboardDidHide', () =>
+      setKeyboardVisible(false),
+    );
     return () => {
       showSub.remove();
       hideSub.remove();
@@ -165,20 +168,18 @@ export default function Register({ navigation }) {
   return (
     <SafeAreaView style={{ backgroundColor: COLORS.CREAM, flex: 1 }}>
       <ScrollView
-      
         keyboardDismissMode="interactive"
         showsVerticalScrollIndicator={false}
-         contentContainerStyle={{
-        flexGrow: 1,
-        paddingBottom: keyboardVisible ? 250 : 20, // 👈 dynamic padding
-      }}
+        contentContainerStyle={{
+          flexGrow: 1,
+          paddingBottom: keyboardVisible ? 250 : 20, // 👈 dynamic padding
+        }}
         keyboardShouldPersistTaps="handled"
         contentInsetAdjustmentBehavior="automatic"
       >
         <KeyboardAvoidingView
           behavior={PLATFORM_IOS ? 'position' : undefined}
           contentContainerStyle={{ flexGrow: 1 }}
-         
         >
           {forLoading ? <ActivityLoader /> : ''}
           <Image

@@ -70,7 +70,6 @@ const validationSchema = Yup.object().shape({
     .required('Invalid Card Number')
     .min(19, 'Card number must be 16 digits'),
 
-  // .matches(/^[0-9]{16}$/, 'Card number must be 16 digits'),
   validTill: Yup.string()
     .required('Expiry date is Required')
     .test(
@@ -96,14 +95,6 @@ const validationSchema = Yup.object().shape({
           parseInt(month, 10) - 1,
         );
 
-        // // Check if the year is greater than or equal to the current year
-        // if (expirationDate.getFullYear() <= currentDate.getFullYear()) {
-        //   return this.createError({
-        //     message: 'Year should be greater or equal to the current year',
-        //     path: 'validTill',
-        //   });
-        // }
-        // Check if the year is equal to the current year but the month is greater than the current month
         if (
           expirationDate.getFullYear() === currentDate.getFullYear() &&
           expirationDate.getMonth() <= currentDate.getMonth()
@@ -114,7 +105,6 @@ const validationSchema = Yup.object().shape({
           });
         }
 
-        // Check if the expiration date is greater than the current date
         return expirationDate > currentDate;
       },
     ),
@@ -140,9 +130,6 @@ export default function PaymentGateWay({ navigation, route }) {
   const [show1, setshow1] = useState(true);
   const [couponcode, setCoupencode] = useState(null);
 
-  // const { getDataForPayment, getUserID, getEmailDAta } = useSelector(
-  //   state => state,
-  // );
   const getDataForPayment = useSelector(state => state.getDataForPayment);
   const getUserID = useSelector(state => state.getUserID);
   const getEmailDAta = useSelector(state => state.getEmailDAta);
@@ -179,11 +166,12 @@ export default function PaymentGateWay({ navigation, route }) {
   };
 
   const handlePaymentSubmit = async () => {
-    // setDesible(true);
+    setDesible(true);
     const id = await createToken({ ...cardtype, type: 'Card' });
 
     if (id?.error) {
       setModalVisible1(false);
+      setDesible(false);
       PLATFORM_IOS
         ? Toast.show({
             type: 'success',
@@ -285,8 +273,8 @@ export default function PaymentGateWay({ navigation, route }) {
     }
   };
   const handleCardSubmit = async () => {
-    const id = await createToken({ ...cardtype, type: 'Card' });
-
+    // const id = await createToken({ ...cardtype, type: 'Card' });
+    setDesible(true);
     setLoader(true);
     let payload = new FormData();
 
@@ -317,6 +305,7 @@ export default function PaymentGateWay({ navigation, route }) {
           : ToastAndroid.show(response.data.status, ToastAndroid.SHORT);
         setModalVisible2(false);
         setLoader(false);
+        setDesible(false);
         getDeviceIDData();
       } else if (response.data.status == 'success') {
         setModalVisible(true);
@@ -324,12 +313,14 @@ export default function PaymentGateWay({ navigation, route }) {
         setLoader(false);
         setshow(false);
         setshow1(true);
+        setDesible(false);
       } else if (response.data.status == 'blocked') {
         //  setModalVisible(true);
         setModalVisible2(false);
         setLoader(false);
         setshow(false);
         setshow1(true);
+        setDesible(false);
         Alert.alert(
           ' Payment Blocked',
           response?.data?.message,
@@ -345,10 +336,12 @@ export default function PaymentGateWay({ navigation, route }) {
           : ToastAndroid.show('Invalid Card Details !', ToastAndroid.SHORT);
         setModalVisible2(false);
         setLoader(false);
+        setDesible(false);
       }
     } catch (err) {
       console.log('TEsting Dataeeeeeee', err);
       setLoader(false);
+      setDesible(false);
       if (err.response) {
         PLATFORM_IOS
           ? Toast.show({
@@ -366,7 +359,6 @@ export default function PaymentGateWay({ navigation, route }) {
         setLoader(false);
       }
     }
-    // }
   };
   const getDeviceIDData = () => {
     axios
@@ -375,17 +367,6 @@ export default function PaymentGateWay({ navigation, route }) {
         setModalVisible(false);
 
         if (res.data.status == 'True') {
-          // dispatch(setDeviceId(res.data.message));
-          // if (route.params.purchageData == 'DOWNGRADE') {
-          //   navigationRef.navigate('HomeOne');
-          // }
-          // if (route.params.purchageData == 'DOWNGRADE') {
-          //   dispatch(setDeviceId(res.data.message));
-          //   getPlanCurrent();
-          //   getAllPurchasePlan();
-          //   navigationRef.navigate('Home');
-          // }
-          // navigationRef.navigate('DrawerStack');
           navigation.navigate('LoginStack', { screen: 'DrawerStack' });
           dispatch(setDeviceId(res.data.message));
           getPlanCurrent();
@@ -395,16 +376,6 @@ export default function PaymentGateWay({ navigation, route }) {
           getAllPurchasePlan();
           dispatch(setDeviceId(res.data.message));
           navigation.navigate('LoginStack', { screen: 'DrawerStack' });
-          // navigationRef.navigate('DrawerStack');
-
-          // fetchGraphData(res.data?.user_id);
-          // fetchWeekGraphData(res.data?.user_id);
-          // fetchMonthGraphData(res.data?.user_id);
-          // fetchQuarterGraphData(res.data.user_id);
-          // fetchYearGraphData(res.data?.user_id);
-          // fetchBoxTwoDashboardData(res.data?.user_id);
-          // fetchStatusdata(res.data?.user_id);
-          // getPlanCurrent(res.data?.user_id);
         }
       })
       .catch(err => {
@@ -535,16 +506,6 @@ export default function PaymentGateWay({ navigation, route }) {
             setCoupenStates(true);
             setColor(false);
           }
-
-          // if (res.data.couponstatus == 'true' && voucherStatus) {
-          //   setCoupenError('Coupon Applied!');
-          //   setCoupenStates(true);
-          //   setColor(true);
-          // } else {
-          //   setCoupenError('Coupon Expired/Invalid!');
-          //   setCoupenStates(true);
-          //   setColor(false);
-          // }
         })
         .catch(err => {
           console.log(err);
@@ -612,38 +573,7 @@ export default function PaymentGateWay({ navigation, route }) {
       setModalVisible2(true);
     }
   };
-  // const updatePacakgeData = async () => {
-  //   try {
-  //     const response = await axios.get(
-  //       `${API}/packagePlan/${route.params.data.id}`,
-  //     );
 
-  //     if (response?.data?.locations.length == 0) {
-  //       dispatch(setBasePackage([]));
-  //     } else {
-  //       dispatch(setBasePackage(response.data.locations));
-  //       const datafilter = response.data.locations.filter(item => {
-  //         return item.package_name == route.params.data.package_name;
-  //       });
-  //       console.log('Location Details', datafilter);
-  //       if (datafilter[0].coupon_id != undefined) {
-  //         // getVoucherDetails(datafilter[0].coupon_id);
-  //         // setCoupencode(datafilter[0].coupon_id);
-  //         setshow(true);
-  //         setshow1(false);
-  //       } else {
-  //         PLATFORM_IOS
-  //           ? Toast.show({
-  //               type: 'error',
-  //               text1: 'Coupon Not Available',
-  //             })
-  //           : ToastAndroid.show('Coupon Not Available', ToastAndroid.SHORT);
-  //       }
-  //     }
-  //   } catch (error) {
-  //     console.error('Error fetching data:', error);
-  //   }
-  // };
   const getVoucherDetails = data => {
     axios
       .get(`${API}/couponret/${data}`)
@@ -680,8 +610,7 @@ export default function PaymentGateWay({ navigation, route }) {
           behavior={PLATFORM_IOS ? 'position' : 'position'}
           contentContainerStyle={{ flexGrow: 1 }}
         >
-
-          {loader ? <ActivityLoader /> : ''}
+          <ActivityLoader visible={loader} />
 
           <View style={styles.centeredView}>
             <Modal
@@ -900,8 +829,6 @@ export default function PaymentGateWay({ navigation, route }) {
                               </View>
                             );
                           }}
-                          // sliderWidth={400}
-                          // itemWidth={400}
                           loop={false}
                           onSnapToItem={index => {
                             setCurrentCard(allSavedCard[index]);
@@ -1330,14 +1257,18 @@ export default function PaymentGateWay({ navigation, route }) {
                 >
                   <Text style={styles.textStyle}>Cancel</Text>
                 </TouchableOpacity>
-                {/* </View> */}
-                {/* <View style={[styles.button_one, {marginHorizontal: 15}]}> */}
+
                 <TouchableOpacity
                   style={[
                     styles.button,
                     styles.buttonClose,
                     styles.button_one,
-                    { marginHorizontal: 15 },
+                    {
+                      marginHorizontal: 15,
+                      backgroundColor: desible
+                        ? COLORS.HALFBLACK
+                        : COLORS.GREEN,
+                    },
                   ]}
                   disabled={desible}
                   onPress={handlePaymentSubmit}
@@ -1346,6 +1277,7 @@ export default function PaymentGateWay({ navigation, route }) {
                 </TouchableOpacity>
                 {/* </View> */}
               </View>
+              <ActivityLoader visible={loader} />
             </View>
           </View>
         </>
@@ -1452,14 +1384,21 @@ export default function PaymentGateWay({ navigation, route }) {
                     styles.button,
                     styles.buttonClose,
                     styles.button_one,
-                    { marginHorizontal: 15 },
+                    {
+                      marginHorizontal: 15,
+                      backgroundColor: desible
+                        ? COLORS.HALFBLACK
+                        : COLORS.GREEN,
+                    },
                   ]}
+                  disabled={desible}
                   onPress={handleCardSubmit}
                 >
                   <Text style={styles.textStyle}>Submit</Text>
                 </TouchableOpacity>
                 {/* </View> */}
               </View>
+              <ActivityLoader visible={loader} />
             </View>
           </View>
         </>
