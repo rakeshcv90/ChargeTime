@@ -43,6 +43,7 @@ const getSubscriptionCancelStatus = useSelector(state => state.getSubscriptionCa
           },
         },
       );
+      console.log('response', response.data);
       if (response.data.status !== 'No') {
         navigationRef.navigate('DownGradeData', {
           dataOne: data,
@@ -118,15 +119,7 @@ const getSubscriptionCancelStatus = useSelector(state => state.getSubscriptionCa
               },
             ]}
             onPress={() => forDownUpgrade()}>
-            {/* <Text
-              style={[
-                styles.purchage_text,
-                {color: disabled ? COLORS.WHITE : COLORS.WHITE},
-              ]}>
-              {getSubscriptionCancelStatus == 1
-                ? purchageData?.replace('Renewal', 'Cancelled')
-                : purchageData}
-            </Text> */}
+      
             <Text
               style={[
                 styles.purchage_text,
@@ -137,7 +130,7 @@ const getSubscriptionCancelStatus = useSelector(state => state.getSubscriptionCa
           </TouchableOpacity>
         </View>
         <View style={styles.dollar_div}>
-          {/* <Image source={require('../../assets/images/price.png')} style={{width:18,height:18}}resizeMode='contain'/> */}
+   
           <Dolllar />
           <Text style={styles.per_month}>${data?.total_price}/ month</Text>
         </View>

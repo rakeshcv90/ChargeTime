@@ -9,7 +9,6 @@
 import {
   View,
   Text,
-
   ToastAndroid,
   StyleSheet,
   Modal,
@@ -17,20 +16,20 @@ import {
   Dimensions,
   Image,
 } from 'react-native';
-import React, {useState, useEffect} from 'react';
+import React, { useState, useEffect } from 'react';
 import Header from '../../Components/Header';
 import HorizontalLine from '../../Components/HorizontalLine';
 import Input from '../../Components/Input';
-import {Location} from '../../../assets/svgs/Location';
-import {useDispatch, useSelector} from 'react-redux';
+import { Location } from '../../../assets/svgs/Location';
+import { useDispatch, useSelector } from 'react-redux';
 import COLORS from '../../constants/COLORS';
 // import DropDownPicker from 'react-native-dropdown-picker';
-import {Dropdown} from 'react-native-element-dropdown';
-import {DIMENSIONS, PLATFORM_IOS} from '../../constants/DIMENSIONS';
-import {API} from '../../api/API';
+import { Dropdown } from 'react-native-element-dropdown';
+import { DIMENSIONS, PLATFORM_IOS } from '../../constants/DIMENSIONS';
+import { API } from '../../api/API';
 import axios from 'axios';
-import {navigationRef} from '../../../App';
-import {ms} from 'react-native-size-matters';
+import { navigationRef } from '../../../App';
+import { ms } from 'react-native-size-matters';
 import {
   getLocationID as updatedLocationId,
   setBasePackage,
@@ -39,7 +38,7 @@ import {
   setPackageStatus,
   setPuchaseAllPlans,
 } from '../../redux/action';
-import {Toast} from 'react-native-toast-message/lib/src/Toast';
+import { Toast } from 'react-native-toast-message/lib/src/Toast';
 // import {setBasePackage as setUpdateBasePackage} from '../../redux/action';
 import ActivityLoader from '../../Components/ActivityLoader';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -129,9 +128,11 @@ const Installation = () => {
     //  loginData = await AsyncStorage.getItem('loginDataOne');
 
     try {
-      const response = await axios.get(`${API}/packagePlan/${ locationId == undefined
-                  ? userProfileData[0]?.pwa_choice
-                  : locationId}`);
+      const response = await axios.get(
+        `${API}/packagePlan/${
+          locationId == undefined ? userProfileData[0]?.pwa_choice : locationId
+        }`,
+      );
 
       if (response?.data?.locations.length == 0) {
         dispatch(setBasePackage([]));
@@ -271,7 +272,7 @@ const Installation = () => {
             }),
           });
           const response = await res.json();
-       
+          console.log('CXVcxvxcvcxvcxv', response);
           setLoader(false);
           if (response.msg == 'Your Profile Update') {
             setModalVisible(false);
@@ -311,9 +312,13 @@ const Installation = () => {
 
               dispatch(updatePersionalDetail(updatedData));
 
-              dispatch(updatedLocationId( locationId == undefined
-                ? userProfileData[0]?.pwa_choice
-                : locationId,));
+              dispatch(
+                updatedLocationId(
+                  locationId == undefined
+                    ? userProfileData[0]?.pwa_choice
+                    : locationId,
+                ),
+              );
 
               fetchData();
               setForLoading(false);
@@ -351,13 +356,11 @@ const Installation = () => {
           setShowButton(false);
         }
       } else {
-     
       }
     }
   };
 
   const handleOk = () => {
-
     PlanCancel();
 
     setIsEditable(false);
@@ -372,22 +375,16 @@ const Installation = () => {
   };
 
   const onPress = () => {
-  
     if (getPurchaseData.data == 'Package not found') {
       InstalltionUpdate();
-   
     } else if (selectedValue.length == 0) {
       InstalltionUpdate();
-    
     } else if (selectedValue == userProfileData[0]?.location) {
       InstalltionUpdate();
-   
     } else if (selectedValue != userProfileData[0]?.location) {
       setModalVisible(true);
-    
     } else {
       setModalVisible(true);
-
     }
 
     if (getPurchaseData.data !== 'Package not found') {
@@ -410,7 +407,8 @@ const Installation = () => {
         animationType="slide"
         transparent={true}
         visible={isModalVisible}
-        onRequestClose={() => setModalVisible(false)}>
+        onRequestClose={() => setModalVisible(false)}
+      >
         <View style={styles.modalContainer}>
           <View style={styles.modalContent}>
             <Text style={styles.modalText}>Change Location Base?</Text>
@@ -422,14 +420,16 @@ const Installation = () => {
             <View style={styles.modalButtonsContainer}>
               <TouchableOpacity
                 style={styles.cancelButton}
-                onPress={() => handleCancel()}>
+                onPress={() => handleCancel()}
+              >
                 <Text style={styles.buttonText}>Cancel</Text>
               </TouchableOpacity>
               <TouchableOpacity
                 style={styles.okButton}
                 onPress={() => {
                   handleOk();
-                }}>
+                }}
+              >
                 <Text style={styles.buttonText}>OK</Text>
               </TouchableOpacity>
             </View>
@@ -440,7 +440,7 @@ const Installation = () => {
   };
 
   return (
-    <SafeAreaView style={{backgroundColor: COLORS.CREAM, flex: 1}}>
+    <SafeAreaView style={{ backgroundColor: COLORS.CREAM, flex: 1 }}>
       <Header
         headerName="Installation"
         editShow={true}
@@ -454,7 +454,7 @@ const Installation = () => {
         <View>
           <Image
             source={require('../../../assets/images/dotted.png')}
-            style={{width: mobileW * 0.99}}
+            style={{ width: mobileW * 0.99 }}
             resizeMode="stretch"
           />
         </View>
@@ -483,7 +483,7 @@ const Installation = () => {
             // onFocus={() => setIsFocus(false)}
             // onBlur={() => setIsFocus(false)}
             onChange={item => handleSelect(item.id, item)}
-            itemTextStyle={{color: 'black'}}
+            itemTextStyle={{ color: 'black' }}
           />
         </View>
         <Input
@@ -585,7 +585,8 @@ const Installation = () => {
             justifyContent: 'flex-end',
             marginVertical: (DIMENSIONS.SCREEN_HEIGHT * 1) / 100,
             marginRight: (DIMENSIONS.SCREEN_HEIGHT * 1) / 100,
-          }}>
+          }}
+        >
           <TouchableOpacity
             onPress={() => {
               setAddLineTwo(userProfileData[0]?.pwa_add2);
@@ -610,7 +611,7 @@ const Installation = () => {
               ...Platform.select({
                 ios: {
                   shadowColor: '#000000',
-                  shadowOffset: {width: 0, height: 2},
+                  shadowOffset: { width: 0, height: 2 },
                   shadowOpacity: 0.3,
                   shadowRadius: 4,
                 },
@@ -618,13 +619,15 @@ const Installation = () => {
                   elevation: 4,
                 },
               }),
-            }}>
+            }}
+          >
             <Text
               style={{
                 color: COLORS.BLACK,
                 fontSize: 17,
                 fontWeight: '700',
-              }}>
+              }}
+            >
               Cancel
             </Text>
           </TouchableOpacity>
@@ -642,7 +645,7 @@ const Installation = () => {
               ...Platform.select({
                 ios: {
                   shadowColor: '#000000',
-                  shadowOffset: {width: 0, height: 2},
+                  shadowOffset: { width: 0, height: 2 },
                   shadowOpacity: 0.3,
                   shadowRadius: 4,
                 },
@@ -650,13 +653,15 @@ const Installation = () => {
                   elevation: 4,
                 },
               }),
-            }}>
+            }}
+          >
             <Text
               style={{
                 color: COLORS.BLACK,
                 fontSize: 17,
                 fontWeight: '700',
-              }}>
+              }}
+            >
               Save
             </Text>
           </TouchableOpacity>
@@ -668,7 +673,8 @@ const Installation = () => {
             flexDirection: 'row',
             justifyContent: 'flex-end',
             marginVertical: (DIMENSIONS.SCREEN_HEIGHT * 1) / 100,
-          }}>
+          }}
+        >
           <TouchableOpacity
             onPress={() => {
               setIsEditable(true);
@@ -686,7 +692,7 @@ const Installation = () => {
               ...Platform.select({
                 ios: {
                   shadowColor: '#000000',
-                  shadowOffset: {width: 0, height: 2},
+                  shadowOffset: { width: 0, height: 2 },
                   shadowOpacity: 0.3,
                   shadowRadius: 4,
                 },
@@ -694,13 +700,15 @@ const Installation = () => {
                   elevation: 4,
                 },
               }),
-            }}>
+            }}
+          >
             <Text
               style={{
                 color: COLORS.BLACK,
                 fontSize: 17,
                 fontWeight: '700',
-              }}>
+              }}
+            >
               Edit
             </Text>
           </TouchableOpacity>

@@ -374,7 +374,6 @@ export default function Login({ navigation }) {
     axios
       .get(`${API}/dailyusagedeviceid/${userID}`)
       .then(res => {
-        console.log('Dailay Use Data is', res.data);
         if (res?.data?.length > 0) {
           dispatch(setGraphData(res.data.Dayusagewithgraph));
           dispatch(setWeekGraphData(res.data.weeklyusagewithgraph));
@@ -577,16 +576,25 @@ export default function Login({ navigation }) {
     navigation.navigate('ForgetPassword');
   };
   const getAllPurchasePlan = async userId => {
-    console.log('Fffffff', userId);
-
     try {
       const response = await fetch(`${API}/allpurchaseplans/${userId}`);
+
       const res = await response.json();
-      dispatch(setPuchaseAllPlans(res?.data));
+      dispatch(setPuchaseAllPlans(res));
     } catch (error) {
       console.log('Error-10', err);
     }
   };
+  //   const getAllPurchasePlan = userId => {
+  //   axios
+  //     .get(`${API}/allpurchaseplans/${userId}`)
+  //     .then(res => {
+  //       dispatch(setPuchaseAllPlans(res?.data));
+  //     })
+  //     .catch(err => {
+  //       console.log('Error-10', err);
+  //     });
+  // };
   const sendVersionCOde = async data => {
     try {
       const res = await axios(`${API}/version/insert`, {

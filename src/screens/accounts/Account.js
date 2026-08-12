@@ -7,23 +7,22 @@ import {
   StyleSheet,
   Dimensions,
   TouchableOpacity,
- 
   BackHandler,
   Platform,
   ToastAndroid,
 } from 'react-native';
-import React, {useState, useEffect} from 'react';
+import React, { useState, useEffect } from 'react';
 import COLORS from '../../constants/COLORS';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import {navigationRef} from '../../../App';
-import {DIMENSIONS, PLATFORM_IOS} from '../../constants/DIMENSIONS';
+import { navigationRef } from '../../../App';
+import { DIMENSIONS, PLATFORM_IOS } from '../../constants/DIMENSIONS';
 import DrawerOpen from '../../Components/DrawerOpen';
 // eslint-disable-next-line no-unused-vars
 import ActivityLoader from '../../Components/ActivityLoader';
-import {persistor} from '../../redux/store';
-import {useSelector} from 'react-redux';
-import {API} from '../../api/API';
-import {useDispatch} from 'react-redux';
+import { persistor } from '../../redux/store';
+import { useSelector } from 'react-redux';
+import { API } from '../../api/API';
+import { useDispatch } from 'react-redux';
 import Toast from 'react-native-toast-message';
 import {
   setLogout,
@@ -35,19 +34,19 @@ import {
   userProfileData,
 } from '../../redux/action';
 import axios from 'axios';
-import {setCardDetails} from '../../redux/action';
-import {ScrollView} from 'react-native-gesture-handler';
-import {CommonActions} from '@react-navigation/native';
+import { setCardDetails } from '../../redux/action';
+import { ScrollView } from 'react-native-gesture-handler';
+import { CommonActions } from '@react-navigation/native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 const mobileW = Math.round(Dimensions.get('screen').width);
 const mobileH = Math.round(Dimensions.get('screen').height);
 
-const Account = ({navigation}) => {
+const Account = ({ navigation }) => {
   const [allSavedCard, setSavedCard] = useState([]);
   // const {getUserID, getPackageStatus} = useSelector(state => state);
   const getUserID = useSelector(state => state.getUserID);
-const getPackageStatus = useSelector(state => state.getPackageStatus);
+  const getPackageStatus = useSelector(state => state.getPackageStatus);
 
   // const [getData, setGetData] = useState([]);
   // const [apiResponse, setApiResponse] = useState(null);
@@ -60,7 +59,7 @@ const getPackageStatus = useSelector(state => state.getPackageStatus);
     userDetails();
     getPlanCurrent();
     getSubscriptionStatus();
-    getAllPurchasePlan()
+    getAllPurchasePlan();
     // userSubscription();
     //  userSubsEnergy();
     const backHandler = BackHandler.addEventListener(
@@ -74,7 +73,6 @@ const getPackageStatus = useSelector(state => state.getPackageStatus);
     return true;
   };
   const getSubscriptionStatus = () => {
-
     axios
       .get(`${API}/planstatuspauseresume/${getUserID}`)
       .then(res => {
@@ -131,7 +129,6 @@ const getPackageStatus = useSelector(state => state.getPackageStatus);
         },
       });
       if (res.data.message == 'Your account is successfully logout') {
-   
         await AsyncStorage.clear();
         await persistor.purge();
         dispatch(setLogout());
@@ -152,7 +149,6 @@ const getPackageStatus = useSelector(state => state.getPackageStatus);
       await persistor.purge();
       dispatch(setLogout());
     }
-
   };
   const userDetails = async () => {
     // const response = await fetch(`${API}/userexisting/${user_ID}`);
@@ -176,7 +172,7 @@ const getPackageStatus = useSelector(state => state.getPackageStatus);
       .get(`${API}/currentplan/${getUserID}`)
       .then(res => {
         const subCancelStatus = res.data?.message?.subscription_cancel_status;
-     
+
         if (res.data.data == 'Package not found') {
           dispatch(setPurchaseData(res.data));
         } else if (subCancelStatus == 4 || subCancelStatus == 2) {
@@ -185,8 +181,8 @@ const getPackageStatus = useSelector(state => state.getPackageStatus);
               subCancelStatus == 2 ? 2 : subCancelStatus == 4 ? 4 : 0,
             ),
           );
-          dispatch(setPackageStatus(false))
-          dispatch(setPurchaseData({data: 'Package not found'}));
+          dispatch(setPackageStatus(false));
+          dispatch(setPurchaseData({ data: 'Package not found' }));
         } else {
           dispatch(
             setSubcriptionCancelStatus(
@@ -206,20 +202,18 @@ const getPackageStatus = useSelector(state => state.getPackageStatus);
       })
       .catch(err => {
         // setForLoading(false);
-       
       });
   };
-  const getAllPurchasePlan=(userId)=>{
+  const getAllPurchasePlan = userId => {
     axios
-    .get(`${API}/allpurchaseplans/${getUserID}`)
-    .then(res => {
-    
-      dispatch(setPuchaseAllPlans(res?.data));
-    })
-    .catch(err => {
-      console.log('Error-10', err);
-    });
-  }
+      .get(`${API}/allpurchaseplans/${getUserID}`)
+      .then(res => {
+        dispatch(setPuchaseAllPlans(res?.data));
+      })
+      .catch(err => {
+        console.log('Error-10', err);
+      });
+  };
   const handleAllGetCard = async () => {
     try {
       const response = await fetch(`${API}/getcarddetails/${user_ID}`);
@@ -237,66 +231,68 @@ const getPackageStatus = useSelector(state => state.getPackageStatus);
     }
   };
   const handleLinkPress = screen => {
-
-    navigation.navigate(screen, {allSavedCard});
+    navigation.navigate(screen, { allSavedCard });
   };
 
   return (
     // eslint-disable-next-line react-native/no-inline-styles
-    <SafeAreaView style={{backgroundColor: COLORS.CREAM, flex: 1}}>
+    <SafeAreaView style={{ backgroundColor: COLORS.CREAM, flex: 1 }}>
       <View style={styles.main_div}>
         <View style={styles.row}>
           <Text style={styles.heading}>Account</Text>
 
           <DrawerOpen top={PLATFORM_IOS ? 30 : 30} />
         </View>
-        <ScrollView showsVerticalScrollIndicator={false} style={{flex: 1}}>
+        <ScrollView showsVerticalScrollIndicator={false} style={{ flex: 1 }}>
           {Screen.map((item, index) => {
-            if(!getPackageStatus && index == 3) return
-            return(
-            <TouchableOpacity
-              key={index}
-              style={styles.itemContainer}
-              onPress={() => handleLinkPress(item.link)}>
-              <View style={styles.row}>
-                <Image
-                  source={item.image}
-                  resizeMode="contain"
-                  style={[
-                    styles.icon,
-                    {
-                      marginLeft: index == 1 ? 15 : index == 0 ? 18 : 20,
-
-                      width: 25,
-                    },
-                  ]}
-                />
-                <Text style={styles.title}>{item.title} </Text>
-                <View style={styles.sideImageContainer}>
+            if (!getPackageStatus && index == 3) return;
+            return (
+              <TouchableOpacity
+                key={index}
+                style={styles.itemContainer}
+                onPress={() => handleLinkPress(item.link)}
+              >
+                <View style={styles.row}>
                   <Image
-                    source={item.side_image}
-                    style={styles.side_icon}
+                    source={item.image}
                     resizeMode="contain"
+                    style={[
+                      styles.icon,
+                      {
+                        marginLeft: index == 1 ? 15 : index == 0 ? 18 : 20,
+
+                        width: 25,
+                      },
+                    ]}
+                  />
+                  <Text style={styles.title}>{item.title} </Text>
+                  <View style={styles.sideImageContainer}>
+                    <Image
+                      source={item.side_image}
+                      style={styles.side_icon}
+                      resizeMode="contain"
+                    />
+                  </View>
+                </View>
+                <View
+                  // eslint-disable-next-line react-native/no-inline-styles
+                  style={{
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    width: mobileW,
+                  }}
+                >
+                  <Image
+                    source={require('../../../assets/images/dotted.png')}
+                    // eslint-disable-next-line react-native/no-inline-styles
+                    style={{ width: mobileW, height: 3 }}
+                    resizeMode="stretch"
                   />
                 </View>
-              </View>
-              <View
-                // eslint-disable-next-line react-native/no-inline-styles
-                style={{
-                  flexDirection: 'row',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  width: mobileW,
-                }}>
-                <Image
-                  source={require('../../../assets/images/dotted.png')}
-                  // eslint-disable-next-line react-native/no-inline-styles
-                  style={{width: mobileW, height: 3}}
-                  resizeMode="stretch"
-                />
-              </View>
-            </TouchableOpacity>
-          )})}
+              </TouchableOpacity>
+            );
+          })}
           {/* <View style={styles.row}>
             <Image
               source={require('../../../assets/images/Theme.png')}
@@ -312,7 +308,8 @@ const getPackageStatus = useSelector(state => state.getPackageStatus);
               style={styles.listItem}
               onPress={() => {
                 navigation.navigate('Privacy Policy');
-              }}>
+              }}
+            >
               <Text style={styles.bullet}>•</Text>
               <Text style={styles.text}>Privacy Policy</Text>
             </TouchableOpacity>
@@ -324,7 +321,8 @@ const getPackageStatus = useSelector(state => state.getPackageStatus);
               onPress={() => {
                 navigation.navigate('Contact');
               }}
-              style={styles.listItem}>
+              style={styles.listItem}
+            >
               <Text style={styles.bullet}>•</Text>
               <Text style={styles.text}>Contact Us</Text>
             </TouchableOpacity>
@@ -341,7 +339,8 @@ const getPackageStatus = useSelector(state => state.getPackageStatus);
             <TouchableOpacity
               activeOpacity={0.05}
               style={styles.logoutButton}
-              onPress={() => handleLogOut()}>
+              onPress={() => handleLogOut()}
+            >
               <Text style={styles.logoutbuttonText}>Log Out</Text>
             </TouchableOpacity>
           </View>
@@ -472,11 +471,11 @@ const styles = StyleSheet.create({
     backgroundColor: '#F84E4E',
     padding: 10,
     borderRadius: 10,
-    marginBottom:25,
+    marginBottom: 25,
     ...Platform.select({
       ios: {
         shadowColor: '#000000',
-        shadowOffset: {width: 0, height: 2},
+        shadowOffset: { width: 0, height: 2 },
         shadowOpacity: 0.3,
         shadowRadius: 4,
       },

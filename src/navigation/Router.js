@@ -2,7 +2,7 @@
 /* eslint-disable react/no-unstable-nested-components */
 /* eslint-disable no-undef */
 /* eslint-disable react-native/no-inline-styles */
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import {
   DrawerActions,
   NavigationContainer,
@@ -154,10 +154,6 @@ export const ChargerStatus = ({ navigation }) => {
   );
 };
 const DrawerNavigation = () => {
-  const [focus, setFocus] = useState();
-  const [focusOne, setFocusOne] = useState();
-  const [focusTwo, setFocusTwo] = useState();
-
   const getPackageStatus = useSelector(state => state.getPackageStatus);
   const getChargerStatus = useSelector(state => state.getChargerStatus);
   const getDeviceID = useSelector(state => state.getDeviceID);
@@ -184,7 +180,6 @@ const DrawerNavigation = () => {
             options={{
               drawerActiveBackgroundColor: '#fff',
               drawerIcon: ({ focused, color, size }) => {
-                setFocus(focused);
                 return (
                   <Image
                     resizeMode="cover"
@@ -200,21 +195,26 @@ const DrawerNavigation = () => {
               drawerItemStyle: {
                 marginHorizontal: -7,
               },
-              drawerLabelStyle: {
-                backgroundColor: focus
-                  ? 'rgba(177, 211, 79, 0.8)'
-                  : 'rgba(255, 255, 255, 0)',
-                paddingVertical: 10,
-                paddingLeft: 10,
-                width: '200%',
-                // marginTop: -20,
-                marginLeft: -10,
-                color: 'black',
-                fontWeight: '700',
-                borderRadius: 5,
+              drawerLabel: ({ focused }) => (
+                <Text
+                  style={{
+                    backgroundColor: focused
+                      ? 'rgba(177, 211, 79, 0.8)'
+                      : 'rgba(255, 255, 255, 0)',
+                    paddingVertical: 10,
+                    paddingLeft: 10,
+                    width: '200%',
+                    // marginTop: -20,
+                    marginLeft: -10,
+                    color: 'black',
+                    fontWeight: '700',
+                    borderRadius: 5,
 
-                overflow: 'hidden',
-              },
+                    overflow: 'hidden',
+                  }}>
+                  Home
+                </Text>
+              ),
               drawerActiveTintColor: 'black',
               title: 'Home',
             }}
@@ -227,7 +227,6 @@ const DrawerNavigation = () => {
               },
               drawerActiveBackgroundColor: '#fff',
               drawerIcon: ({ focused, color, size }) => {
-                setFocusOne(focused);
                 return (
                   <Image
                     source={
@@ -239,21 +238,26 @@ const DrawerNavigation = () => {
                   />
                 );
               },
-              drawerLabelStyle: {
-                backgroundColor: focusOne
-                  ? 'rgba(177, 211, 79, 0.8)'
-                  : 'rgba(255, 255, 255, 0)',
-                paddingVertical: 10,
-                paddingLeft: 10,
-                width: '200%',
-                color: 'black',
-                fontWeight: '700',
-                marginLeft: -10,
+              drawerLabel: ({ focused }) => (
+                <Text
+                  style={{
+                    backgroundColor: focused
+                      ? 'rgba(177, 211, 79, 0.8)'
+                      : 'rgba(255, 255, 255, 0)',
+                    paddingVertical: 10,
+                    paddingLeft: 10,
+                    width: '200%',
+                    color: 'black',
+                    fontWeight: '700',
+                    marginLeft: -10,
 
-                borderRadius: 5,
+                    borderRadius: 5,
 
-                overflow: 'hidden',
-              },
+                    overflow: 'hidden',
+                  }}>
+                  Energy
+                </Text>
+              ),
               drawerActiveTintColor: 'black',
               title: 'Energy',
             }}
@@ -266,7 +270,6 @@ const DrawerNavigation = () => {
           options={{
             drawerActiveBackgroundColor: '#fff',
             drawerIcon: ({ focused, color, size }) => {
-              setFocus(focused);
               return (
                 <Image
                   resizeMode="cover"
@@ -282,21 +285,26 @@ const DrawerNavigation = () => {
             drawerItemStyle: {
               marginHorizontal: -7,
             },
-            drawerLabelStyle: {
-              backgroundColor: focus
-                ? 'rgba(177, 211, 79, 0.8)'
-                : 'rgba(255, 255, 255, 0)',
-              paddingVertical: 10,
-              paddingLeft: 10,
-              width: '200%',
-              color: 'black',
-              fontWeight: '700',
-              marginLeft: -10,
+            drawerLabel: ({ focused }) => (
+              <Text
+                style={{
+                  backgroundColor: focused
+                    ? 'rgba(177, 211, 79, 0.8)'
+                    : 'rgba(255, 255, 255, 0)',
+                  paddingVertical: 10,
+                  paddingLeft: 10,
+                  width: '200%',
+                  color: 'black',
+                  fontWeight: '700',
+                  marginLeft: -10,
 
-              borderRadius: 5,
+                  borderRadius: 5,
 
-              overflow: 'hidden',
-            },
+                  overflow: 'hidden',
+                }}>
+                Home
+              </Text>
+            ),
             drawerActiveTintColor: 'black',
             title: 'Home',
           }}
@@ -313,7 +321,6 @@ const DrawerNavigation = () => {
             marginHorizontal: -9,
           },
           drawerIcon: ({ focused, color, size }) => {
-            setFocusTwo(focused);
             return (
               <Image
                 source={
@@ -325,20 +332,25 @@ const DrawerNavigation = () => {
               />
             );
           },
-          drawerLabelStyle: {
-            backgroundColor: focusTwo
-              ? 'rgba(177, 211, 79, 0.8)'
-              : 'rgba(255, 255, 255, 0)',
-            paddingVertical: 10,
-            paddingLeft: 10,
-            width: '190%',
-            color: 'black',
-            fontWeight: '700',
-            marginLeft: -10,
-            borderRadius: 5,
+          drawerLabel: ({ focused }) => (
+            <Text
+              style={{
+                backgroundColor: focused
+                  ? 'rgba(177, 211, 79, 0.8)'
+                  : 'rgba(255, 255, 255, 0)',
+                paddingVertical: 10,
+                paddingLeft: 10,
+                width: '190%',
+                color: 'black',
+                fontWeight: '700',
+                marginLeft: -10,
+                borderRadius: 5,
 
-            overflow: 'hidden',
-          },
+                overflow: 'hidden',
+              }}>
+              Account
+            </Text>
+          ),
           drawerActiveTintColor: 'black',
           title: 'Account',
         }}

@@ -24,48 +24,121 @@ const BoxTwo = ({ data }) => {
   const getPlanStatus = useSelector(state => state.getPlanStatus);
   const getPurchaseAllPlans = useSelector(state => state.getPurchaseAllPlans);
 
+  // const getmessage = () => {
+  //   if (getPurchaseData.length <= 0) {
+  //     return <Text style={styles.installation_text}></Text>;
+  //   } else if (getPurchaseData.length == undefined) {
+  //     if (
+  //       getPurchaseData.data != 'Package not found' &&
+  //       getPurchaseData?.data?.old_subscription_status != 'cancel'
+  //     ) {
+  //       if (getPurchaseData?.data?.energy_plan == data?.package_name) {
+  //         var datatex = '( Current Plan )';
+  //         return <Text style={styles.installation_text}>{datatex}</Text>;
+  //       } else {
+  //         if (
+  //           getPurchaseData.data != 'Package not found' &&
+  //           getPurchaseData?.data?.old_subscription_status != 'cancel'
+  //         ) {
+  //           var datatest = '';
+
+  //           getPurchaseAllPlans?.forEach(item => {
+  //             if (
+  //               item.energy_plan == data?.package_name &&
+  //               item.subscription_status == 'active'
+  //             ) {
+  //               datatest = '( Active )';
+  //             } else if (
+  //               item.energy_plan == data?.package_name &&
+  //               item.subscription_status == 'scheduled'
+  //             ) {
+  //               datatest = '( Scheduled )';
+  //             } else if (
+  //               item.energy_plan == data?.package_name &&
+  //               item.subscription_status == 'notActive'
+  //             ) {
+  //               datatest = '( NotActive )';
+  //             } else datatest = '';
+  //           });
+  //           console.log('Purchase Data', datatest);
+  //           return (
+  //             <Text
+  //               style={[
+  //                 styles.installation_text,
+  //                 datatest === '( Scheduled )' && {
+  //                   color: '#FF0000',
+  //                   fontSize: 14,
+  //                   fontWeight: '900',
+  //                 },
+  //               ]}
+  //             >
+  //               {datatest}
+  //             </Text>
+  //           );
+  //         } else {
+  //           return <Text style={styles.installation_text}></Text>;
+  //         }
+  //       }
+  //     }
+  //   }
+  // };
+
+  const getPackageNumber = (value = '') => {
+    const match = value.match(/\d+$/); // Extract last number
+    return match ? match[0] : '';
+  };
+
   const getmessage = () => {
     if (getPurchaseData.length <= 0) {
       return <Text style={styles.installation_text}></Text>;
-    } else if (getPurchaseData.length == undefined) {
+    } else if (getPurchaseData.length === undefined) {
       if (
-        getPurchaseData.data != 'Package not found' &&
-        getPurchaseData?.data?.old_subscription_status != 'cancel'
+        getPurchaseData.data !== 'Package not found' &&
+        getPurchaseData?.data?.old_subscription_status !== 'cancel'
       ) {
-        if (getPurchaseData?.data?.energy_plan == data?.package_name) {
-          var datatex = '( Current Plan )';
-          return <Text style={styles.installation_text}>{datatex}</Text>;
+        // Compare only package numbers
+        if (
+          getPackageNumber(getPurchaseData?.data?.energy_plan) ===
+          getPackageNumber(data?.package_name)
+        ) {
+          return <Text style={styles.installation_text}>( Current Plan )</Text>;
         } else {
-          if (
-            getPurchaseData.data != 'Package not found' &&
-            getPurchaseData?.data?.old_subscription_status != 'cancel'
-          ) {
-            var datatest = '';
-            getPurchaseAllPlans?.forEach(item => {
-              if (
-                item.energy_plan == data?.package_name &&
-                item.subscription_status == 'active'
-              ) {
+          let datatest = '';
+
+          getPurchaseAllPlans?.forEach(item => {
+            if (
+              getPackageNumber(item.energy_plan) ===
+              getPackageNumber(data?.package_name)
+            ) {
+              if (item.subscription_status === 'active') {
                 datatest = '( Active )';
-              } else if (
-                item.energy_plan == data?.package_name &&
-                item.subscription_status == 'scheduled'
-              ) {
+              } else if (item.subscription_status === 'scheduled') {
                 datatest = '( Scheduled )';
-              } else if (
-                item.energy_plan == data?.package_name &&
-                item.subscription_status == 'notActive'
-              ) {
-                datatest = '( NotActive )';
-              } else datatest = '';
-            });
-            return <Text style={styles.installation_text}>{datatest}</Text>;
-          } else {
-            return <Text style={styles.installation_text}></Text>;
-          }
+              } else if (item.subscription_status === 'notActive') {
+                datatest = '( Not Active )';
+              }
+            }
+          });
+
+          return (
+            <Text
+              style={[
+                styles.installation_text,
+                datatest === '( Scheduled )' && {
+                  color: '#FF0000',
+                  fontSize: 14,
+                  fontWeight: '900',
+                },
+              ]}
+            >
+              {datatest}
+            </Text>
+          );
         }
       }
     }
+
+    return <Text style={styles.installation_text}></Text>;
   };
   return (
     <View

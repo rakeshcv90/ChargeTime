@@ -162,13 +162,7 @@ const PauseModal: FC<Props> = ({
             >
               <Text style={styles.textStyle}>Home</Text>
             </TouchableOpacity>
-            {console.log(
-              'XCvcxvxcvcxvcxv',
-              cancel1,
-              cancel2,
-              cancel1Stripe,
-              cancel2Stripe,
-            )}
+      
             <TouchableOpacity
               style={[styles.button, styles.buttonClose, { padding: 5 }]}
               onPress={() => {

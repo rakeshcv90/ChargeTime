@@ -58,6 +58,7 @@ const Splash = () => {
         }
       }
     } catch (error) {
+      navigationRef.navigate('Login');
       console.log('Error checking first time:', error);
     }
   };

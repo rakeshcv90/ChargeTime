@@ -339,19 +339,19 @@ export default function PaymentGateWay({ navigation, route }) {
         setDesible(false);
       }
     } catch (err) {
-      console.log('TEsting Dataeeeeeee', err);
+      console.log('TEsting Dataeeeeeee', err?.response);
       setLoader(false);
       setDesible(false);
       if (err.response) {
-        PLATFORM_IOS
-          ? Toast.show({
-              type: 'success',
-              text1: 'Strip id not found for this Package',
-            })
-          : ToastAndroid.show(
-              'Strip id not found for this Package',
-              ToastAndroid.SHORT,
-            );
+        // PLATFORM_IOS
+        //   ? Toast.show({
+        //       type: 'success',
+        //       text1: 'Strip id not found for this Package',
+        //     })
+        //   : ToastAndroid.show(
+        //       'Strip id not found for this Package',
+        //       ToastAndroid.SHORT,
+        //     );
         setModalVisible1(false);
         setLoader(false);
       } else {

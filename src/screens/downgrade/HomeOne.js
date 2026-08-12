@@ -445,7 +445,8 @@ export default function HomeOne(route) {
               return (
                 <Tab.Screen
                   key={ind}
-                  name={item?.package_name}
+                  name={`${item?.package_name || 'Package'}_${ind}`}
+                  options={{ tabBarLabel: item?.package_name }}
                   component={SliderOne}
                   initialParams={{
                     item: item,

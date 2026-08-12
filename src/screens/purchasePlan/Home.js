@@ -168,7 +168,7 @@ export default function Home(route) {
   return (
     <SafeAreaView style={{ backgroundColor: COLORS.CREAM, flex: 1 }}>
       <DrawerOpen top={PLATFORM_IOS ? 70 : 30} />
-   
+
       {getBasePackage.length != 0 && (
         <View style={styles.charging_imag_style}>
           {changePage === 0 ? (
@@ -209,7 +209,8 @@ export default function Home(route) {
             return (
               <Tab.Screen
                 key={ind}
-                name={item?.package_name}
+                name={`${item?.package_name || 'Package'}_${ind}`}
+                options={{ tabBarLabel: item?.package_name }}
                 component={TabOne}
                 initialParams={{ index: ind }}
               />
@@ -233,7 +234,8 @@ export default function Home(route) {
               return (
                 <Tab.Screen
                   key={ind}
-                  name={item?.package_name}
+                  name={`${item?.package_name || 'Package'}_${ind}`}
+                  options={{ tabBarLabel: item?.package_name }}
                   component={TabOne}
                   initialParams={{ index: ind }}
                 />

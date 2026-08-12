@@ -15,20 +15,20 @@ import {
   Image,
   Platform,
 } from 'react-native';
-import {SafeAreaView} from 'react-native-safe-area-context';
-import {Charging} from '../../../assets/images/Charging';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import { Charging } from '../../../assets/images/Charging';
 import COLORS from '../../constants/COLORS';
 import InstallationBase from '../../Components/InstallationBase';
 import BoxTwo from '../../Components/BoxTwo';
 // import PurchseButton from '../../Components/PurchseButton';
-import {DIMENSIONS, PLATFORM_IOS} from '../../constants/DIMENSIONS';
+import { DIMENSIONS, PLATFORM_IOS } from '../../constants/DIMENSIONS';
 import BoxFive from '../../Components/BoxFive';
 import Remaining from '../../Components/Remaining';
 import PriceBox from '../../Components/PriceBox';
-import {useDispatch, useSelector} from 'react-redux';
-import {useEffect, useState} from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { useEffect, useState } from 'react';
 import axios from 'axios';
-import {API} from '../../api/API';
+import { API } from '../../api/API';
 import ActivityLoader from '../../Components/ActivityLoader';
 import AnimatedLottieView from 'lottie-react-native';
 import {
@@ -55,10 +55,12 @@ export default function SliderOne(props) {
   // } = useSelector(state => state);
 
   const getUserID = useSelector(state => state.getUserID);
-const getPurchaseData = useSelector(state => state.getPurchaseData);
-const getSubscriptionCancelStatus = useSelector(state => state.getSubscriptionCancelStatus);
-const getBasePackage = useSelector(state => state.getBasePackage);
-const subscriptionStatus = useSelector(state => state.subscriptionStatus);
+  const getPurchaseData = useSelector(state => state.getPurchaseData);
+  const getSubscriptionCancelStatus = useSelector(
+    state => state.getSubscriptionCancelStatus,
+  );
+  const getBasePackage = useSelector(state => state.getBasePackage);
+  const subscriptionStatus = useSelector(state => state.subscriptionStatus);
 
   useEffect(() => {
     getPlanCurrent();
@@ -86,7 +88,7 @@ const subscriptionStatus = useSelector(state => state.subscriptionStatus);
             ),
           );
           dispatch(setPackageStatus(false));
-          dispatch(setPurchaseData({data: 'Package not found'}));
+          dispatch(setPurchaseData({ data: 'Package not found' }));
         } else {
           dispatch(
             setSubcriptionCancelStatus(
@@ -116,18 +118,19 @@ const subscriptionStatus = useSelector(state => state.subscriptionStatus);
         : getBasePackage[props?.route?.params.index]?.kwh <
           getPurchaseData?.data?.kwh
         ? 'DOWNGRADE'
-        :subscriptionStatus==1?'PAUSED SUBSCRIPTION': `Renewal Date: \n${getPurchaseData?.data?.End_validity}`
+        : subscriptionStatus == 1
+        ? 'PAUSED SUBSCRIPTION'
+        : `Renewal Date: \n${getPurchaseData?.data?.End_validity}`
       : '';
 
   return (
     <ScrollView
       showsVerticalScrollIndicator={false}
-      style={{backgroundColor: COLORS.CREAM, flex: 1}}>
+      style={{ backgroundColor: COLORS.CREAM, flex: 1 }}
+    >
       {forLoading ? <ActivityLoader /> : ''}
 
       <View style={styles.managing_width}>
-      
-
         <BoxTwo
           data={props?.item || getBasePackage[props?.route?.params.index]}
         />
@@ -143,13 +146,12 @@ const subscriptionStatus = useSelector(state => state.subscriptionStatus);
               />
             )
           : null}
-      
 
         {getPurchaseData?.data != 'Package not found' &&
         getPurchaseData?.data?.old_subscription_status != 'cancel'
           ? getPurchaseData.data.energy_plan.toLowerCase() ===
               props.route.params.item.package_name.toLowerCase() && (
-              <View style={{marginBottom: 5}}>
+              <View style={{ marginBottom: 5 }}>
                 <PriceBox data={getPurchaseData.data} />
               </View>
             )
@@ -166,8 +168,8 @@ const subscriptionStatus = useSelector(state => state.subscriptionStatus);
                   ? -15
                   : 0
                 : 0,
-       
-          }}>
+          }}
+        >
           <InstallationBase
             data={props?.item || getBasePackage[props?.route?.params.index]}
           />
@@ -186,10 +188,7 @@ const subscriptionStatus = useSelector(state => state.subscriptionStatus);
                     props?.item || getBasePackage[props?.route?.params.index]
                   }
                   purchageData={purchageData}
-                  disabled={
-                    false
-                 
-                  }
+                  disabled={false}
                 />
               )}
             {getPurchaseData.data != 'Package not found' &&
@@ -205,7 +204,6 @@ const subscriptionStatus = useSelector(state => state.subscriptionStatus);
               )}
           </>
         )}
- 
       </View>
     </ScrollView>
   );
@@ -213,8 +211,7 @@ const subscriptionStatus = useSelector(state => state.subscriptionStatus);
 const styles = StyleSheet.create({
   managing_width: {
     paddingHorizontal: 20,
-  
+
     marginBottom: DIMENSIONS.SCREEN_HEIGHT * 0.02,
-  
   },
 });
